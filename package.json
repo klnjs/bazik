@@ -1,0 +1,34 @@
+{
+	"name": "@klnjs/freya",
+	"version": "0.0.1-rc.1",
+	"type": "module",
+	"private": true,
+	"packageManager": "yarn@3.5.1",
+	"scripts": {
+		"version": "yarn workspaces foreach version",
+		"publish": "yarn workspaces foreach -p --no-private npm publish --tolerate-republish",
+		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
+		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
+		"typescript": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@vanilla-extract/css": "1.11.0",
+		"@vanilla-extract/sprinkles": "1.6.0",
+		"clsx": "1.2.1",
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
+	"devDependencies": {
+		"@klnjs/browserslist-config": "0.0.1-rc.2",
+		"@klnjs/eslint-config": "0.0.1-rc.2",
+		"@klnjs/eslint-config-react": "0.0.1-rc.2",
+		"@klnjs/eslint-config-typescript": "0.0.1-rc.2",
+		"@klnjs/prettier-config": "0.0.1-rc.2",
+		"@types/react": "18.2.6",
+		"@types/react-dom": "18.2.4",
+		"cypress": "12.9.0",
+		"eslint": "8.40.0",
+		"prettier": "2.8.8",
+		"typescript": "5.0.4"
+	}
+}

@@ -1,0 +1,14 @@
+# Ignore everything
+*
+
+# Except these folders
+!scripts/
+!scripts/**/*
+!packages/
+!packages/**/*
+
+# Except these files
+!.eslintrc.cjs
+!.prettierrc.cjs
+!package.json
+!renovate.json
