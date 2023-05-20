@@ -9,6 +9,7 @@ export const textfieldRoot = style({
 	display: 'flex',
 	gap: helpers.spacing(1),
 	borderRadius: helpers.radius(3),
+	transition: helpers.transition('border-radius'),
 	flexDirection: 'column'
 })
 
@@ -34,7 +35,7 @@ export const textfieldText = style({
 
 export const textfieldLabel = style({
 	color: vars.palette.text.secondary,
-	transition: helpers.transition('color', 'transform'),
+	transition: helpers.transition('color', 'background'),
 	selectors: {
 		[`${textfieldRoot}:focus-within &`]: {
 			color: vars.palette.text.primary
