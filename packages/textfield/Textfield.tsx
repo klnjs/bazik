@@ -47,18 +47,16 @@ export const Textfield = forwardRef<HTMLInputElement, TextfieldProps>(
 					textTransform='uppercase'
 					className={textClassName}
 				>
-					{label && (
-						<Typography
-							as='label'
-							id={labelId}
-							color='secondary'
-							fontWeight='medium'
-							className={classes.textfieldLabel}
-							htmlFor={baseId}
-						>
-							{label}
-						</Typography>
-					)}
+					<Typography
+						as='label'
+						id={labelId}
+						color='secondary'
+						fontWeight='medium'
+						className={classes.textfieldLabel}
+						htmlFor={baseId}
+					>
+						{label}
+					</Typography>
 					{error && !disabled && (
 						<Typography id={errorId} fontSize={1} color='negative'>
 							{` · ${error}`}

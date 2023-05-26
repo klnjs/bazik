@@ -2,12 +2,15 @@
 *
 
 # Except these folders
+!.storybook/
+!.storybook/**/*
 !scripts/
 !scripts/**/*
 !packages/
 !packages/**/*
 
 # Except these files
+!.babelrc
 !.eslintrc.cjs
 !.prettierrc.cjs
 !package.json

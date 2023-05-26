@@ -4,12 +4,15 @@
 # Except these folders
 !.github/
 !.github/**/*
+!.storybook/
+!.storybook/**/*
 !scripts/
 !scripts/**/*
 !packages/
 !packages/**/*
 
 # Except these files
+!.babelrc
 !.browserslistrc
 !.editorconfig
 !.eslintignore

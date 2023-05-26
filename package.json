@@ -6,6 +6,7 @@
 	"scripts": {
 		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
 		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
+		"storybook": "storybook dev -p 6006",
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -16,16 +17,27 @@
 		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
+		"@babel/core": "7.22.1",
+		"@babel/preset-env": "7.22.2",
+		"@babel/preset-react": "7.22.0",
+		"@babel/preset-typescript": "7.21.5",
 		"@klnjs/browserslist-config": "0.0.1-rc.2",
 		"@klnjs/eslint-config": "0.0.1-rc.2",
 		"@klnjs/eslint-config-react": "0.0.1-rc.2",
 		"@klnjs/eslint-config-typescript": "0.0.1-rc.2",
 		"@klnjs/prettier-config": "0.0.1-rc.2",
-		"@types/react": "18.2.6",
+		"@storybook/addon-essentials": "7.0.18",
+		"@storybook/react": "7.0.18",
+		"@storybook/react-webpack5": "7.0.18",
+		"@types/react": "18.2.7",
 		"@types/react-dom": "18.2.4",
-		"cypress": "12.9.0",
-		"eslint": "8.40.0",
+		"@vanilla-extract/webpack-plugin": "2.2.0",
+		"css-loader": "6.7.4",
+		"cypress": "12.13.0",
+		"eslint": "8.41.0",
+		"mini-css-extract-plugin": "2.7.6",
 		"prettier": "2.8.8",
+		"storybook": "7.0.18",
 		"typescript": "5.0.4"
 	}
 }
