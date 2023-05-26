@@ -42,17 +42,16 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(
 					aria-labelledby={label ? labelId : undefined}
 					{...otherProps}
 				/>
-				{label && (
-					<Typography
-						as='label'
-						id={labelId}
-						fontSize={3}
-						fontWeight='medium'
-						htmlFor={baseId}
-					>
-						{label}
-					</Typography>
-				)}
+
+				<Typography
+					as='label'
+					id={labelId}
+					fontSize={3}
+					fontWeight='medium'
+					htmlFor={baseId}
+				>
+					{label}
+				</Typography>
 			</Flex>
 		)
 	}

@@ -4,6 +4,8 @@
 # Except these folders
 !.github/
 !.github/**/*
+!.storybook/
+!.storybook/**/*
 !.yarn/
 !.yarn/**/*
 !scripts/
@@ -15,6 +17,7 @@
 .yarn/install-state.gz
 
 # Except these files
+!.babelrc
 !.browserslistrc
 !.editorconfig
 !.eslintignore

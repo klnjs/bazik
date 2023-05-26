@@ -4,10 +4,13 @@ module.exports = {
 		'@klnjs/eslint-config-react',
 		'@klnjs/eslint-config-typescript'
 	],
-	env: {
-		node: true
-	},
+	root: true,
 	rules: {
-		'no-console': 'off'
+		'import/order': [
+			'error',
+			{
+				'new-lines-between': 'never'
+			}
+		]
 	}
 }
