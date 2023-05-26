@@ -4,15 +4,10 @@
 # Except these folders
 !.github/
 !.github/**/*
-!.yarn/
-!.yarn/**/*
 !scripts/
 !scripts/**/*
 !packages/
 !packages/**/*
-
-# Ignore these files
-.yarn/install-state.gz
 
 # Except these files
 !.browserslistrc
@@ -21,15 +16,12 @@
 !.eslintrc.cjs
 !.gitignore
 !.node-version
-!.pnp.cjs
-!.pnp.loader.mjs
 !.prettierignore
 !.prettierrc.cjs
-!.yarnrc.yml
 !LICENSE
 !CHANGELOG.md
 !package.json
+!pnpm-lock.yaml
 !README.md
 !renovate.json
 !tsconfig.json
-!yarn.lock
