@@ -12,3 +12,4 @@
 !.prettierrc.cjs
 !package.json
 !renovate.json
+!tsconfig.json

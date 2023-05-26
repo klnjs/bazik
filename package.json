@@ -3,10 +3,7 @@
 	"version": "0.0.1-rc.1",
 	"type": "module",
 	"private": true,
-	"packageManager": "yarn@3.5.1",
 	"scripts": {
-		"version": "yarn workspaces foreach version",
-		"publish": "yarn workspaces foreach -p --no-private npm publish --tolerate-republish",
 		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
 		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
 		"typescript": "tsc --noEmit"
