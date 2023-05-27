@@ -31,20 +31,20 @@ devDependencies:
     specifier: 7.21.5
     version: 7.21.5(@babel/core@7.22.1)
   '@klnjs/browserslist-config':
-    specifier: 0.0.1-rc.2
-    version: 0.0.1-rc.2
+    specifier: 0.0.1-rc.3
+    version: 0.0.1-rc.3
   '@klnjs/eslint-config':
-    specifier: 0.0.1-rc.2
-    version: 0.0.1-rc.2(@typescript-eslint/parser@5.59.6)(eslint@8.41.0)
+    specifier: 0.0.1-rc.3
+    version: 0.0.1-rc.3(@typescript-eslint/parser@5.59.6)(eslint@8.41.0)
   '@klnjs/eslint-config-react':
-    specifier: 0.0.1-rc.2
-    version: 0.0.1-rc.2(eslint@8.41.0)
+    specifier: 0.0.1-rc.3
+    version: 0.0.1-rc.3(eslint@8.41.0)
   '@klnjs/eslint-config-typescript':
-    specifier: 0.0.1-rc.2
-    version: 0.0.1-rc.2(eslint@8.41.0)(typescript@5.0.4)
+    specifier: 0.0.1-rc.3
+    version: 0.0.1-rc.3(eslint@8.41.0)(typescript@5.0.4)
   '@klnjs/prettier-config':
-    specifier: 0.0.1-rc.2
-    version: 0.0.1-rc.2(prettier@2.8.8)
+    specifier: 0.0.1-rc.3
+    version: 0.0.1-rc.3(prettier@2.8.8)
   '@storybook/addon-essentials':
     specifier: 7.0.18
     version: 7.0.18(react-dom@18.2.0)(react@18.2.0)
@@ -3103,12 +3103,12 @@ packages:
     resolution: {integrity: sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==}
     dev: true
 
-  /@klnjs/browserslist-config@0.0.1-rc.2:
-    resolution: {integrity: sha512-5ZkbRd4w56h5TQZJZy3QvYQIjjVHPDkR2l5Xb9t0ZfXV4frRZjzt+KBHO9g8oZ9FBMny3WE7OlIRZ4yJdGD4Bg==}
+  /@klnjs/browserslist-config@0.0.1-rc.3:
+    resolution: {integrity: sha512-LJXAudt0pxCt27ZyKgVfMYjv+6AUo0/6oSSojyUVrdja05UQArW4P/NpvrBCzd890XIczZWVoL8FqO/77CnxNA==}
     dev: true
 
-  /@klnjs/eslint-config-react@0.0.1-rc.2(eslint@8.41.0):
-    resolution: {integrity: sha512-1vsrAhR2bLBD0dZWLYyM/mDaQH3I32pjClA0g4I/H3DGIJCz3iWGMvvEOJbWiO9VI4JDgIju/Ob2B3eaXAyT9g==}
+  /@klnjs/eslint-config-react@0.0.1-rc.3(eslint@8.41.0):
+    resolution: {integrity: sha512-k/yVCadHk/zccRH2CxhyBLc00+fqOd/r8SIoRzbSW7DteKvdjxGE1TCJIAgblEui/f3nMXMRr8NANXwqc32ehA==}
     peerDependencies:
       eslint: ^8.40.0
     dependencies:
@@ -3117,13 +3117,13 @@ packages:
       eslint-plugin-react-hooks: 4.6.0(eslint@8.41.0)
     dev: true
 
-  /@klnjs/eslint-config-typescript@0.0.1-rc.2(eslint@8.41.0)(typescript@5.0.4):
-    resolution: {integrity: sha512-2/cRa8FfOPYFX8sCLik36IvEv2VDmTOVxb+YxElVrzdMm6oqy+4VpltH3zL/C6sT3m1I2gQtQt3iOJCa/OsjMA==}
+  /@klnjs/eslint-config-typescript@0.0.1-rc.3(eslint@8.41.0)(typescript@5.0.4):
+    resolution: {integrity: sha512-ukiNIMbDTM7RkZoa+uiJC45PrfbeS6qQ54Vqu1lWyKIpGZZBRcOi3v1TPpQdyZMHcMd8lEy40vtaI3lcm03yeQ==}
     peerDependencies:
       eslint: ^8.40.0
       typescript: ^5.0.4
     dependencies:
-      '@klnjs/eslint-config': 0.0.1-rc.2(@typescript-eslint/parser@5.59.6)(eslint@8.41.0)
+      '@klnjs/eslint-config': 0.0.1-rc.3(@typescript-eslint/parser@5.59.6)(eslint@8.41.0)
       '@typescript-eslint/eslint-plugin': 5.59.6(@typescript-eslint/parser@5.59.6)(eslint@8.41.0)(typescript@5.0.4)
       '@typescript-eslint/parser': 5.59.6(eslint@8.41.0)(typescript@5.0.4)
       eslint: 8.41.0
@@ -3134,8 +3134,8 @@ packages:
       - supports-color
     dev: true
 
-  /@klnjs/eslint-config@0.0.1-rc.2(@typescript-eslint/parser@5.59.6)(eslint@8.41.0):
-    resolution: {integrity: sha512-ufDtCf7/oBygRF7zSHW0MPOF67QTA5/eagemFxdapVXzFtBToNBigtYPOiIxBnE/zGFou//0VHAn3HUO/asqbA==}
+  /@klnjs/eslint-config@0.0.1-rc.3(@typescript-eslint/parser@5.59.6)(eslint@8.41.0):
+    resolution: {integrity: sha512-VUTRT9cJTfnLi4OIMbIH0b5Y9ubgIJtrtRX3VyXsbL6KP+x7oUB8pTZTeUssDSAF/E8Tp54LnLK1+7e3A75Q5Q==}
     peerDependencies:
       eslint: ^8.40.0
     dependencies:
@@ -3148,8 +3148,8 @@ packages:
       - supports-color
     dev: true
 
-  /@klnjs/prettier-config@0.0.1-rc.2(prettier@2.8.8):
-    resolution: {integrity: sha512-cmnhDbeUyp7mcdKqRzgeqpgLDO/kyVBg3ZBaXMNfx/gRvERkYmH6EpBbRmWc0AUzoXpkb9cMYdP4VVnG5dZZ6g==}
+  /@klnjs/prettier-config@0.0.1-rc.3(prettier@2.8.8):
+    resolution: {integrity: sha512-gjfQA6AauQ1MxRESI/xoKZ8XcrNoVZx8NhwVPUsdvkmo6Hiz8j8sGIogGyFSaVXqBxutb3+MInRpuW+Oy7292A==}
     peerDependencies:
       prettier: ^2.8.3
     dependencies:

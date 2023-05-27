@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { Meta, StoryObj } from '@storybook/react'
-import { TextfieldBase as Component } from './TextfieldBase'
+import { type Meta, type StoryObj } from '@storybook/react'
+import {
+	TextfieldBase as Component,
+	type TextfieldBaseProps
+} from './TextfieldBase'
 
 export default {
 	component: Component
@@ -8,15 +11,19 @@ export default {
 
 export const TextfieldBase: StoryObj<typeof Component> = {
 	args: { placeholder: 'Placeholder' },
-	render: (args) => {
-		const [value, setValue] = useState('')
+	render: (args) => <Template {...args} />
+}
 
-		return (
-			<Component
-				value={value}
-				onChange={(event) => setValue(event.target.value)}
-				{...args}
-			/>
-		)
-	}
+const Template = (args: TextfieldBaseProps) => {
+	const [value, setValue] = useState('')
+
+	return (
+		<Component
+			value={value}
+			onChange={(event) => {
+				setValue(event.target.value)
+			}}
+			{...args}
+		/>
+	)
 }

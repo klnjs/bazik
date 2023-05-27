@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css'
-
 import { vars } from '../theme/contract.css'
 import { helpers } from '../theme/helpers.css'
 

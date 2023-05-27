@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Meta, StoryObj } from '@storybook/react'
-import { Textfield as Component } from './Textfield'
+import { type Meta, type StoryObj } from '@storybook/react'
+import { Textfield as Component, type TextfieldProps } from './Textfield'
 
 export default {
 	component: Component
@@ -8,15 +8,19 @@ export default {
 
 export const Textfield: StoryObj<typeof Component> = {
 	args: { label: 'Label', placeholder: 'Placeholder' },
-	render: (args) => {
-		const [value, setValue] = useState('')
+	render: (args) => <Template {...args} />
+}
 
-		return (
-			<Component
-				value={value}
-				onChange={(event) => setValue(event.target.value)}
-				{...args}
-			/>
-		)
-	}
+const Template = (args: TextfieldProps) => {
+	const [value, setValue] = useState('')
+
+	return (
+		<Component
+			value={value}
+			onChange={(event) => {
+				setValue(event.target.value)
+			}}
+			{...args}
+		/>
+	)
 }

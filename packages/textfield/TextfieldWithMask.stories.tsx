@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { Meta, StoryObj } from '@storybook/react'
-import { TextfieldWithMask as Component } from './TextfieldWithMask'
+import { type Meta, type StoryObj } from '@storybook/react'
+import {
+	TextfieldWithMask as Component,
+	type TextfieldWithMaskProps
+} from './TextfieldWithMask'
 
 export default {
 	component: Component
@@ -12,15 +15,19 @@ export const TextfieldWithMask: StoryObj<typeof Component> = {
 		label: 'Label',
 		placeholder: '123456789'
 	},
-	render: (args) => {
-		const [value, setValue] = useState('')
+	render: (args) => <Template {...args} />
+}
 
-		return (
-			<Component
-				value={value}
-				onChange={(event) => setValue(event.target.value)}
-				{...args}
-			/>
-		)
-	}
+const Template = (args: TextfieldWithMaskProps) => {
+	const [value, setValue] = useState('')
+
+	return (
+		<Component
+			value={value}
+			onChange={(event) => {
+				setValue(event.target.value)
+			}}
+			{...args}
+		/>
+	)
 }

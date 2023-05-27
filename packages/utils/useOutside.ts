@@ -1,36 +1,31 @@
-import { MutableRefObject, useEffect } from 'react';
+import { useEffect } from 'react'
 
 export type UseOutsideOptions = {
-  enabled?: boolean;
-  capture?: boolean;
-  exclude?: HTMLElement;
-};
+	type?: keyof DocumentEventMap
+	enabled?: boolean
+	capture?: boolean
+}
 
 export const useOutside = (
-  ref: MutableRefObject<any>,
-  type: keyof DocumentEventMap,
-  handler: () => void,
-  { enabled = true, capture = true, exclude }: UseOutsideOptions = {}
+	element: HTMLElement | undefined,
+	handler: () => void,
+	{ type = 'click', enabled = true, capture = true }: UseOutsideOptions = {}
 ) => {
-  // eslint-disable-next-line consistent-return
-  useEffect(() => {
-    if (ref.current && handler && enabled) {
-      const element = ref.current;
+	useEffect(() => {
+		if (enabled && element) {
+			const listener = (event: Event) => {
+				const outside = !element.contains(event.target as Node)
 
-      const listener = (event: any) => {
-        const excluded = exclude && exclude.contains(event.target);
-        const outside = !excluded && element && !element.contains(event.target);
+				if (outside) {
+					handler()
+				}
+			}
 
-        if (outside) {
-          handler();
-        }
-      };
+			document.addEventListener(type, listener, { capture })
 
-      document.addEventListener(type, listener, { capture });
-
-      return () => {
-        document.removeEventListener(type, listener, { capture });
-      };
-    }
-  }, [ref, type, enabled, exclude, capture, handler]);
-};
+			return () => {
+				document.removeEventListener(type, listener, { capture })
+			}
+		}
+	}, [element, type, enabled, capture, handler])
+}

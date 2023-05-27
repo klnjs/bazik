@@ -1,6 +1,5 @@
-import { ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import clsx from 'clsx'
-
 import * as classes from './TextFieldAdornment.css'
 
 export type TextfieldAdornmentProps = {

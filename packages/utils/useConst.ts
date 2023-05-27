@@ -1,16 +1,13 @@
-import * as React from 'react';
+import * as React from 'react'
 
-export function useConst<T>(initialValue: T | (() => T)): T {
-  const ref = React.useRef<{ value: T }>();
+export function useConst<T>(initialValue: T): T {
+	const ref = React.useRef<{ value: T }>()
 
-  if (ref.current === undefined) {
-    ref.current = {
-      value:
-        typeof initialValue === 'function'
-          ? (initialValue as Function)()
-          : initialValue,
-    };
-  }
+	if (ref.current === undefined) {
+		ref.current = {
+			value: initialValue
+		}
+	}
 
-  return ref.current.value;
+	return ref.current.value
 }
