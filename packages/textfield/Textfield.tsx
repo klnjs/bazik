@@ -1,10 +1,8 @@
 import { forwardRef } from 'react'
 import clsx from 'clsx'
-
 import { Typography } from '../typography'
 import { useId } from '../utils/useId'
-
-import { TextfieldBase, TextfieldBaseProps } from './TextfieldBase'
+import { TextfieldBase, type TextfieldBaseProps } from './TextfieldBase'
 import * as classes from './Textfield.css'
 
 export type TextfieldProps = TextfieldBaseProps & {
@@ -13,7 +11,7 @@ export type TextfieldProps = TextfieldBaseProps & {
 }
 
 export const Textfield = forwardRef<HTMLInputElement, TextfieldProps>(
-	(
+	function Textfield(
 		{
 			id: idProp,
 			value,
@@ -26,7 +24,7 @@ export const Textfield = forwardRef<HTMLInputElement, TextfieldProps>(
 			...otherProps
 		},
 		ref
-	) => {
+	) {
 		const id = useId(idProp)
 		const className = clsx(classNameProp, classes.textfieldRoot)
 
@@ -57,11 +55,11 @@ export const Textfield = forwardRef<HTMLInputElement, TextfieldProps>(
 					>
 						{label}
 					</Typography>
-					{error && !disabled && (
+					{error && !disabled ? (
 						<Typography id={errorId} fontSize={1} color='negative'>
 							{` · ${error}`}
 						</Typography>
-					)}
+					) : null}
 				</Typography>
 
 				<TextfieldBase

@@ -7,11 +7,11 @@ export type TextfieldSelectionDirection =
 export type TextfieldSelectionMove = { start?: number; end?: number } | number
 
 export class TextfieldSelection {
-	start: number = 0
+	start = 0
 
-	end: number = 0
+	end = 0
 
-	delta: number = 0
+	delta = 0
 
 	direction?: 'forward' | 'backward' | 'none'
 
@@ -84,4 +84,4 @@ export class TextfieldSelection {
 	}
 }
 
-const isNumber = (move: any): move is number => Number.isFinite(move)
+const isNumber = (move: unknown): move is number => Number.isFinite(move)

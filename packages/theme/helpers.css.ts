@@ -1,11 +1,11 @@
 import { vars } from './contract.css'
 
 export const helpers = {
-	radius: (...input: Array<number>) =>
+	radius: (...input: number[]) =>
 		input.map((value) => `calc(${vars.radius[1]} * ${value})`).join(' '),
-	spacing: (...input: Array<number>) =>
+	spacing: (...input: number[]) =>
 		input.map((value) => `calc(${vars.spacing[1]} * ${value})`).join(' '),
-	transition: (...input: Array<string>) =>
+	transition: (...input: string[]) =>
 		input
 			.map(
 				(value) =>

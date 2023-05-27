@@ -1,10 +1,8 @@
-import { useRef, ReactNode, ElementType } from 'react'
-
+import { useRef, type ReactNode, type ElementType } from 'react'
 import { useId } from '../utils/useId'
 import { Flex } from '../flex'
 import { Typography } from '../typography'
 import { ButtonBase } from '../button'
-
 import { AccordionChevron } from './AccordionChevron'
 import { useAccordionPanelAnimation } from './useAccordionPanelAnimation'
 import * as classes from './AccordionPanel.css'

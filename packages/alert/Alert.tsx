@@ -1,11 +1,9 @@
-import { ElementType, ReactElement, forwardRef } from 'react'
+import { forwardRef, type ElementType, type ReactElement } from 'react'
 import { clsx } from 'clsx'
-
 import {
-	PolymorphicComponentPropWithRef,
-	PolymorphicRef
+	type PolymorphicComponentPropWithRef,
+	type PolymorphicRef
 } from '../utils/Component'
-
 import * as classes from './Alert.css'
 
 export type AlertPropsBase = {
@@ -21,37 +19,35 @@ export type AlertComponent = <C extends ElementType = 'div'>(
 	props: AlertProps<C>
 ) => ReactElement | null
 
-export const Alert = forwardRef(
-	<C extends ElementType = 'div'>(
-		{
-			as,
-			severity = 'info',
-			children,
-			className: classNameProp,
-			...otherProps
-		}: AlertProps<C>,
-		forwardedRef: PolymorphicRef<C>
-	) => {
-		const Component = as ?? 'div'
-		const color = getColorFromSeverity(severity)
-		const className = clsx(
-			classNameProp,
-			classes.alertRoot,
-			classes.alertVariants[color]
-		)
+export const Alert = forwardRef(function Alert<C extends ElementType = 'div'>(
+	{
+		as,
+		severity = 'info',
+		children,
+		className: classNameProp,
+		...otherProps
+	}: AlertProps<C>,
+	forwardedRef: PolymorphicRef<C>
+) {
+	const Component = as ?? 'div'
+	const color = getColorFromSeverity(severity)
+	const className = clsx(
+		classNameProp,
+		classes.alertRoot,
+		classes.alertVariants[color]
+	)
 
-		return (
-			<Component
-				ref={forwardedRef}
-				role='alert'
-				className={className}
-				{...otherProps}
-			>
-				{children}
-			</Component>
-		)
-	}
-)
+	return (
+		<Component
+			ref={forwardedRef}
+			role='alert'
+			className={className}
+			{...otherProps}
+		>
+			{children}
+		</Component>
+	)
+})
 
 export const getColorFromSeverity = (
 	severity: AlertPropsBase['severity']

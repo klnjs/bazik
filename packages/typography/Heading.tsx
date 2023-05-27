@@ -1,4 +1,4 @@
-import { Typography, TypographyProps } from './Typography'
+import { Typography, type TypographyProps } from './Typography'
 
 export type HeadingProps = Omit<TypographyProps<'h2'>, 'as'> & {
 	type?: 'h1' | 'h2' | 'h3' | 'h4'

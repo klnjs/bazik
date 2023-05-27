@@ -1,6 +1,5 @@
 import { style } from '@vanilla-extract/css'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
-
 import { vars } from '../theme/contract.css'
 import { helpers } from '../theme/helpers.css'
 
