@@ -1,31 +1,33 @@
-import { useEffect } from 'react'
+import { useEffect, type RefObject } from 'react'
 
 export type UseOutsideOptions = {
-	type?: keyof DocumentEventMap
+	event?: keyof DocumentEventMap
 	enabled?: boolean
 	capture?: boolean
 }
 
 export const useOutside = (
-	element: HTMLElement | undefined,
-	handler: () => void,
-	{ type = 'click', enabled = true, capture = true }: UseOutsideOptions = {}
+	ref: RefObject<HTMLElement>,
+	handler: (event: Event) => void,
+	{ event = 'click', enabled = true, capture = true }: UseOutsideOptions = {}
 ) => {
 	useEffect(() => {
-		if (enabled && element) {
-			const listener = (event: Event) => {
-				const outside = !element.contains(event.target as Node)
+		if (!enabled) {
+			return
+		}
 
-				if (outside) {
-					handler()
-				}
-			}
+		const listener = (event: Event) => {
+			const outside = !ref.current?.contains(event.target as HTMLElement)
 
-			document.addEventListener(type, listener, { capture })
-
-			return () => {
-				document.removeEventListener(type, listener, { capture })
+			if (outside) {
+				handler(event)
 			}
 		}
-	}, [element, type, enabled, capture, handler])
+
+		document.addEventListener(event, listener, { capture })
+
+		return () => {
+			document.removeEventListener(event, listener, { capture })
+		}
+	}, [ref, event, enabled, capture, handler])
 }
