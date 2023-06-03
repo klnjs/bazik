@@ -1,6 +1,6 @@
-import { type ElementType } from 'react'
+import type { ElementType } from 'react'
 import { clsx } from 'clsx'
-import { type PolymorphicComponentProp } from '../utils/Component'
+import type { PolymorphicComponentProp } from '../utils/Component'
 import * as classes from './Card.css'
 
 export type CardProps = Parameters<typeof classes.cardSprinkels>[0]

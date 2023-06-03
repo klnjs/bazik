@@ -1,5 +1,5 @@
 import { Flex } from '../flex'
-import { type PolymorphicComponentProp } from '../utils/Component'
+import type { PolymorphicComponentProp } from '../utils/Component'
 
 export type AccordionProps = PolymorphicComponentProp<'div'>
 

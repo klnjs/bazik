@@ -1,8 +1,8 @@
 import { forwardRef, type ElementType, type ReactElement } from 'react'
 import { clsx } from 'clsx'
-import {
-	type PolymorphicComponentPropWithRef,
-	type PolymorphicRef
+import type {
+	PolymorphicComponentPropWithRef,
+	PolymorphicRef
 } from '../utils/Component'
 import * as classes from './Alert.css'
 

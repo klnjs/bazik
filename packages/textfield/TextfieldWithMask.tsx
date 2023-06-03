@@ -2,10 +2,10 @@ import {
 	useRef,
 	useMemo,
 	useLayoutEffect,
+	useImperativeHandle,
 	forwardRef,
 	type ChangeEvent,
-	type KeyboardEvent,
-	useImperativeHandle
+	type KeyboardEvent
 } from 'react'
 import { Textfield, type TextfieldProps } from './Textfield'
 import { TextfieldSelection } from './TextfieldSelection'
@@ -71,7 +71,6 @@ export const TextfieldWithMask = forwardRef<
 
 	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
 		if (onChange) {
-			// eslint-disable-next-line no-param-reassign
 			event.target.value = unmask(event.target.value)
 			onChange(event)
 		}
@@ -79,7 +78,8 @@ export const TextfieldWithMask = forwardRef<
 
 	// Expose the internal textfield ref to the implementing component
 	// by imperatively using the forwardedRef.
-	useImperativeHandle(forwardedRef, () => textfieldRef.current)
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	useImperativeHandle(forwardedRef, () => textfieldRef.current!)
 
 	// This effect is used to restore the selection range after modification
 	// we useLayoutEffect to make sure this happens synchronously so there

@@ -1,6 +1,6 @@
 import { useState, useCallback, type ElementType } from 'react'
 import { clsx } from 'clsx'
-import { type PolymorphicComponentProp } from '../utils/Component'
+import type { PolymorphicComponentProp } from '../utils/Component'
 import * as classes from './Avatar.css'
 
 export type AvatarProps = {

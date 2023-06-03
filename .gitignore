@@ -16,12 +16,12 @@
 !.browserslistrc
 !.editorconfig
 !.eslintignore
-!.eslintrc.cjs
 !.gitignore
 !.node-version
 !.npmrc
 !.prettierignore
 !.prettierrc.cjs
+!eslint.config.js
 !LICENSE
 !CHANGELOG.md
 !package.json
@@ -29,3 +29,6 @@
 !README.md
 !renovate.json
 !tsconfig.json
+
+# Reignore these folders
+node_modules/
