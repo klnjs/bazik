@@ -1,6 +1,6 @@
 import { Flex } from '../flex'
 import { Ellipsis } from '../loading'
-import { type PolymorphicComponentProp } from '../utils/Component'
+import type { PolymorphicComponentProp } from '../utils/Component'
 import { Button, type ButtonProps } from './Button'
 
 export type ButtonWithLoadingProps = ButtonProps & {

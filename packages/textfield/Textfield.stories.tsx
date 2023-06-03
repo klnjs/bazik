@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { type Meta, type StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react'
 import { Textfield as Component, type TextfieldProps } from './Textfield'
 
 export default {

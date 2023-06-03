@@ -1,7 +1,7 @@
 import { useEffect, type RefObject } from 'react'
 
 export type UseOutsideOptions = {
-	event?: keyof DocumentEventMap
+	event?: 'click' | 'mousedown' | 'pointerdown' | 'touchstart'
 	enabled?: boolean
 	capture?: boolean
 }
@@ -9,7 +9,11 @@ export type UseOutsideOptions = {
 export const useOutside = (
 	ref: RefObject<HTMLElement>,
 	handler: (event: Event) => void,
-	{ event = 'click', enabled = true, capture = true }: UseOutsideOptions = {}
+	{
+		event: type = 'click',
+		enabled = true,
+		capture = true
+	}: UseOutsideOptions = {}
 ) => {
 	useEffect(() => {
 		if (!enabled) {
@@ -24,10 +28,10 @@ export const useOutside = (
 			}
 		}
 
-		document.addEventListener(event, listener, { capture })
+		document.addEventListener(type, listener, { capture })
 
 		return () => {
-			document.removeEventListener(event, listener, { capture })
+			document.removeEventListener(type, listener, { capture })
 		}
-	}, [ref, event, enabled, capture, handler])
+	}, [ref, type, enabled, capture, handler])
 }

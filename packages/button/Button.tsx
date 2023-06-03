@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { type PolymorphicComponentProp } from '../utils/Component'
+import type { PolymorphicComponentProp } from '../utils/Component'
 import { ButtonBase, type ButtonBaseProps } from './ButtonBase'
 import * as classes from './Button.css'
 

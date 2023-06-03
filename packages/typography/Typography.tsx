@@ -1,9 +1,9 @@
 import { forwardRef, type ReactElement, type ElementType } from 'react'
 import { clsx } from 'clsx'
-import {
-	type PolymorphicComponentProp,
-	type PolymorphicComponentPropWithRef,
-	type PolymorphicRef
+import type {
+	PolymorphicComponentProp,
+	PolymorphicComponentPropWithRef,
+	PolymorphicRef
 } from '../utils/Component'
 import * as classes from './Typography.css'
 

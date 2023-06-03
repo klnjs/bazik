@@ -1,8 +1,8 @@
-import {
-	type ElementType,
-	type PropsWithChildren,
-	type ComponentPropsWithRef,
-	type ComponentPropsWithoutRef
+import type {
+	ElementType,
+	PropsWithChildren,
+	ComponentPropsWithRef,
+	ComponentPropsWithoutRef
 } from 'react'
 
 export type AsProp<C extends ElementType> = {

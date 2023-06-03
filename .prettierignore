@@ -11,8 +11,11 @@
 
 # Except these files
 !.babelrc
-!.eslintrc.cjs
 !.prettierrc.cjs
+!eslint.config.js
 !package.json
 !renovate.json
 !tsconfig.json
+
+# Reignore these folders
+node_modules/
