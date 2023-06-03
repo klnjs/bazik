@@ -19,6 +19,7 @@
 !.eslintrc.cjs
 !.gitignore
 !.node-version
+!.npmrc
 !.prettierignore
 !.prettierrc.cjs
 !LICENSE
