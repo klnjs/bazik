@@ -28,14 +28,10 @@ export const theme = createTheme(vars, {
 	},
 	spacing: {
 		0: '0',
-		1: '4px',
-		2: '8px',
-		3: '12px',
-		4: '16px',
-		5: '20px',
-		6: '24px',
-		7: '28px',
-		8: '32px'
+		1: '8px',
+		2: '16px',
+		3: '24px',
+		4: '32px'
 	},
 	elevation: {
 		0: 'none',
