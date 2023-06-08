@@ -1,11 +1,41 @@
-import { style, styleVariants } from '@vanilla-extract/css'
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles'
 import { vars } from '../theme/contract.css'
-import { helpers } from '../theme/helpers.css'
 
-const cardProperties = defineProperties({
+const color = Object.entries(vars.coloring.surface).reduce(
+	(acc, [key, value]) => ({
+		...acc,
+		[key]: {
+			backgroundColor: value
+		}
+	}),
+	{}
+) as { [P in keyof typeof vars.coloring.surface]: { backgroundColor: string } }
+
+const radius = Object.entries(vars.radius).reduce(
+	(acc, [key, value]) => ({
+		...acc,
+		[key]: {
+			borderRadius: value
+		}
+	}),
+	{}
+) as { [P in keyof typeof vars.radius]: { borderRadius: string } }
+
+const elevation = Object.entries(vars.elevation).reduce(
+	(acc, [key, value]) => ({
+		...acc,
+		[key]: {
+			boxShadow: value
+		}
+	}),
+	{}
+) as { [P in keyof typeof vars.elevation]: { boxShadow: string } }
+
+const properties = defineProperties({
 	properties: {
-		boxShadow: vars.elevation,
+		color,
+		radius,
+		elevation,
 		marginBlockStart: vars.spacing,
 		marginBlockEnd: vars.spacing,
 		marginInlineStart: vars.spacing,
@@ -35,13 +65,4 @@ const cardProperties = defineProperties({
 	}
 })
 
-export const cardSprinkels = createSprinkles(cardProperties)
-
-export const cardRoot = style({
-	boxSizing: 'border-box',
-	borderRadius: helpers.radius(4)
-})
-
-export const cardVariants = styleVariants(vars.coloring.surface, (color) => ({
-	background: color
-}))
+export const surfaceSprinkels = createSprinkles(properties)

@@ -1,14 +1,15 @@
 import type { ElementType } from 'react'
 import { clsx } from 'clsx'
 import type { PolymorphicComponentProp } from '../utils/Component'
-import * as classes from './Card.css'
+import * as classes from './Surface.css'
 
-export type CardProps = Parameters<typeof classes.cardSprinkels>[0]
+export type SurfaceProps = Parameters<typeof classes.surfaceSprinkels>[0]
 
-export const Card = <C extends ElementType = 'div'>({
-	id,
+export const Surface = <C extends ElementType = 'div'>({
 	as,
-	boxShadow = 1,
+	color = 'primary',
+	radius = 1,
+	elevation = 1,
 	margin,
 	marginBlock,
 	marginInline,
@@ -16,7 +17,7 @@ export const Card = <C extends ElementType = 'div'>({
 	marginBlockStart,
 	marginInlineEnd,
 	marginInlineStart,
-	padding = 2,
+	padding = 1,
 	paddingBlock,
 	paddingInline,
 	paddingBlockEnd,
@@ -26,13 +27,14 @@ export const Card = <C extends ElementType = 'div'>({
 	children,
 	className: classNameProp,
 	...otherProps
-}: PolymorphicComponentProp<C, CardProps>) => {
+}: PolymorphicComponentProp<C, SurfaceProps>) => {
 	const Component = as ?? 'div'
 	const className = clsx(
 		classNameProp,
-		classes.cardRoot,
-		classes.cardSprinkels({
-			boxShadow,
+		classes.surfaceSprinkels({
+			color,
+			radius,
+			elevation,
 			margin,
 			marginBlock,
 			marginInline,
@@ -51,7 +53,7 @@ export const Card = <C extends ElementType = 'div'>({
 	)
 
 	return (
-		<Component id={id} className={className} {...otherProps}>
+		<Component className={className} {...otherProps}>
 			{children}
 		</Component>
 	)
