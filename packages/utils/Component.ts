@@ -1,6 +1,7 @@
 import type {
 	ElementType,
 	PropsWithChildren,
+	ComponentType,
 	ComponentPropsWithRef,
 	ComponentPropsWithoutRef
 } from 'react'
@@ -24,3 +25,14 @@ export type PolymorphicComponentPropWithRef<
 	C extends ElementType,
 	Props = object
 > = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> }
+
+export const createComponent = <C>(name: string, Component: C) => {
+	if (process.env.NODE_ENV !== 'production') {
+		if (!name) {
+			// @ts-expect-error expect this to fail
+			Component.displayName = name
+		}
+	}
+
+	return Component
+}
