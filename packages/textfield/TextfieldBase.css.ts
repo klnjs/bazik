@@ -10,31 +10,23 @@ export const textfieldBaseRoot = style({
 	outline: '1px solid transparent',
 	outlineOffset: -1,
 	borderRadius: helpers.radius(3),
-	color: vars.palette.surface.secondary.contrast,
-	background: vars.palette.surface.secondary.main,
+	background: vars.coloring.surface.secondary,
 	transition: helpers.transition(
 		'color',
 		'background',
-		'box-shadow',
 		'border-radius',
 		'outline-color'
 	),
-	boxShadow: `0 0 0 0 ${vars.palette.indicator.accent.alpha50}`,
+	':disabled': {
+		background: 'transparent',
+		outlineColor: vars.coloring.palette.neutral.main
+	},
 	':focus-within': {
-		color: vars.palette.background.secondary.contrast,
-		background: vars.palette.background.secondary.main,
-		outlineColor: vars.palette.indicator.accent.main,
-		boxShadow: `0 0 0 4px ${vars.palette.indicator.accent.alpha50}`
+		outlineColor: vars.coloring.palette.info.main
 	},
 	selectors: {
-		'&.disabled': {
-			background: 'transparent',
-			outlineColor: vars.palette.surface.secondary.main
-		},
 		'&.invalid': {
-			background: vars.palette.background.secondary.main,
-			outlineColor: vars.palette.indicator.negative.main,
-			boxShadow: `0 0 0 4px ${vars.palette.indicator.negative.alpha50}`
+			outlineColor: vars.coloring.palette.error.main
 		}
 	}
 })
@@ -55,6 +47,6 @@ export const textfieldBaseInput = style({
 	backgroundClip: 'text',
 	'::placeholder': {
 		opacity: 1,
-		color: vars.palette.surface.quaternary.main
+		color: vars.coloring.palette.neutral.main
 	}
 })

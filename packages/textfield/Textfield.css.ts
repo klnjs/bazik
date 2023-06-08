@@ -12,6 +12,16 @@ export const textfieldRoot = style({
 	flexDirection: 'column'
 })
 
+export const textfieldLabel = style({
+	color: vars.coloring.palette.neutral.main,
+	transition: helpers.transition('color', 'background'),
+	selectors: {
+		[`${textfieldRoot}:focus-within &`]: {
+			color: vars.coloring.palette.neutral.main
+		}
+	}
+})
+
 export const textfieldText = style({
 	display: 'block',
 	position: 'absolute',
@@ -28,16 +38,6 @@ export const textfieldText = style({
 		},
 		[`${textfieldRoot}:focus-within &`]: {
 			transform: `scale(1) translateY(-16px)`
-		}
-	}
-})
-
-export const textfieldLabel = style({
-	color: vars.palette.text.secondary,
-	transition: helpers.transition('color', 'background'),
-	selectors: {
-		[`${textfieldRoot}:focus-within &`]: {
-			color: vars.palette.text.primary
 		}
 	}
 })

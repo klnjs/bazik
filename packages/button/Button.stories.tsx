@@ -6,5 +6,5 @@ export default {
 } satisfies Meta<typeof Component>
 
 export const Button: StoryObj<typeof Component> = {
-	render: (args) => <Component {...args} />
+	render: (args) => <Component {...args}>Click Me!</Component>
 }

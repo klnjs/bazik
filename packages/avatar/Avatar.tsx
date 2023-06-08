@@ -6,7 +6,6 @@ import * as classes from './Avatar.css'
 export type AvatarProps = {
 	src?: string
 	alt?: string
-	size?: keyof typeof classes.avatarSizes
 	color?: keyof typeof classes.avatarVariants
 }
 
@@ -14,7 +13,6 @@ export const Avatar = <C extends ElementType = 'div'>({
 	as,
 	src,
 	alt,
-	size = 3,
 	color = 'primary',
 	children,
 	className: classNameProp,
@@ -28,7 +26,6 @@ export const Avatar = <C extends ElementType = 'div'>({
 	const className = clsx(
 		classNameProp,
 		classes.avatarRoot,
-		classes.avatarSizes[size],
 		!load && classes.avatarVariants[color]
 	)
 

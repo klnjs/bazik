@@ -18,24 +18,36 @@ export const iconSprinkles = createSprinkles(
 	defineProperties({
 		properties: {
 			color: {
-				primary: vars.palette.text.primary,
-				secondary: vars.palette.text.secondary,
-				tertiary: vars.palette.surface.tertiary.main,
-				quaternary: vars.palette.surface.quaternary.main,
-				accent: vars.palette.indicator.accent.main,
-				positive: vars.palette.indicator.positive.main,
-				negative: vars.palette.indicator.negative.main,
-				attention: vars.palette.indicator.attention.main
+				inherit: 'inherit',
+				primary: vars.coloring.palette.primary.main,
+				secondary: vars.coloring.palette.secondary.main,
+				info: vars.coloring.palette.info.main,
+				error: vars.coloring.palette.error.main,
+				warning: vars.coloring.palette.warning.main,
+				success: vars.coloring.palette.success.main,
+				neutral: vars.coloring.palette.neutral.main
 			},
-			height: vars.spacing,
-			width: vars.spacing,
-			transform: {
-				0: `rotate(0)`,
-				90: `rotate(90deg)`,
-				180: `rotate(180deg)`,
-				270: `rotate(270deg)`,
-				360: `rotate(360deg)`
+			size: {
+				1: {
+					width: vars.spacing[3],
+					height: vars.spacing[3]
+				},
+				2: {
+					width: vars.spacing[5],
+					height: vars.spacing[5]
+				},
+				3: {
+					width: vars.spacing[7],
+					height: vars.spacing[7]
+				}
+			},
+			rotate: {
+				0: { transform: `rotate(0)` },
+				90: { transform: `rotate(90)` },
+				180: { transform: `rotate(180)` },
+				270: { transform: `rotate(270)` },
+				360: { transform: `rotate(360)` }
 			}
-		} as const
+		}
 	})
 )
