@@ -1,14 +1,13 @@
 import clsx from 'clsx'
 import * as classes from './Icon.css'
 
-export type IconProps = {
+export type IconSprinkles = Parameters<typeof classes.iconSprinkles>[0]
+
+export type IconProps = IconSprinkles & {
 	title?: string
 	description?: string
 	viewBox?: string
 	path: string
-	size?: Parameters<typeof classes.iconSprinkles>[0]['width']
-	color?: Parameters<typeof classes.iconSprinkles>[0]['color']
-	rotate?: Parameters<typeof classes.iconSprinkles>[0]['transform']
 	className?: string
 }
 
@@ -27,10 +26,9 @@ export const Icon = ({
 		classNameProp,
 		classes.iconRoot,
 		classes.iconSprinkles({
+			size,
 			color,
-			width: size,
-			height: size,
-			transform: rotate
+			rotate
 		})
 	)
 

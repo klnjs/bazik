@@ -4,26 +4,24 @@ import { ButtonBase, type ButtonBaseProps } from './ButtonBase'
 import * as classes from './Button.css'
 
 export type ButtonProps = ButtonBaseProps & {
+	variant?: 'contained' | 'outlined' | 'text'
 	color?: keyof typeof classes.buttonVariants
 }
 
 export const Button = ({
 	type = 'button',
 	color = 'primary',
+	variant = 'contained',
 	disabled,
 	children,
 	className: classNameProp,
-	'aria-disabled': ariaDisabled,
 	onClick,
 	...otherProps
 }: PolymorphicComponentProp<'button', ButtonProps>) => {
 	const className = clsx(
 		classNameProp,
 		classes.buttonRoot,
-		classes.buttonVariants[color],
-		{
-			disabled: disabled ?? ariaDisabled
-		}
+		classes.buttonVariants[color]
 	)
 
 	return (

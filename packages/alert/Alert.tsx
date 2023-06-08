@@ -30,11 +30,10 @@ export const Alert = forwardRef(function Alert<C extends ElementType = 'div'>(
 	forwardedRef: PolymorphicRef<C>
 ) {
 	const Component = as ?? 'div'
-	const color = getColorFromSeverity(severity)
 	const className = clsx(
 		classNameProp,
 		classes.alertRoot,
-		classes.alertVariants[color]
+		classes.alertVariants[severity]
 	)
 
 	return (
@@ -48,20 +47,3 @@ export const Alert = forwardRef(function Alert<C extends ElementType = 'div'>(
 		</Component>
 	)
 })
-
-export const getColorFromSeverity = (
-	severity: AlertPropsBase['severity']
-): keyof typeof classes.alertVariants => {
-	switch (severity) {
-		case 'info':
-			return 'accent'
-		case 'error':
-			return 'negative'
-		case 'success':
-			return 'positive'
-		case 'warning':
-			return 'attention'
-		default:
-			throw Error('unsupported severity')
-	}
-}

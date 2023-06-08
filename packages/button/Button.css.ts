@@ -20,6 +20,10 @@ export const buttonRoot = style({
 	':focus-visible': {
 		opacity: 0.5
 	},
+	':disabled': {
+		color: vars.coloring.palette.neutral.contrast,
+		background: vars.coloring.palette.neutral.main
+	},
 	'@media': {
 		'(hover: hover)': {
 			':hover': {
@@ -29,13 +33,7 @@ export const buttonRoot = style({
 	}
 })
 
-export const buttonVariants = styleVariants(vars.palette.surface, (color) => ({
+export const buttonVariants = styleVariants(vars.coloring.palette, (color) => ({
 	color: color.contrast,
-	background: color.main,
-	selectors: {
-		'&.disabled': {
-			background: vars.palette.surface.secondary.main,
-			color: vars.palette.surface.secondary.contrast
-		}
-	}
+	background: color.main
 }))

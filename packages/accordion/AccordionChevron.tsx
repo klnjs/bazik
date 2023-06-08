@@ -10,7 +10,7 @@ export const AccordionChevron = ({
 	className
 }: AccordionChevronProps) => (
 	<ChevronRight
-		color='secondary'
+		color='neutral'
 		rotate={expanded ? 90 : 0}
 		className={className}
 	/>

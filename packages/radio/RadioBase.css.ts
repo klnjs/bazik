@@ -17,32 +17,21 @@ export const radioBaseInput = style({
 	padding: 0,
 	outline: '1px solid transparent',
 	outlineOffset: -1,
-	background: vars.palette.surface.secondary.main,
+	background: vars.coloring.surface.secondary,
 	cursor: 'pointer',
 	appearance: 'none',
-	transition: helpers.transition(
-		'color',
-		'background',
-		'box-shadow',
-		'outline-color'
-	),
+	transition: helpers.transition('color', 'background', 'outline-color'),
 	borderRadius: 'inherit',
-	':checked': {
-		outlineColor: vars.palette.surface.primary.main,
-		background: vars.palette.surface.primary.main
-	},
 	':disabled': {
-		outlineColor: vars.palette.surface.secondary.main,
-		background: 'transparent'
+		background: 'transparent',
+		outlineColor: vars.coloring.palette.neutral.main
 	},
 	':focus-visible': {
-		outlineColor: vars.palette.indicator.accent.main,
-		boxShadow: `0 0 0 4px ${vars.palette.indicator.accent.alpha50}`
+		outlineColor: vars.coloring.palette.info.main
 	},
 	selectors: {
 		'&.invalid': {
-			outlineColor: vars.palette.indicator.negative.main,
-			boxShadow: `0 0 0 4px ${vars.palette.indicator.negative.alpha50}`
+			outlineColor: vars.coloring.palette.error.main
 		}
 	}
 })
@@ -52,7 +41,7 @@ export const radioBaseCircle = style({
 	borderRadius: 'inherit',
 	position: 'absolute',
 	pointerEvents: 'none',
-	background: vars.palette.surface.primary.contrast,
+	background: vars.coloring.palette.info.main,
 	transform: 'scale(0)',
 	transition: helpers.transition('background', 'transform'),
 	selectors: {
@@ -60,7 +49,7 @@ export const radioBaseCircle = style({
 			transform: 'scale(1)'
 		},
 		[`${radioBaseInput}:disabled + &`]: {
-			background: vars.palette.surface.secondary.main
+			background: vars.coloring.surface.secondary
 		}
 	}
 })

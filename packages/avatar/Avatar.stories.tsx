@@ -6,5 +6,5 @@ export default {
 } satisfies Meta<typeof Component>
 
 export const Avatar: StoryObj<typeof Component> = {
-	render: (args) => <Component {...args} />
+	render: (args) => <Component {...args}>RK</Component>
 }

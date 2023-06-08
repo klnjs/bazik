@@ -5,6 +5,7 @@ import { helpers } from '../theme/helpers.css'
 
 const cardProperties = defineProperties({
 	properties: {
+		boxShadow: vars.elevation,
 		marginBlockStart: vars.spacing,
 		marginBlockEnd: vars.spacing,
 		marginInlineStart: vars.spacing,
@@ -21,23 +22,26 @@ const cardProperties = defineProperties({
 			'marginInlineStart',
 			'marginInlineEnd'
 		],
+		marginBlock: ['marginBlockStart', 'marginBlockEnd'],
+		marginInline: ['marginInlineStart', 'marginInlineEnd'],
 		padding: [
 			'paddingBlockStart',
 			'paddingBlockEnd',
 			'paddingInlineStart',
 			'paddingInlineEnd'
-		]
+		],
+		paddingBlock: ['paddingBlockStart', 'paddingBlockEnd'],
+		paddingInline: ['paddingInlineStart', 'paddingInlineEnd']
 	}
 })
+
+export const cardSprinkels = createSprinkles(cardProperties)
 
 export const cardRoot = style({
 	boxSizing: 'border-box',
 	borderRadius: helpers.radius(4)
 })
 
-export const cardVariants = styleVariants(vars.palette.surface, (color) => ({
-	color: color.contrast,
-	background: color.main
+export const cardVariants = styleVariants(vars.coloring.surface, (color) => ({
+	background: color
 }))
-
-export const cardSprinkels = createSprinkles(cardProperties)

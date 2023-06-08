@@ -8,6 +8,6 @@ export const dividerRoot = style({
 	border: 0,
 	margin: 0,
 	padding: 0,
-	background: vars.palette.surface.secondary.main,
+	background: vars.coloring.palette.neutral.main,
 	transition: helpers.transition('background')
 })

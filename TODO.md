@@ -1,3 +1,3 @@
-- Restructure theme palette
 - Implement Focus Package
 - Implement Dialog Package
+- Implmenet Interactions Package

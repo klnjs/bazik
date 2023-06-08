@@ -6,6 +6,8 @@ export const avatarRoot = style({
 	display: 'flex',
 	overflow: 'clip',
 	flexShrink: 0,
+	width: 40,
+	height: 40,
 	alignItems: 'center',
 	justifyContent: 'center',
 	borderRadius: '50%',
@@ -13,15 +15,7 @@ export const avatarRoot = style({
 	transition: helpers.transition('color', 'background')
 })
 
-export const avatarSizes = styleVariants(
-	{ 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6 },
-	(size) => ({
-		width: helpers.spacing(size + 4),
-		height: helpers.spacing(size + 4)
-	})
-)
-
-export const avatarVariants = styleVariants(vars.palette.surface, (color) => ({
+export const avatarVariants = styleVariants(vars.coloring.palette, (color) => ({
 	color: color.contrast,
 	background: color.main
 }))
