@@ -1,4 +1,4 @@
-import { forwardRef, type ElementType } from 'react'
+import { forwardRef, type ReactNode, type ElementType } from 'react'
 import { clsx } from 'clsx'
 import type {
 	PolymorphicComponentPropWithRef,
@@ -6,15 +6,17 @@ import type {
 } from '../utils/Component'
 import * as classes from './Flex.css'
 
-export type FlexSprinkles = Parameters<typeof classes.flexSprinkles>[0]
-
 export type FlexProps<C extends ElementType> = PolymorphicComponentPropWithRef<
 	C,
-	FlexSprinkles
+	Parameters<typeof classes.flexSprinkles>[0]
 >
 
-export const Flex = forwardRef(
-	<C extends ElementType = 'span'>(
+export type FlexComponent = <C extends ElementType = 'div'>(
+	props: FlexProps<C>
+) => ReactNode
+
+export const Flex: FlexComponent = forwardRef(
+	<C extends ElementType = 'div'>(
 		{
 			as,
 			alignItems,
@@ -59,5 +61,3 @@ export const Flex = forwardRef(
 		)
 	}
 )
-
-Flex.displayName = 'Flex'

@@ -1,49 +1,56 @@
-import { forwardRef, type ElementType, type ReactElement } from 'react'
+import { forwardRef, type ReactNode, type ElementType } from 'react'
 import { clsx } from 'clsx'
-import type {
-	PolymorphicComponentPropWithRef,
-	PolymorphicRef
+import {
+	createComponent,
+	type PolymorphicComponentPropWithRef,
+	type PolymorphicRef
 } from '../utils/Component'
 import * as classes from './Alert.css'
 
-export type AlertPropsBase = {
-	severity: 'info' | 'error' | 'warning' | 'success'
-}
-
 export type AlertProps<C extends ElementType> = PolymorphicComponentPropWithRef<
 	C,
-	AlertPropsBase
+	{
+		severity: 'info' | 'error' | 'warning' | 'success'
+	}
 >
 
 export type AlertComponent = <C extends ElementType = 'div'>(
 	props: AlertProps<C>
-) => ReactElement | null
+) => ReactNode
 
-export const Alert = forwardRef(function Alert<C extends ElementType = 'div'>(
-	{
-		as,
-		severity = 'info',
-		children,
-		className: classNameProp,
-		...otherProps
-	}: AlertProps<C>,
-	forwardedRef: PolymorphicRef<C>
-) {
-	const Component = as ?? 'div'
-	const className = clsx(
-		classNameProp,
-		classes.alertRoot,
-		classes.alertVariants[severity]
-	)
+export const Alert: AlertComponent = createComponent(
+	'Alert',
+	forwardRef(
+		<C extends ElementType = 'div'>(
+			{
+				as,
+				severity = 'info',
+				children,
+				className: classNameProp,
+				...otherProps
+			}: AlertProps<C>,
+			forwardedRef: PolymorphicRef<C>
+		) => {
+			const Component = as ?? 'div'
+			const className = clsx(
+				classNameProp,
+				classes.sprinkles({
+					radius: 2,
+					padding: 1,
+					palette: severity
+				})
+			)
 
-	return (
-		<Component
-			ref={forwardedRef}
-			role='alert'
-			className={className}
-			{...otherProps}
-		>
-			{children}
-		</Component>
+			return (
+				<Component
+					ref={forwardedRef}
+					role='alert'
+					className={className}
+					{...otherProps}
+				>
+					{children}
+				</Component>
+			)
+		}
 	)
-})
+)
