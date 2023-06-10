@@ -1,7 +1,7 @@
 import { vars } from './contract.css'
 
 export const helpers = {
-	radius: (...input: number[]) =>
+	curving: (...input: number[]) =>
 		input.map((value) => `calc(${vars.radius[1]} * ${value})`).join(' '),
 	spacing: (...input: number[]) =>
 		input.map((value) => `calc(${vars.spacing[1]} * ${value})`).join(' '),
