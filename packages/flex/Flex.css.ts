@@ -1,12 +1,11 @@
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { vars } from '../theme/contract.css'
+import { extendWithGlobals } from '../theme/globals.css'
 
 export const flexProperties = defineProperties({
 	properties: {
 		display: ['flex', 'inline-flex'],
 		flexWrap: ['wrap', 'wrap-reverse', 'nowrap'],
-		flexGrow: [0, 1, 2, 3, 4],
-		flexShrink: [0, 1, 2, 3, 4],
 		flexDirection: ['row', 'row-reverse', 'column', 'column-reverse'],
 		alignItems: ['stretch', 'center', 'flex-start', 'flex-end'],
 		alignContent: [
@@ -25,10 +24,7 @@ export const flexProperties = defineProperties({
 			'space-around',
 			'space-between'
 		],
-		gap: {
-			inherit: 'inherit',
-			...vars.spacing
-		}
+		gap: extendWithGlobals(vars.spacing)
 	}
 })
 

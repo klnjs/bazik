@@ -3,7 +3,7 @@ import { forwardRef, polymorphicFactory } from '@polymorphic-factory/react'
 import clsx from 'clsx'
 import { polySprinkles, type PolySprinkles } from './poly.css'
 
-export type PolyPropsBase = {
+export type PolyProps = {
 	as?: ElementType
 	sx?: PolySprinkles
 	style?: CSSProperties
@@ -11,29 +11,21 @@ export type PolyPropsBase = {
 	className?: string
 }
 
-export type PolyProps = PolyPropsBase & PolySprinkles
-
 export const poly = polymorphicFactory<PolyProps>({
 	styled: (component) =>
 		forwardRef((props, ref) => {
-			const [
-				{
-					as,
-					sx,
-					style,
-					children,
-					className: classNameProp,
-					...otherProps
-				},
-				sprinklesProps
-			] = extractProperties(props, polySprinkles.properties)
+			const {
+				as,
+				sx = {},
+				style,
+				children,
+				className: classNameProp,
+				...otherProps
+			} = props
 
 			const Component = as ?? component
 
-			const className = clsx(
-				classNameProp,
-				polySprinkles({ ...sprinklesProps, ...sx })
-			)
+			const className = clsx(classNameProp, polySprinkles(sx))
 
 			return (
 				<Component

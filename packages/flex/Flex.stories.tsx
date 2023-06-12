@@ -15,7 +15,7 @@ export const Flex: StoryObj<typeof Component> = {
 				border: '1px solid black',
 				borderRadius: '4px',
 				backgroundClip: 'content-box',
-				boxShadow: 'inset 0 0 0 16px lightGreen'
+				boxShadow: 'inset 0 0 0 16px lime'
 			}}
 			{...args}
 		>

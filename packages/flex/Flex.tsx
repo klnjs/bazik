@@ -2,14 +2,11 @@ import { clsx } from 'clsx'
 import { poly, type PolyProps } from '../component/poly'
 import { flexSprinkles, type FlexSprinkles } from './Flex.css'
 
-export type FlexProps = FlexSprinkles &
-	Pick<PolyProps, 'sx' | 'style' | 'children' | 'className'>
+export type FlexProps = PolyProps & FlexSprinkles
 
 export const Flex = ({
-	display,
+	display = 'flex',
 	flexWrap,
-	flexGrow,
-	flexShrink,
 	flexDirection,
 	alignItems,
 	alignContent,
@@ -24,8 +21,6 @@ export const Flex = ({
 		flexSprinkles({
 			display,
 			flexWrap,
-			flexGrow,
-			flexShrink,
 			flexDirection,
 			alignItems,
 			alignContent,
