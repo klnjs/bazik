@@ -1,10 +1,13 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@polymorphic-factory/react':
+    specifier: 0.4.1
+    version: 0.4.1(react@18.2.0)
   '@vanilla-extract/css':
     specifier: 1.11.1
     version: 1.11.1
@@ -3202,6 +3205,14 @@ packages:
       source-map: 0.7.4
       webpack: 5.85.0(esbuild@0.17.19)
     dev: true
+
+  /@polymorphic-factory/react@0.4.1(react@18.2.0):
+    resolution: {integrity: sha512-GQMmzGARKDLmj3DYAS1lSiQNfUbqIGInAmOMpJwbbwm3MWUPfg+3UE8jQmeORaiXUjoO0sagHdwtf2lx1XCyhA==}
+    peerDependencies:
+      react: '>=16.8 || >=17 || >18'
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /@sinclair/typebox@0.25.24:
     resolution: {integrity: sha512-XJfwUVUKDHF5ugKwIcxEgc9k8b7HbznCp6eUfWgu710hMPNIO4aw4/zB5RogDQz8nd6gyCDpU9O/m6qYEWY6yQ==}
