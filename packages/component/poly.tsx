@@ -50,19 +50,22 @@ export const poly = polymorphicFactory<PolyProps>({
 
 function extractProperties<T extends object, K extends keyof T>(
 	props: T,
-	propsToExtract: Set<K>
+	propsToExtract: Array<K> | Set<K>
 ): [Exclude<T, K>, Pick<T, K>] {
-	const extracted: Pick<T, K> = {} as Pick<T, K>
-	const remaining: Exclude<T, K> = {} as Exclude<T, K>
+	const pick: Pick<T, K> = {} as Pick<T, K>
+	const omit: Exclude<T, K> = {} as Exclude<T, K>
+	const shouldPick = Array.isArray(propsToExtract)
+		? (key: unknown): key is K => propsToExtract.includes(key as K)
+		: (key: unknown): key is K => propsToExtract.has(key as K)
 
-	// Extract properties from obj1 that are present in obj2
-	for (const prop in props) {
-		if (propsToExtract.has(prop as unknown as K)) {
-			extracted[prop] = props[prop]
+	for (const key in props) {
+		if (shouldPick(key)) {
+			pick[key] = props[key]
 		} else {
-			remaining[prop] = props[prop]
+			// @ts-expect-error because ???
+			omit[key] = props[key]
 		}
 	}
 
-	return [remaining, extracted]
+	return [omit, pick]
 }
