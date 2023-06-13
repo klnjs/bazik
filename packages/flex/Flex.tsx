@@ -1,37 +1,42 @@
 import { clsx } from 'clsx'
-import { poly, type PolyProps } from '../component/poly'
 import { flexSprinkles, type FlexSprinkles } from './Flex.css'
+import { freya, forwardRef, type AsChildComponentProps } from '../core'
 
-export type FlexProps = PolyProps & FlexSprinkles
+export type FlexProps = AsChildComponentProps<'div', FlexSprinkles>
 
-export const Flex = ({
-	display = 'flex',
-	flexWrap,
-	flexDirection,
-	alignItems,
-	alignContent,
-	justifyContent,
-	gap,
-	children,
-	className: classNameProp,
-	...otherProps
-}: FlexProps) => {
-	const className = clsx(
-		classNameProp,
-		flexSprinkles({
-			display,
+export const Flex = forwardRef<'div', FlexProps>(
+	(
+		{
+			display = 'flex',
 			flexWrap,
 			flexDirection,
 			alignItems,
 			alignContent,
 			justifyContent,
-			gap
-		})
-	)
+			gap,
+			children,
+			className: classNameProp,
+			...otherProps
+		},
+		forwardedRef
+	) => {
+		const className = clsx(
+			classNameProp,
+			flexSprinkles({
+				display,
+				flexWrap,
+				flexDirection,
+				alignItems,
+				alignContent,
+				justifyContent,
+				gap
+			})
+		)
 
-	return (
-		<poly.div className={className} {...otherProps}>
-			{children}
-		</poly.div>
-	)
-}
+		return (
+			<freya.div ref={forwardedRef} className={className} {...otherProps}>
+				{children}
+			</freya.div>
+		)
+	}
+)

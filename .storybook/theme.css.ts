@@ -19,19 +19,19 @@ export const theme = createTheme(vars, {
 			medium: '500'
 		}
 	},
-	radius: {
-		0: '0',
-		1: '2px',
-		2: '4px',
-		3: '6px',
-		4: '8px'
-	},
 	spacing: {
 		0: '0',
 		1: '8px',
 		2: '16px',
 		3: '24px',
 		4: '32px'
+	},
+	radius: {
+		0: '0',
+		1: '2px',
+		2: '4px',
+		3: '6px',
+		4: '8px'
 	},
 	elevation: {
 		0: 'none',
@@ -41,7 +41,7 @@ export const theme = createTheme(vars, {
 		4: '0px 3px 2px -2px rgba(0,0,0,0.2), 0px 4px 4px 0px rgba(0,0,0,0.14), 0px 1px 12px 0px rgba(0,0,0,0.12)'
 	},
 	transition: {
-		easing: 'ease',
+		timing: 'ease',
 		duration: '400ms'
 	},
 	coloring: {

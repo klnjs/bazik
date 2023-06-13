@@ -8,32 +8,25 @@ export default {
 export const Flex: StoryObj<typeof Component> = {
 	render: (args) => (
 		<Component
-			sx={{ padding: 2 }}
+			sx={{ padding: 2, radius: 2 }}
 			style={{
-				maxWidth: 400,
-				aspectRatio: '2 / 1',
-				border: '1px solid black',
-				borderRadius: '4px',
-				backgroundClip: 'content-box',
-				boxShadow: 'inset 0 0 0 16px lime'
+				border: '1px dotted black'
 			}}
 			{...args}
 		>
-			<FlexChild size={40} />
-			<FlexChild size={80} />
-			<FlexChild size={60} />
+			<FlexChild size={40} color='red' />
+			<FlexChild size={80} color='green' />
+			<FlexChild size={60} color='blue' />
 		</Component>
 	)
 }
 
-const FlexChild = ({ size }: { size: number }) => (
+const FlexChild = ({ size, color }: { size: number; color: string }) => (
 	<div
 		style={{
 			minWidth: size,
 			minHeight: size,
-			border: '1px solid black',
-			background: 'black',
-			borderRadius: '4px'
+			background: color
 		}}
 	/>
 )

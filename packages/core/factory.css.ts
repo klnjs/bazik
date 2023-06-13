@@ -6,11 +6,11 @@ import {
 	radiusProperties
 } from '../theme/properties.css'
 
-export const polySprinkles = createSprinkles(
+export const factorySprinkles = createSprinkles(
 	marginProperties,
 	paddingProperties,
 	radiusProperties,
 	elevationProperties
 )
 
-export type PolySprinkles = Parameters<typeof polySprinkles>[0]
+export type FactorySprinkles = Parameters<typeof factorySprinkles>[0]
