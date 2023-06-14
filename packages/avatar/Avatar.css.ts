@@ -9,6 +9,7 @@ export const avatar = style({
 	width: 50,
 	height: 50,
 	display: 'flex',
+	overflow: 'hidden',
 	transition: createTransition('color', 'background', 'borderRadius'),
 	alignItems: 'center',
 	justifyContent: 'center',
