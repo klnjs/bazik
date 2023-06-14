@@ -6,6 +6,7 @@ export default {
 	argTypes: {
 		asChild: { table: { disable: true } },
 		sx: { table: { disable: true } },
+		hidden: { table: { disable: true } },
 		className: { table: { disable: true } }
 	},
 	decorators: [

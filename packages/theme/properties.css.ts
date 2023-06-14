@@ -1,5 +1,6 @@
 import { defineProperties } from '@vanilla-extract/sprinkles'
 import { vars } from './contract.css'
+import { mapObject } from './helpers.css'
 
 export const marginProperties = defineProperties({
 	properties: {
@@ -39,26 +40,27 @@ export const paddingProperties = defineProperties({
 	}
 })
 
+export const paletteProperties = defineProperties({
+	properties: {
+		palette: mapObject(vars.coloring.palette, (value) => ({
+			color: value.contrast,
+			background: value.main
+		}))
+	}
+})
+
 export const radiusProperties = defineProperties({
 	properties: {
-		radius: {
-			0: { borderRadius: vars.radius[0] },
-			1: { borderRadius: vars.radius[1] },
-			2: { borderRadius: vars.radius[2] },
-			3: { borderRadius: vars.radius[3] },
-			4: { borderRadius: vars.radius[4] }
-		}
+		radius: mapObject(vars.radius, (value) => ({
+			borderRadius: value
+		}))
 	}
 })
 
 export const elevationProperties = defineProperties({
 	properties: {
-		elevation: {
-			0: { boxShadow: vars.elevation[0] },
-			1: { boxShadow: vars.elevation[1] },
-			2: { boxShadow: vars.elevation[2] },
-			3: { boxShadow: vars.elevation[3] },
-			4: { boxShadow: vars.elevation[4] }
-		}
+		elevation: mapObject(vars.elevation, (value) => ({
+			boxShadow: value
+		}))
 	}
 })

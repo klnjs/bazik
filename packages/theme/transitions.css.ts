@@ -8,13 +8,19 @@ export type TransitionDefinition = {
 	duration?: CSSProperties['transitionDuration']
 }
 
+function toKebabCase(str: string) {
+	return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+}
+
 export const createTransition = (
-	...props: Array<TransitionDefinition | keyof CSSProperties>
+	...props: (TransitionDefinition | keyof CSSProperties)[]
 ) =>
 	props
 		.map((def) => {
 			if (typeof def === 'string') {
-				return `${def} ${vars.transition.timing} ${vars.transition.duration}`
+				return `${toKebabCase(def)} ${vars.transition.timing} ${
+					vars.transition.duration
+				}`
 			}
 
 			const {
@@ -24,6 +30,7 @@ export const createTransition = (
 				duration = vars.transition.duration
 			} = def
 
-			return `${property} ${duration} ${timing} ${delay}`
+			// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+			return `${toKebabCase(property)} ${duration} ${timing} ${delay}`
 		})
 		.join(', ')

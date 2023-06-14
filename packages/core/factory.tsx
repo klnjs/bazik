@@ -1,3 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+
 import {
 	forwardRef,
 	cloneElement,
@@ -8,26 +15,31 @@ import {
 	type PropsWithChildren,
 	type ForwardRefExoticComponent
 } from 'react'
-import { clsx } from 'clsx'
+import { clsx } from './clsx'
 import { mergeRefs } from './mergeRefs'
 import { mergeProps } from './mergeProps'
-import { factorySprinkles, type FactorySprinkles } from './factory.css'
+import {
+	factoryHidden,
+	factorySprinkles,
+	type FactorySprinkles
+} from './factory.css'
 import type { Assign } from './types'
 
 export type AsChildProps = {
 	asChild?: boolean
 	sx?: FactorySprinkles
+	hidden?: boolean
 	className?: string
 }
 
 export type AsChildComponentProps<
 	E extends ElementType,
-	P extends object = {}
+	P extends object = object
 > = Assign<ComponentProps<E>, AsChildProps & P>
 
 export type AsChildForwardRefComponent<
 	E extends ElementType,
-	P extends object = {}
+	P extends object = object
 > = ForwardRefExoticComponent<AsChildComponentProps<E, P>>
 
 const withAsChild = (Component: React.ElementType) => {
@@ -35,13 +47,18 @@ const withAsChild = (Component: React.ElementType) => {
 		(props, ref) => {
 			const {
 				asChild,
-				sx = {},
+				sx,
+				hidden,
 				className: classNameProp,
 				children,
 				...restProps
 			} = props
 
-			const className = clsx(classNameProp, factorySprinkles(sx))
+			const className = clsx(
+				classNameProp,
+				sx ? factorySprinkles(sx) : undefined,
+				hidden ? factoryHidden : undefined
+			)
 
 			if (!asChild) {
 				return <Component {...props} ref={ref} className={className} />
@@ -72,7 +89,7 @@ export const jsxFactory = () => {
 	const cache = new Map()
 
 	return new Proxy(withAsChild, {
-		apply(target, thisArg, argArray) {
+		apply(_, __, argArray) {
 			return withAsChild(argArray[0])
 		},
 		get(_, element) {

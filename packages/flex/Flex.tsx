@@ -1,6 +1,6 @@
 import { clsx } from 'clsx'
-import { flexSprinkles, type FlexSprinkles } from './Flex.css'
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { flexSprinkles, type FlexSprinkles } from './Flex.css'
 
 export type FlexProps = AsChildComponentProps<'div', FlexSprinkles>
 

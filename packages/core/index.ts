@@ -1,4 +1,5 @@
-export * from 'clsx'
+export * from './clsx'
+export * from './chain'
 export * from './types'
 export * from './factory'
 export * from './forwardRef'

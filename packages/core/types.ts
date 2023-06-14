@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 type Pretty<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
 
 type DistributiveOmit<T, K extends keyof any> = T extends any

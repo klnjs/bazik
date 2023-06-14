@@ -1,6 +1,5 @@
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { vars } from '../theme/contract.css'
-import { extendWithGlobals } from '../theme/globals.css'
 
 export const flexProperties = defineProperties({
 	properties: {
@@ -24,7 +23,7 @@ export const flexProperties = defineProperties({
 			'space-around',
 			'space-between'
 		],
-		gap: extendWithGlobals(vars.spacing)
+		gap: vars.spacing
 	}
 })
 

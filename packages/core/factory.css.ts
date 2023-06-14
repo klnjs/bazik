@@ -1,3 +1,4 @@
+import { style } from '@vanilla-extract/css'
 import { createSprinkles } from '@vanilla-extract/sprinkles'
 import {
 	elevationProperties,
@@ -5,6 +6,10 @@ import {
 	paddingProperties,
 	radiusProperties
 } from '../theme/properties.css'
+
+export const factoryHidden = style({
+	display: 'none !important'
+})
 
 export const factorySprinkles = createSprinkles(
 	marginProperties,
