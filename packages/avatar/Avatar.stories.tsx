@@ -1,17 +1,29 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Avatar as AvatarRoot } from './Avatar'
+import { Avatar } from './Avatar'
 import { AvatarImage } from './AvatarImage'
 import { AvatarFallback } from './AvatarFallback'
 
 export default {
-	component: AvatarRoot
-} satisfies Meta<typeof AvatarRoot>
+	component: Avatar
+} satisfies Meta<typeof Avatar>
 
-export const Avatar: StoryObj<typeof AvatarRoot> = {
+export const Default: StoryObj<typeof Avatar> = {
 	render: (args) => (
-		<AvatarRoot {...args}>
-			<AvatarImage src='https://placehold.com/50' />
+		<Avatar {...args}>
+			<AvatarImage alt='placeholder' src='https://placehold.co/50' />
 			<AvatarFallback>RK</AvatarFallback>
-		</AvatarRoot>
+		</Avatar>
+	)
+}
+
+export const Fallback: StoryObj<typeof Avatar> = {
+	render: (args) => (
+		<Avatar {...args}>
+			<AvatarImage
+				alt='Rune Klein'
+				src='https://nothing-to-see-here.com'
+			/>
+			<AvatarFallback>RK</AvatarFallback>
+		</Avatar>
 	)
 }
