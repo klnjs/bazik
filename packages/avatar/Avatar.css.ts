@@ -9,7 +9,7 @@ export const avatar = style({
 	width: 50,
 	height: 50,
 	display: 'flex',
-	transition: createTransition('color', 'background', 'border-radius'),
+	transition: createTransition('color', 'background', 'borderRadius'),
 	alignItems: 'center',
 	justifyContent: 'center',
 	position: 'relative'
