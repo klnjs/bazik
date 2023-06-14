@@ -21,7 +21,7 @@ export const Avatar = forwardRef<'div', AvatarProps>(
 	(
 		{
 			variant = 'round',
-			palette,
+			palette = 'primary',
 			className: classNameProp,
 			onLoad,
 			onError,
