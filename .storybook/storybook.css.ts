@@ -1,4 +1,4 @@
-import { createTheme } from '@vanilla-extract/css'
+import { style, createTheme } from '@vanilla-extract/css'
 import { vars } from '../packages/theme/contract.css'
 
 export const theme = createTheme(vars, {
@@ -64,3 +64,10 @@ export const theme = createTheme(vars, {
 		}
 	}
 })
+
+export const app = style([
+	theme,
+	{
+		fontFamily: vars.font.family
+	}
+])
