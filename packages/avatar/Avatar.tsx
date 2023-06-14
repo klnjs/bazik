@@ -33,7 +33,7 @@ export const Avatar = forwardRef<'div', AvatarProps>(
 		const className = clsx(
 			classNameProp,
 			avatar,
-			avatarSprinkles({ variant, palette })
+			avatarSprinkles({ variant, palette: ready ? undefined : palette })
 		)
 
 		const handleLoad = chain(onLoad, () => setReady(true))
