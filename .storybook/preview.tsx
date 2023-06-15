@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Preview } from '@storybook/react'
-import { app } from './storybook.css'
+import { preview } from './preview.css'
 
 export default {
 	argTypes: {
@@ -11,7 +11,7 @@ export default {
 	},
 	decorators: [
 		(Story) => (
-			<div className={app}>
+			<div className={preview}>
 				<Story />
 			</div>
 		)

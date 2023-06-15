@@ -65,7 +65,7 @@ export const theme = createTheme(vars, {
 	}
 })
 
-export const app = style([
+export const preview = style([
 	theme,
 	{
 		fontFamily: vars.font.family
