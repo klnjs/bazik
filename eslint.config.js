@@ -7,7 +7,7 @@ export default [
 	eslintConfigReact,
 	eslintConfigTypescript,
 	{
-		files: '**/*.stories.tsx',
+		files: ['**/*.stories.tsx'],
 		rules: {
 			'no-console': 'off'
 		}
