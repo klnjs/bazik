@@ -34,7 +34,7 @@ export const avatarSprinkles = createSprinkles(
 
 export type AvatarSprinkles = Parameters<typeof avatarSprinkles>[0]
 
-export const image = style({
+export const avatarImage = style({
 	width: '100%',
 	height: '100%',
 	display: 'block',
@@ -42,4 +42,4 @@ export const image = style({
 	objectFit: 'cover'
 })
 
-export const fallback = style({})
+export const avatarFallback = style({})
