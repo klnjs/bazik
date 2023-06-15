@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { clsx } from './clsx'
@@ -16,7 +17,6 @@ export function mergeProps(...args: Record<string, any>[]) {
 				if (key === 'style') {
 					mergedProps[key] = { ...mergedValue, ...currentValue }
 				} else if (key === 'className') {
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					mergedProps[key] = clsx(currentValue, mergedValue)
 				} else if (
 					/^on[A-Z]/.test(key) &&
