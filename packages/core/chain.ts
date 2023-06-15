@@ -3,7 +3,9 @@
 export const chain =
 	<T extends (...a: any[]) => void>(...fns: (T | undefined)[]) =>
 	(...args: Parameters<T>) => {
-		fns.forEach(function (fn) {
-			fn?.(...args)
-		})
+		for (const fn of fns) {
+			if (typeof fn === 'function') {
+				fn(...args)
+			}
+		}
 	}

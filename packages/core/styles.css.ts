@@ -8,11 +8,11 @@ import {
 	elevationProperties
 } from '../theme/properties.css'
 
-export const coreHidden = style({
+export const hidden = style({
 	display: 'none !important'
 })
 
-export const coreSprinkles = createSprinkles(
+export const sprinkles = createSprinkles(
 	radiusProperties,
 	marginProperties,
 	paletteProperties,
@@ -20,4 +20,4 @@ export const coreSprinkles = createSprinkles(
 	elevationProperties
 )
 
-export type CoreSprinkles = Parameters<typeof coreSprinkles>[0]
+export type Sprinkles = Parameters<typeof sprinkles>[0]

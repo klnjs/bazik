@@ -1,4 +1,4 @@
-import { createContext as cc, useContext as uc } from 'react'
+import { createContext as cc, useContext as uc, type Provider } from 'react'
 
 export type CreateContextOptions<T> = {
 	strict?: boolean
@@ -8,11 +8,7 @@ export type CreateContextOptions<T> = {
 	defaultValue?: T
 }
 
-export type CreateContextReturn<T> = [
-	React.Provider<T>,
-	() => T,
-	React.Context<T>
-]
+export type CreateContextReturn<T> = [Provider<T>, () => T]
 
 const createContextError = (
 	name: string,
@@ -49,5 +45,5 @@ export const createContext = <T extends object>({
 		return context
 	}
 
-	return [Context.Provider, useContext, Context] as CreateContextReturn<T>
+	return [Context.Provider, useContext] as CreateContextReturn<T>
 }
