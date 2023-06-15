@@ -37,7 +37,6 @@ export type AvatarSprinkles = Parameters<typeof avatarSprinkles>[0]
 export const avatarImage = style({
 	width: '100%',
 	height: '100%',
-	display: 'block',
 	position: 'absolute',
 	objectFit: 'cover'
 })
