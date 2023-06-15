@@ -19,7 +19,7 @@ export type AsChildProps = PropsWithChildren<{
 export type AsChildComponentProps<
 	E extends ElementType,
 	P extends object = object
-> = Pretty<Assign<ComponentProps<E>, P>>
+> = Pretty<Assign<ComponentProps<E>, AsChildProps & P>>
 
 export type AsChildForwardRefComponent<
 	E extends ElementType,
