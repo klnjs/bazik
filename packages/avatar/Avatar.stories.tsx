@@ -21,8 +21,30 @@ export const Default: StoryObj<typeof Avatar> = {
 export const Fallback: StoryObj<typeof Avatar> = {
 	render: (args) => (
 		<Avatar {...args}>
-			<AvatarImage alt='Rune Klein' src='https://nothing-here.com' />
+			<AvatarImage alt='Rune Klein' src='https://giberrish.com' />
 			<AvatarFallback>RK</AvatarFallback>
+		</Avatar>
+	)
+}
+
+export const Link: StoryObj<AvatarSprinkles> = {
+	render: (args) => (
+		<Avatar asChild {...args}>
+			<a href='a'>
+				<AvatarImage alt='Rune Klein' src='https://placehold.co/50' />
+				<AvatarFallback>RK</AvatarFallback>
+			</a>
+		</Avatar>
+	)
+}
+
+export const Button: StoryObj<AvatarSprinkles> = {
+	render: (args) => (
+		<Avatar asChild {...args}>
+			<button onClick={() => console.log('clicked')}>
+				<AvatarImage alt='Rune Klein' src='https://placehold.co/50' />
+				<AvatarFallback>RK</AvatarFallback>
+			</button>
 		</Avatar>
 	)
 }
