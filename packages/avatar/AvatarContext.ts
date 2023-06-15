@@ -1,11 +1,7 @@
 import { createContext } from '../core/createContext'
+import type { useAvatar } from './useAvatar'
 
-export type UseAvatarContext = {
-	ready: boolean
-	setReady: (ready: boolean) => void
-	onLoad?: () => void
-	onError?: () => void
-}
+export type UseAvatarContext = ReturnType<typeof useAvatar>
 
 export const [AvatarProvider, useAvatarContext] =
 	createContext<UseAvatarContext>({

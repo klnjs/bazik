@@ -1,9 +1,9 @@
-import { createElement } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Avatar } from './Avatar'
 import { AvatarImage } from './AvatarImage'
 import { AvatarFallback } from './AvatarFallback'
 import { useAvatarStyles } from './useAvatarStyles'
+import type { AvatarSprinkles } from './Avatar.css'
 
 export default {
 	component: Avatar
@@ -27,25 +27,20 @@ export const Fallback: StoryObj<typeof Avatar> = {
 	)
 }
 
-export const Styled: StoryObj<typeof Avatar> = {
-	render: (args) =>
-		createElement(() => {
-			const classes = useAvatarStyles({
-				palette: 'primary',
-				variant: 'round'
-			})
+export const Styled: StoryObj<AvatarSprinkles> = {
+	render: (args) => {
+		// eslint-disable-next-line react-hooks/rules-of-hooks
+		const classes = useAvatarStyles(args)
 
-			return (
-				<Avatar className={classes.root} {...args}>
-					<AvatarImage
-						alt='Rune Klein'
-						src='https://nothing-here.com'
-						className={classes.image}
-					/>
-					<AvatarFallback className={classes.fallback}>
-						RK
-					</AvatarFallback>
-				</Avatar>
-			)
-		})
+		return (
+			<Avatar className={classes.root} {...args}>
+				<AvatarImage
+					alt='Rune Klein'
+					src='https://nothing-here.com'
+					className={classes.image}
+				/>
+				<AvatarFallback className={classes.fallback}>RK</AvatarFallback>
+			</Avatar>
+		)
+	}
 }
