@@ -1,21 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { clsx } from './clsx'
 import { chain } from './chain'
 
-export function mergeProps(...args: Record<string, any>[]) {
+export type MergeProps<T extends object[]> = T extends [
+	infer First,
+	...infer Rest
+]
+	? First extends object
+		? Rest extends object[]
+			? MergeProps<Rest> & First
+			: never
+		: never
+	: {}
+
+export const mergeProps = <T extends object[]>(...args: T) => {
 	const mergedProps: Record<string, any> = {}
 
 	for (const props of args) {
 		for (const key in props) {
 			if (Object.hasOwn(props, key)) {
 				const mergedValue = mergedProps[key]
-				const currentValue = props[key]
+				const currentValue = props[key as keyof typeof props]
 
 				if (key === 'style') {
-					mergedProps[key] = { ...mergedValue, ...currentValue }
+					mergedProps[key] = {
+						...(mergedValue as object),
+						...(currentValue as object)
+					}
 				} else if (key === 'className') {
 					mergedProps[key] = clsx(currentValue, mergedValue)
 				} else if (
@@ -31,5 +41,7 @@ export function mergeProps(...args: Record<string, any>[]) {
 		}
 	}
 
-	return mergedProps
+	return mergedProps as MergeProps<T>
 }
+
+const a = mergeProps({ a: 'string' }, { b: 'string' })
