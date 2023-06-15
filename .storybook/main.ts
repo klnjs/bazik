@@ -1,14 +1,13 @@
-import type { StorybookConfig } from '@storybook/react-webpack5'
-import { VanillaExtractPlugin } from '@vanilla-extract/webpack-plugin'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import type { StorybookConfig } from '@storybook/react-vite'
+import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
+import { mergeConfig } from 'vite'
 
 export default {
 	stories: ['../packages/**/*.stories.tsx'],
 	addons: ['@storybook/addon-essentials'],
-	framework: '@storybook/react-webpack5',
+	framework: '@storybook/react-vite',
 	typescript: {
 		check: false,
-		checkOptions: {},
 		reactDocgen: 'react-docgen-typescript',
 		reactDocgenTypescriptOptions: {
 			shouldRemoveUndefinedFromOptional: true,
@@ -21,37 +20,11 @@ export default {
 		autodocs: true
 	},
 	core: {
-		disableTelemetry: true
+		disableTelemetry: true,
+		builder: '@storybook/builder-vite'
 	},
-	webpackFinal: (config) => {
-		config.plugins?.push(
-			new VanillaExtractPlugin(),
-			new MiniCssExtractPlugin()
-		)
-
-		config.module?.rules?.forEach((rule) => {
-			if (
-				typeof rule !== 'string' &&
-				rule.test instanceof RegExp &&
-				rule.test.test('test.css')
-			) {
-				rule.exclude = /\.vanilla\.css$/i
-			}
+	viteFinal: async (config) =>
+		mergeConfig(config, {
+			plugins: [vanillaExtractPlugin()]
 		})
-
-		config.module?.rules?.push({
-			test: /\.vanilla\.css$/i,
-			use: [
-				MiniCssExtractPlugin.loader,
-				{
-					loader: 'css-loader',
-					options: {
-						url: false
-					}
-				}
-			]
-		})
-
-		return config
-	}
 } satisfies StorybookConfig
