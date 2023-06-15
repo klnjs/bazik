@@ -18,18 +18,11 @@ import {
 import { clsx } from './clsx'
 import { mergeRefs } from './mergeRefs'
 import { mergeProps } from './mergeProps'
-import {
-	factoryHidden,
-	factorySprinkles,
-	type FactorySprinkles
-} from './factory.css'
+import { coreHidden, coreSprinkles, type CoreSprinkles } from './core.css'
 import type { Assign } from './types'
 
 export type AsChildProps = {
 	asChild?: boolean
-	sx?: FactorySprinkles
-	hidden?: boolean
-	className?: string
 }
 
 export type AsChildComponentProps<
@@ -42,43 +35,56 @@ export type AsChildForwardRefComponent<
 	P extends object = object
 > = ForwardRefExoticComponent<AsChildComponentProps<E, P>>
 
-const withAsChild = (Component: React.ElementType) => {
-	const Comp = forwardRef<unknown, PropsWithChildren<AsChildProps>>(
-		(props, ref) => {
-			const {
-				asChild,
-				sx,
-				hidden,
-				className: classNameProp,
-				children,
-				...otherProps
-			} = props
-
-			const className = clsx(
-				classNameProp,
-				sx ? factorySprinkles(sx) : undefined,
-				hidden ? factoryHidden : undefined
-			)
-
-			if (!asChild) {
-				return <Component {...props} ref={ref} className={className} />
+const withAsChild = (Component: ElementType) => {
+	const Comp = forwardRef<
+		unknown,
+		PropsWithChildren<
+			AsChildProps & {
+				sx?: CoreSprinkles
+				hidden?: boolean
+				className?: string
 			}
+		>
+	>((props, ref) => {
+		const {
+			asChild,
+			sx,
+			hidden,
+			className: classNameProp,
+			children,
+			...otherProps
+		} = props
 
-			const onlyChild = Children.only(children)
+		const className = clsx(
+			classNameProp,
+			sx ? coreSprinkles(sx) : undefined,
+			hidden ? coreHidden : undefined
+		)
 
-			return isValidElement(onlyChild)
-				? cloneElement(onlyChild, {
-						...mergeProps(otherProps, onlyChild.props as any),
-						// @ts-expect-error not sure why this fails
-						ref: ref
-							? mergeRefs(ref, (onlyChild as any).ref)
-							: (onlyChild as any).ref,
-						hidden,
-						className
-				  })
-				: null
+		if (!asChild) {
+			return (
+				<Component ref={ref} className={className} {...otherProps}>
+					{children}
+				</Component>
+			)
 		}
-	)
+
+		const child = Children.only(children)
+
+		return isValidElement(child)
+			? cloneElement(child, {
+					// @ts-expect-error not sure why this fails
+					ref: ref
+						? mergeRefs(ref, (child as any).ref)
+						: (child as any).ref,
+					...mergeProps(
+						{ className, hidden },
+						otherProps,
+						child.props as any
+					)
+			  })
+			: null
+	})
 
 	// @ts-expect-error - it exists
 	Comp.displayName = Component.displayName || Component.name
@@ -86,7 +92,7 @@ const withAsChild = (Component: React.ElementType) => {
 	return Comp
 }
 
-export const jsxFactory = () => {
+const jsx = () => {
 	const cache = new Map()
 
 	return new Proxy(withAsChild, {
@@ -107,4 +113,4 @@ export const jsxFactory = () => {
 	}
 }
 
-export const freya = jsxFactory()
+export const freya = jsx()
