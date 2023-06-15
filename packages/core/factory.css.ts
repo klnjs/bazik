@@ -1,10 +1,11 @@
 import { style } from '@vanilla-extract/css'
 import { createSprinkles } from '@vanilla-extract/sprinkles'
 import {
-	elevationProperties,
+	radiusProperties,
 	marginProperties,
+	paletteProperties,
 	paddingProperties,
-	radiusProperties
+	elevationProperties
 } from '../theme/properties.css'
 
 export const factoryHidden = style({
@@ -12,9 +13,10 @@ export const factoryHidden = style({
 })
 
 export const factorySprinkles = createSprinkles(
-	marginProperties,
-	paddingProperties,
 	radiusProperties,
+	marginProperties,
+	paletteProperties,
+	paddingProperties,
 	elevationProperties
 )
 

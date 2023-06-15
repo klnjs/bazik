@@ -51,7 +51,7 @@ const withAsChild = (Component: React.ElementType) => {
 				hidden,
 				className: classNameProp,
 				children,
-				...restProps
+				...otherProps
 			} = props
 
 			const className = clsx(
@@ -68,11 +68,12 @@ const withAsChild = (Component: React.ElementType) => {
 
 			return isValidElement(onlyChild)
 				? cloneElement(onlyChild, {
-						...mergeProps(restProps, onlyChild.props as any),
+						...mergeProps(otherProps, onlyChild.props as any),
 						// @ts-expect-error not sure why this fails
 						ref: ref
 							? mergeRefs(ref, (onlyChild as any).ref)
 							: (onlyChild as any).ref,
+						hidden,
 						className
 				  })
 				: null
