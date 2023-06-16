@@ -55,12 +55,12 @@ export const Styled: StoryObj<AvatarSprinkles> = {
 	argTypes: {
 		palette: {
 			control: 'select',
-			options: Object.keys(paletteProperties.styles.palette),
+			options: Object.keys(paletteProperties.styles.palette.values),
 			defaultValue: 'primary'
 		},
 		variant: {
 			control: 'select',
-			options: Object.keys(avatarProperties.styles.variant),
+			options: Object.keys(avatarProperties.styles.variant.values),
 			defaultValue: 'primary'
 		}
 	},

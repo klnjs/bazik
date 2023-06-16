@@ -28,7 +28,7 @@ export const Styled: StoryObj<AlertSprinkles> = {
 	argTypes: {
 		palette: {
 			control: 'select',
-			options: Object.keys(paletteProperties.styles.palette),
+			options: Object.keys(paletteProperties.styles.palette.values),
 			defaultValue: 'primary'
 		}
 	},
