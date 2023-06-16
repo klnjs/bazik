@@ -1,11 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { paletteProperties } from '../theme/properties.css'
 import { Avatar } from './Avatar'
 import { AvatarImage } from './AvatarImage'
 import { AvatarFallback } from './AvatarFallback'
 import { useAvatarStyles } from './useAvatarStyles'
-import type { AvatarSprinkles } from './Avatar.css'
+import { avatarProperties, type AvatarSprinkles } from './Avatar.css'
 
 export default {
+	title: 'Avatar',
 	component: Avatar
 } satisfies Meta<typeof Avatar>
 
@@ -50,6 +52,18 @@ export const Button: StoryObj<AvatarSprinkles> = {
 }
 
 export const Styled: StoryObj<AvatarSprinkles> = {
+	argTypes: {
+		palette: {
+			control: 'select',
+			options: Object.keys(paletteProperties.styles.palette),
+			defaultValue: 'primary'
+		},
+		variant: {
+			control: 'select',
+			options: Object.keys(avatarProperties.styles.variant),
+			defaultValue: 'primary'
+		}
+	},
 	render: (args) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const classes = useAvatarStyles(args)
