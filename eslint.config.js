@@ -11,5 +11,13 @@ export default [
 		rules: {
 			'no-console': 'off'
 		}
+	},
+	{
+		files: ['**/scripts/*.js'],
+		languageOptions: {
+			globals: {
+				...globals.node
+			}
+		}
 	}
 ]
