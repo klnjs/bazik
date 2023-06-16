@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { paletteProperties } from '../theme/properties.css'
+import { paletteProperties } from '../theme/sprinkles.css'
 import { Avatar } from './Avatar'
 import { AvatarImage } from './AvatarImage'
 import { AvatarFallback } from './AvatarFallback'

@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { createSprinkles } from '@vanilla-extract/sprinkles'
-import { paletteProperties } from '../theme/properties.css'
+import { paletteProperties } from '../theme/sprinkles.css'
 import { createTransition } from '../theme/transitions.css'
 import { vars } from '../theme/contract.css'
 

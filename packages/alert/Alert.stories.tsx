@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { paletteProperties } from '../theme/properties.css'
+import { paletteProperties } from '../theme/sprinkles.css'
 import { Alert } from './Alert'
 import { AlertTitle } from './AlertTitle'
 import { AlertContent } from './AlertContent'

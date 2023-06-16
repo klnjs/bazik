@@ -2,7 +2,7 @@ import { style } from '@vanilla-extract/css'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { vars } from '../theme/contract.css'
 import { mapObject } from '../theme/helpers.css'
-import { paletteProperties } from '../theme/properties.css'
+import { paletteProperties } from '../theme/sprinkles.css'
 import { createTransition } from '../theme/transitions.css'
 
 export const avatar = style({
