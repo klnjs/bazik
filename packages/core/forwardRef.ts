@@ -1,20 +1,18 @@
 import {
 	forwardRef as fr,
+	type ElementRef,
 	type ElementType,
-	type ForwardRefRenderFunction
+	type ComponentProps,
+	type ForwardRefRenderFunction,
 } from 'react'
-import type {
-	AsChildRef,
-	AsChildComponentProps,
-	AsChildForwardRefComponent
-} from './types'
+import type { Assign } from './types'
 
 export const forwardRef = <
 	E extends ElementType,
 	P extends Record<never, never> = Record<never, never>
 >(
 	component: ForwardRefRenderFunction<
-		AsChildRef<E>,
-		AsChildComponentProps<E, P>
+		ElementRef<E>,
+		Assign<ComponentProps<E>, P>
 	>
-) => fr(component) as AsChildForwardRefComponent<E, P>
+) => fr(component)
