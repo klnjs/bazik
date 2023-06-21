@@ -18,7 +18,7 @@ const createContextError = (
 	const error = new Error(
 		`${nameOfHook} returned \`undefined\`. Did you forget to wrap component within ${nameOfProvider}`
 	)
-	error.name = `ContextError`
+	error.name = `${name}Error`
 	return error
 }
 
