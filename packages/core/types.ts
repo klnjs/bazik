@@ -5,7 +5,6 @@ import type {
 	PropsWithChildren,
 	ForwardRefExoticComponent
 } from 'react'
-import type { Sprinkles } from '../theme/sprinkles.css'
 
 export type Pretty<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
 
@@ -15,8 +14,6 @@ export type AsChildRef<E extends ElementType> = ElementRef<E>
 
 export type AsChildProps = PropsWithChildren<{
 	asChild?: boolean
-	sx?: Sprinkles
-	className?: string
 }>
 
 export type AsChildComponentProps<
