@@ -35,7 +35,7 @@ devDependencies:
     specifier: 0.0.1-rc.9
     version: 0.0.1-rc.9(prettier@2.8.8)
   '@mdi/js':
-    specifier: ^7.2.96
+    specifier: 7.2.96
     version: 7.2.96
   '@storybook/addon-essentials':
     specifier: 7.0.21
@@ -65,7 +65,7 @@ devDependencies:
     specifier: 8.42.0
     version: 8.42.0
   globals:
-    specifier: ^13.20.0
+    specifier: 13.20.0
     version: 13.20.0
   prettier:
     specifier: 2.8.8
