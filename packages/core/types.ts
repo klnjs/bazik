@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type {
 	ElementRef,
 	ElementType,
@@ -5,6 +7,8 @@ import type {
 	PropsWithChildren,
 	ForwardRefExoticComponent
 } from 'react'
+
+export type Props = Record<string, any>
 
 export type Pretty<T> = T extends infer U ? { [K in keyof U]: U[K] } : never
 
