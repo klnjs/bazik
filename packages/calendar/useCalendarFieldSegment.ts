@@ -1,29 +1,30 @@
 import { useMemo, useEffect, useCallback, type KeyboardEvent } from 'react'
-import { useControlledState } from '../core/useControlledState'
 
 export type UseCalendarFieldSegmentOptions = {
 	min: number
 	max: number
 	step?: number
+	start?: number
 	style?: 'numeric' | '2-digit'
 	value?: number
 	label: string
+	invalid: boolean
 	placeholder: string
-	defaultValue?: number
+	onChange: (value: number | undefined) => void
 }
 
 export const useCalendarFieldSegment = ({
 	min,
 	max,
 	step = 1,
+	start = min,
 	style = 'numeric',
-	value: valueProp,
+	value,
 	label,
+	invalid,
 	placeholder,
-	defaultValue
+	onChange
 }: UseCalendarFieldSegmentOptions) => {
-	const [value, setValue] = useControlledState(defaultValue, valueProp)
-
 	const display =
 		value !== undefined && style === '2-digit'
 			? `0${value}`.slice(-2)
@@ -36,8 +37,8 @@ export const useCalendarFieldSegment = ({
 			}
 
 			if (event.key === 'ArrowUp') {
-				setValue((prev) =>
-					prev !== undefined ? Math.min(prev + step, max) : min
+				onChange(
+					value !== undefined ? Math.min(value + step, max) : start
 				)
 			}
 
@@ -46,8 +47,8 @@ export const useCalendarFieldSegment = ({
 			}
 
 			if (event.key === 'ArrowDown') {
-				setValue((prev) =>
-					prev !== undefined ? Math.max(prev - step, min) : max
+				onChange(
+					value !== undefined ? Math.max(value - step, min) : start
 				)
 			}
 
@@ -56,7 +57,7 @@ export const useCalendarFieldSegment = ({
 			}
 
 			if (event.key === 'Backspace' || event.key === 'Delete') {
-				setValue(undefined)
+				onChange(undefined)
 			}
 
 			if (/[0-9]/.test(event.key)) {
@@ -64,20 +65,20 @@ export const useCalendarFieldSegment = ({
 				const valueMutation = Number(valueAsString + event.key)
 
 				if (valueMutation <= max) {
-					setValue(valueMutation)
+					onChange(valueMutation)
 				} else {
-					setValue(Number(event.key))
+					onChange(Number(event.key))
 				}
 			}
 		},
-		[min, max, step, value, setValue]
+		[min, max, step, value, start, onChange]
 	)
 
 	useEffect(() => {
 		if (value !== undefined && value > max) {
-			setValue(max)
+			onChange(max)
 		}
-	}, [value, max, setValue])
+	}, [max, value, onChange])
 
 	return useMemo(
 		() => ({
@@ -86,6 +87,7 @@ export const useCalendarFieldSegment = ({
 			'aria-valuemax': max,
 			'aria-valuenow': value,
 			'aria-label': label,
+			'aria-invalid': invalid ? true : undefined,
 			inputMode: 'numeric',
 			contentEditable: true,
 			tabIndex: 0,
@@ -94,7 +96,7 @@ export const useCalendarFieldSegment = ({
 			suppressContentEditableWarning: true,
 			onKeyDown: handleKeyDown
 		}),
-		[min, max, value, display, label, placeholder, handleKeyDown]
+		[min, max, value, label, invalid, display, placeholder, handleKeyDown]
 	)
 }
 

@@ -15,6 +15,8 @@ export type CalendarFieldProps = AsChildComponentProps<
 export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 	(props, forwardedRef) => {
 		const [localProps, componentProps] = splitProps(props, [
+			'min',
+			'max',
 			'value',
 			'defaultValue'
 		])

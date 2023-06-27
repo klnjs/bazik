@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { useControlledState } from '../core/useControlledState'
+import { isDateValid } from './calendarUtils'
 
 export type UseCalendarFieldStateOptions = {
 	value?: Date
@@ -28,22 +29,29 @@ export const useCalendarFieldState = ({
 		value?.getDate()
 	)
 
-	return useMemo(
-		() => ({
+	return useMemo(() => {
+		const date = new Date(
+			yearSegment as unknown as number,
+			monthSegment as unknown as number,
+			daySegment as unknown as number
+		)
+
+		return {
+			date,
+			dateIsValid: isDateValid(date),
 			yearSegment,
 			monthSegment,
 			daySegment,
 			setYearSegment,
 			setMonthSegment,
 			setDaySegment
-		}),
-		[
-			yearSegment,
-			monthSegment,
-			daySegment,
-			setYearSegment,
-			setMonthSegment,
-			setDaySegment
-		]
-	)
+		}
+	}, [
+		yearSegment,
+		monthSegment,
+		daySegment,
+		setYearSegment,
+		setMonthSegment,
+		setDaySegment
+	])
 }
