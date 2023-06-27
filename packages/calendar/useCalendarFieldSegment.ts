@@ -89,6 +89,8 @@ export const useCalendarFieldSegment = ({
 			'aria-label': label,
 			'aria-invalid': invalid ? true : undefined,
 			inputMode: 'numeric',
+			autoCorrect: 'off',
+			autoCapitalize: 'off',
 			contentEditable: true,
 			tabIndex: 0,
 			style: { caretColor: 'transparent' },
