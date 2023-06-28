@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useCallback, type KeyboardEvent } from 'react'
 
 export type UseCalendarFieldSegmentOptions = {
-	min: number
+	min?: number
 	max: number
 	step?: number
 	start?: number
@@ -14,7 +14,7 @@ export type UseCalendarFieldSegmentOptions = {
 }
 
 export const useCalendarFieldSegment = ({
-	min,
+	min = 1,
 	max,
 	step = 1,
 	start = min,

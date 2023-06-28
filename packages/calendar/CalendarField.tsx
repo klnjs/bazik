@@ -14,7 +14,7 @@ export type CalendarFieldProps = AsChildComponentProps<
 
 export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 	(props, forwardedRef) => {
-		const [localProps, componentProps] = splitProps(props, [
+		const [localProps, otherProps] = splitProps(props, [
 			'min',
 			'max',
 			'value',
@@ -23,11 +23,10 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 		])
 
 		const calendarField = useCalendarField(localProps)
-		const mergedProps = mergeProps(componentProps, calendarField.rootProps)
 
 		return (
 			<CalendarFieldProvider value={calendarField}>
-				<freya.div ref={forwardedRef} {...mergedProps} />
+				<freya.div ref={forwardedRef} role='group' {...otherProps} />
 			</CalendarFieldProvider>
 		)
 	}
