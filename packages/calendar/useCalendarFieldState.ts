@@ -1,6 +1,9 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useControlledState } from '../core/useControlledState'
-import { isDateValid } from './calendarUtils'
+import {
+	CalendarFieldDate,
+	type CalendarFieldDateOptions
+} from './CalendarFieldDate'
 
 export type UseCalendarFieldStateOptions = {
 	value?: Date
@@ -8,50 +11,51 @@ export type UseCalendarFieldStateOptions = {
 }
 
 export const useCalendarFieldState = ({
-	value,
-	defaultValue
+	value: valueProp,
+	defaultValue: defaultValueProp
 }: UseCalendarFieldStateOptions) => {
 	// const [visibleYear, setVisibleYear] = useState(0)
 	// const [visibleMonth, setVisibleMonth] = useState(0)
 
-	const [yearSegment, setYearSegment] = useControlledState(
-		defaultValue?.getFullYear(),
-		value?.getFullYear()
+	const value = useMemo(
+		() => (valueProp ? CalendarFieldDate.fromDate(valueProp) : undefined),
+		[valueProp]
 	)
 
-	const [monthSegment, setMonthSegment] = useControlledState(
-		defaultValue ? defaultValue.getMonth() + 1 : undefined,
-		value ? value.getMonth() + 1 : undefined
+	const defaultValue = useMemo(
+		() => CalendarFieldDate.fromDate(defaultValueProp),
+		[defaultValueProp]
 	)
 
-	const [daySegment, setDaySegment] = useControlledState(
-		defaultValue?.getDate(),
-		value?.getDate()
+	const [date, setDate] = useControlledState(defaultValue, value)
+
+	console.log(date)
+
+	const mutate = useCallback(
+		(mutation: CalendarFieldDateOptions) => {
+			console.log(mutation)
+			setDate((prev) => prev.clone(mutation))
+		},
+		[setDate]
 	)
 
-	return useMemo(() => {
-		const date = new Date(
-			yearSegment as unknown as number,
-			monthSegment as unknown as number,
-			daySegment as unknown as number
-		)
-
-		return {
-			date,
-			dateIsValid: isDateValid(date),
-			yearSegment,
-			monthSegment,
-			daySegment,
-			setYearSegment,
-			setMonthSegment,
-			setDaySegment
-		}
-	}, [
-		yearSegment,
-		monthSegment,
-		daySegment,
-		setYearSegment,
-		setMonthSegment,
-		setDaySegment
-	])
+	return useMemo(
+		() => ({
+			year: date.year,
+			month: date.month,
+			day: date.day,
+			getDaysInMonth: date.getDaysInMonth,
+			asDate: date.asDate,
+			isValid: date.isValid,
+			isEquals: date.isEquals,
+			isAfter: date.isAfter,
+			isBefore: date.isBefore,
+			setYear: (year: CalendarFieldDateOptions['year']) =>
+				mutate({ year }),
+			setMonth: (month: CalendarFieldDateOptions['month']) =>
+				mutate({ month }),
+			setDay: (day: CalendarFieldDateOptions['day']) => mutate({ day })
+		}),
+		[date, mutate]
+	)
 }

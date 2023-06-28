@@ -18,7 +18,12 @@ export const Default: StoryObj<typeof CalendarField> = {
 				<button onClick={() => setDate(new Date())}>Controlled</button>
 				<button onClick={() => setDate(undefined)}>Uncontrolled</button>
 
-				<CalendarField value={date} min={new Date()} {...args}>
+				<CalendarField
+					value={date}
+					min={new Date()}
+					onChange={(value) => console.log(value)}
+					{...args}
+				>
 					<CalendarFieldSegment segment='day' />
 					<CalendarFieldSegment segment='month' />
 					<CalendarFieldSegment segment='year' />

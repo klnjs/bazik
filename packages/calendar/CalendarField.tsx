@@ -18,7 +18,8 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			'min',
 			'max',
 			'value',
-			'defaultValue'
+			'defaultValue',
+			'onChange'
 		])
 
 		const calendarField = useCalendarField(localProps)
