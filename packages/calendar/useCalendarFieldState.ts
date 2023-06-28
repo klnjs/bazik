@@ -2,7 +2,7 @@ import { useMemo, useState, useCallback } from 'react'
 import { useControllableState } from '../core/useControllableState'
 import {
 	CalendarFieldDate,
-	type CalendarFieldDateOptions
+	type CalendarFieldDateSegment
 } from './CalendarFieldDate'
 
 export type UseCalendarFieldStateOptions = {
@@ -12,41 +12,30 @@ export type UseCalendarFieldStateOptions = {
 }
 
 export const useCalendarFieldState = ({
-	value: valueProp,
-	defaultValue: defaultValueProp,
-	onChange: onChangeProp
+	value,
+	defaultValue,
+	onChange
 }: UseCalendarFieldStateOptions) => {
-	const value = useMemo(
-		() => (valueProp ? CalendarFieldDate.fromDate(valueProp) : undefined),
-		[valueProp]
-	)
-
-	const defaultValue = useMemo(
-		() =>
-			!valueProp
-				? CalendarFieldDate.fromDate(defaultValueProp)
-				: undefined,
-		[defaultValueProp]
-	)
-
-	const onChange = useCallback(
-		(value: CalendarFieldDate) => onChangeProp?.(value.asDate()),
-		[onChangeProp]
-	)
-
 	const [date, setDate] = useControllableState({
-		value,
-		defaultValue,
-		onChange
+		value: value ? CalendarFieldDate.fromDate(value) : undefined,
+		defaultValue: CalendarFieldDate.fromDate(defaultValue),
+		onChange: (newValue: CalendarFieldDate) => onChange?.(newValue.asDate())
 	})
 
 	const [dateVisible, setDateVisible] = useState(
-		value ?? CalendarFieldDate.fromToday()
+		value
+			? CalendarFieldDate.fromDate(value)
+			: CalendarFieldDate.fromToday()
 	)
 
 	const update = useCallback(
-		(mutation: CalendarFieldDateOptions) =>
-			setDate((prev) => prev.clone(mutation)),
+		(newDate: CalendarFieldDate) => setDate(newDate),
+		[setDate]
+	)
+
+	const updateSegment = useCallback(
+		(segment: CalendarFieldDateSegment, newValue: number | undefined) =>
+			setDate((prev) => prev.clone({ [segment]: newValue })),
 		[setDate]
 	)
 
@@ -54,15 +43,9 @@ export const useCalendarFieldState = ({
 		() => ({
 			date: date,
 			dateVisible: dateVisible,
-			setDate: (date: CalendarFieldDateOptions) => update(date),
-			setSegment: (
-				segment: 'year' | 'month' | 'day',
-				value: number | undefined
-			) => update({ [segment]: value }),
-			setMonth: (month: CalendarFieldDateOptions['month']) =>
-				update({ month }),
-			setDay: (day: CalendarFieldDateOptions['day']) => update({ day })
+			setDate: update,
+			setSegment: updateSegment
 		}),
-		[date, update, setDate]
+		[date, dateVisible, update, updateSegment]
 	)
 }

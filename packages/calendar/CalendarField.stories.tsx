@@ -13,22 +13,27 @@ export default {
 export const Default: StoryObj<typeof CalendarField> = {
 	render: (args) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [date, setDate] = useState<Date>()
+		const [selectedDate, setSelectedDate] = useState<Date>()
 		const handleChange = (date: Date | undefined) => {
 			console.log(date)
 
-			if (date !== undefined) {
-				setDate(date)
+			if (selectedDate !== undefined) {
+				setSelectedDate(date)
 			}
 		}
 
 		return (
 			<>
-				<button onClick={() => setDate(new Date())}>Controlled</button>
-				<button onClick={() => setDate(undefined)}>Uncontrolled</button>
+				<button onClick={() => setSelectedDate(new Date())}>
+					Controlled
+				</button>
+
+				<button onClick={() => setSelectedDate(undefined)}>
+					Uncontrolled
+				</button>
 
 				<CalendarField
-					value={date}
+					value={selectedDate}
 					min={new Date()}
 					onChange={handleChange}
 					{...args}

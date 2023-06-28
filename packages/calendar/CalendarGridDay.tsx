@@ -10,13 +10,13 @@ export type CalendarGridDayProps = AsChildComponentProps<
 
 export const CalendarGridDay = forwardRef<'div', CalendarGridDayProps>(
 	(props, forwardedRef) => {
-		const context = useCalendarFieldContext()
-		const [localProps, componentProps] = splitProps(props, ['date'])
+		const [{ date }, componentProps] = splitProps(props, ['date'])
+		const { state } = useCalendarFieldContext()
 
 		return (
 			<freya.div
 				ref={forwardedRef}
-				onClick={() => context.state.setDate(localProps.date)}
+				onClick={() => state.setDate(date)}
 				{...componentProps}
 			/>
 		)

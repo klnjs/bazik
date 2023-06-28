@@ -1,61 +1,44 @@
-/* eslint-disable no-underscore-dangle */
-
 export type CalendarFieldDateOptions = {
 	year?: number
 	month?: number
 	day?: number
 }
 
+export type CalendarFieldDateSegment = keyof CalendarFieldDateOptions
+
 export class CalendarFieldDate {
-	private _year?: number
-	private _month?: number
-	private _day?: number
+	year?: number
+	month?: number
+	day?: number
 
-	constructor(options: CalendarFieldDateOptions = {}) {
-		this._year = options.year
-		this._month = options.month
-		this._day = options.day
+	clone(mutation: CalendarFieldDateOptions = {}) {
+		const cloned = new CalendarFieldDate()
+
+		cloned.setSegment('year', mutation.year ?? this.year)
+		cloned.setSegment('month', mutation.month ?? this.month)
+		cloned.setSegment('day', mutation.day ?? this.day)
+
+		return cloned
 	}
 
-	get year(): number | undefined {
-		return this._year
+	setSegment(segment: CalendarFieldDateSegment, value: number | undefined) {
+		this[segment] = value
+
+		if (this.day !== undefined) {
+			this.day = Math.min(this.day, this.getDaysInMonth())
+		}
 	}
 
-	set year(year: number | undefined) {
-		this._year = year
-	}
-
-	get month(): number | undefined {
-		return this._month
-	}
-
-	set month(month: number | undefined) {
-		this._month = month
-	}
-
-	get day(): number | undefined {
-		return this._day
-	}
-
-	set day(day: number | undefined) {
-		this._day = day
-	}
-
-	clone(options: CalendarFieldDateOptions = {}) {
-		return new CalendarFieldDate({
-			year: options.year !== undefined ? options.year : this.year,
-			month: options.month !== undefined ? options.month : this.month,
-			day: options.day !== undefined ? options.day : this.day
-		})
+	getSegment(segment: CalendarFieldDateSegment) {
+		return this[segment]
 	}
 
 	getDaysInMonth() {
 		if (!this.isValid()) {
-			return undefined
+			return 31
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return new Date(this._year!, this._month!, this._day).getDate()
+		return new Date(this.year, this.month, 0).getDate()
 	}
 
 	asDate() {
@@ -63,15 +46,14 @@ export class CalendarFieldDate {
 			return undefined
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return new Date(this._year!, this._month!, this._day)
+		return new Date(this.year, this.month - 1, this.day)
 	}
 
-	isValid() {
+	isValid(): this is Required<CalendarFieldDateOptions> {
 		return (
-			this._year !== undefined &&
-			this._month !== undefined &&
-			this._day !== undefined
+			this.year !== undefined &&
+			this.month !== undefined &&
+			this.day !== undefined
 		)
 	}
 
@@ -128,11 +110,13 @@ export class CalendarFieldDate {
 			return new CalendarFieldDate()
 		}
 
-		const year = date.getFullYear()
-		const month = date.getMonth() + 1
-		const day = date.getDate()
+		const result = new CalendarFieldDate()
 
-		return new CalendarFieldDate({ year, month, day })
+		result.setSegment('year', date.getFullYear())
+		result.setSegment('month', date.getMonth() + 1)
+		result.setSegment('day', date.getDate())
+
+		return result
 	}
 
 	static fromToday() {
