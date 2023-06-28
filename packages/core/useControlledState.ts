@@ -20,9 +20,7 @@ export const useControlledState = <T>(
 		if (isControlledRef.current !== isControlled) {
 			// eslint-disable-next-line no-console
 			console.warn(
-				'Warning: A component is changing an uncontrolled component to be controlled.' +
-					' This is likely caused by the value changing from undefined to a defined value, which should not happen.' +
-					' Decide between using a controlled or uncontrolled element for the lifetime of the component'
+				'Warning: A component is changing from being uncontrolled to controlled or vice versa.'
 			)
 		}
 

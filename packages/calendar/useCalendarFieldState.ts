@@ -30,10 +30,8 @@ export const useCalendarFieldState = ({
 	const [date, setDate] = useControlledState(defaultValue, value)
 
 	const mutate = useCallback(
-		(mutation: CalendarFieldDateOptions) => {
-			console.log(mutation)
-			setDate((prev) => prev.clone(mutation))
-		},
+		(mutation: CalendarFieldDateOptions) =>
+			setDate((prev) => prev.clone(mutation)),
 		[setDate]
 	)
 
