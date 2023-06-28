@@ -7,7 +7,7 @@ export const useControlledState = <T>(
 	value?: T
 ): [T, SetValue<T>] => {
 	const [state, setState] = useState<T>(defaultValue)
-	const [isControlled, setIsControlled] = useState(value !== undefined)
+	const isControlled = value !== undefined
 	const isControlledRef = useRef(isControlled)
 
 	const handleChange: SetValue<T> = (newValue) => {
@@ -15,15 +15,6 @@ export const useControlledState = <T>(
 			setState(newValue)
 		}
 	}
-
-	useEffect(() => {
-		if (value !== undefined) {
-			setIsControlled(true)
-			setState(value)
-		} else {
-			setIsControlled(false)
-		}
-	}, [value])
 
 	useEffect(() => {
 		if (isControlledRef.current !== isControlled) {
@@ -38,6 +29,5 @@ export const useControlledState = <T>(
 		isControlledRef.current = isControlled
 	}, [isControlled])
 
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	return [isControlled ? value! : state, handleChange]
+	return [isControlled ? value : state, handleChange]
 }
