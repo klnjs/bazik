@@ -1,34 +1,50 @@
 import { useMemo, type ReactNode } from 'react'
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
-import { splitProps } from '../core/splitProps'
-import { useCalendarFieldContext } from './CalendarFieldContext'
-import type { CalendarFieldDate } from './CalendarFieldDate'
+import {
+	freya,
+	forwardRef,
+	splitProps,
+	type AsChildComponentProps
+} from '../core'
+import { useCalendarContext } from './CalendarContext'
+import type { CalendarDate } from './CalendarDate'
 
 export type CalendarGridProps = AsChildComponentProps<
 	'div',
-	{ children: (day: CalendarFieldDate) => ReactNode }
+	{ children: (day: CalendarDate) => ReactNode }
 >
 
 export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 	(props, forwardedRef) => {
 		const [{ children }, componentProps] = splitProps(props, ['children'])
-		const { state } = useCalendarFieldContext()
+		const { state } = useCalendarContext()
 
-		const visibleDays = useMemo(() => {
+		const visibleDates = useMemo(() => {
 			const visible = state.dateVisible
-			const days: CalendarFieldDate[] = []
-			const dayCount = visible.getDaysInMonth()
+			const visibleHead = visible.clone({ day: 0 })
+			const visibleTail = visible.clone({ day: visible.getDaysInMonth() })
 
-			for (let day = 1; day <= dayCount; day++) {
-				days.push(state.dateVisible.clone({ day }))
+			const rangeHead = visibleHead.subtract({
+				day: visibleHead.getDayOfWeek()
+			})
+
+			const rangeTail = visibleTail.add({
+				day: 7 - visibleTail.getDayOfWeek()
+			})
+
+			let date = rangeHead
+			const dates: CalendarDate[] = []
+
+			while (!date.isEquals(rangeTail)) {
+				dates.push(date)
+				date = date.add({ day: 1 })
 			}
 
-			return days
-		}, [state])
+			return dates
+		}, [state.dateVisible])
 
 		return (
 			<freya.div ref={forwardedRef} {...componentProps}>
-				{visibleDays.map(children)}
+				{visibleDates.map(children)}
 			</freya.div>
 		)
 	}

@@ -1,27 +1,47 @@
-export type CalendarFieldDateOptions = {
+export type CalendarDateProps = {
 	year?: number
 	month?: number
 	day?: number
 }
 
-export type CalendarFieldDateSegment = keyof CalendarFieldDateOptions
+export type CalendarDateSegment = keyof CalendarDateProps
 
-export class CalendarFieldDate {
+export class CalendarDate {
 	year?: number
 	month?: number
 	day?: number
 
-	clone(mutation: CalendarFieldDateOptions = {}) {
-		const cloned = new CalendarFieldDate()
+	clone({ year, month, day }: CalendarDateProps = {}) {
+		const cloned = new CalendarDate()
 
-		cloned.setSegment('year', mutation.year ?? this.year)
-		cloned.setSegment('month', mutation.month ?? this.month)
-		cloned.setSegment('day', mutation.day ?? this.day)
+		cloned.setSegment('year', year ?? this.year)
+		cloned.setSegment('month', month ?? this.month)
+		cloned.setSegment('day', day ?? this.day)
 
 		return cloned
 	}
 
-	setSegment(segment: CalendarFieldDateSegment, value: number | undefined) {
+	add({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
+		const date = this.asDate() ?? new Date()
+
+		date.setFullYear(date.getFullYear() + year)
+		date.setMonth(date.getMonth() + month)
+		date.setDate(date.getDate() + day)
+
+		return CalendarDate.fromDate(date)
+	}
+
+	subtract({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
+		const date = this.asDate() ?? new Date()
+
+		date.setFullYear(date.getFullYear() - year)
+		date.setMonth(date.getMonth() - month)
+		date.setDate(date.getDate() - day)
+
+		return CalendarDate.fromDate(date)
+	}
+
+	setSegment(segment: CalendarDateSegment, value: number | undefined) {
 		this[segment] = value
 
 		if (this.day !== undefined) {
@@ -29,8 +49,12 @@ export class CalendarFieldDate {
 		}
 	}
 
-	getSegment(segment: CalendarFieldDateSegment) {
+	getSegment(segment: CalendarDateSegment) {
 		return this[segment]
+	}
+
+	getDayOfWeek() {
+		return this.asDate()?.getDay()
 	}
 
 	getDaysInMonth() {
@@ -49,7 +73,14 @@ export class CalendarFieldDate {
 		return new Date(this.year, this.month - 1, this.day)
 	}
 
-	isValid(): this is Required<CalendarFieldDateOptions> {
+	toLocaleString(
+		locales?: Intl.LocalesArgument,
+		options?: Intl.DateTimeFormatOptions
+	) {
+		return this.asDate()?.toLocaleString(locales, options)
+	}
+
+	isValid(): this is Required<CalendarDateProps> {
 		return (
 			this.year !== undefined &&
 			this.month !== undefined &&
@@ -57,7 +88,17 @@ export class CalendarFieldDate {
 		)
 	}
 
-	isEquals(date: CalendarFieldDate) {
+	isToday() {
+		const today = CalendarDate.fromToday()
+
+		return (
+			this.year === today.year &&
+			this.month === today.month &&
+			this.day === today.day
+		)
+	}
+
+	isEquals(date: CalendarDate) {
 		return (
 			this.year === date.year &&
 			this.month === date.month &&
@@ -65,7 +106,7 @@ export class CalendarFieldDate {
 		)
 	}
 
-	isBefore(date: CalendarFieldDate) {
+	isBefore(date: CalendarDate) {
 		if (this.year !== undefined && date.year !== undefined) {
 			if (this.year < date.year) {
 				return true
@@ -85,7 +126,7 @@ export class CalendarFieldDate {
 		return false
 	}
 
-	isAfter(date: CalendarFieldDate) {
+	isAfter(date: CalendarDate) {
 		if (this.year !== undefined && date.year !== undefined) {
 			if (this.year > date.year) {
 				return true
@@ -107,10 +148,10 @@ export class CalendarFieldDate {
 
 	static fromDate(date: Date | undefined) {
 		if (date === undefined) {
-			return new CalendarFieldDate()
+			return new CalendarDate()
 		}
 
-		const result = new CalendarFieldDate()
+		const result = new CalendarDate()
 
 		result.setSegment('year', date.getFullYear())
 		result.setSegment('month', date.getMonth() + 1)
@@ -120,6 +161,6 @@ export class CalendarFieldDate {
 	}
 
 	static fromToday() {
-		return CalendarFieldDate.fromDate(new Date())
+		return CalendarDate.fromDate(new Date())
 	}
 }

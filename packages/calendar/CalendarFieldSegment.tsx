@@ -1,8 +1,12 @@
 import { useMemo, useCallback, type KeyboardEvent } from 'react'
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
-import { splitProps } from '../core/splitProps'
-import { useCalendarFieldContext } from './CalendarFieldContext'
-import type { CalendarFieldDateSegment } from './CalendarFieldDate'
+import {
+	freya,
+	forwardRef,
+	splitProps,
+	type AsChildComponentProps
+} from '../core'
+import { useCalendarContext } from './CalendarContext'
+import type { CalendarDateSegment } from './CalendarDate'
 
 export type CalendarFieldSegmentProps = AsChildComponentProps<
 	'div',
@@ -23,7 +27,7 @@ export const CalendarFieldSegment = forwardRef<
 		'segment'
 	])
 
-	const { state, config } = useCalendarFieldContext()
+	const { state, config } = useCalendarContext()
 	const { min, max, label, placeholder } = useSegment(segment)
 
 	const value = state.date.getSegment(segment)
@@ -32,11 +36,7 @@ export const CalendarFieldSegment = forwardRef<
 			return placeholder
 		}
 
-		if (style === '2-digit') {
-			return `0${value}`.slice(-2)
-		}
-
-		return String(value)
+		return String(value).padStart(style === '2-digit' ? 2 : 0, '0')
 	}, [value, style, placeholder])
 
 	const handleKeyDown = useCallback(
@@ -46,7 +46,7 @@ export const CalendarFieldSegment = forwardRef<
 			}
 
 			if (event.key === 'ArrowUp') {
-				state.setSegment(
+				state.setDateSegment(
 					segment,
 					value !== undefined
 						? Math.min(value + step, max)
@@ -59,7 +59,7 @@ export const CalendarFieldSegment = forwardRef<
 			}
 
 			if (event.key === 'ArrowDown') {
-				state.setSegment(
+				state.setDateSegment(
 					segment,
 					value !== undefined
 						? Math.max(value - step, min)
@@ -72,7 +72,7 @@ export const CalendarFieldSegment = forwardRef<
 			}
 
 			if (event.key === 'Backspace' || event.key === 'Delete') {
-				state.setSegment(segment, undefined)
+				state.setDateSegment(segment, undefined)
 			}
 
 			if (/[0-9]/.test(event.key)) {
@@ -80,9 +80,9 @@ export const CalendarFieldSegment = forwardRef<
 				const valueMutation = Number(valueAsString + event.key)
 
 				if (valueMutation <= max) {
-					state.setSegment(segment, valueMutation)
+					state.setDateSegment(segment, valueMutation)
 				} else {
-					state.setSegment(segment, Number(event.key))
+					state.setDateSegment(segment, Number(event.key))
 				}
 			}
 		},
@@ -124,7 +124,7 @@ const findSegment = (element: Element, direction: 'next' | 'previous') => {
 	}
 }
 
-const useSegment = (segment: CalendarFieldDateSegment) =>
+const useSegment = (segment: CalendarDateSegment) =>
 	useMemo(() => {
 		switch (segment) {
 			case 'year':
