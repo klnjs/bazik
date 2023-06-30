@@ -12,7 +12,7 @@ export type CalendarSegmentProps = AsChildComponentProps<
 	'div',
 	{
 		step?: number
-		style?: 'numeric' | 'digit'
+		mode?: 'numeric' | 'digit'
 		label?: string
 		segment: 'year' | 'month' | 'day'
 		placeholder?: string
@@ -21,10 +21,10 @@ export type CalendarSegmentProps = AsChildComponentProps<
 
 export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 	(props, forwardedRef) => {
-		const [{ step = 1, style, label, segment, placeholder }, otherProps] =
+		const [{ step = 1, mode, label, segment, placeholder }, otherProps] =
 			splitProps(props, [
 				'step',
-				'style',
+				'mode',
 				'label',
 				'segment',
 				'placeholder'
@@ -41,12 +41,12 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				return placeholder
 			}
 
-			if (style === 'digit') {
+			if (mode === 'digit') {
 				return String(value).padStart(String(max).length, '0')
 			}
 
 			return String(value)
-		}, [max, value, style, placeholder])
+		}, [max, mode, value, placeholder])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {

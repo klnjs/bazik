@@ -29,7 +29,8 @@ export const Default: StoryObj<typeof Calendar> = {
 		return (
 			<>
 				<button onClick={() => setSelectedDate(new Date())}>
-					Controlled
+					Controlled -{' '}
+					{selectedDate ? selectedDate.toLocaleDateString() : ''}
 				</button>
 
 				<button onClick={() => setSelectedDate(undefined)}>
@@ -43,9 +44,9 @@ export const Default: StoryObj<typeof Calendar> = {
 					{...args}
 				>
 					<CalendarField>
-						<CalendarSegment segment='day' />
-						<CalendarSegment segment='month' />
-						<CalendarSegment segment='year' />
+						<CalendarSegment segment='day' placeholder='dd' />
+						<CalendarSegment segment='month' placeholder='mm' />
+						<CalendarSegment segment='year' placeholder='yyyy' />
 					</CalendarField>
 
 					<CalendarContent>

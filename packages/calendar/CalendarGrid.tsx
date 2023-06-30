@@ -19,25 +19,20 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 		const { state } = useCalendarContext()
 
 		const visibleDates = useMemo(() => {
-			const visible = state.dateVisible
-			const visibleHead = visible.clone({ day: 0 })
-			const visibleTail = visible.clone({ day: visible.getDaysInMonth() })
-
-			const rangeHead = visibleHead.calc({
-				day: visibleHead.getDayOfWeek()
-			})
-
-			const rangeTail = visibleTail.calc({
-				day: 7 - visibleTail.getDayOfWeek()
-			})
-
-			let date = rangeHead
 			const dates: CalendarDate[] = []
+			const first = state.dateVisible.getFirstDateOfMonth()
+			const last = state.dateVisible.getLastDateOfMonth()
+			const end = last.calc({ day: 7 - last.getDayOfWeek() })
+			let date = first.calc({ day: first.getDayOfWeek() })
 
-			while (!date.isEquals(rangeTail)) {
+			console.log(date)
+
+			while (!date.isEquals(end)) {
 				dates.push(date)
 				date = date.calc({ day: 1 })
 			}
+
+			console.log(dates)
 
 			return dates
 		}, [state.dateVisible])

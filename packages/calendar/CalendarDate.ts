@@ -46,12 +46,13 @@ export class CalendarDate {
 	}
 
 	set(segment: CalendarDateSegment, value: number | undefined) {
-		this[segment] = value
-			? Math.min(
-					Math.max(value, CalendarDate[`${segment}Min`]),
-					CalendarDate[`${segment}Max`]
-			  )
-			: undefined
+		this[segment] =
+			value !== undefined
+				? Math.min(
+						Math.max(value, CalendarDate[`${segment}Min`]),
+						CalendarDate[`${segment}Max`]
+				  )
+				: undefined
 
 		if (this.day !== undefined) {
 			this.day = Math.min(
@@ -84,6 +85,14 @@ export class CalendarDate {
 		options?: Intl.DateTimeFormatOptions
 	) {
 		return this.asDate()?.toLocaleString(locales, options)
+	}
+
+	getFirstDateOfMonth() {
+		return this.clone({ day: 0 })
+	}
+
+	getLastDateOfMonth() {
+		return this.clone({ day: this.getDaysInMonth() })
 	}
 
 	getDayOfWeek() {
