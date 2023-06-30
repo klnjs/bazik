@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Calendar } from './Calendar'
-import { CalendarFieldSegment } from './CalendarFieldSegment'
+import { CalendarSegment } from './CalendarSegment'
 import { CalendarGrid } from './CalendarGrid'
-import { CalendarGridDay } from './CalendarGridDay'
+import { CalendarDay } from './CalendarDay'
 import { CalendarField } from './CalendarField'
 import { CalendarContent } from './CalendarContent'
-import { CalendarContentTrigger } from './CalendarContentTrigger'
-import { CalendarContentTitle } from './CalendarContentTitle'
+import { CalendarButton } from './CalendarButton'
+import { CalendarTitle } from './CalendarTitle'
 
 export default {
 	title: 'Calendar',
@@ -43,35 +43,33 @@ export const Default: StoryObj<typeof Calendar> = {
 					{...args}
 				>
 					<CalendarField>
-						<CalendarFieldSegment segment='day' />
-						<CalendarFieldSegment segment='month' />
-						<CalendarFieldSegment segment='year' />
+						<CalendarSegment segment='day' />
+						<CalendarSegment segment='month' />
+						<CalendarSegment segment='year' />
 					</CalendarField>
 
 					<CalendarContent>
-						<CalendarContentTitle />
-
-						<CalendarContentTrigger direction='dec'>
-							Back
-						</CalendarContentTrigger>
-
-						<CalendarContentTrigger direction='inc'>
-							Next
-						</CalendarContentTrigger>
-
-						<CalendarGrid
-							style={{
-								display: 'grid',
-								gridTemplateColumns: 'repeat(7, 1fr)'
-							}}
-						>
+						<CalendarTitle />
+						<CalendarButton action='prevYear'>
+							{'<<'}
+						</CalendarButton>
+						<CalendarButton action='prevMonth'>
+							{'<'}
+						</CalendarButton>
+						<CalendarButton action='nextMonth'>
+							{'>'}
+						</CalendarButton>
+						<CalendarButton action='nextYear'>
+							{'>>'}
+						</CalendarButton>
+						<CalendarGrid>
 							{(date) => (
-								<CalendarGridDay
+								<CalendarDay
 									key={date.toLocaleString()}
 									date={date}
 								>
 									{date.day}
-								</CalendarGridDay>
+								</CalendarDay>
 							)}
 						</CalendarGrid>
 					</CalendarContent>

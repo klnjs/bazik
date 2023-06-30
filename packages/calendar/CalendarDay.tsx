@@ -8,12 +8,12 @@ import {
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
 
-export type CalendarGridDayProps = AsChildComponentProps<
+export type CalendarDayProps = AsChildComponentProps<
 	'button',
 	{ date: CalendarDate }
 >
 
-export const CalendarGridDay = forwardRef<'button', CalendarGridDayProps>(
+export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 	(props, forwardedRef) => {
 		const [{ date }, componentProps] = splitProps(props, ['date'])
 		const { state } = useCalendarContext()
@@ -21,19 +21,19 @@ export const CalendarGridDay = forwardRef<'button', CalendarGridDayProps>(
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLButtonElement>) => {
 				if (event.key === 'ArrowUp') {
-					state.setDate((prev) => prev.subtract({ day: 7 }))
+					state.setDate((prev) => prev.calc({ day: -7 }))
 				}
 
 				if (event.key === 'ArrowRight') {
-					state.setDate((prev) => prev.add({ day: 1 }))
+					state.setDate((prev) => prev.calc({ day: 1 }))
 				}
 
 				if (event.key === 'ArrowDown') {
-					state.setDate((prev) => prev.add({ day: 7 }))
+					state.setDate((prev) => prev.calc({ day: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					state.setDate((prev) => prev.subtract({ day: 1 }))
+					state.setDate((prev) => prev.calc({ day: -1 }))
 				}
 			},
 			[state]

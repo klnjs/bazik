@@ -23,11 +23,11 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 			const visibleHead = visible.clone({ day: 0 })
 			const visibleTail = visible.clone({ day: visible.getDaysInMonth() })
 
-			const rangeHead = visibleHead.subtract({
+			const rangeHead = visibleHead.calc({
 				day: visibleHead.getDayOfWeek()
 			})
 
-			const rangeTail = visibleTail.add({
+			const rangeTail = visibleTail.calc({
 				day: 7 - visibleTail.getDayOfWeek()
 			})
 
@@ -36,7 +36,7 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 
 			while (!date.isEquals(rangeTail)) {
 				dates.push(date)
-				date = date.add({ day: 1 })
+				date = date.calc({ day: 1 })
 			}
 
 			return dates

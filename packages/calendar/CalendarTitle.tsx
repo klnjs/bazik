@@ -1,15 +1,15 @@
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 
-export type CalendarContentTitleProps = AsChildComponentProps<'h2'>
+export type CalendarTitleProps = AsChildComponentProps<'h2'>
 
-export const CalendarContentTitle = forwardRef<'h2', CalendarContentTitleProps>(
+export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	(props, forwardedRef) => {
 		const { state, config } = useCalendarContext()
 
 		return (
 			<freya.h2 ref={forwardedRef} {...props}>
-				{state.dateVisible.toLocaleString(config.locale, {
+				{state.dateVisible.format(config.locale, {
 					year: 'numeric',
 					month: 'long'
 				})}

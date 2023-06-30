@@ -8,20 +8,60 @@ export type CalendarDateSegment = keyof CalendarDateProps
 
 export class CalendarDate {
 	year?: number
+	static yearMin = 1
+	static yearMax = 9999
+
 	month?: number
+	static monthMin = 1
+	static monthMax = 12
+
 	day?: number
+	static dayMin = 1
+	static dayMax = 31
 
-	clone({ year, month, day }: CalendarDateProps = {}) {
-		const cloned = new CalendarDate()
+	static fromDate(date: Date | undefined) {
+		if (date === undefined) {
+			return new CalendarDate()
+		}
 
-		cloned.setSegment('year', year ?? this.year)
-		cloned.setSegment('month', month ?? this.month)
-		cloned.setSegment('day', day ?? this.day)
-
-		return cloned
+		return new CalendarDate({
+			year: date.getFullYear(),
+			month: date.getMonth() + 1,
+			day: date.getDate()
+		})
 	}
 
-	add({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
+	static fromToday() {
+		return CalendarDate.fromDate(new Date())
+	}
+
+	constructor({ year, month, day }: CalendarDateProps = {}) {
+		this.set('year', year)
+		this.set('month', month)
+		this.set('day', day)
+	}
+
+	get(segment: CalendarDateSegment) {
+		return this[segment]
+	}
+
+	set(segment: CalendarDateSegment, value: number | undefined) {
+		this[segment] = value
+			? Math.min(
+					Math.max(value, CalendarDate[`${segment}Min`]),
+					CalendarDate[`${segment}Max`]
+			  )
+			: undefined
+
+		if (this.day !== undefined) {
+			this.day = Math.min(
+				this.day,
+				this.getDaysInMonth() ?? CalendarDate.dayMax
+			)
+		}
+	}
+
+	calc({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
 		const date = this.asDate() ?? new Date()
 
 		date.setFullYear(date.getFullYear() + year)
@@ -31,26 +71,19 @@ export class CalendarDate {
 		return CalendarDate.fromDate(date)
 	}
 
-	subtract({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
-		const date = this.asDate() ?? new Date()
-
-		date.setFullYear(date.getFullYear() - year)
-		date.setMonth(date.getMonth() - month)
-		date.setDate(date.getDate() - day)
-
-		return CalendarDate.fromDate(date)
+	clone({
+		year = this.year,
+		month = this.month,
+		day = this.day
+	}: CalendarDateProps = {}) {
+		return new CalendarDate({ year, month, day })
 	}
 
-	setSegment(segment: CalendarDateSegment, value: number | undefined) {
-		this[segment] = value
-
-		if (this.day !== undefined) {
-			this.day = Math.min(this.day, this.getDaysInMonth())
-		}
-	}
-
-	getSegment(segment: CalendarDateSegment) {
-		return this[segment]
+	format(
+		locales?: Intl.LocalesArgument,
+		options?: Intl.DateTimeFormatOptions
+	) {
+		return this.asDate()?.toLocaleString(locales, options)
 	}
 
 	getDayOfWeek() {
@@ -59,10 +92,29 @@ export class CalendarDate {
 
 	getDaysInMonth() {
 		if (!this.isValid()) {
-			return 31
+			return undefined
 		}
 
 		return new Date(this.year, this.month, 0).getDate()
+	}
+
+	getWeek() {
+		if (!this.isValid()) {
+			return undefined
+		}
+
+		const date = new Date(this.year, this.month - 1, this.day)
+		date.setDate(date.getDate() + 4 - (date.getDay() || 7))
+
+		const time = date.getTime()
+		const year = date.getFullYear()
+		const first = new Date(
+			year,
+			0,
+			1 + (4 - new Date(year, 0, 1).getDay() || 7)
+		)
+
+		return Math.ceil(((time - first.getTime()) / 86400000 + 1) / 7)
 	}
 
 	asDate() {
@@ -71,13 +123,6 @@ export class CalendarDate {
 		}
 
 		return new Date(this.year, this.month - 1, this.day)
-	}
-
-	toLocaleString(
-		locales?: Intl.LocalesArgument,
-		options?: Intl.DateTimeFormatOptions
-	) {
-		return this.asDate()?.toLocaleString(locales, options)
 	}
 
 	isValid(): this is Required<CalendarDateProps> {
@@ -144,23 +189,5 @@ export class CalendarDate {
 		}
 
 		return false
-	}
-
-	static fromDate(date: Date | undefined) {
-		if (date === undefined) {
-			return new CalendarDate()
-		}
-
-		const result = new CalendarDate()
-
-		result.setSegment('year', date.getFullYear())
-		result.setSegment('month', date.getMonth() + 1)
-		result.setSegment('day', date.getDate())
-
-		return result
-	}
-
-	static fromToday() {
-		return CalendarDate.fromDate(new Date())
 	}
 }
