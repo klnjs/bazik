@@ -1,4 +1,4 @@
-import { style, createTheme } from '@vanilla-extract/css'
+import { style, createTheme, globalStyle } from '@vanilla-extract/css'
 import { vars } from '../packages/theme/contract.css'
 
 export const theme = createTheme(vars, {
@@ -71,3 +71,8 @@ export const preview = style([
 		fontFamily: vars.font.family
 	}
 ])
+
+globalStyle(`${preview} *`, {
+	margin: 0,
+	padding: 0
+})

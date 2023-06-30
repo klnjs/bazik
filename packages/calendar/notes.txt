@@ -1,0 +1,6 @@
+To Solve
+	- Settle on an API when composing the parts.
+	- Implement popover functionality.
+	- Improve CalendarDate API
+		- Should we separate utility functions from the class?
+		- Should it internally always mutate or return new date?

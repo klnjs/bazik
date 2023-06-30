@@ -62,6 +62,21 @@ export class CalendarDate {
 		}
 	}
 
+	add(props: CalendarDateProps) {
+		return this.calc(props)
+	}
+
+	sub(props: CalendarDateProps) {
+		return this.calc(
+			Object.fromEntries(
+				Object.entries(props).map(([key, value = 0]) => [
+					key,
+					value * -1
+				])
+			)
+		)
+	}
+
 	calc({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
 		const date = this.asDate() ?? new Date()
 
@@ -95,8 +110,19 @@ export class CalendarDate {
 		return this.clone({ day: this.getDaysInMonth() })
 	}
 
-	getDayOfWeek() {
-		return this.asDate()?.getDay()
+	getDayOfWeek(locale: string) {
+		if (!this.isValid()) {
+			return undefined
+		}
+
+		const firstDay = new Date(this.year, this.month - 1, this.day).getDay()
+
+		// @ts-expect-error not in spec yet
+		// eslint-disable-next-line
+		const firstDayWeek = new Intl.Locale(locale).weekInfo.firstDay as number
+		const firstDayWeekNormalized = firstDayWeek === 7 ? 0 : firstDayWeek
+
+		return firstDay - firstDayWeekNormalized
 	}
 
 	getDaysInMonth() {

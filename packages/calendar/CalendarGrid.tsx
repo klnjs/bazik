@@ -16,23 +16,21 @@ export type CalendarGridProps = AsChildComponentProps<
 export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 	(props, forwardedRef) => {
 		const [{ children }, componentProps] = splitProps(props, ['children'])
-		const { state } = useCalendarContext()
+		const { state, config } = useCalendarContext()
 
 		const visibleDates = useMemo(() => {
 			const dates: CalendarDate[] = []
 			const first = state.dateVisible.getFirstDateOfMonth()
 			const last = state.dateVisible.getLastDateOfMonth()
-			const end = last.calc({ day: 7 - last.getDayOfWeek() })
-			let date = first.calc({ day: first.getDayOfWeek() })
-
-			console.log(date)
+			const end = last.add({ day: 7 - last.getDayOfWeek(config.locale) })
+			let date = first.sub({
+				day: first.getDayOfWeek(config.locale)
+			})
 
 			while (!date.isEquals(end)) {
 				dates.push(date)
 				date = date.calc({ day: 1 })
 			}
-
-			console.log(dates)
 
 			return dates
 		}, [state.dateVisible])

@@ -14,10 +14,11 @@ export const useCalendar = ({
 	min,
 	max,
 	value,
+	locale,
 	defaultValue,
 	onChange
 }: UseCalendarOptions) => {
-	const config = useCalendarConfig({ min, max })
+	const config = useCalendarConfig({ min, max, locale })
 	const state = useCalendarState({ value, defaultValue, onChange })
 
 	return {

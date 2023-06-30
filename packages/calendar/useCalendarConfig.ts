@@ -4,15 +4,20 @@ import { CalendarDate } from './CalendarDate'
 export type UseCalendarConfigOptions = {
 	min?: Date
 	max?: Date
+	locale?: string
 }
 
-export const useCalendarConfig = ({ min, max }: UseCalendarConfigOptions) =>
+export const useCalendarConfig = ({
+	min,
+	max,
+	locale = navigator.language
+}: UseCalendarConfigOptions) =>
 	useMemo(
 		() => ({
 			min: CalendarDate.fromDate(min),
 			max: CalendarDate.fromDate(max),
 			today: CalendarDate.fromToday(),
-			locale: 'da'
+			locale
 		}),
-		[min, max]
+		[min, max, locale]
 	)

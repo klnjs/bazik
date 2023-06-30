@@ -15,6 +15,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			'min',
 			'max',
 			'value',
+			'locale',
 			'defaultValue',
 			'onChange'
 		])
