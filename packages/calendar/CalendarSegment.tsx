@@ -38,7 +38,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 		const content = useMemo(() => {
 			if (value === undefined) {
-				return placeholder
+				return placeholder ?? ''.padStart(String(max).length, '-')
 			}
 
 			if (mode === 'digit') {

@@ -1,5 +1,25 @@
 import { style } from '@vanilla-extract/css'
 
+export const story = style({
+	display: 'grid',
+	gridTemplateColumns: '1fr 2fr',
+	gap: 32
+})
+
+export const section = style({
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 8
+})
+
+export const controls = style([
+	section,
+	{
+		background: '#F2F2F2',
+		padding: 16
+	}
+])
+
 export const grid = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(7, 1fr)',
@@ -11,6 +31,7 @@ export const day = style({
 	aspectRatio: '1 / 1',
 	border: 0,
 	borderRadius: '4px',
+	background: 'none',
 	selectors: {
 		'&[data-today]': {
 			fontWeight: 'bold'
@@ -23,5 +44,21 @@ export const day = style({
 			outline: '1px solid blue',
 			outlineOffset: -1
 		}
+	}
+})
+
+export const field = style({
+	display: 'inline-flex',
+	gap: 8,
+	alignItems: 'center'
+})
+
+export const segment = style({
+	border: 0,
+	borderRadius: '4px',
+	padding: 8,
+	':focus-visible': {
+		outline: '1px solid blue',
+		outlineOffset: -1
 	}
 })

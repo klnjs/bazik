@@ -20,8 +20,6 @@ export const Default: StoryObj<typeof Calendar> = {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const [selectedDate, setSelectedDate] = useState<Date>()
 		const handleChange = (date: Date | undefined) => {
-			console.log(date)
-
 			if (selectedDate !== undefined) {
 				setSelectedDate(date)
 			}
@@ -34,20 +32,8 @@ export const Default: StoryObj<typeof Calendar> = {
 		max.setMonth(max.getMonth() + 1)
 
 		return (
-			<div
-				style={{
-					display: 'grid',
-					gridTemplateColumns: '1fr 2fr',
-					gap: 32
-				}}
-			>
-				<div
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 8
-					}}
-				>
+			<div className={classes.story}>
+				<div className={classes.controls}>
 					<h2>Controls</h2>
 
 					<button onClick={() => setSelectedDate(new Date())}>
@@ -59,14 +45,7 @@ export const Default: StoryObj<typeof Calendar> = {
 					</button>
 				</div>
 
-				<div
-					style={{
-						display: 'flex',
-						flexDirection: 'column',
-						gap: 8
-					}}
-				>
-					<h2 style={{ margin: 0 }}>Calendar</h2>
+				<div className={classes.section}>
 					<Calendar
 						min={min}
 						max={max}
@@ -79,16 +58,20 @@ export const Default: StoryObj<typeof Calendar> = {
 						onChange={handleChange}
 						{...args}
 					>
-						<CalendarField
-							style={{ display: 'inline-flex', gap: 8 }}
-						>
-							<CalendarSegment segment='day' placeholder='dd' />
-							<span>/</span>
-							<CalendarSegment segment='month' placeholder='mm' />
-							<span>/</span>
+						<CalendarField className={classes.field}>
+							<CalendarSegment
+								segment='day'
+								className={classes.segment}
+							/>
+							<span className={classes.segment}>/</span>
+							<CalendarSegment
+								segment='month'
+								className={classes.segment}
+							/>
+							<span className={classes.segment}>/</span>
 							<CalendarSegment
 								segment='year'
-								placeholder='yyyy'
+								className={classes.segment}
 							/>
 						</CalendarField>
 						<CalendarContent
