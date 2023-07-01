@@ -116,10 +116,17 @@ export class CalendarDate {
 		}
 
 		const firstDay = new Date(this.year, this.month - 1, this.day).getDay()
+		const firstDayWeek = (() => {
+			try {
+				// @ts-expect-error not in spec yet
+				// eslint-disable-next-line
+				return new Intl.Locale(locale)?.weekInfo?.firstDay as number
+			} catch (error) {
+				if (locale === 'da') return 1
 
-		// @ts-expect-error not in spec yet
-		// eslint-disable-next-line
-		const firstDayWeek = new Intl.Locale(locale).weekInfo.firstDay as number
+				return 0
+			}
+		})()
 		const firstDayWeekNormalized = firstDayWeek === 7 ? 0 : firstDayWeek
 
 		return firstDay - firstDayWeekNormalized
@@ -178,11 +185,22 @@ export class CalendarDate {
 		)
 	}
 
-	isEquals(date: CalendarDate) {
+	isEquals(
+		date: CalendarDate,
+		segments: CalendarDateSegment[] = ['year', 'month', 'day']
+	) {
+		return segments.every(
+			(segment) => this.get(segment) === date.get(segment)
+		)
+	}
+
+	isSameMonth() {
+		const today = CalendarDate.fromToday()
+
 		return (
-			this.year === date.year &&
-			this.month === date.month &&
-			this.day === date.day
+			this.year === today.year &&
+			this.month === today.month &&
+			this.day === today.day
 		)
 	}
 

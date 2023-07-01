@@ -8,6 +8,7 @@ import { CalendarField } from './CalendarField'
 import { CalendarContent } from './CalendarContent'
 import { CalendarButton } from './CalendarButton'
 import { CalendarTitle } from './CalendarTitle'
+import * as classes from './Calendar.stories.css'
 
 export default {
 	title: 'Calendar',
@@ -25,6 +26,12 @@ export const Default: StoryObj<typeof Calendar> = {
 				setSelectedDate(date)
 			}
 		}
+
+		const min = new Date()
+		min.setMonth(min.getMonth() - 1)
+
+		const max = new Date()
+		max.setMonth(max.getMonth() + 1)
 
 		return (
 			<div
@@ -61,7 +68,8 @@ export const Default: StoryObj<typeof Calendar> = {
 				>
 					<h2 style={{ margin: 0 }}>Calendar</h2>
 					<Calendar
-						min={new Date()}
+						min={min}
+						max={max}
 						value={selectedDate}
 						style={{
 							display: 'flex',
@@ -115,16 +123,12 @@ export const Default: StoryObj<typeof Calendar> = {
 									</CalendarButton>
 								</div>
 							</div>
-							<CalendarGrid
-								style={{
-									display: 'grid',
-									gridTemplateColumns: 'repeat(7, 1fr)'
-								}}
-							>
+							<CalendarGrid className={classes.grid}>
 								{(date) => (
 									<CalendarDay
 										key={date.format()}
 										date={date}
+										className={classes.day}
 									>
 										{date.day}
 									</CalendarDay>

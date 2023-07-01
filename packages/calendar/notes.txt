@@ -1,5 +1,7 @@
 To Solve
 	- Settle on an API when composing the parts.
+	- Find a better way to do keyboard handlers, too many preventDefault.
+	- Not happy with the state / config hooks, too much overlap-
 	- Implement popover functionality.
 	- Improve CalendarDate API
 		- Should we separate utility functions from the class?

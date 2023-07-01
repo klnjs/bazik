@@ -50,11 +50,8 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
-				if (event.key !== 'Tab') {
-					event.preventDefault()
-				}
-
 				if (event.key === 'ArrowUp') {
+					event.preventDefault()
 					state.setDateSegment(
 						segment,
 						value !== undefined
@@ -64,10 +61,12 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				}
 
 				if (event.key === 'ArrowRight') {
+					event.preventDefault()
 					findSegment(event.currentTarget, 'next')?.focus()
 				}
 
 				if (event.key === 'ArrowDown') {
+					event.preventDefault()
 					state.setDateSegment(
 						segment,
 						value !== undefined
@@ -77,14 +76,17 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				}
 
 				if (event.key === 'ArrowLeft') {
+					event.preventDefault()
 					findSegment(event.currentTarget, 'previous')?.focus()
 				}
 
 				if (event.key === 'Backspace' || event.key === 'Delete') {
+					event.preventDefault()
 					state.setDateSegment(segment, undefined)
 				}
 
 				if (/[0-9]/.test(event.key)) {
+					event.preventDefault()
 					const valueAsString = String(value ?? '')
 					const valueMutation = Number(valueAsString + event.key)
 
@@ -105,6 +107,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				inputMode='numeric'
 				autoCorrect='off'
 				autoCapitalize='off'
+				spellCheck={false}
 				contentEditable={true}
 				tabIndex={0}
 				suppressContentEditableWarning={true}

@@ -33,7 +33,7 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 			}
 
 			return dates
-		}, [state.dateVisible])
+		}, [state.dateVisible, config.locale])
 
 		return (
 			<freya.div ref={forwardedRef} {...componentProps}>

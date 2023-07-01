@@ -8,7 +8,7 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 		const { state, config } = useCalendarContext()
 
 		return (
-			<freya.h2 ref={forwardedRef} {...props}>
+			<freya.h2 ref={forwardedRef} aria-live='polite' {...props}>
 				{state.dateVisible.format(config.locale, {
 					year: 'numeric',
 					month: 'long'

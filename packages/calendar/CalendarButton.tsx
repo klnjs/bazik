@@ -17,19 +17,17 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const { state } = useCalendarContext()
 		const onClick = () =>
 			state.setDateVisible((date) => {
-				if (action === 'nextMonth') {
-					return date.calc({ month: 1 })
+				// eslint-disable-next-line default-case
+				switch (action) {
+					case 'prevYear':
+						return date.sub({ year: 1 })
+					case 'prevMonth':
+						return date.sub({ month: 1 })
+					case 'nextMonth':
+						return date.add({ month: 1 })
+					case 'nextYear':
+						return date.add({ year: 1 })
 				}
-
-				if (action === 'prevMonth') {
-					return date.calc({ month: -1 })
-				}
-
-				if (action === 'nextYear') {
-					return date.calc({ year: 1 })
-				}
-
-				return date.calc({ year: -1 })
 			})
 
 		return (

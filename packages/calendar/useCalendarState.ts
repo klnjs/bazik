@@ -4,12 +4,14 @@ import { CalendarDate, type CalendarDateSegment } from './CalendarDate'
 
 export type UseCalendarStateOptions = {
 	value?: Date
+	valueVisible?: Date
 	defaultValue?: Date
 	onChange?: (value: Date | undefined) => void
 }
 
 export const useCalendarState = ({
 	value,
+	valueVisible = value,
 	defaultValue,
 	onChange
 }: UseCalendarStateOptions) => {
@@ -20,7 +22,9 @@ export const useCalendarState = ({
 	})
 
 	const [dateVisible, setDateVisible] = useState(
-		value ? CalendarDate.fromDate(value) : CalendarDate.fromToday()
+		valueVisible
+			? CalendarDate.fromDate(valueVisible)
+			: CalendarDate.fromToday()
 	)
 
 	const setDateSegment = useCallback(
