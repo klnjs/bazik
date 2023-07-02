@@ -29,12 +29,26 @@ export const grid = style({
 export const day = style({
 	appearance: 'none',
 	aspectRatio: '1 / 1',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	cursor: 'pointer',
 	border: 0,
 	borderRadius: '4px',
 	background: 'none',
 	selectors: {
 		'&[data-today]': {
 			fontWeight: 'bold'
+		},
+		'&[data-disabled]': {
+			cursor: 'default',
+			opacity: 0.2
+		},
+		'&[data-weekend]': {
+			color: 'red'
+		},
+		'&[data-overflow]': {
+			visibility: 'hidden'
 		},
 		'&[data-selected]': {
 			color: 'white',

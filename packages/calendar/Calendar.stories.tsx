@@ -50,6 +50,7 @@ export const Default: StoryObj<typeof Calendar> = {
 						min={min}
 						max={max}
 						value={selectedDate}
+						locale='da'
 						style={{
 							display: 'flex',
 							flexDirection: 'column',
@@ -92,16 +93,16 @@ export const Default: StoryObj<typeof Calendar> = {
 								<CalendarTitle />
 
 								<div style={{ display: 'inline-flex', gap: 8 }}>
-									<CalendarButton action='prevYear'>
+									<CalendarButton action='year-1'>
 										{'<<'}
 									</CalendarButton>
-									<CalendarButton action='prevMonth'>
+									<CalendarButton action='month-1'>
 										{'<'}
 									</CalendarButton>
-									<CalendarButton action='nextMonth'>
+									<CalendarButton action='month+1'>
 										{'>'}
 									</CalendarButton>
-									<CalendarButton action='nextYear'>
+									<CalendarButton action='year+1'>
 										{'>>'}
 									</CalendarButton>
 								</div>
@@ -111,6 +112,7 @@ export const Default: StoryObj<typeof Calendar> = {
 									<CalendarDay
 										key={date.format()}
 										date={date}
+										disabledOnWeekend={true}
 										className={classes.day}
 									>
 										{date.day}

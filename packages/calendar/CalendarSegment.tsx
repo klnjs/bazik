@@ -21,6 +21,7 @@ export type CalendarSegmentProps = AsChildComponentProps<
 
 export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 	(props, forwardedRef) => {
+		const { state, config } = useCalendarContext()
 		const [{ step = 1, mode, label, segment, placeholder }, otherProps] =
 			splitProps(props, [
 				'step',
@@ -29,8 +30,6 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				'segment',
 				'placeholder'
 			])
-
-		const { state, config } = useCalendarContext()
 
 		const min = CalendarDate[`${segment}Min`]
 		const max = CalendarDate[`${segment}Max`]

@@ -3,7 +3,8 @@ import {
 	useEffect,
 	useCallback,
 	useImperativeHandle,
-	type KeyboardEvent
+	type KeyboardEvent,
+	type MouseEvent
 } from 'react'
 import {
 	freya,
@@ -12,85 +13,132 @@ import {
 	type AsChildComponentProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import type { CalendarDate } from './CalendarDate'
+import type { CalendarDate, CalendarDateProps } from './CalendarDate'
 
 export type CalendarDayProps = AsChildComponentProps<
-	'button',
-	{ date: CalendarDate }
+	'div',
+	{
+		date: CalendarDate
+		disabled?: boolean
+		disabledOnWeekend?: boolean
+		disabledOnOverflow?: boolean
+	}
 >
 
-export const CalendarDay = forwardRef<'button', CalendarDayProps>(
+export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 	(props, forwardedRef) => {
 		const { state, config } = useCalendarContext()
-		const [{ date }, componentProps] = splitProps(props, ['date'])
-		const ref = useRef<HTMLButtonElement>(null)
+		const [
+			{ date, disabled, disabledOnWeekend, disabledOnOverflow },
+			otherProps
+		] = splitProps(props, [
+			'date',
+			'disabled',
+			'disabledOnWeekend',
+			'disabledOnOverflow'
+		])
+		const ref = useRef<HTMLDivElement>(null)
 
-		const isAfterMax = date.isAfter(config.max)
-		const isBeforeMin = date.isBefore(config.min)
-		const isThisMonth = date.isEquals(state.dateVisible, ['year', 'month'])
+		const isToday = date.isToday()
+		const isAfter = date.isAfter(config.max)
+		const isBefore = date.isBefore(config.min)
+		const isWeekend = date.isWeekend(config.locale)
+		const isSelected = date.isEquals(state.date)
+		const isOverflow = !date.isEquals(state.dateVisible, ['year', 'month'])
+		const isHighlighted = date.isEquals(state.dateVisible)
+		const isDisabled =
+			disabled ||
+			(disabledOnWeekend && isWeekend) ||
+			(disabledOnOverflow && isOverflow) ||
+			isAfter ||
+			isBefore
 
-		const today = date.isToday()
-		const enabled = isThisMonth && !isAfterMax && !isBeforeMin
-		const selected = date.isEquals(state.date)
-		const highlighted = date.isEquals(state.dateVisible)
+		const changeDate = useCallback(
+			(
+				event:
+					| KeyboardEvent<HTMLDivElement>
+					| MouseEvent<HTMLDivElement>
+			) => {
+				if (!isDisabled) {
+					event.preventDefault()
+					state.setDate(date)
+					state.setDateVisible(date)
+				}
+			},
+			[date, state, isDisabled]
+		)
 
-		const handleClick = useCallback(() => {
-			state.setDate(date)
-			state.setDateVisible(date)
-		}, [state, date])
+		const changeDateVisible = useCallback(
+			(
+				event: KeyboardEvent<HTMLDivElement>,
+				action: 'add' | 'sub',
+				clone: boolean,
+				options: CalendarDateProps
+			) => {
+				event.preventDefault()
+				state.setDateVisible((prev) => {
+					const next = prev[clone ? 'clone' : action](options)
+					const limit = action === 'add' ? config.max : config.min
+					const check = action === 'add' ? 'isAfter' : 'isBefore'
+
+					return next[check](limit) ? limit : next
+				})
+			},
+			[state, config]
+		)
+
+		const handleClick = changeDate
 
 		const handleKeyDown = useCallback(
-			(event: KeyboardEvent<HTMLButtonElement>) => {
+			(event: KeyboardEvent<HTMLDivElement>) => {
+				if (event.key === 'Enter' || event.key === 'space') {
+					changeDate(event)
+				}
+
 				if (event.key === 'ArrowUp') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.sub({ day: 7 }))
+					changeDateVisible(event, 'sub', false, { day: 7 })
 				}
 
 				if (event.key === 'ArrowRight') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.add({ day: 1 }))
+					changeDateVisible(event, 'add', false, { day: 1 })
 				}
 
 				if (event.key === 'ArrowDown') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.add({ day: 7 }))
+					changeDateVisible(event, 'add', false, { day: 7 })
 				}
 
 				if (event.key === 'ArrowLeft') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.sub({ day: 1 }))
+					changeDateVisible(event, 'sub', false, { day: 1 })
 				}
 
 				if (event.key === 'Home') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.getFirstDateOfMonth())
+					changeDateVisible(event, 'sub', true, { day: 0 })
 				}
 
 				if (event.key === 'End') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.getLastDateOfMonth())
+					changeDateVisible(event, 'add', true, {
+						day: state.dateVisible.getDaysInMonth()
+					})
 				}
 
 				if (event.key === 'PageUp') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.sub({ month: 1 }))
+					changeDateVisible(event, 'sub', false, { month: 1 })
 				}
 
 				if (event.key === 'PageDown') {
-					event.preventDefault()
-					state.setDateVisible((prev) => prev.add({ month: 1 }))
+					changeDateVisible(event, 'add', false, { month: 1 })
 				}
 			},
-			[state]
+			[state, changeDate, changeDateVisible]
 		)
 
 		useEffect(() => {
-			if (highlighted) {
+			if (isHighlighted) {
 				// @ts-expect-error focusVisible param is experimental
 				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
 				ref.current?.focus({ focusVisible: true })
 			}
-		}, [highlighted])
+		}, [isHighlighted])
 
 		useImperativeHandle(
 			forwardedRef,
@@ -99,24 +147,27 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		)
 
 		return (
-			<freya.button
+			<freya.div
 				ref={ref}
-				type='button'
-				disabled={!enabled}
-				tabIndex={highlighted ? 0 : -1}
-				data-today={today ? '' : undefined}
-				data-selected={selected ? '' : undefined}
-				data-highlighted={highlighted ? '' : undefined}
+				role='button'
+				tabIndex={isHighlighted ? 0 : -1}
+				data-today={isToday ? '' : undefined}
+				data-weekend={isWeekend ? '' : undefined}
+				data-overflow={isOverflow ? '' : undefined}
+				data-selected={isSelected ? '' : undefined}
+				data-disabled={isDisabled ? '' : undefined}
+				data-highlighted={isHighlighted ? '' : undefined}
 				aria-label={date.format(config.locale, {
 					year: 'numeric',
 					month: 'long',
 					weekday: 'long',
 					day: 'numeric'
 				})}
-				aria-selected={selected}
+				aria-selected={isSelected}
+				aria-disabled={isDisabled}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
-				{...componentProps}
+				{...otherProps}
 			/>
 		)
 	}

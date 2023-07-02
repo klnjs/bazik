@@ -55,10 +55,7 @@ export class CalendarDate {
 				: undefined
 
 		if (this.day !== undefined) {
-			this.day = Math.min(
-				this.day,
-				this.getDaysInMonth() ?? CalendarDate.dayMax
-			)
+			this.day = Math.min(this.day, this.getDaysInMonth())
 		}
 	}
 
@@ -78,7 +75,7 @@ export class CalendarDate {
 	}
 
 	calc({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
-		const date = this.asDate() ?? new Date()
+		const date = this.asDate()
 
 		date.setFullYear(date.getFullYear() + year)
 		date.setMonth(date.getMonth() + month)
@@ -99,71 +96,63 @@ export class CalendarDate {
 		locales?: Intl.LocalesArgument,
 		options?: Intl.DateTimeFormatOptions
 	) {
-		return this.asDate()?.toLocaleString(locales, options)
+		return this.asDate().toLocaleString(locales, options)
+	}
+
+	getFirstDateOfWeek(locale: string) {
+		return this.sub({ day: this.getWeekDay(locale) - 1 })
+	}
+
+	getLastDateOfWeek(locale: string) {
+		return this.getFirstDateOfWeek(locale).add({ day: 7 })
 	}
 
 	getFirstDateOfMonth() {
-		return this.clone({ day: 0 })
+		return this.clone({ day: CalendarDate.dayMin })
 	}
 
 	getLastDateOfMonth() {
 		return this.clone({ day: this.getDaysInMonth() })
 	}
 
-	getDayOfWeek(locale: string) {
-		if (!this.isValid()) {
-			return undefined
-		}
-
-		const firstDay = new Date(this.year, this.month - 1, this.day).getDay()
-		const firstDayWeek = (() => {
-			try {
-				// @ts-expect-error not in spec yet
-				// eslint-disable-next-line
-				return new Intl.Locale(locale)?.weekInfo?.firstDay as number
-			} catch (error) {
-				if (locale === 'da') return 1
-
-				return 0
-			}
-		})()
-		const firstDayWeekNormalized = firstDayWeek === 7 ? 0 : firstDayWeek
-
-		return firstDay - firstDayWeekNormalized
-	}
-
 	getDaysInMonth() {
-		if (!this.isValid()) {
-			return undefined
-		}
-
 		return new Date(this.year, this.month, 0).getDate()
 	}
 
 	getWeek() {
-		if (!this.isValid()) {
-			return undefined
+		throw new Error('Not implemented')
+	}
+
+	getWeekDay(locale: string) {
+		const firstDayOfWeek = (() => {
+			try {
+				// @ts-expect-error not in spec yet
+				// eslint-disable-next-line
+				return new Intl.Locale(locale).getWeekInfo().firstDay as number
+			} catch (error) {
+				// Find a way to polyfill this
+				if (
+					locale.toLowerCase() === 'en' ||
+					locale.toLowerCase() === 'en-US'
+				) {
+					return 7
+				}
+
+				return 1
+			}
+		})()
+
+		const dayOfWeek = this.asDate().getDay() || 7
+		const dayOfWeekLocalized = 7 + dayOfWeek + 1 - firstDayOfWeek
+
+		if (dayOfWeekLocalized > 7) {
+			return dayOfWeekLocalized - 7
 		}
 
-		const date = new Date(this.year, this.month - 1, this.day)
-		date.setDate(date.getDate() + 4 - (date.getDay() || 7))
-
-		const time = date.getTime()
-		const year = date.getFullYear()
-		const first = new Date(
-			year,
-			0,
-			1 + (4 - new Date(year, 0, 1).getDay() || 7)
-		)
-
-		return Math.ceil(((time - first.getTime()) / 86400000 + 1) / 7)
+		return dayOfWeekLocalized
 	}
 
 	asDate() {
-		if (!this.isValid()) {
-			return undefined
-		}
-
 		return new Date(this.year, this.month - 1, this.day)
 	}
 
@@ -185,6 +174,44 @@ export class CalendarDate {
 		)
 	}
 
+	isWeekend(locale: string) {
+		const weekDay = this.getWeekDay(locale)
+		const weekendDaysInfo = (() => {
+			try {
+				// @ts-expect-error not in spec yet
+				// eslint-disable-next-line
+				return new Intl.Locale(locale).getWeekInfo()
+					.weekendInfo as number[]
+			} catch (error) {
+				// Find a way to polyfill this
+				if (
+					locale.toLowerCase() === 'en' ||
+					locale.toLowerCase() === 'en-US'
+				) {
+					return [1, 7]
+				}
+
+				return [6, 7]
+			}
+		})()
+
+		return weekendDaysInfo.includes(weekDay)
+	}
+
+	isAfter(date: CalendarDate) {
+		const thisNative = this.asDate()
+		const dateNative = date.asDate()
+
+		return thisNative > dateNative
+	}
+
+	isBefore(date: CalendarDate) {
+		const thisNative = this.asDate()
+		const dateNative = date.asDate()
+
+		return thisNative < dateNative
+	}
+
 	isEquals(
 		date: CalendarDate,
 		segments: CalendarDateSegment[] = ['year', 'month', 'day']
@@ -193,54 +220,55 @@ export class CalendarDate {
 			(segment) => this.get(segment) === date.get(segment)
 		)
 	}
-
-	isSameMonth() {
-		const today = CalendarDate.fromToday()
-
-		return (
-			this.year === today.year &&
-			this.month === today.month &&
-			this.day === today.day
-		)
-	}
-
-	isBefore(date: CalendarDate) {
-		if (this.year !== undefined && date.year !== undefined) {
-			if (this.year < date.year) {
-				return true
-			} else if (this.year === date.year) {
-				if (this.month !== undefined && date.month !== undefined) {
-					if (this.month < date.month) {
-						return true
-					} else if (this.month === date.month) {
-						if (this.day !== undefined && date.day !== undefined) {
-							return this.day < date.day
-						}
-					}
-				}
-			}
-		}
-
-		return false
-	}
-
-	isAfter(date: CalendarDate) {
-		if (this.year !== undefined && date.year !== undefined) {
-			if (this.year > date.year) {
-				return true
-			} else if (this.year === date.year) {
-				if (this.month !== undefined && date.month !== undefined) {
-					if (this.month > date.month) {
-						return true
-					} else if (this.month === date.month) {
-						if (this.day !== undefined && date.day !== undefined) {
-							return this.day > date.day
-						}
-					}
-				}
-			}
-		}
-
-		return false
-	}
 }
+
+const d1 = new CalendarDate({ year: 2023, month: 6, day: 26 })
+const d2 = new CalendarDate({ year: 2023, month: 6, day: 27 })
+const d3 = new CalendarDate({ year: 2023, month: 6, day: 28 })
+const d4 = new CalendarDate({ year: 2023, month: 6, day: 29 })
+const d5 = new CalendarDate({ year: 2023, month: 6, day: 30 })
+const d6 = new CalendarDate({ year: 2023, month: 7, day: 1 })
+const d7 = new CalendarDate({ year: 2023, month: 7, day: 2 })
+
+console.log(
+	d1.format('en', { weekday: 'long' }),
+	d1.getWeekDay('da'),
+	d1.getWeekDay('en'),
+	'Should be [1, 2]'
+)
+console.log(
+	d2.format('en', { weekday: 'long' }),
+	d2.getWeekDay('da'),
+	d2.getWeekDay('en'),
+	'Should be [2, 3]'
+)
+console.log(
+	d3.format('en', { weekday: 'long' }),
+	d3.getWeekDay('da'),
+	d3.getWeekDay('en'),
+	'Should be [3, 4]'
+)
+console.log(
+	d4.format('en', { weekday: 'long' }),
+	d4.getWeekDay('da'),
+	d4.getWeekDay('en'),
+	'Should be [4, 5]'
+)
+console.log(
+	d5.format('en', { weekday: 'long' }),
+	d5.getWeekDay('da'),
+	d5.getWeekDay('en'),
+	'Should be [5, 6]'
+)
+console.log(
+	d6.format('en', { weekday: 'long' }),
+	d6.getWeekDay('da'),
+	d6.getWeekDay('en'),
+	'Should be [6, 7]'
+)
+console.log(
+	d7.format('en', { weekday: 'long' }),
+	d7.getWeekDay('da'),
+	d7.getWeekDay('en'),
+	'Should be [7, 1]'
+)

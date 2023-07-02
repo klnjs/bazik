@@ -23,7 +23,7 @@ export const useCalendarState = ({
 
 	const [dateVisible, setDateVisible] = useState(
 		valueVisible
-			? CalendarDate.fromDate(valueVisible)
+			? CalendarDate.fromDate(valueVisible, true)
 			: CalendarDate.fromToday()
 	)
 
