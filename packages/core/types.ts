@@ -3,7 +3,7 @@
 import type {
 	ElementRef,
 	ElementType,
-	ComponentProps,
+	ComponentProps as ComponentPropsReact,
 	PropsWithChildren,
 	ForwardRefExoticComponent
 } from 'react'
@@ -20,10 +20,14 @@ export type AsChildProps = PropsWithChildren<{
 	asChild?: boolean
 }>
 
+export type ComponentProps<E extends ElementType, P> = Pretty<
+	Assign<ComponentPropsReact<E>, P>
+>
+
 export type AsChildComponentProps<
 	E extends ElementType,
 	P extends object = object
-> = Pretty<Assign<ComponentProps<E>, Assign<AsChildProps, P>>>
+> = Pretty<ComponentProps<E, Assign<AsChildProps, P>>>
 
 export type AsChildForwardRefComponent<
 	E extends ElementType,

@@ -7,9 +7,14 @@ import {
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDateSegment } from './CalendarDate'
 
+export type CalendarButtonSegment = Extract<
+	CalendarDateSegment,
+	'year' | 'month'
+>
+
 export type CalendarButtonProps = AsChildComponentProps<
 	'button',
-	{ action: `${CalendarDateSegment}-1` | `${CalendarDateSegment}+1` }
+	{ action: `${CalendarButtonSegment}-1` | `${CalendarButtonSegment}+1` }
 >
 
 export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
@@ -20,19 +25,27 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			CalendarDateSegment,
 			string
 		]
-		const check = number.startsWith('+') ? 'isAfter' : 'isBefore'
+
 		const limit = number.startsWith('+') ? config.max : config.min
+		const target = number.startsWith('+')
+			? 'getFirstDateOfMonth'
+			: 'getLastDateOfMonth'
+
+		const predicate = number.startsWith('+') ? 'isAfter' : 'isBefore'
 
 		const isDisabled = state.dateVisible
 			.calc({
 				[segment]: Number(number)
 			})
-			[check](limit)
+			[target]()
+			[predicate](limit)
 
 		const onClick = () =>
-			state.setDateVisible((date) =>
-				date.calc({ [segment]: Number(number) })
-			)
+			state.setDateVisible((prev) => {
+				const next = prev.calc({ [segment]: Number(number) })
+
+				return next[predicate](limit) ? limit : next
+			})
 
 		return (
 			<freya.button

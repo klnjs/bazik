@@ -1,14 +1,9 @@
 import { useMemo, type ReactNode } from 'react'
-import {
-	freya,
-	forwardRef,
-	splitProps,
-	type AsChildComponentProps
-} from '../core'
+import { freya, forwardRef, splitProps, type ComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
 
-export type CalendarGridProps = AsChildComponentProps<
+export type CalendarGridProps = ComponentProps<
 	'div',
 	{ children: (day: CalendarDate, index: number) => ReactNode }
 >

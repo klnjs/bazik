@@ -33,6 +33,7 @@ export const day = style({
 	alignItems: 'center',
 	justifyContent: 'center',
 	cursor: 'pointer',
+	userSelect: 'none',
 	border: 0,
 	borderRadius: '4px',
 	background: 'none',
