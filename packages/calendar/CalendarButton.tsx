@@ -50,6 +50,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		return (
 			<freya.button
 				ref={forwardedRef}
+				type='button'
 				disabled={isDisabled}
 				onClick={onClick}
 				{...otherProps}

@@ -143,10 +143,10 @@ export class CalendarDate {
 		})()
 
 		const dayOfWeek = this.asDate().getDay() || 7
-		const dayOfWeekLocalized = 7 + dayOfWeek + 1 - firstDayOfWeek
+		const dayOfWeekLocalized = dayOfWeek - firstDayOfWeek + 1
 
-		if (dayOfWeekLocalized > 7) {
-			return dayOfWeekLocalized - 7
+		if (dayOfWeekLocalized < 1) {
+			return dayOfWeekLocalized + 7
 		}
 
 		return dayOfWeekLocalized
