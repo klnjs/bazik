@@ -54,7 +54,7 @@ export class CalendarDate {
 				  )
 				: undefined
 
-		if (this.day !== undefined) {
+		if (this.day !== undefined && segment !== 'day') {
 			this.day = Math.min(this.day, this.getDaysInMonth())
 		}
 	}

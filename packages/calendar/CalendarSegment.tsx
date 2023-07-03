@@ -108,17 +108,27 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				}
 
 				if (/[0-9]/.test(event.key)) {
-					const valueAsString = String(value ?? '')
-					const valueMutation = Number(valueAsString + event.key)
+					const valueString = String(value ?? '')
+					const valueIntent = Number(valueString + event.key)
+					const valueMutation =
+						valueIntent <= max ? valueIntent : Number(event.key)
 
 					state.setDate((prev) =>
 						prev.clone({
-							[segment]:
-								valueMutation <= max
-									? valueMutation
-									: Number(event.key)
+							[segment]: valueMutation
 						})
 					)
+
+					if (String(valueMutation).length === String(max).length) {
+						const element = findSegment(event.currentTarget, 'next')
+
+						if (element !== undefined) {
+							element.focus()
+							state.setDateSegment(
+								element.dataset.segment as CalendarDateSegment
+							)
+						}
+					}
 				}
 			},
 			[max, step, value, state, config, segment]
