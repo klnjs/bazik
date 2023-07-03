@@ -84,11 +84,11 @@ export class CalendarDate {
 		return CalendarDate.fromDate(date)
 	}
 
-	clone({
-		year = this.year,
-		month = this.month,
-		day = this.day
-	}: CalendarDateProps = {}) {
+	clone(props: CalendarDateProps = {}) {
+		const year = Object.hasOwn(props, 'year') ? props.year : this.year
+		const month = Object.hasOwn(props, 'month') ? props.month : this.month
+		const day = Object.hasOwn(props, 'day') ? props.day : this.day
+
 		return new CalendarDate({ year, month, day })
 	}
 

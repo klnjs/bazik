@@ -6,7 +6,7 @@ import {
 	type AsChildComponentProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate } from './CalendarDate'
+import { CalendarDate, type CalendarDateSegment } from './CalendarDate'
 
 export type CalendarSegmentProps = AsChildComponentProps<
 	'div',
@@ -14,7 +14,7 @@ export type CalendarSegmentProps = AsChildComponentProps<
 		step?: number
 		mode?: 'numeric' | 'digit'
 		label?: string
-		segment: 'year' | 'month' | 'day'
+		segment: CalendarDateSegment
 		placeholder?: string
 	}
 >
@@ -47,53 +47,78 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 			return String(value)
 		}, [max, mode, value, placeholder])
 
+		const isHighlighted = state.dateSegment === segment
+
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
-				if (event.key === 'ArrowUp') {
+				if (event.key !== 'Tab') {
 					event.preventDefault()
-					state.setDateSegment(
-						segment,
-						value !== undefined
-							? value + step
-							: config.today.get(segment)
+				}
+
+				if (event.key === 'ArrowUp') {
+					state.setDate((prev) =>
+						prev.clone({
+							[segment]:
+								value !== undefined
+									? value + step
+									: config.today.get(segment)
+						})
 					)
 				}
 
 				if (event.key === 'ArrowRight') {
-					event.preventDefault()
-					findSegment(event.currentTarget, 'next')?.focus()
+					const element = findSegment(event.currentTarget, 'next')
+
+					if (element !== undefined) {
+						element.focus()
+						state.setDateSegment(
+							element.dataset.segment as CalendarDateSegment
+						)
+					}
 				}
 
 				if (event.key === 'ArrowDown') {
-					event.preventDefault()
-					state.setDateSegment(
-						segment,
-						value !== undefined
-							? value - step
-							: config.today.get(segment)
+					state.setDate((prev) =>
+						prev.clone({
+							[segment]:
+								value !== undefined
+									? value - step
+									: config.today.get(segment)
+						})
 					)
 				}
 
 				if (event.key === 'ArrowLeft') {
-					event.preventDefault()
-					findSegment(event.currentTarget, 'previous')?.focus()
+					const element = findSegment(event.currentTarget, 'previous')
+
+					if (element !== undefined) {
+						element.focus()
+						state.setDateSegment(
+							element.dataset.segment as CalendarDateSegment
+						)
+					}
 				}
 
 				if (event.key === 'Backspace' || event.key === 'Delete') {
-					event.preventDefault()
-					state.setDateSegment(segment, undefined)
+					state.setDate((prev) =>
+						prev.clone({
+							[segment]: undefined
+						})
+					)
 				}
 
 				if (/[0-9]/.test(event.key)) {
-					event.preventDefault()
 					const valueAsString = String(value ?? '')
 					const valueMutation = Number(valueAsString + event.key)
 
-					if (valueMutation <= max) {
-						state.setDateSegment(segment, valueMutation)
-					} else {
-						state.setDateSegment(segment, Number(event.key))
-					}
+					state.setDate((prev) =>
+						prev.clone({
+							[segment]:
+								valueMutation <= max
+									? valueMutation
+									: Number(event.key)
+						})
+					)
 				}
 			},
 			[max, step, value, state, config, segment]
@@ -108,9 +133,10 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				autoCapitalize='off'
 				spellCheck={false}
 				contentEditable={true}
-				tabIndex={0}
+				tabIndex={isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
 				style={{ caretColor: 'transparent' }}
+				data-segment={segment}
 				aria-label={label}
 				aria-valuemin={min}
 				aria-valuemax={max}
@@ -129,7 +155,7 @@ const findSegment = (element: Element, direction: 'next' | 'previous') => {
 	let sibling = element[`${direction}ElementSibling`]
 
 	while (sibling) {
-		if (sibling.matches('[role="spinbutton"]')) {
+		if (sibling.matches('[data-segment]')) {
 			return sibling as HTMLElement
 		}
 

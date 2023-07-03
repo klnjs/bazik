@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useMemo, useState } from 'react'
 import { useControllableState } from '../core/useControllableState'
 import { CalendarDate, type CalendarDateSegment } from './CalendarDate'
 
@@ -27,20 +27,24 @@ export const useCalendarState = ({
 			: CalendarDate.fromToday()
 	)
 
-	const setDateSegment = useCallback(
-		(segment: CalendarDateSegment, newValue: number | undefined) =>
-			setDate((prev) => prev.clone({ [segment]: newValue })),
-		[setDate]
-	)
+	const [dateSegment, setDateSegment] = useState<CalendarDateSegment>('day')
 
 	return useMemo(
 		() => ({
 			date,
 			dateVisible,
+			dateSegment,
 			setDate,
-			setDateSegment,
-			setDateVisible
+			setDateVisible,
+			setDateSegment
 		}),
-		[date, dateVisible, setDate, setDateSegment, setDateVisible]
+		[
+			date,
+			dateSegment,
+			dateVisible,
+			setDate,
+			setDateVisible,
+			setDateSegment
+		]
 	)
 }
