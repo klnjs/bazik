@@ -5,6 +5,7 @@ import { CalendarSegment } from './CalendarSegment'
 import { CalendarGrid } from './CalendarGrid'
 import { CalendarDay } from './CalendarDay'
 import { CalendarField } from './CalendarField'
+import { CalendarPortal } from './CalendarPortal'
 import { CalendarContent } from './CalendarContent'
 import { CalendarButton } from './CalendarButton'
 import { CalendarTitle } from './CalendarTitle'
@@ -75,51 +76,58 @@ export const Default: StoryObj<typeof Calendar> = {
 								className={classes.segment}
 							/>
 						</CalendarField>
-						<CalendarContent
-							style={{
-								display: 'flex',
-								flexDirection: 'column',
-								gap: 8
-							}}
-						>
-							<div
+						<CalendarPortal>
+							<CalendarContent
 								style={{
 									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'space-between',
+									flexDirection: 'column',
 									gap: 8
 								}}
 							>
-								<CalendarTitle />
+								<div
+									style={{
+										display: 'flex',
+										alignItems: 'center',
+										justifyContent: 'space-between',
+										gap: 8
+									}}
+								>
+									<CalendarTitle />
 
-								<div style={{ display: 'inline-flex', gap: 8 }}>
-									<CalendarButton action='year-1'>
-										{'<<'}
-									</CalendarButton>
-									<CalendarButton action='month-1'>
-										{'<'}
-									</CalendarButton>
-									<CalendarButton action='month+1'>
-										{'>'}
-									</CalendarButton>
-									<CalendarButton action='year+1'>
-										{'>>'}
-									</CalendarButton>
-								</div>
-							</div>
-							<CalendarGrid className={classes.grid}>
-								{(date) => (
-									<CalendarDay
-										key={date.format()}
-										date={date}
-										disabledOnWeekend={true}
-										className={classes.day}
+									<div
+										style={{
+											display: 'inline-flex',
+											gap: 8
+										}}
 									>
-										{date.day}
-									</CalendarDay>
-								)}
-							</CalendarGrid>
-						</CalendarContent>
+										<CalendarButton action='year-1'>
+											{'<<'}
+										</CalendarButton>
+										<CalendarButton action='month-1'>
+											{'<'}
+										</CalendarButton>
+										<CalendarButton action='month+1'>
+											{'>'}
+										</CalendarButton>
+										<CalendarButton action='year+1'>
+											{'>>'}
+										</CalendarButton>
+									</div>
+								</div>
+								<CalendarGrid className={classes.grid}>
+									{(date) => (
+										<CalendarDay
+											key={date.format()}
+											date={date}
+											disabledOnWeekend={true}
+											className={classes.day}
+										>
+											{date.day}
+										</CalendarDay>
+									)}
+								</CalendarGrid>
+							</CalendarContent>
+						</CalendarPortal>
 					</Calendar>
 				</div>
 			</div>

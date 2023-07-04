@@ -1,9 +1,9 @@
 import {
-	forwardRef as fr,
+	forwardRef as forwardRefReact,
 	type ElementRef,
 	type ElementType,
 	type ComponentProps,
-	type ForwardRefRenderFunction,
+	type ForwardRefRenderFunction
 } from 'react'
 import type { Assign } from './types'
 
@@ -15,4 +15,4 @@ export const forwardRef = <
 		ElementRef<E>,
 		Assign<ComponentProps<E>, P>
 	>
-) => fr(component)
+) => forwardRefReact(component)
