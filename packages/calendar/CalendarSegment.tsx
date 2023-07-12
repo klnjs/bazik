@@ -13,7 +13,6 @@ export type CalendarSegmentProps = AsChildComponentProps<
 	{
 		step?: number
 		mode?: 'numeric' | 'digit'
-		label?: string
 		segment: CalendarDateSegment
 		placeholder?: string
 	}
@@ -22,19 +21,24 @@ export type CalendarSegmentProps = AsChildComponentProps<
 export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 	(props, forwardedRef) => {
 		const { state, config } = useCalendarContext()
-		const [{ step = 1, mode, label, segment, placeholder }, otherProps] =
+		const [{ step = 1, mode, style, segment, placeholder }, otherProps] =
 			splitProps(props, [
 				'step',
 				'mode',
-				'label',
+				'style',
 				'segment',
 				'placeholder'
 			])
 
+		const localisation = useMemo(
+			() =>
+				new Intl.DisplayNames(config.locale, { type: 'dateTimeField' }),
+			[config.locale]
+		)
+
 		const min = CalendarDate[`${segment}Min`]
 		const max = CalendarDate[`${segment}Max`]
 		const value = state.date.get(segment)
-
 		const content = useMemo(() => {
 			if (value === undefined) {
 				return placeholder ?? ''.padStart(String(max).length, '-')
@@ -48,6 +52,10 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 		}, [max, mode, value, placeholder])
 
 		const isHighlighted = state.dateSegment === segment
+		const isInvalid =
+			!state.date.isValid() ||
+			state.date.isBefore(config.min) ||
+			state.date.isAfter(config.max)
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -145,14 +153,14 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				contentEditable={true}
 				tabIndex={isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
-				style={{ caretColor: 'transparent' }}
+				style={{ ...style, caretColor: 'transparent' }}
 				data-segment={segment}
-				aria-label={label}
+				aria-label={localisation.of(segment)}
 				aria-valuemin={min}
 				aria-valuemax={max}
 				aria-valuenow={value}
+				aria-invalid={isInvalid}
 				onKeyDown={handleKeyDown}
-				//'aria-invalid': invalid ? true : undefined,
 				{...otherProps}
 			>
 				{content}
@@ -162,13 +170,11 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 )
 
 const findSegment = (element: Element, direction: 'next' | 'previous') => {
-	let sibling = element[`${direction}ElementSibling`]
-
-	while (sibling) {
-		if (sibling.matches('[data-segment]')) {
-			return sibling as HTMLElement
+	// @ts-expect-error element not allowed to be null
+	// eslint-disable-next-line no-cond-assign, no-param-reassign
+	while ((element = element[`${direction}ElementSibling`]) !== null) {
+		if (element.matches('[data-segment]')) {
+			return element as HTMLElement
 		}
-
-		sibling = sibling[`${direction}ElementSibling`]
 	}
 }

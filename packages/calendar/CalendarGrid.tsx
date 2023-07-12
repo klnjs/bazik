@@ -15,12 +15,16 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 
 		const visibleDates = useMemo(() => {
 			const dates: CalendarDate[] = []
-			const first = state.dateVisible.getFirstDateOfMonth()
-			const last = state.dateVisible.getLastDateOfMonth()
-			const end = last.getLastDateOfWeek(config.locale)
-			let date = first.getFirstDateOfWeek(config.locale)
 
-			while (!date.isEquals(end)) {
+			const max = state.dateVisible
+				.getLastDateOfMonth()
+				.getLastDateOfWeek(config.locale)
+
+			let date = state.dateVisible
+				.getFirstDateOfMonth()
+				.getFirstDateOfWeek(config.locale)
+
+			while (!date.isEquals(max)) {
 				dates.push(date)
 				date = date.add({ day: 1 })
 			}

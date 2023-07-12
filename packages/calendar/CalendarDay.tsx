@@ -1,5 +1,6 @@
 import {
 	useRef,
+	useMemo,
 	useEffect,
 	useCallback,
 	useImperativeHandle,
@@ -29,7 +30,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 	(props, forwardedRef) => {
 		const { state, config } = useCalendarContext()
 		const [
-			{ date, disabled, disabledOnWeekend, disabledOnOverflow },
+			{ date, disabled, disabledOnWeekend, disabledOnOverflow = true },
 			otherProps
 		] = splitProps(props, [
 			'date',
@@ -52,6 +53,25 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			(disabledOnOverflow && isOverflow) ||
 			isAfter ||
 			isBefore
+
+		const localisation = useMemo(
+			() =>
+				new Intl.RelativeTimeFormat(config.locale, { numeric: 'auto' }),
+			[config.locale]
+		)
+
+		const formatted = date.format(config.locale, {
+			year: 'numeric',
+			month: 'long',
+			weekday: 'long',
+			day: 'numeric'
+		})
+
+		// Uncertain how this works in different locales, due to
+		// the concatenation of the two labels.
+		const label = isToday
+			? `${localisation.format(0, 'day')}, ${formatted}`
+			: formatted
 
 		const changeDate = useCallback(
 			(
@@ -91,7 +111,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
-				if (event.key === 'Enter' || event.key === 'space') {
+				if (event.key === 'Enter' || event.key === 'Space') {
 					changeDate(event)
 				}
 
@@ -157,12 +177,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				data-selected={isSelected ? '' : undefined}
 				data-disabled={isDisabled ? '' : undefined}
 				data-highlighted={isHighlighted ? '' : undefined}
-				aria-label={date.format(config.locale, {
-					year: 'numeric',
-					month: 'long',
-					weekday: 'long',
-					day: 'numeric'
-				})}
+				aria-label={label}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
 				onClick={handleClick}

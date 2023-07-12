@@ -119,7 +119,6 @@ export const Default: StoryObj<typeof Calendar> = {
 										<CalendarDay
 											key={date.format()}
 											date={date}
-											disabledOnWeekend={true}
 											className={classes.day}
 										>
 											{date.day}
