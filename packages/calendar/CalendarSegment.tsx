@@ -154,6 +154,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				suppressContentEditableWarning={true}
 				style={{ ...style, caretColor: 'transparent' }}
 				data-segment={segment}
+				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(segment)}
 				aria-valuemin={min}
 				aria-valuemax={max}
