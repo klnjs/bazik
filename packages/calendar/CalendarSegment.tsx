@@ -59,11 +59,11 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
-				if (event.key !== 'Tab') {
+				if (event.code !== 'Tab') {
 					event.preventDefault()
 				}
 
-				if (event.key === 'ArrowUp') {
+				if (event.code === 'ArrowUp') {
 					state.setDate((prev) =>
 						prev.clone({
 							[segment]:
@@ -74,7 +74,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 					)
 				}
 
-				if (event.key === 'ArrowRight') {
+				if (event.code === 'ArrowRight') {
 					const element = findSegment(event.currentTarget, 'next')
 
 					if (element !== undefined) {
@@ -85,7 +85,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 					}
 				}
 
-				if (event.key === 'ArrowDown') {
+				if (event.code === 'ArrowDown') {
 					state.setDate((prev) =>
 						prev.clone({
 							[segment]:
@@ -96,7 +96,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 					)
 				}
 
-				if (event.key === 'ArrowLeft') {
+				if (event.code === 'ArrowLeft') {
 					const element = findSegment(event.currentTarget, 'previous')
 
 					if (element !== undefined) {
@@ -107,7 +107,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 					}
 				}
 
-				if (event.key === 'Backspace' || event.key === 'Delete') {
+				if (event.code === 'Backspace' || event.key === 'Delete') {
 					state.setDate((prev) =>
 						prev.clone({
 							[segment]: undefined

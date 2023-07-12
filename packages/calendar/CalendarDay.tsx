@@ -111,19 +111,19 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
-				if (event.key === 'Enter' || event.key === 'Space') {
+				if (event.code === 'Enter' || event.code === 'Space') {
 					changeDate(event)
 				}
 
-				if (event.key === 'ArrowUp') {
+				if (event.code === 'ArrowUp') {
 					changeDateVisible(event, 'sub', false, { day: 7 })
 				}
 
-				if (event.key === 'ArrowRight') {
+				if (event.code === 'ArrowRight') {
 					changeDateVisible(event, 'add', false, { day: 1 })
 				}
 
-				if (event.key === 'ArrowDown') {
+				if (event.code === 'ArrowDown') {
 					changeDateVisible(event, 'add', false, { day: 7 })
 				}
 
@@ -131,21 +131,21 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 					changeDateVisible(event, 'sub', false, { day: 1 })
 				}
 
-				if (event.key === 'Home') {
+				if (event.code === 'Home') {
 					changeDateVisible(event, 'sub', true, { day: 0 })
 				}
 
-				if (event.key === 'End') {
+				if (event.code === 'End') {
 					changeDateVisible(event, 'add', true, {
 						day: state.dateVisible.getDaysInMonth()
 					})
 				}
 
-				if (event.key === 'PageUp') {
+				if (event.code === 'PageUp') {
 					changeDateVisible(event, 'sub', false, { month: 1 })
 				}
 
-				if (event.key === 'PageDown') {
+				if (event.code === 'PageDown') {
 					changeDateVisible(event, 'add', false, { month: 1 })
 				}
 			},

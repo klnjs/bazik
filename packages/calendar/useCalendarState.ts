@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useControllableState } from '../core/useControllableState'
-import { CalendarDate, type CalendarDateSegment } from './CalendarDate'
+import { CalendarDate } from './CalendarDate'
 
 export type UseCalendarStateOptions = {
+	locale: string
 	value?: Date
 	valueVisible?: Date
 	defaultValue?: Date
@@ -10,6 +11,7 @@ export type UseCalendarStateOptions = {
 }
 
 export const useCalendarState = ({
+	locale,
 	value,
 	valueVisible = value,
 	defaultValue,
@@ -27,7 +29,9 @@ export const useCalendarState = ({
 			: CalendarDate.fromToday()
 	)
 
-	const [dateSegment, setDateSegment] = useState<CalendarDateSegment>('day')
+	const [dateSegment, setDateSegment] = useState(
+		dateVisible.getSegmentByIndex(locale, 0)
+	)
 
 	return useMemo(
 		() => ({

@@ -92,11 +92,19 @@ export class CalendarDate {
 		return new CalendarDate({ year, month, day })
 	}
 
-	format(
-		locales?: Intl.LocalesArgument,
-		options?: Intl.DateTimeFormatOptions
-	) {
-		return this.asDate().toLocaleString(locales, options)
+	format(locale: string, options?: Intl.DateTimeFormatOptions) {
+		return this.asDate().toLocaleString(locale, options)
+	}
+
+	getSegments(locale: string) {
+		return new Intl.DateTimeFormat(locale)
+			.formatToParts(this.asDate())
+			.filter((part) => part.type !== 'literal')
+			.map((part) => part.type) as CalendarDateSegment[]
+	}
+
+	getSegmentByIndex(locale: string, index: number) {
+		return this.getSegments(locale)[index]
 	}
 
 	getFirstDateOfWeek(locale: string) {

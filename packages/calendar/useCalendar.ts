@@ -20,6 +20,7 @@ export const useCalendar = ({
 }: UseCalendarOptions) => {
 	const config = useCalendarConfig({ min, max, locale })
 	const state = useCalendarState({
+		locale,
 		value,
 		valueVisible: min,
 		defaultValue,

@@ -2,8 +2,9 @@ import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { Calendar } from './Calendar'
 import { CalendarSegment } from './CalendarSegment'
-import { CalendarGrid } from './CalendarGrid'
+import { CalendarSegments } from './CalendarSegments'
 import { CalendarDay } from './CalendarDay'
+import { CalendarDays } from './CalendarDays'
 import { CalendarField } from './CalendarField'
 import { CalendarPortal } from './CalendarPortal'
 import { CalendarContent } from './CalendarContent'
@@ -13,11 +14,12 @@ import * as classes from './Calendar.stories.css'
 
 export default {
 	title: 'Calendar',
-	component: Calendar
+	component: Calendar,
+	args: { locale: 'da' }
 } satisfies Meta<typeof Calendar>
 
 export const Default: StoryObj<typeof Calendar> = {
-	render: (args) => {
+	render: ({ locale, ...args }) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
 		const [selectedDate, setSelectedDate] = useState<Date>()
 		const handleChange = (date: Date | undefined) => {
@@ -51,7 +53,7 @@ export const Default: StoryObj<typeof Calendar> = {
 						min={min}
 						max={max}
 						value={selectedDate}
-						locale='da'
+						locale={locale}
 						style={{
 							display: 'flex',
 							flexDirection: 'column',
@@ -61,20 +63,14 @@ export const Default: StoryObj<typeof Calendar> = {
 						{...args}
 					>
 						<CalendarField className={classes.field}>
-							<CalendarSegment
-								segment='day'
-								className={classes.segment}
-							/>
-							<span className={classes.segment}>/</span>
-							<CalendarSegment
-								segment='month'
-								className={classes.segment}
-							/>
-							<span className={classes.segment}>/</span>
-							<CalendarSegment
-								segment='year'
-								className={classes.segment}
-							/>
+							<CalendarSegments>
+								{(segment) => (
+									<CalendarSegment
+										segment={segment}
+										className={classes.segment}
+									/>
+								)}
+							</CalendarSegments>
 						</CalendarField>
 						<CalendarPortal>
 							<CalendarContent
@@ -114,17 +110,19 @@ export const Default: StoryObj<typeof Calendar> = {
 										</CalendarButton>
 									</div>
 								</div>
-								<CalendarGrid className={classes.grid}>
-									{(date) => (
-										<CalendarDay
-											key={date.format()}
-											date={date}
-											className={classes.day}
-										>
-											{date.day}
-										</CalendarDay>
-									)}
-								</CalendarGrid>
+								<div className={classes.grid}>
+									<CalendarDays>
+										{(date) => (
+											<CalendarDay
+												key={date.format()}
+												date={date}
+												className={classes.day}
+											>
+												{date.day}
+											</CalendarDay>
+										)}
+									</CalendarDays>
+								</div>
 							</CalendarContent>
 						</CalendarPortal>
 					</Calendar>
