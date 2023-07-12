@@ -53,9 +53,8 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 		const isHighlighted = state.dateSegment === segment
 		const isInvalid =
-			!state.date.isValid() ||
-			state.date.isBefore(config.min) ||
-			state.date.isAfter(config.max)
+			state.date.isValid() &&
+			(state.date.isBefore(config.min) || state.date.isAfter(config.max))
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -159,6 +158,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				aria-valuemin={min}
 				aria-valuemax={max}
 				aria-valuenow={value}
+				aria-valuetext={value ? String(value) : 'Empty'}
 				aria-invalid={isInvalid}
 				onKeyDown={handleKeyDown}
 				{...otherProps}
