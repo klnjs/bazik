@@ -6,12 +6,17 @@ export type PortalProps = ComponentProps<
 	'div',
 	{
 		target?: HTMLElement | string
+		disabled?: boolean
 	}
 >
 
 export const Portal = forwardRef<'div', PortalProps>(
-	({ target, ...otherProps }, forwardedRef) => {
+	({ target, disabled, children, ...otherProps }, forwardedRef) => {
 		const container = useMemo(() => {
+			if (target === undefined || disabled) {
+				return window.document.body
+			}
+
 			if (typeof target === 'string') {
 				const element = window.document.querySelector(target)
 
@@ -24,12 +29,16 @@ export const Portal = forwardRef<'div', PortalProps>(
 				return element as HTMLElement
 			}
 
-			return window.document.body
-		}, [target])
+			return target
+		}, [target, disabled])
 
-		return createPortal(
-			<freya.div ref={forwardedRef} {...otherProps} />,
-			container
-		)
+		return disabled
+			? children
+			: createPortal(
+					<freya.div ref={forwardedRef} {...otherProps}>
+						{children}
+					</freya.div>,
+					container
+			  )
 	}
 )

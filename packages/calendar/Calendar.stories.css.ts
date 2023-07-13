@@ -35,7 +35,7 @@ export const day = style({
 	cursor: 'pointer',
 	userSelect: 'none',
 	border: 0,
-	borderRadius: '4px',
+	borderRadius: 4,
 	background: 'none',
 	selectors: {
 		'&[data-today]': {
@@ -70,7 +70,7 @@ export const field = style({
 
 export const segment = style({
 	border: 0,
-	borderRadius: '4px',
+	borderRadius: 4,
 	padding: 8,
 	':focus-visible': {
 		outline: '1px solid blue',
