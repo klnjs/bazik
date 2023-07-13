@@ -19,8 +19,8 @@ export type PopoverProps = AsChildComponentProps<
 	{
 		anchor?: HTMLElement
 		anchorOrigin?: Placement
+		anchorAlignment?: Placement
 		open?: boolean
-		placement?: Placement
 		// portal?: boolean
 	}
 >
@@ -30,9 +30,9 @@ export const Popover = forwardRef<'div', PopoverProps>(
 		{
 			anchor,
 			anchorOrigin = 'end start',
+			anchorAlignment = 'start start',
 			open = false,
 			style,
-			placement = 'start start',
 			// portal = true,
 			...otherProps
 		},
@@ -50,10 +50,15 @@ export const Popover = forwardRef<'div', PopoverProps>(
 		useLayoutEffect(() => {
 			if (open && anchor && ref.current) {
 				setPosition(
-					getPosition(anchor, anchorOrigin, ref.current, placement)
+					getPosition(
+						ref.current,
+						anchor,
+						anchorOrigin,
+						anchorAlignment
+					)
 				)
 			}
-		}, [anchor, anchorOrigin, open, placement])
+		}, [open, anchor, anchorOrigin, anchorAlignment])
 
 		useImperativeHandle(
 			forwardedRef,
@@ -79,21 +84,21 @@ export const Popover = forwardRef<'div', PopoverProps>(
 )
 
 const getPosition = (
+	element: HTMLElement,
 	anchor: HTMLElement,
 	anchorOrigin: Placement,
-	element: HTMLElement,
-	elementPlacement: Placement
+	anchorAlignment: Placement
 ): CSSProperties => {
-	const [eBlockProp, eInlineProp] = getLogicalProperties(elementPlacement)
 	const [aBlockProp, aInlineProp] = getLogicalProperties(anchorOrigin)
-	const elementBlockOffset = getLogicalOffset(element, 'block', eBlockProp)
-	const elementInlineOffset = getLogicalOffset(element, 'inline', eInlineProp)
+	const [eBlockProp, eInlineProp] = getLogicalProperties(anchorAlignment)
 	const anchorBlock = getLogicalPosition(anchor, 'block', aBlockProp)
+	const anchorBlockOffset = getLogicalOffset(element, 'block', eBlockProp)
 	const anchorInline = getLogicalPosition(anchor, 'inline', aInlineProp)
+	const anchorInlineOffset = getLogicalOffset(element, 'inline', eInlineProp)
 
 	return {
 		position: 'fixed',
-		insetBlockStart: anchorBlock - elementBlockOffset,
-		insetInlineStart: anchorInline - elementInlineOffset
+		insetBlockStart: anchorBlock - anchorBlockOffset,
+		insetInlineStart: anchorInline - anchorInlineOffset
 	}
 }
