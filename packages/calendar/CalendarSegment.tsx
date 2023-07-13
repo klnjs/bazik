@@ -1,10 +1,5 @@
 import { useMemo, useCallback, type KeyboardEvent } from 'react'
-import {
-	freya,
-	forwardRef,
-	splitProps,
-	type AsChildComponentProps
-} from '../core'
+import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { CalendarDate, type CalendarDateSegment } from './CalendarDate'
 
@@ -19,16 +14,11 @@ export type CalendarSegmentProps = AsChildComponentProps<
 >
 
 export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
-	(props, forwardedRef) => {
+	(
+		{ step = 1, mode, style, segment, placeholder, ...otherProps },
+		forwardedRef
+	) => {
 		const { state, config } = useCalendarContext()
-		const [{ step = 1, mode, style, segment, placeholder }, otherProps] =
-			splitProps(props, [
-				'step',
-				'mode',
-				'style',
-				'segment',
-				'placeholder'
-			])
 
 		const localisation = useMemo(
 			() =>

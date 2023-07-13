@@ -2,7 +2,6 @@ To Solve
 	- Settle on an API when composing the parts.
 	- Implement popover functionality.
 	- Maybe don't allow asChild on root element? (Seen on Radix)
-	- Maybe get rid of the splitProps pattern and just use destructering.
 	- Maybe move all the min / max checking into the state hook / Date class?
 	- Maybe improve CalendarDate API
 		- Should we separate utility functions from the class?

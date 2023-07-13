@@ -7,12 +7,7 @@ import {
 	type KeyboardEvent,
 	type MouseEvent
 } from 'react'
-import {
-	freya,
-	forwardRef,
-	splitProps,
-	type AsChildComponentProps
-} from '../core'
+import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate, CalendarDateProps } from './CalendarDate'
 
@@ -27,19 +22,19 @@ export type CalendarDayProps = AsChildComponentProps<
 >
 
 export const CalendarDay = forwardRef<'div', CalendarDayProps>(
-	(props, forwardedRef) => {
+	(
+		{
+			date,
+			disabled,
+			disabledOnOverflow = true,
+			disabledOnWeekend,
+			...otherProps
+		},
+		forwardedRef
+	) => {
 		const { state, config } = useCalendarContext()
-		const [
-			{ date, disabled, disabledOnWeekend, disabledOnOverflow = true },
-			otherProps
-		] = splitProps(props, [
-			'date',
-			'disabled',
-			'disabledOnWeekend',
-			'disabledOnOverflow'
-		])
-		const ref = useRef<HTMLDivElement>(null)
 
+		const ref = useRef<HTMLDivElement>(null)
 		const isToday = date.isToday()
 		const isAfter = date.isAfter(config.max)
 		const isBefore = date.isBefore(config.min)

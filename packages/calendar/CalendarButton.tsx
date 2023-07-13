@@ -1,9 +1,4 @@
-import {
-	freya,
-	forwardRef,
-	splitProps,
-	type AsChildComponentProps
-} from '../core'
+import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDateSegment } from './CalendarDate'
 
@@ -18,9 +13,8 @@ export type CalendarButtonProps = AsChildComponentProps<
 >
 
 export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
-	(props, forwardedRef) => {
+	({ action, ...otherProps }, forwardedRef) => {
 		const { state, config } = useCalendarContext()
-		const [{ action }, otherProps] = splitProps(props, ['action'])
 		const [segment, number] = action.split(/(?=\+|-)/) as [
 			CalendarDateSegment,
 			string

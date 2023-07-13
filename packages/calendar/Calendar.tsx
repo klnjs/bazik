@@ -1,26 +1,22 @@
-import {
-	freya,
-	forwardRef,
-	splitProps,
-	type AsChildComponentProps
-} from '../core'
+import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { CalendarProvider } from './CalendarContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
 
 export type CalendarProps = AsChildComponentProps<'div', UseCalendarOptions>
 
 export const Calendar = forwardRef<'div', CalendarProps>(
-	(props, forwardedRef) => {
-		const [localProps, otherProps] = splitProps(props, [
-			'min',
-			'max',
-			'value',
-			'locale',
-			'defaultValue',
-			'onChange'
-		])
-
-		const calendar = useCalendar(localProps)
+	(
+		{ min, max, value, locale, defaultValue, onChange, ...otherProps },
+		forwardedRef
+	) => {
+		const calendar = useCalendar({
+			min,
+			max,
+			value,
+			locale,
+			defaultValue,
+			onChange
+		})
 
 		return (
 			<CalendarProvider value={calendar}>
