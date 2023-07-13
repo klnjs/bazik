@@ -28,7 +28,6 @@ export const Default: StoryObj<typeof Popover> = {
 				<Popover
 					open={Boolean(anchor)}
 					anchor={anchor}
-					anchorOrigin='start end'
 					className={classes.popover}
 					{...args}
 				>
