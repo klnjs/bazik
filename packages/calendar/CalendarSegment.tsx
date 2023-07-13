@@ -15,7 +15,14 @@ export type CalendarSegmentProps = AsChildComponentProps<
 
 export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 	(
-		{ step = 1, mode, style, segment, placeholder, ...otherProps },
+		{
+			step = 1,
+			mode = 'digit',
+			style,
+			segment,
+			placeholder,
+			...otherProps
+		},
 		forwardedRef
 	) => {
 		const { state, config } = useCalendarContext()
@@ -45,6 +52,10 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 		const isInvalid =
 			state.date.isValid() &&
 			(state.date.isBefore(config.min) || state.date.isAfter(config.max))
+
+		const handleClick = useCallback(() => {
+			state.setFocusedSegment(segment)
+		}, [state, segment])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -152,6 +163,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				aria-valuenow={value}
 				aria-valuetext={value ? String(value) : 'Empty'}
 				aria-invalid={isInvalid}
+				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				{...otherProps}
 			>

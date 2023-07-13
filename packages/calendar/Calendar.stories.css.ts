@@ -12,6 +12,11 @@ export const section = style({
 	gap: 8
 })
 
+export const title = style({
+	padding: 0,
+	margin: 0
+})
+
 export const controls = style([
 	section,
 	{
@@ -76,4 +81,11 @@ export const segment = style({
 		outline: '1px solid blue',
 		outlineOffset: -1
 	}
+})
+
+export const popover = style({
+	padding: 8,
+	background: 'white',
+	border: '1px solid black',
+	borderRadius: 4
 })

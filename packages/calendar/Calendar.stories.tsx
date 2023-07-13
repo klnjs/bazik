@@ -11,6 +11,8 @@ import { CalendarContent } from './CalendarContent'
 import { CalendarButton } from './CalendarButton'
 import { CalendarTitle } from './CalendarTitle'
 import * as classes from './Calendar.stories.css'
+import { CalendarPopover } from './CalendarPopover'
+import { CalendarTrigger } from './CalendarTrigger'
 
 export default {
 	title: 'Calendar',
@@ -71,59 +73,64 @@ export const Default: StoryObj<typeof Calendar> = {
 									/>
 								)}
 							</CalendarSegments>
+							<CalendarTrigger>Open</CalendarTrigger>
 						</CalendarField>
 						<CalendarPortal>
-							<CalendarContent
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									gap: 8
-								}}
-							>
-								<div
+							<CalendarPopover className={classes.popover}>
+								<CalendarContent
 									style={{
 										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'space-between',
+										flexDirection: 'column',
 										gap: 8
 									}}
 								>
-									<CalendarTitle />
-
 									<div
 										style={{
-											display: 'inline-flex',
+											display: 'flex',
+											alignItems: 'center',
+											justifyContent: 'space-between',
 											gap: 8
 										}}
 									>
-										<CalendarButton action='year-1'>
-											{'<<'}
-										</CalendarButton>
-										<CalendarButton action='month-1'>
-											{'<'}
-										</CalendarButton>
-										<CalendarButton action='month+1'>
-											{'>'}
-										</CalendarButton>
-										<CalendarButton action='year+1'>
-											{'>>'}
-										</CalendarButton>
+										<CalendarTitle
+											className={classes.title}
+										/>
+
+										<div
+											style={{
+												display: 'inline-flex',
+												gap: 8
+											}}
+										>
+											<CalendarButton action='year-1'>
+												{'<<'}
+											</CalendarButton>
+											<CalendarButton action='month-1'>
+												{'<'}
+											</CalendarButton>
+											<CalendarButton action='month+1'>
+												{'>'}
+											</CalendarButton>
+											<CalendarButton action='year+1'>
+												{'>>'}
+											</CalendarButton>
+										</div>
 									</div>
-								</div>
-								<div className={classes.grid}>
-									<CalendarDays>
-										{(date) => (
-											<CalendarDay
-												key={date.format()}
-												date={date}
-												className={classes.day}
-											>
-												{date.day}
-											</CalendarDay>
-										)}
-									</CalendarDays>
-								</div>
-							</CalendarContent>
+									<div className={classes.grid}>
+										<CalendarDays>
+											{(date) => (
+												<CalendarDay
+													key={date.format('da')}
+													date={date}
+													className={classes.day}
+												>
+													{date.day}
+												</CalendarDay>
+											)}
+										</CalendarDays>
+									</div>
+								</CalendarContent>
+							</CalendarPopover>
 						</CalendarPortal>
 					</Calendar>
 				</div>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useControllableState } from '../core/useControllableState'
+import { useControllableState } from '../core'
 import { CalendarDate } from './CalendarDate'
 
 export type UseCalendarStateOptions = {
@@ -17,6 +17,8 @@ export const useCalendarState = ({
 	defaultValue,
 	onChange
 }: UseCalendarStateOptions) => {
+	const [anchor, setAnchor] = useState<HTMLElement>()
+
 	const [date, setDate] = useControllableState({
 		value: value ? CalendarDate.fromDate(value) : undefined,
 		defaultValue: CalendarDate.fromDate(defaultValue),
@@ -36,17 +38,21 @@ export const useCalendarState = ({
 	return useMemo(
 		() => ({
 			date,
+			anchor,
 			focusedDate,
 			focusedSegment,
 			setDate,
+			setAnchor,
 			setFocusedDate,
 			setFocusedSegment
 		}),
 		[
 			date,
+			anchor,
 			focusedDate,
 			focusedSegment,
 			setDate,
+			setAnchor,
 			setFocusedDate,
 			setFocusedSegment
 		]

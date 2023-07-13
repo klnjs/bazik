@@ -6,7 +6,6 @@ import {
 	type CSSProperties
 } from 'react'
 import { freya, type AsChildComponentProps, forwardRef } from '../core'
-import { Portal } from '../portal/Portal'
 import {
 	getLogicalOffset,
 	getLogicalPosition,
@@ -33,7 +32,6 @@ export const Popover = forwardRef<'div', PopoverProps>(
 			anchorAlignment = 'start start',
 			open = false,
 			style,
-			// portal = true,
 			...otherProps
 		},
 		forwardedRef
@@ -71,14 +69,12 @@ export const Popover = forwardRef<'div', PopoverProps>(
 		}
 
 		return (
-			<Portal>
-				<freya.div
-					ref={ref}
-					style={{ ...position, ...style }}
-					data-open=''
-					{...otherProps}
-				/>
-			</Portal>
+			<freya.div
+				ref={ref}
+				style={{ ...position, ...style }}
+				data-open=''
+				{...otherProps}
+			/>
 		)
 	}
 )

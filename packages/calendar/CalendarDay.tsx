@@ -3,11 +3,15 @@ import {
 	useMemo,
 	useEffect,
 	useCallback,
-	useImperativeHandle,
 	type KeyboardEvent,
 	type MouseEvent
 } from 'react'
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import {
+	freya,
+	forwardRef,
+	useForwardedRef,
+	type AsChildComponentProps
+} from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate, CalendarDateProps } from './CalendarDate'
 
@@ -149,17 +153,12 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		useEffect(() => {
 			if (isHighlighted) {
-				// @ts-expect-error focusVisible param is experimental
 				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
 				ref.current?.focus({ focusVisible: true })
 			}
 		}, [isHighlighted])
 
-		useImperativeHandle(
-			forwardedRef,
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			() => ref.current!
-		)
+		useForwardedRef(ref, forwardedRef)
 
 		return (
 			<freya.div
