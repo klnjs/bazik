@@ -1,14 +1,14 @@
 import { useMemo, useCallback, type KeyboardEvent } from 'react'
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate, type CalendarDateSegment } from './CalendarDate'
+import { CalendarDate, type CalendarFocusedSegment } from './CalendarDate'
 
 export type CalendarSegmentProps = AsChildComponentProps<
 	'div',
 	{
 		step?: number
 		mode?: 'numeric' | 'digit'
-		segment: CalendarDateSegment
+		segment: CalendarFocusedSegment
 		placeholder?: string
 	}
 >
@@ -41,7 +41,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 			return String(value)
 		}, [max, mode, value, placeholder])
 
-		const isHighlighted = state.dateSegment === segment
+		const isHighlighted = state.focusedSegment === segment
 		const isInvalid =
 			state.date.isValid() &&
 			(state.date.isBefore(config.min) || state.date.isAfter(config.max))
@@ -68,8 +68,8 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 					if (element !== undefined) {
 						element.focus()
-						state.setDateSegment(
-							element.dataset.segment as CalendarDateSegment
+						state.setFocusedSegment(
+							element.dataset.segment as CalendarFocusedSegment
 						)
 					}
 				}
@@ -90,8 +90,8 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 					if (element !== undefined) {
 						element.focus()
-						state.setDateSegment(
-							element.dataset.segment as CalendarDateSegment
+						state.setFocusedSegment(
+							element.dataset.segment as CalendarFocusedSegment
 						)
 					}
 				}
@@ -121,8 +121,9 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 						if (element !== undefined) {
 							element.focus()
-							state.setDateSegment(
-								element.dataset.segment as CalendarDateSegment
+							state.setFocusedSegment(
+								element.dataset
+									.segment as CalendarFocusedSegment
 							)
 						}
 					}

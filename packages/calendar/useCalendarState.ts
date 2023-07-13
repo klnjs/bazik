@@ -23,32 +23,32 @@ export const useCalendarState = ({
 		onChange: (newValue: CalendarDate) => onChange?.(newValue.asDate())
 	})
 
-	const [dateVisible, setDateVisible] = useState(
+	const [focusedDate, setFocusedDate] = useState(
 		valueVisible
 			? CalendarDate.fromDate(valueVisible)
 			: CalendarDate.fromToday()
 	)
 
-	const [dateSegment, setDateSegment] = useState(
-		dateVisible.getSegmentByIndex(locale, 0)
+	const [focusedSegment, setFocusedSegment] = useState(
+		focusedDate.getSegmentByIndex(locale, 0)
 	)
 
 	return useMemo(
 		() => ({
 			date,
-			dateVisible,
-			dateSegment,
+			focusedDate,
+			focusedSegment,
 			setDate,
-			setDateVisible,
-			setDateSegment
+			setFocusedDate,
+			setFocusedSegment
 		}),
 		[
 			date,
-			dateSegment,
-			dateVisible,
+			focusedDate,
+			focusedSegment,
 			setDate,
-			setDateVisible,
-			setDateSegment
+			setFocusedDate,
+			setFocusedSegment
 		]
 	)
 }

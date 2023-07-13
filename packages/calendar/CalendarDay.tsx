@@ -40,8 +40,8 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isBefore = date.isBefore(config.min)
 		const isWeekend = date.isWeekend(config.locale)
 		const isSelected = date.isEquals(state.date)
-		const isOverflow = !date.isEquals(state.dateVisible, ['year', 'month'])
-		const isHighlighted = date.isEquals(state.dateVisible)
+		const isOverflow = !date.isEquals(state.focusedDate, ['year', 'month'])
+		const isHighlighted = date.isEquals(state.focusedDate)
 		const isDisabled =
 			disabled ||
 			(disabledOnWeekend && isWeekend) ||
@@ -77,13 +77,13 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				if (!isDisabled) {
 					event.preventDefault()
 					state.setDate(date)
-					state.setDateVisible(date)
+					state.setFocusedDate(date)
 				}
 			},
 			[date, state, isDisabled]
 		)
 
-		const changeDateVisible = useCallback(
+		const changeFocusedDate = useCallback(
 			(
 				event: KeyboardEvent<HTMLDivElement>,
 				action: 'add' | 'sub',
@@ -91,7 +91,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				options: CalendarDateProps
 			) => {
 				event.preventDefault()
-				state.setDateVisible((prev) => {
+				state.setFocusedDate((prev) => {
 					const next = prev[clone ? 'clone' : action](options)
 					const limit = action === 'add' ? config.max : config.min
 					const check = action === 'add' ? 'isAfter' : 'isBefore'
@@ -111,40 +111,40 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					changeDateVisible(event, 'sub', false, { day: 7 })
+					changeFocusedDate(event, 'sub', false, { day: 7 })
 				}
 
 				if (event.code === 'ArrowRight') {
-					changeDateVisible(event, 'add', false, { day: 1 })
+					changeFocusedDate(event, 'add', false, { day: 1 })
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeDateVisible(event, 'add', false, { day: 7 })
+					changeFocusedDate(event, 'add', false, { day: 7 })
 				}
 
 				if (event.key === 'ArrowLeft') {
-					changeDateVisible(event, 'sub', false, { day: 1 })
+					changeFocusedDate(event, 'sub', false, { day: 1 })
 				}
 
 				if (event.code === 'Home') {
-					changeDateVisible(event, 'sub', true, { day: 0 })
+					changeFocusedDate(event, 'sub', true, { day: 0 })
 				}
 
 				if (event.code === 'End') {
-					changeDateVisible(event, 'add', true, {
-						day: state.dateVisible.getDaysInMonth()
+					changeFocusedDate(event, 'add', true, {
+						day: state.focusedDate.getDaysInMonth()
 					})
 				}
 
 				if (event.code === 'PageUp') {
-					changeDateVisible(event, 'sub', false, { month: 1 })
+					changeFocusedDate(event, 'sub', false, { month: 1 })
 				}
 
 				if (event.code === 'PageDown') {
-					changeDateVisible(event, 'add', false, { month: 1 })
+					changeFocusedDate(event, 'add', false, { month: 1 })
 				}
 			},
-			[state, changeDate, changeDateVisible]
+			[state, changeDate, changeFocusedDate]
 		)
 
 		useEffect(() => {

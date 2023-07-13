@@ -4,7 +4,7 @@ export type CalendarDateProps = {
 	day?: number
 }
 
-export type CalendarDateSegment = keyof CalendarDateProps
+export type CalendarFocusedSegment = keyof CalendarDateProps
 
 export class CalendarDate {
 	year?: number
@@ -41,11 +41,11 @@ export class CalendarDate {
 		this.set('day', day)
 	}
 
-	get(segment: CalendarDateSegment) {
+	get(segment: CalendarFocusedSegment) {
 		return this[segment]
 	}
 
-	set(segment: CalendarDateSegment, value: number | undefined) {
+	set(segment: CalendarFocusedSegment, value: number | undefined) {
 		this[segment] =
 			value !== undefined
 				? Math.min(
@@ -100,7 +100,7 @@ export class CalendarDate {
 		return new Intl.DateTimeFormat(locale)
 			.formatToParts(this.asDate())
 			.filter((part) => part.type !== 'literal')
-			.map((part) => part.type) as CalendarDateSegment[]
+			.map((part) => part.type) as CalendarFocusedSegment[]
 	}
 
 	getSegmentByIndex(locale: string, index: number) {
@@ -222,7 +222,7 @@ export class CalendarDate {
 
 	isEquals(
 		date: CalendarDate,
-		segments: CalendarDateSegment[] = ['year', 'month', 'day']
+		segments: CalendarFocusedSegment[] = ['year', 'month', 'day']
 	) {
 		return segments.every(
 			(segment) => this.get(segment) === date.get(segment)

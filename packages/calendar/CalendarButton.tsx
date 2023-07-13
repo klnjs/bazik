@@ -1,9 +1,9 @@
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import type { CalendarDateSegment } from './CalendarDate'
+import type { CalendarFocusedSegment } from './CalendarDate'
 
 export type CalendarButtonSegment = Extract<
-	CalendarDateSegment,
+	CalendarFocusedSegment,
 	'year' | 'month'
 >
 
@@ -16,7 +16,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 	({ action, ...otherProps }, forwardedRef) => {
 		const { state, config } = useCalendarContext()
 		const [segment, number] = action.split(/(?=\+|-)/) as [
-			CalendarDateSegment,
+			CalendarFocusedSegment,
 			string
 		]
 
@@ -27,7 +27,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 
 		const predicate = number.startsWith('+') ? 'isAfter' : 'isBefore'
 
-		const isDisabled = state.dateVisible
+		const isDisabled = state.focusedDate
 			.calc({
 				[segment]: Number(number)
 			})
@@ -35,7 +35,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			[predicate](limit)
 
 		const onClick = () =>
-			state.setDateVisible((prev) => {
+			state.setFocusedDate((prev) => {
 				const next = prev.calc({ [segment]: Number(number) })
 
 				return next[predicate](limit) ? limit : next

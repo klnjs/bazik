@@ -11,11 +11,11 @@ export const CalendarDays = ({ children }: CalendarDaysProps) => {
 
 	const days = useMemo(() => {
 		const dates: CalendarDate[] = []
-		const max = state.dateVisible
+		const max = state.focusedDate
 			.getLastDateOfMonth()
 			.getLastDateOfWeek(config.locale)
 
-		let date = state.dateVisible
+		let date = state.focusedDate
 			.getFirstDateOfMonth()
 			.getFirstDateOfWeek(config.locale)
 
@@ -25,7 +25,7 @@ export const CalendarDays = ({ children }: CalendarDaysProps) => {
 		}
 
 		return dates
-	}, [state.dateVisible, config.locale])
+	}, [state.focusedDate, config.locale])
 
 	return days.map(children)
 }
