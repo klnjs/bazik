@@ -18,6 +18,9 @@ export const CalendarTrigger = forwardRef<'button', CalendarTriggerProps>(
 			<freya.button
 				ref={forwardedRef}
 				type='button'
+				aria-haspopup='dialog'
+				aria-expanded={Boolean(state.anchor)}
+				// aria-controls={context.contentId}
 				onClick={handleClick}
 				{...props}
 			/>
