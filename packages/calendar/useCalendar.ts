@@ -29,7 +29,7 @@ export const useCalendar = ({
 	})
 
 	const refs = {
-		fieldRef: useRef<HTMLDivElement>(null)
+		field: useRef<HTMLDivElement>(null)
 	}
 
 	return {

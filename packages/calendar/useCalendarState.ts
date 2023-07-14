@@ -17,7 +17,7 @@ export const useCalendarState = ({
 	defaultValue,
 	onChange
 }: UseCalendarStateOptions) => {
-	const [anchor, setAnchor] = useState<HTMLElement>()
+	const [open, setOpen] = useState(false)
 
 	const [date, setDate] = useControllableState({
 		value: value ? CalendarDate.fromDate(value) : undefined,
@@ -38,21 +38,21 @@ export const useCalendarState = ({
 	return useMemo(
 		() => ({
 			date,
-			anchor,
+			open,
 			focusedDate,
 			focusedSegment,
 			setDate,
-			setAnchor,
+			setOpen,
 			setFocusedDate,
 			setFocusedSegment
 		}),
 		[
 			date,
-			anchor,
+			open,
 			focusedDate,
 			focusedSegment,
 			setDate,
-			setAnchor,
+			setOpen,
 			setFocusedDate,
 			setFocusedSegment
 		]

@@ -11,7 +11,7 @@ export const CalendarPopover = forwardRef<'dialog', CalendarPopoverProps>(
 		return (
 			<Popover
 				ref={forwardedRef}
-				open={Boolean(state.anchor)}
+				open={state.open}
 				anchor={refs.fieldRef.current}
 				{...props}
 			/>
