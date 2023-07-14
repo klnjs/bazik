@@ -68,6 +68,7 @@ export const Default: StoryObj<typeof Calendar> = {
 							<CalendarSegments>
 								{(segment) => (
 									<CalendarSegment
+										key={segment}
 										segment={segment}
 										className={classes.segment}
 									/>

@@ -84,6 +84,7 @@ export const segment = style({
 })
 
 export const popover = style({
+	width: 300,
 	padding: 8,
 	background: 'white',
 	border: '1px solid black',

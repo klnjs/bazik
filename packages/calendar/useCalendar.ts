@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import {
 	useCalendarConfig,
 	type UseCalendarConfigOptions
@@ -27,7 +28,12 @@ export const useCalendar = ({
 		onChange
 	})
 
+	const refs = {
+		fieldRef: useRef<HTMLDivElement>(null)
+	}
+
 	return {
+		refs,
 		state,
 		config
 	}

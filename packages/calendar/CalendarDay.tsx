@@ -151,14 +151,17 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			[state, changeDate, changeFocusedDate]
 		)
 
+		useForwardedRef(ref, forwardedRef)
+
 		useEffect(() => {
 			if (isHighlighted) {
-				// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
-				ref.current?.focus({ focusVisible: true })
+				ref.current?.focus({
+					// @ts-expect-error not yet implemented
+					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
+					focusVisible: true
+				})
 			}
 		}, [isHighlighted])
-
-		useForwardedRef(ref, forwardedRef)
 
 		return (
 			<freya.div

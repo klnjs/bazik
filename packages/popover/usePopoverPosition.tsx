@@ -1,45 +1,47 @@
-export type Direction = 'ltr' | 'rtl'
+export type Property = 'start' | 'end'
 
-export type Dimension = 'block' | 'inline'
+export type Block = `block-${Property}`
 
-export type Property = 'start' | 'end' | 'center'
+export type Inline = `inline-${Property}`
+
+export type Logical = Block | Inline
 
 export type Placement = Property | `${Property} ${Property}`
 
-export const getLogicalPosition = (
-	element: HTMLElement,
-	dimension: Dimension,
-	property: Property
-) => {
-	// Bug here somewhere which makes the position
+export const getLogicalPosition = (element: HTMLElement, position: Logical) => {
 	const rect = element.getBoundingClientRect()
 	const { direction } = getComputedStyle(element)
 
-	if (dimension === 'block') {
-		if (property === 'start') {
+	if (direction === 'rtl') {
+		switch (position) {
+			case 'block-start':
+				return rect.top
+			case 'block-end':
+				console.log(window.innerHeight, rect.bottom)
+
+				return window.innerHeight - rect.bottom
+			case 'inline-start':
+				return window.innerWidth - rect.right
+			case 'inline-end':
+				return window.innerWidth - rect.left
+			default:
+				throw new Error('Unsupported position')
+		}
+	}
+
+	switch (position) {
+		case 'block-start':
 			return rect.top
-		} else if (property === 'end') {
-			return rect.bottom
-		}
-
-		return rect.top + rect.height / 2
-	}
-
-	if (direction === 'ltr') {
-		if (property === 'start') {
+		case 'block-end':
+			console.log(window.innerHeight, rect.bottom)
+			return window.innerHeight - rect.bottom
+		case 'inline-start':
 			return rect.left
-		} else if (property === 'end') {
-			return rect.right
-		}
+		case 'inline-end':
+			return window.innerWidth - rect.right
+		default:
+			throw new Error('Unsupported position')
 	}
-
-	if (property === 'start') {
-		return rect.right
-	} else if (property === 'end') {
-		return rect.left
-	}
-
-	return rect.left + rect.width / 2
 }
 
 export const getLogicalOffset = (
@@ -57,8 +59,8 @@ export const getLogicalOffset = (
 	return property === 'center' ? value / 2 : value
 }
 
-export const getLogicalProperties = (placement: Placement) => {
+export const getLogicalProperties = (placement: Placement): [Block, Inline] => {
 	const [block, inline = block] = placement.split(' ') as [Property, Property]
 
-	return [block, inline]
+	return [`block-${block}`, `inline-${inline}`]
 }
