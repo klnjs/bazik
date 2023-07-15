@@ -80,6 +80,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			) => {
 				if (!isDisabled) {
 					event.preventDefault()
+					state.setOpen((prev) => !prev)
 					state.setDate(date)
 					state.setFocusedDate(date)
 				}

@@ -12,8 +12,8 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 	(props, forwardedRef) => {
 		const { refs } = useCalendarContext()
 
-		useForwardedRef(refs.fieldRef, forwardedRef)
+		useForwardedRef(refs.field, forwardedRef)
 
-		return <freya.div ref={refs.fieldRef} role='group' {...props} />
+		return <freya.div ref={refs.field} role='group' {...props} />
 	}
 )

@@ -5,7 +5,9 @@ import {
 	useForwardedRef,
 	type AsChildComponentProps
 } from '../core'
+import { Portal } from '../portal/Portal'
 import {
+	getLogicalProp,
 	getLogicalOffset,
 	getLogicalPosition,
 	getLogicalProperties,
@@ -13,7 +15,7 @@ import {
 } from './usePopoverPosition'
 
 export type PopoverProps = AsChildComponentProps<
-	'dialog',
+	'div',
 	{
 		anchor?: HTMLElement
 		anchorOrigin?: Placement
@@ -23,7 +25,7 @@ export type PopoverProps = AsChildComponentProps<
 	}
 >
 
-export const Popover = forwardRef<'dialog', PopoverProps>(
+export const Popover = forwardRef<'div', PopoverProps>(
 	(
 		{
 			anchor,
@@ -36,7 +38,7 @@ export const Popover = forwardRef<'dialog', PopoverProps>(
 		forwardedRef
 	) => {
 		// const viewport = useViewport()
-		const ref = useRef<HTMLDialogElement>(null)
+		const ref = useRef<HTMLDivElement>(null)
 		const [position, setPosition] = useState<CSSProperties>()
 
 		// useHotkey('escape', onClose, { enabled: open })
@@ -48,7 +50,6 @@ export const Popover = forwardRef<'dialog', PopoverProps>(
 
 		useLayoutEffect(() => {
 			if (open && anchor && ref.current) {
-				ref.current.show()
 				setPosition(
 					getPosition(
 						ref.current,
@@ -65,37 +66,41 @@ export const Popover = forwardRef<'dialog', PopoverProps>(
 		}
 
 		return (
-			<freya.dialog
-				ref={ref}
-				style={{ ...position, ...style }}
-				data-open=''
-				{...otherProps}
-			/>
+			<Portal>
+				<freya.div
+					ref={ref}
+					role='dialog'
+					style={{ ...position, ...style }}
+					data-open=''
+					{...otherProps}
+				/>
+			</Portal>
 		)
 	}
 )
 
 const getPosition = (
-	element: HTMLElement,
+	popover: HTMLElement,
 	anchor: HTMLElement,
 	anchorOrigin: Placement,
 	anchorAlignment: Placement
 ): CSSProperties => {
-	const [aBlockProp, aInlineProp] = getLogicalProperties(anchorOrigin)
-	const [eBlockProp, eInlineProp] = getLogicalProperties(anchorAlignment)
-	const anchorBlock = getLogicalPosition(anchor, aBlockProp)
-	//const anchorBlockOffset = getLogicalOffset(element, 'block', eBlockProp)
-	const anchorInline = getLogicalPosition(anchor, aInlineProp)
-	//const anchorInlineOffset = getLogicalOffset(element, 'inline', eInlineProp)
-
-	console.log(anchor.getBoundingClientRect())
-	console.log(anchorBlock)
+	const [originBlock, originInline] = getLogicalProperties(anchorOrigin)
+	const [alignBlock, alignInline] = getLogicalProperties(anchorAlignment)
+	const insetBlockProp = getLogicalProp(originBlock)
+	const insetInlineProp = getLogicalProp(originInline)
+	const anchorBlock = getLogicalPosition(anchor, originBlock)
+	const anchorBlockOffset = getLogicalOffset(popover, originBlock, alignBlock)
+	const anchorInline = getLogicalPosition(anchor, originInline)
+	const anchorInlineOffset = getLogicalOffset(
+		popover,
+		originInline,
+		alignInline
+	)
 
 	return {
-		border: 0,
-		margin: 0,
 		position: 'fixed',
-		[`inset-${eBlockProp}`]: anchorBlock, //- anchorBlockOffset,
-		[`inset-${eInlineProp}`]: anchorInline //- anchorInlineOffset
+		[insetBlockProp]: anchorBlock - anchorBlockOffset,
+		[insetInlineProp]: anchorInline - anchorInlineOffset
 	} as CSSProperties
 }
