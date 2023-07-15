@@ -1,4 +1,8 @@
-import { createContext as cc, useContext as uc, type Provider } from 'react'
+import {
+	useContext as useContextFromReact,
+	createContext as createContextFromReact,
+	type Provider
+} from 'react'
 
 export type CreateContextOptions<T> = {
 	strict?: boolean
@@ -29,12 +33,12 @@ export const createContext = <T extends object>({
 	nameOfProvider = 'Provider',
 	defaultValue
 }: CreateContextOptions<T>) => {
-	const Context = cc<T | undefined>(defaultValue)
+	const Context = createContextFromReact<T | undefined>(defaultValue)
 
 	Context.displayName = name
 
 	const useContext = () => {
-		const context = uc(Context)
+		const context = useContextFromReact(Context)
 
 		if (!context && strict) {
 			const error = createContextError(name, nameOfHook, nameOfProvider)

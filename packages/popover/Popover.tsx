@@ -1,13 +1,20 @@
-import { useRef, useState, useLayoutEffect, type CSSProperties } from 'react'
+import {
+	useRef,
+	useState,
+	useCallback,
+	useLayoutEffect,
+	type SyntheticEvent,
+	type CSSProperties
+} from 'react'
 import {
 	freya,
 	forwardRef,
+	useId,
 	useForwardedRef,
 	type AsChildComponentProps
 } from '../core'
 import { Portal } from '../portal/Portal'
 import {
-	getLogicalProp,
 	getLogicalOffset,
 	getLogicalPosition,
 	getLogicalProperties,
@@ -15,51 +22,71 @@ import {
 } from './usePopoverPosition'
 
 export type PopoverProps = AsChildComponentProps<
-	'div',
+	'dialog',
 	{
-		anchor?: HTMLElement
+		anchor?: HTMLElement | null
 		anchorOrigin?: Placement
 		anchorAlignment?: Placement
 		open?: boolean
+		modal?: boolean
+		onClose: () => void
 		// portal?: boolean
 	}
 >
 
-export const Popover = forwardRef<'div', PopoverProps>(
+export const Popover = forwardRef<'dialog', PopoverProps>(
 	(
 		{
+			id: idProp,
 			anchor,
 			anchorOrigin = 'end start',
 			anchorAlignment = 'start start',
 			open = false,
+			modal = false,
 			style,
+			onClose,
 			...otherProps
 		},
 		forwardedRef
 	) => {
-		// const viewport = useViewport()
-		const ref = useRef<HTMLDivElement>(null)
+		const id = useId(idProp)
+		const ref = useRef<HTMLDialogElement>(null)
 		const [position, setPosition] = useState<CSSProperties>()
 
-		// useHotkey('escape', onClose, { enabled: open })
-		// useOutside(childRef, onClose, { enabled: open, exclude: anchor })
-		// useBodyLock(childRef, { enabled: open && lock })
-		// useFocusTrap(childRef, { enabled: open && trap })
+		const handleClose = useCallback(
+			(event: SyntheticEvent<HTMLDialogElement>) => {
+				event.preventDefault()
+				onClose()
+			},
+			[onClose]
+		)
 
 		useForwardedRef(ref, forwardedRef)
 
 		useLayoutEffect(() => {
-			if (open && anchor && ref.current) {
-				setPosition(
-					getPosition(
-						ref.current,
-						anchor,
-						anchorOrigin,
-						anchorAlignment
+			const dialog = ref.current
+
+			if (dialog) {
+				if (open && anchor) {
+					if (modal) {
+						dialog.showModal()
+					} else {
+						dialog.show()
+					}
+
+					setPosition(
+						getPosition(
+							ref.current,
+							anchor,
+							anchorOrigin,
+							anchorAlignment
+						)
 					)
-				)
+
+					return () => dialog.close()
+				}
 			}
-		}, [open, anchor, anchorOrigin, anchorAlignment])
+		}, [open, modal, anchor, anchorOrigin, anchorAlignment])
 
 		if (!open) {
 			return null
@@ -67,11 +94,12 @@ export const Popover = forwardRef<'div', PopoverProps>(
 
 		return (
 			<Portal>
-				<freya.div
+				<freya.dialog
+					id={id}
 					ref={ref}
-					role='dialog'
 					style={{ ...position, ...style }}
-					data-open=''
+					onClose={handleClose}
+					onCancel={handleClose}
 					{...otherProps}
 				/>
 			</Portal>
@@ -87,20 +115,20 @@ const getPosition = (
 ): CSSProperties => {
 	const [originBlock, originInline] = getLogicalProperties(anchorOrigin)
 	const [alignBlock, alignInline] = getLogicalProperties(anchorAlignment)
-	const insetBlockProp = getLogicalProp(originBlock)
-	const insetInlineProp = getLogicalProp(originInline)
-	const anchorBlock = getLogicalPosition(anchor, originBlock)
-	const anchorBlockOffset = getLogicalOffset(popover, originBlock, alignBlock)
-	const anchorInline = getLogicalPosition(anchor, originInline)
-	const anchorInlineOffset = getLogicalOffset(
-		popover,
-		originInline,
-		alignInline
-	)
+
+	const anchorDir = getComputedStyle(anchor).direction
+	const anchorBlock = getLogicalPosition(anchor, anchorDir, originBlock)
+	const anchorBlockOffset = getLogicalOffset(popover, alignBlock)
+	const anchorInline = getLogicalPosition(anchor, anchorDir, originInline)
+	const anchorInlineOffset = getLogicalOffset(popover, alignInline)
 
 	return {
+		margin: 0,
 		position: 'fixed',
-		[insetBlockProp]: anchorBlock - anchorBlockOffset,
-		[insetInlineProp]: anchorInline - anchorInlineOffset
+		direction: anchorDir,
+		insetBlockStart: anchorBlock - anchorBlockOffset,
+		insetBlockEnd: 'auto',
+		insetInlineStart: anchorInline - anchorInlineOffset,
+		insetInlineEnd: 'auto'
 	} as CSSProperties
 }

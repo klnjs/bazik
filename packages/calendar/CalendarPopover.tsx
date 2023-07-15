@@ -4,7 +4,7 @@ import { useCalendarContext } from './CalendarContext'
 
 export type CalendarPopoverProps = PopoverProps
 
-export const CalendarPopover = forwardRef<'div', CalendarPopoverProps>(
+export const CalendarPopover = forwardRef<'dialog', CalendarPopoverProps>(
 	(props, forwardedRef) => {
 		const { refs, state } = useCalendarContext()
 

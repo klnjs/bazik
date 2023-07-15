@@ -1,4 +1,4 @@
-export type Property = 'start' | 'end'
+export type Property = 'start' | 'end' | 'center'
 
 export type Block = `block-${Property}`
 
@@ -8,66 +8,56 @@ export type Logical = Block | Inline
 
 export type Placement = Property | `${Property} ${Property}`
 
-export const getLogicalPosition = (element: HTMLElement, position: Logical) => {
+export const getLogicalPosition = (
+	element: HTMLElement,
+	direction: string,
+	position: Logical
+) => {
 	const rect = element.getBoundingClientRect()
-	const { direction } = getComputedStyle(element)
-
-	if (direction === 'rtl') {
-		switch (position) {
-			case 'block-start':
-				return rect.top
-			case 'block-end':
-				return window.innerHeight - rect.bottom
-			case 'inline-start':
-				return window.innerWidth - rect.right
-			case 'inline-end':
-				return window.innerWidth - rect.left
-			default:
-				throw new Error('Unsupported position')
-		}
-	}
 
 	switch (position) {
 		case 'block-start':
 			return rect.top
 		case 'block-end':
-			return window.innerHeight - rect.bottom
+			return rect.bottom
+		case 'block-center':
+			return rect.top + rect.height / 2
 		case 'inline-start':
-			return rect.left
+			return direction === 'rtl'
+				? window.innerWidth - rect.right
+				: rect.left
 		case 'inline-end':
-			return window.innerWidth - rect.right
+			return direction === 'rtl'
+				? window.innerWidth - rect.left
+				: rect.right
+		case 'inline-center':
+			return direction === 'rtl'
+				? window.innerWidth - (rect.left + rect.width / 2)
+				: rect.right - rect.width / 2
 		default:
 			throw new Error('Unsupported position')
 	}
 }
 
-export const getLogicalProp = (position: Logical) => {
-	switch (position) {
-		case 'block-start':
-			return 'insetBlockStart'
-		case 'block-end':
-			return 'insetBlockEnd'
-		case 'inline-start':
-			return 'insetInlineStart'
-		case 'inline-end':
-			return 'insetInlineEnd'
-		default:
-			throw new Error('Unsupported position')
-	}
-}
-
-export const getLogicalOffset = (
-	element: HTMLElement,
-	origin: Logical,
-	position: Logical
-) => {
+export const getLogicalOffset = (element: HTMLElement, position: Logical) => {
 	const rect = element.getBoundingClientRect()
 
-	if (origin === position) {
-		return 0
+	switch (position) {
+		case 'block-start':
+			return 0
+		case 'block-end':
+			return rect.height
+		case 'block-center':
+			return rect.height / 2
+		case 'inline-start':
+			return 0
+		case 'inline-end':
+			return rect.width
+		case 'inline-center':
+			return rect.width / 2
+		default:
+			throw new Error('Unsupported position')
 	}
-
-	return position.includes('block') ? rect.height : rect.width
 }
 
 export const getLogicalProperties = (placement: Placement): [Block, Inline] => {
