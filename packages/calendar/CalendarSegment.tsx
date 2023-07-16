@@ -1,57 +1,75 @@
 import { useMemo, useCallback, type KeyboardEvent } from 'react'
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate, type CalendarFocusedSegment } from './CalendarDate'
+import { useCalendarLocalisation } from './useCalendarLocalisation'
+import type { CalendarDateSegment, CalendarDateMutation } from './CalendarDate'
 
 export type CalendarSegmentProps = AsChildComponentProps<
 	'div',
 	{
-		step?: number
 		mode?: 'numeric' | 'digit'
-		segment: CalendarFocusedSegment
+		segment: CalendarDateSegment
 		placeholder?: string
 	}
 >
 
 export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 	(
-		{
-			step = 1,
-			mode = 'digit',
-			style,
-			segment,
-			placeholder,
-			...otherProps
-		},
+		{ mode = 'digit', style, segment, placeholder, ...otherProps },
 		forwardedRef
 	) => {
-		const { state, config } = useCalendarContext()
+		const {
+			state,
+			config: { min, max, today, locale }
+		} = useCalendarContext()
 
-		const localisation = useMemo(
-			() =>
-				new Intl.DisplayNames(config.locale, { type: 'dateTimeField' }),
-			[config.locale]
-		)
+		const isAfter = Boolean(state.date && max && state.date.isAfter(max))
+		const isBefore = Boolean(state.date && min && state.date.isBefore(min))
+		const isInvalid = isAfter || isBefore
+		const isHighlighted = state.focusedSegment === segment
 
-		const min = CalendarDate[`${segment}Min`]
-		const max = CalendarDate[`${segment}Max`]
-		const value = state.date.get(segment)
+		const localisation = useCalendarLocalisation()
+		const value = state.date?.getSegment(segment)
+		const text = state.date?.format(locale, {
+			year: 'numeric',
+			month: 'long',
+			weekday: 'long',
+			day: 'numeric'
+		})
+
 		const content = useMemo(() => {
 			if (value === undefined) {
-				return placeholder ?? ''.padStart(String(max).length, '-')
+				return placeholder ?? ''.padStart(2, '-')
 			}
 
 			if (mode === 'digit') {
-				return String(value).padStart(String(max).length, '0')
+				return String(value).padStart(2, '0')
 			}
 
 			return String(value)
-		}, [max, mode, value, placeholder])
+		}, [mode, value, placeholder])
 
-		const isHighlighted = state.focusedSegment === segment
-		const isInvalid =
-			state.date.isValid() &&
-			(state.date.isBefore(config.min) || state.date.isAfter(config.max))
+		const changeDate = useCallback(
+			(
+				event: KeyboardEvent<HTMLDivElement>,
+				action: 'add' | 'sub',
+				mutation: CalendarDateMutation
+			) => {
+				event.preventDefault()
+				state.setDate((prev) => {
+					if (!prev) {
+						return today
+					}
+
+					const next = prev[action](mutation)
+					const limit = action === 'add' ? max : min
+					const check = action === 'add' ? 'isAfter' : 'isBefore'
+
+					return limit && next[check](limit) ? limit : next
+				})
+			},
+			[state, min, max, today]
+		)
 
 		const handleClick = useCallback(() => {
 			state.setFocusedSegment(segment)
@@ -64,14 +82,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					state.setDate((prev) =>
-						prev.clone({
-							[segment]:
-								value !== undefined
-									? value + step
-									: config.today.get(segment)
-						})
-					)
+					changeDate(event, 'add', { [segment]: 1 })
 				}
 
 				if (event.code === 'ArrowRight') {
@@ -80,20 +91,13 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 					if (element !== undefined) {
 						element.focus()
 						state.setFocusedSegment(
-							element.dataset.segment as CalendarFocusedSegment
+							element.dataset.segment as CalendarDateSegment
 						)
 					}
 				}
 
 				if (event.code === 'ArrowDown') {
-					state.setDate((prev) =>
-						prev.clone({
-							[segment]:
-								value !== undefined
-									? value - step
-									: config.today.get(segment)
-						})
-					)
+					changeDate(event, 'sub', { [segment]: 1 })
 				}
 
 				if (event.code === 'ArrowLeft') {
@@ -102,45 +106,40 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 					if (element !== undefined) {
 						element.focus()
 						state.setFocusedSegment(
-							element.dataset.segment as CalendarFocusedSegment
+							element.dataset.segment as CalendarDateSegment
 						)
 					}
 				}
 
 				if (event.code === 'Backspace' || event.key === 'Delete') {
-					state.setDate((prev) =>
-						prev.clone({
-							[segment]: undefined
-						})
-					)
+					state.setDate(null)
 				}
 
-				if (/[0-9]/.test(event.key)) {
-					const valueString = String(value ?? '')
-					const valueIntent = Number(valueString + event.key)
-					const valueMutation =
-						valueIntent <= max ? valueIntent : Number(event.key)
+				// if (/[0-9]/.test(event.key)) {
+				// 	const valueString = String(value ?? '')
+				// 	const valueIntent = Number(valueString + event.key)
+				// 	const valueMutation =
+				// 		valueIntent <= max ? valueIntent : Number(event.key)
 
-					state.setDate((prev) =>
-						prev.clone({
-							[segment]: valueMutation
-						})
-					)
+				// 	state.setDate((prev) =>
+				// 		prev.clone({
+				// 			[segment]: valueMutation
+				// 		})
+				// 	)
 
-					if (String(valueMutation).length === String(max).length) {
-						const element = findSegment(event.currentTarget, 'next')
+				// 	if (String(valueMutation).length === String(max).length) {
+				// 		const element = findSegment(event.currentTarget, 'next')
 
-						if (element !== undefined) {
-							element.focus()
-							state.setFocusedSegment(
-								element.dataset
-									.segment as CalendarFocusedSegment
-							)
-						}
-					}
-				}
+				// 		if (element !== undefined) {
+				// 			element.focus()
+				// 			state.setFocusedSegment(
+				// 				element.dataset.segment as CalendarDateSegment
+				// 			)
+				// 		}
+				// 	}
+				// }
 			},
-			[max, step, value, state, config, segment]
+			[state, segment, changeDate]
 		)
 
 		return (
@@ -158,11 +157,12 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				data-segment={segment}
 				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(segment)}
-				aria-valuemin={min}
-				aria-valuemax={max}
+				// aria-valuemin={min}
+				// aria-valuemax={max}
 				aria-valuenow={value}
-				aria-valuetext={value ? String(value) : 'Empty'}
+				aria-valuetext={text ?? 'Empty'}
 				aria-invalid={isInvalid}
+				aria-description={text}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				{...otherProps}

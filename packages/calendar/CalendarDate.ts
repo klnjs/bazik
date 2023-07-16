@@ -1,69 +1,25 @@
-export type CalendarDateProps = {
+import { capitalize } from '../core/capitalize'
+
+export type CalendarDateSegment = 'year' | 'month' | 'day'
+
+export type CalendarDateMutation = {
 	year?: number
 	month?: number
 	day?: number
 }
 
-export type CalendarFocusedSegment = keyof CalendarDateProps
-
 export class CalendarDate {
-	year?: number
-	static yearMin = 1
-	static yearMax = 9999
+	date: Date
 
-	month?: number
-	static monthMin = 1
-	static monthMax = 12
-
-	day?: number
-	static dayMin = 1
-	static dayMax = 31
-
-	static fromDate(date: Date | undefined) {
-		if (date === undefined) {
-			return new CalendarDate()
-		}
-
-		return new CalendarDate({
-			year: date.getFullYear(),
-			month: date.getMonth() + 1,
-			day: date.getDate()
-		})
+	constructor(date?: Date) {
+		this.date = date ?? new Date()
 	}
 
-	static fromToday() {
-		return CalendarDate.fromDate(new Date())
-	}
-
-	constructor({ year, month, day }: CalendarDateProps = {}) {
-		this.set('year', year)
-		this.set('month', month)
-		this.set('day', day)
-	}
-
-	get(segment: CalendarFocusedSegment) {
-		return this[segment]
-	}
-
-	set(segment: CalendarFocusedSegment, value: number | undefined) {
-		this[segment] =
-			value !== undefined
-				? Math.min(
-						Math.max(value, CalendarDate[`${segment}Min`]),
-						CalendarDate[`${segment}Max`]
-				  )
-				: undefined
-
-		if (this.day !== undefined && segment !== 'day') {
-			this.day = Math.min(this.day, this.getDaysInMonth())
-		}
-	}
-
-	add(props: CalendarDateProps) {
+	add(props: CalendarDateMutation) {
 		return this.calc(props)
 	}
 
-	sub(props: CalendarDateProps) {
+	sub(props: CalendarDateMutation) {
 		return this.calc(
 			Object.fromEntries(
 				Object.entries(props).map(([key, value = 0]) => [
@@ -74,37 +30,87 @@ export class CalendarDate {
 		)
 	}
 
-	calc({ year = 0, month = 0, day = 0 }: CalendarDateProps = {}) {
-		const date = this.asDate()
+	calc({ year = 0, month = 0, day = 0 }: CalendarDateMutation = {}) {
+		const date = this.getDate()
 
 		date.setFullYear(date.getFullYear() + year)
 		date.setMonth(date.getMonth() + month)
 		date.setDate(date.getDate() + day)
 
-		return CalendarDate.fromDate(date)
+		return new CalendarDate(date)
 	}
 
-	clone(props: CalendarDateProps = {}) {
-		const year = Object.hasOwn(props, 'year') ? props.year : this.year
-		const month = Object.hasOwn(props, 'month') ? props.month : this.month
-		const day = Object.hasOwn(props, 'day') ? props.day : this.day
+	clone({ year, month, day }: CalendarDateMutation = {}) {
+		const date = this.getDate()
 
-		return new CalendarDate({ year, month, day })
+		date.setFullYear(year ?? date.getFullYear())
+		date.setMonth(month ?? date.getMonth())
+		date.setDate(day ?? date.getDay())
+
+		return new CalendarDate(date)
 	}
 
 	format(locale: string, options?: Intl.DateTimeFormatOptions) {
-		return this.asDate().toLocaleString(locale, options)
+		return this.getDate().toLocaleString(locale, options)
 	}
 
-	getSegments(locale: string) {
-		return new Intl.DateTimeFormat(locale)
-			.formatToParts(this.asDate())
-			.filter((part) => part.type !== 'literal')
-			.map((part) => part.type) as CalendarFocusedSegment[]
+	formatRelative(
+		locale: string,
+		target: CalendarDate,
+		segment: CalendarDateSegment,
+		options?: Intl.RelativeTimeFormatOptions
+	) {
+		const diff = this.getDiff(target)
+		const segmentDiff = diff[segment]
+
+		return new Intl.RelativeTimeFormat(locale, options).format(
+			segmentDiff,
+			segment
+		)
+	}
+
+	getYear() {
+		return this.getDate().getFullYear()
+	}
+
+	getMonth() {
+		return this.getDate().getMonth() + 1
+	}
+
+	getDay() {
+		return this.getDate().getDate()
+	}
+
+	getTime() {
+		return this.getDate().getTime()
+	}
+
+	getDiff(date: CalendarDate) {
+		const difference = date.getTime() - this.getTime()
+		const oneDay = 1000 * 60 * 60 * 24 // Calculate the number of milliseconds in a day, month, and year
+		const oneMonth = oneDay * 30.436875 // Average number of days in a month
+		const oneYear = oneDay * 365.25 // Average number of days in a year
+
+		return {
+			year: Math.floor(difference / oneYear),
+			month: Math.floor((difference % oneYear) / oneMonth),
+			day: Math.floor(((difference % oneYear) % oneMonth) / oneDay)
+		}
+	}
+
+	getSegment(segment: CalendarDateSegment) {
+		return this[`get${capitalize(segment)}`]()
 	}
 
 	getSegmentByIndex(locale: string, index: number) {
 		return this.getSegments(locale)[index]
+	}
+
+	getSegments(locale: string) {
+		return new Intl.DateTimeFormat(locale)
+			.formatToParts(this.getDate())
+			.filter((part) => part.type !== 'literal')
+			.map((part) => part.type) as CalendarDateSegment[]
 	}
 
 	getFirstDateOfWeek(locale: string) {
@@ -116,17 +122,14 @@ export class CalendarDate {
 	}
 
 	getFirstDateOfMonth() {
-		return this.clone({ day: CalendarDate.dayMin })
+		return this.clone({ day: 1 })
 	}
 
 	getLastDateOfMonth() {
-		return this.clone({ day: this.getDaysInMonth() })
+		return this.clone({ month: this.getMonth(), day: 0 })
 	}
 
-	getDaysInMonth() {
-		return new Date(this.year, this.month, 0).getDate()
-	}
-
+	// eslint-disable-next-line
 	getWeek() {
 		throw new Error('Not implemented')
 	}
@@ -150,7 +153,7 @@ export class CalendarDate {
 			}
 		})()
 
-		const dayOfWeek = this.asDate().getDay() || 7
+		const dayOfWeek = this.getDate().getDay() || 7
 		const dayOfWeekLocalized = dayOfWeek - firstDayOfWeek + 1
 
 		if (dayOfWeekLocalized < 1) {
@@ -160,25 +163,17 @@ export class CalendarDate {
 		return dayOfWeekLocalized
 	}
 
-	asDate() {
-		return new Date(this.year, this.month - 1, this.day)
-	}
-
-	isValid(): this is Required<CalendarDateProps> {
-		return (
-			this.year !== undefined &&
-			this.month !== undefined &&
-			this.day !== undefined
-		)
+	getDate() {
+		return new Date(this.date)
 	}
 
 	isToday() {
-		const today = CalendarDate.fromToday()
+		const today = new CalendarDate()
 
 		return (
-			this.year === today.year &&
-			this.month === today.month &&
-			this.day === today.day
+			this.getYear() === today.getYear() &&
+			this.getMonth() === today.getMonth() &&
+			this.getDay() === today.getDay()
 		)
 	}
 
@@ -207,76 +202,19 @@ export class CalendarDate {
 	}
 
 	isAfter(date: CalendarDate) {
-		const thisNative = this.asDate()
-		const dateNative = date.asDate()
-
-		return thisNative > dateNative
+		return this.getDate() > date.getDate()
 	}
 
 	isBefore(date: CalendarDate) {
-		const thisNative = this.asDate()
-		const dateNative = date.asDate()
-
-		return thisNative < dateNative
+		return this.getDate() < date.getDate()
 	}
 
 	isEquals(
 		date: CalendarDate,
-		segments: CalendarFocusedSegment[] = ['year', 'month', 'day']
+		segments: CalendarDateSegment[] = ['year', 'month', 'day']
 	) {
 		return segments.every(
-			(segment) => this.get(segment) === date.get(segment)
+			(segment) => this.getSegment(segment) === date.getSegment(segment)
 		)
 	}
 }
-
-const d1 = new CalendarDate({ year: 2023, month: 6, day: 26 })
-const d2 = new CalendarDate({ year: 2023, month: 6, day: 27 })
-const d3 = new CalendarDate({ year: 2023, month: 6, day: 28 })
-const d4 = new CalendarDate({ year: 2023, month: 6, day: 29 })
-const d5 = new CalendarDate({ year: 2023, month: 6, day: 30 })
-const d6 = new CalendarDate({ year: 2023, month: 7, day: 1 })
-const d7 = new CalendarDate({ year: 2023, month: 7, day: 2 })
-
-console.log(
-	d1.format('en', { weekday: 'long' }),
-	d1.getWeekDay('da'),
-	d1.getWeekDay('en'),
-	'Should be [1, 2]'
-)
-console.log(
-	d2.format('en', { weekday: 'long' }),
-	d2.getWeekDay('da'),
-	d2.getWeekDay('en'),
-	'Should be [2, 3]'
-)
-console.log(
-	d3.format('en', { weekday: 'long' }),
-	d3.getWeekDay('da'),
-	d3.getWeekDay('en'),
-	'Should be [3, 4]'
-)
-console.log(
-	d4.format('en', { weekday: 'long' }),
-	d4.getWeekDay('da'),
-	d4.getWeekDay('en'),
-	'Should be [4, 5]'
-)
-console.log(
-	d5.format('en', { weekday: 'long' }),
-	d5.getWeekDay('da'),
-	d5.getWeekDay('en'),
-	'Should be [5, 6]'
-)
-console.log(
-	d6.format('en', { weekday: 'long' }),
-	d6.getWeekDay('da'),
-	d6.getWeekDay('en'),
-	'Should be [6, 7]'
-)
-console.log(
-	d7.format('en', { weekday: 'long' }),
-	d7.getWeekDay('da'),
-	d7.getWeekDay('en'),
-	'Should be [7, 1]'
-)

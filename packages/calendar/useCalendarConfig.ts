@@ -14,9 +14,9 @@ export const useCalendarConfig = ({
 }: UseCalendarConfigOptions) =>
 	useMemo(
 		() => ({
-			min: CalendarDate.fromDate(min),
-			max: CalendarDate.fromDate(max),
-			today: CalendarDate.fromToday(),
+			min: min ? new CalendarDate(min) : undefined,
+			max: max ? new CalendarDate(max) : undefined,
+			today: new CalendarDate(),
 			locale
 		}),
 		[min, max, locale]

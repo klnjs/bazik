@@ -7,17 +7,21 @@ export type CalendarDaysProps = {
 }
 
 export const CalendarDays = ({ children }: CalendarDaysProps) => {
-	const { state, config } = useCalendarContext()
+	const {
+		state,
+		config: { locale }
+	} = useCalendarContext()
 
 	const days = useMemo(() => {
 		const dates: CalendarDate[] = []
+
 		const max = state.focusedDate
 			.getLastDateOfMonth()
-			.getLastDateOfWeek(config.locale)
+			.getLastDateOfWeek(locale)
 
 		let date = state.focusedDate
 			.getFirstDateOfMonth()
-			.getFirstDateOfWeek(config.locale)
+			.getFirstDateOfWeek(locale)
 
 		while (!date.isEquals(max)) {
 			dates.push(date)
@@ -25,7 +29,7 @@ export const CalendarDays = ({ children }: CalendarDaysProps) => {
 		}
 
 		return dates
-	}, [state.focusedDate, config.locale])
+	}, [state.focusedDate, locale])
 
 	return days.map(children)
 }

@@ -4,31 +4,32 @@ import { CalendarDate } from './CalendarDate'
 
 export type UseCalendarStateOptions = {
 	locale: string
-	value?: Date
-	valueVisible?: Date
+	value?: Date | null
 	defaultValue?: Date
-	onChange?: (value: Date | undefined) => void
+	defaultFocused?: Date
+	onChange?: (value: Date | null) => void
 }
 
 export const useCalendarState = ({
 	locale,
 	value,
-	valueVisible = value,
 	defaultValue,
+	defaultFocused,
 	onChange
 }: UseCalendarStateOptions) => {
 	const [open, setOpen] = useState(false)
 
-	const [date, setDate] = useControllableState({
-		value: value ? CalendarDate.fromDate(value) : undefined,
-		defaultValue: CalendarDate.fromDate(defaultValue),
-		onChange: (newValue: CalendarDate) => onChange?.(newValue.asDate())
+	const [date, setDate] = useControllableState<CalendarDate | null>({
+		value: value instanceof Date ? new CalendarDate(value) : value,
+		defaultValue:
+			defaultValue instanceof Date
+				? new CalendarDate(defaultValue)
+				: defaultValue,
+		onChange: (newValue) => onChange?.(newValue?.getDate() ?? null)
 	})
 
 	const [focusedDate, setFocusedDate] = useState(
-		valueVisible
-			? CalendarDate.fromDate(valueVisible)
-			: CalendarDate.fromToday()
+		new CalendarDate(defaultFocused ?? value ?? undefined)
 	)
 
 	const [focusedSegment, setFocusedSegment] = useState(

@@ -1,7 +1,7 @@
 import { useId as useIdFromReact } from 'react'
 
-export const useId = (id?: string) => {
-	const idFromReact = useIdFromReact()
+export const useId = (override?: string) => {
+	const id = useIdFromReact()
 
-	return id ?? idFromReact
+	return override ?? id
 }

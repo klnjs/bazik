@@ -20,11 +20,12 @@ export const useCalendar = ({
 	onChange
 }: UseCalendarOptions) => {
 	const config = useCalendarConfig({ min, max, locale })
+
 	const state = useCalendarState({
-		locale,
 		value,
-		valueVisible: min,
+		locale,
 		defaultValue,
+		defaultFocused: min ?? new Date(),
 		onChange
 	})
 

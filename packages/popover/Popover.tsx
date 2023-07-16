@@ -1,11 +1,4 @@
-import {
-	useRef,
-	useState,
-	useCallback,
-	useLayoutEffect,
-	type SyntheticEvent,
-	type CSSProperties
-} from 'react'
+import { useRef, useState, useLayoutEffect, type CSSProperties } from 'react'
 import {
 	freya,
 	forwardRef,
@@ -18,23 +11,28 @@ import {
 	getLogicalOffset,
 	getLogicalPosition,
 	getLogicalProperties,
+	type Direction,
 	type Placement
 } from './usePopoverPosition'
+import { useFocusTrap } from './useFocusTrap'
+import { useInteractionOutside } from './useInteractionOutside'
 
 export type PopoverProps = AsChildComponentProps<
-	'dialog',
+	'div',
 	{
 		anchor?: HTMLElement | null
 		anchorOrigin?: Placement
 		anchorAlignment?: Placement
 		open?: boolean
-		modal?: boolean
+		trap?: boolean
+		closeOnEscape?: boolean
+		closeOnClickOutside?: boolean
 		onClose: () => void
 		// portal?: boolean
 	}
 >
 
-export const Popover = forwardRef<'dialog', PopoverProps>(
+export const Popover = forwardRef<'div', PopoverProps>(
 	(
 		{
 			id: idProp,
@@ -42,51 +40,42 @@ export const Popover = forwardRef<'dialog', PopoverProps>(
 			anchorOrigin = 'end start',
 			anchorAlignment = 'start start',
 			open = false,
-			modal = false,
+			trap = false,
 			style,
+			closeOnEscape = true,
+			closeOnClickOutside = true,
 			onClose,
 			...otherProps
 		},
 		forwardedRef
 	) => {
 		const id = useId(idProp)
-		const ref = useRef<HTMLDialogElement>(null)
-		const [position, setPosition] = useState<CSSProperties>()
+		const ref = useRef<HTMLDivElement>(null)
+		const [position, setPosition] = useState<CSSProperties>({
+			position: 'fixed',
+			insetBlockStart: 0,
+			insetInlineStart: 0
+		})
 
-		const handleClose = useCallback(
-			(event: SyntheticEvent<HTMLDialogElement>) => {
-				event.preventDefault()
-				onClose()
-			},
-			[onClose]
-		)
+		useFocusTrap(ref, {
+			enabled: open && trap
+		})
+
+		useInteractionOutside(ref, onClose, {
+			enabled: open && closeOnClickOutside
+		})
 
 		useForwardedRef(ref, forwardedRef)
 
 		useLayoutEffect(() => {
-			const dialog = ref.current
+			const popover = ref.current
 
-			if (dialog) {
-				if (open && anchor) {
-					if (modal) {
-						dialog.showModal()
-					} else {
-						dialog.show()
-					}
-
-					setPosition(
-						getPosition(
-							ref.current,
-							anchor,
-							anchorOrigin,
-							anchorAlignment
-						)
-					)
-
-					return () => dialog.close()
-				}
+			if (popover && open && anchor) {
+				setPosition(
+					getPosition(popover, anchor, anchorOrigin, anchorAlignment)
+				)
 			}
-		}, [open, modal, anchor, anchorOrigin, anchorAlignment])
+		}, [open, anchor, anchorOrigin, anchorAlignment])
 
 		if (!open) {
 			return null
@@ -94,12 +83,13 @@ export const Popover = forwardRef<'dialog', PopoverProps>(
 
 		return (
 			<Portal>
-				<freya.dialog
+				<freya.div
 					id={id}
 					ref={ref}
+					role='dialog'
 					style={{ ...position, ...style }}
-					onClose={handleClose}
-					onCancel={handleClose}
+					tabIndex={trap ? -1 : undefined}
+					data-open=''
 					{...otherProps}
 				/>
 			</Portal>
@@ -116,19 +106,16 @@ const getPosition = (
 	const [originBlock, originInline] = getLogicalProperties(anchorOrigin)
 	const [alignBlock, alignInline] = getLogicalProperties(anchorAlignment)
 
-	const anchorDir = getComputedStyle(anchor).direction
+	const anchorDir = getComputedStyle(anchor).direction as Direction
 	const anchorBlock = getLogicalPosition(anchor, anchorDir, originBlock)
 	const anchorBlockOffset = getLogicalOffset(popover, alignBlock)
 	const anchorInline = getLogicalPosition(anchor, anchorDir, originInline)
 	const anchorInlineOffset = getLogicalOffset(popover, alignInline)
 
 	return {
-		margin: 0,
 		position: 'fixed',
 		direction: anchorDir,
 		insetBlockStart: anchorBlock - anchorBlockOffset,
-		insetBlockEnd: 'auto',
-		insetInlineStart: anchorInline - anchorInlineOffset,
-		insetInlineEnd: 'auto'
-	} as CSSProperties
+		insetInlineStart: anchorInline - anchorInlineOffset
+	}
 }

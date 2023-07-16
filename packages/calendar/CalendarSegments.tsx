@@ -1,14 +1,17 @@
 import type { ReactNode } from 'react'
 import { useCalendarContext } from './CalendarContext'
-import type { CalendarFocusedSegment } from './CalendarDate'
+import type { CalendarDateSegment } from './CalendarDate'
 
 export type CalendarSegmentsProps = {
-	children: (segment: CalendarFocusedSegment, index: number) => ReactNode
+	children: (segment: CalendarDateSegment, index: number) => ReactNode
 }
 
 export const CalendarSegments = ({ children }: CalendarSegmentsProps) => {
-	const { state, config } = useCalendarContext()
-	const segments = state.focusedDate.getSegments(config.locale)
+	const {
+		state,
+		config: { locale }
+	} = useCalendarContext()
+	const segments = state.focusedDate.getSegments(locale)
 
 	return segments.map(children)
 }

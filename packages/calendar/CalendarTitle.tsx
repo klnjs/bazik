@@ -5,11 +5,14 @@ export type CalendarTitleProps = AsChildComponentProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	(props, forwardedRef) => {
-		const { state, config } = useCalendarContext()
+		const {
+			state,
+			config: { locale }
+		} = useCalendarContext()
 
 		return (
 			<freya.h2 ref={forwardedRef} aria-live='polite' {...props}>
-				{state.focusedDate.format(config.locale, {
+				{state.focusedDate.format(locale, {
 					year: 'numeric',
 					month: 'long'
 				})}

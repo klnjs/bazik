@@ -1,6 +1,5 @@
 import {
 	useRef,
-	useMemo,
 	useEffect,
 	useCallback,
 	type KeyboardEvent,
@@ -13,7 +12,7 @@ import {
 	type AsChildComponentProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import type { CalendarDate, CalendarDateProps } from './CalendarDate'
+import type { CalendarDate, CalendarDateMutation } from './CalendarDate'
 
 export type CalendarDayProps = AsChildComponentProps<
 	'div',
@@ -36,14 +35,17 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		},
 		forwardedRef
 	) => {
-		const { state, config } = useCalendarContext()
-
+		const {
+			state,
+			config: { min, max, today, locale }
+		} = useCalendarContext()
 		const ref = useRef<HTMLDivElement>(null)
+
 		const isToday = date.isToday()
-		const isAfter = date.isAfter(config.max)
-		const isBefore = date.isBefore(config.min)
-		const isWeekend = date.isWeekend(config.locale)
-		const isSelected = date.isEquals(state.date)
+		const isAfter = Boolean(max && date.isAfter(max))
+		const isBefore = Boolean(min && date.isBefore(min))
+		const isWeekend = date.isWeekend(locale)
+		const isSelected = Boolean(state.date && date.isEquals(state.date))
 		const isOverflow = !date.isEquals(state.focusedDate, ['year', 'month'])
 		const isHighlighted = date.isEquals(state.focusedDate)
 		const isDisabled =
@@ -53,13 +55,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			isAfter ||
 			isBefore
 
-		const localisation = useMemo(
-			() =>
-				new Intl.RelativeTimeFormat(config.locale, { numeric: 'auto' }),
-			[config.locale]
-		)
-
-		const formatted = date.format(config.locale, {
+		const formatted = date.format(locale, {
 			year: 'numeric',
 			month: 'long',
 			weekday: 'long',
@@ -69,7 +65,9 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		// Uncertain how this works in different locales, due to
 		// the concatenation of the two labels.
 		const label = isToday
-			? `${localisation.format(0, 'day')}, ${formatted}`
+			? `${today.formatRelative(locale, today, 'day', {
+					numeric: 'auto'
+			  })}, ${formatted}`
 			: formatted
 
 		const changeDate = useCallback(
@@ -92,19 +90,18 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			(
 				event: KeyboardEvent<HTMLDivElement>,
 				action: 'add' | 'sub',
-				clone: boolean,
-				options: CalendarDateProps
+				options: CalendarDateMutation
 			) => {
 				event.preventDefault()
 				state.setFocusedDate((prev) => {
-					const next = prev[clone ? 'clone' : action](options)
-					const limit = action === 'add' ? config.max : config.min
+					const next = prev[action](options)
+					const limit = action === 'add' ? max : min
 					const check = action === 'add' ? 'isAfter' : 'isBefore'
 
-					return next[check](limit) ? limit : next
+					return limit && next[check](limit) ? limit : next
 				})
 			},
-			[state, config]
+			[state, min, max]
 		)
 
 		const handleClick = changeDate
@@ -116,37 +113,35 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					changeFocusedDate(event, 'sub', false, { day: 7 })
+					changeFocusedDate(event, 'sub', { day: 7 })
 				}
 
 				if (event.code === 'ArrowRight') {
-					changeFocusedDate(event, 'add', false, { day: 1 })
+					changeFocusedDate(event, 'add', { day: 1 })
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeFocusedDate(event, 'add', false, { day: 7 })
+					changeFocusedDate(event, 'add', { day: 7 })
 				}
 
 				if (event.key === 'ArrowLeft') {
-					changeFocusedDate(event, 'sub', false, { day: 1 })
-				}
-
-				if (event.code === 'Home') {
-					changeFocusedDate(event, 'sub', true, { day: 0 })
-				}
-
-				if (event.code === 'End') {
-					changeFocusedDate(event, 'add', true, {
-						day: state.focusedDate.getDaysInMonth()
-					})
+					changeFocusedDate(event, 'sub', { day: 1 })
 				}
 
 				if (event.code === 'PageUp') {
-					changeFocusedDate(event, 'sub', false, { month: 1 })
+					changeFocusedDate(event, 'sub', { month: 1 })
 				}
 
 				if (event.code === 'PageDown') {
-					changeFocusedDate(event, 'add', false, { month: 1 })
+					changeFocusedDate(event, 'add', { month: 1 })
+				}
+
+				if (event.code === 'Home') {
+					state.setFocusedDate((prev) => prev.getFirstDateOfMonth())
+				}
+
+				if (event.code === 'End') {
+					state.setFocusedDate((prev) => prev.getLastDateOfMonth())
 				}
 			},
 			[state, changeDate, changeFocusedDate]

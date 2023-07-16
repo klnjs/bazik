@@ -6,11 +6,13 @@ export type Inline = `inline-${Property}`
 
 export type Logical = Block | Inline
 
+export type Direction = 'ltr' | 'rtl'
+
 export type Placement = Property | `${Property} ${Property}`
 
 export const getLogicalPosition = (
 	element: HTMLElement,
-	direction: string,
+	direction: Direction,
 	position: Logical
 ) => {
 	const rect = element.getBoundingClientRect()

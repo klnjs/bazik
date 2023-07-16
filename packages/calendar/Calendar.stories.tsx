@@ -22,8 +22,8 @@ export default {
 export const Default: StoryObj<typeof Calendar> = {
 	render: ({ locale, ...args }) => {
 		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [selectedDate, setSelectedDate] = useState<Date>()
-		const handleChange = (date: Date | undefined) => {
+		const [selectedDate, setSelectedDate] = useState<Date | null>()
+		const handleChange = (date?: Date | null) => {
 			if (selectedDate !== undefined) {
 				setSelectedDate(date)
 			}
@@ -40,7 +40,7 @@ export const Default: StoryObj<typeof Calendar> = {
 				<div className={classes.controls}>
 					<h2>Controls</h2>
 
-					<button onClick={() => setSelectedDate(new Date())}>
+					<button onClick={() => setSelectedDate(null)}>
 						Set Controlled
 					</button>
 
@@ -116,7 +116,7 @@ export const Default: StoryObj<typeof Calendar> = {
 												date={date}
 												className={classes.day}
 											>
-												{date.day}
+												{date.getDay()}
 											</CalendarDay>
 										)}
 									</CalendarDays>
