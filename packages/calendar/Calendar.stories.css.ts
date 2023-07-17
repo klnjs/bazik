@@ -31,6 +31,24 @@ export const grid = style({
 	gap: 4
 })
 
+export const content = style({
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 8
+})
+
+export const header = style({
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'space-between',
+	gap: 8
+})
+
+export const nav = style({
+	display: 'inline-flex',
+	gap: 8
+})
+
 export const day = style({
 	appearance: 'none',
 	aspectRatio: '1 / 1',
@@ -69,7 +87,7 @@ export const day = style({
 
 export const field = style({
 	display: 'inline-flex',
-	gap: 8,
+	gap: 2,
 	alignItems: 'center'
 })
 

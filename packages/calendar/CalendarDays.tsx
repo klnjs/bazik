@@ -23,7 +23,7 @@ export const CalendarDays = ({ children }: CalendarDaysProps) => {
 			.getFirstDateOfMonth()
 			.getFirstDateOfWeek(locale)
 
-		while (!date.isEquals(max)) {
+		while (!date.isSameDay(max)) {
 			dates.push(date)
 			date = date.add({ day: 1 })
 		}

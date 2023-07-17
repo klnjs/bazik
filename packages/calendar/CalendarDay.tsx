@@ -45,9 +45,9 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isAfter = Boolean(max && date.isAfter(max))
 		const isBefore = Boolean(min && date.isBefore(min))
 		const isWeekend = date.isWeekend(locale)
-		const isSelected = Boolean(state.date && date.isEquals(state.date))
-		const isOverflow = !date.isEquals(state.focusedDate, ['year', 'month'])
-		const isHighlighted = date.isEquals(state.focusedDate)
+		const isSelected = Boolean(state.date && date.isSameDay(state.date))
+		const isOverflow = !date.isSameMonth(state.focusedDate)
+		const isHighlighted = date.isSameDay(state.focusedDate)
 		const isDisabled =
 			disabled ||
 			(disabledOnWeekend && isWeekend) ||

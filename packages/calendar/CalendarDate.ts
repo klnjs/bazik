@@ -1,12 +1,35 @@
 import { capitalize } from '../core/capitalize'
 
-export type CalendarDateSegment = 'year' | 'month' | 'day'
+export const calendarDateSegmentTypes = [
+	'year',
+	'month',
+	'day',
+	'literal'
+] as const
+
+export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
+
+export type CalendarDateSegmentTypeEditable = Exclude<
+	CalendarDateSegmentType,
+	'literal'
+>
+
+export type CalendarDateSegment = {
+	type: CalendarDateSegmentType
+	value: string
+}
 
 export type CalendarDateMutation = {
 	year?: number
 	month?: number
 	day?: number
 }
+
+export const isCalendarDateSegment = (
+	segment: object
+): segment is CalendarDateSegment =>
+	'type' in segment &&
+	calendarDateSegmentTypes.includes(segment.type as CalendarDateSegmentType)
 
 export class CalendarDate {
 	date: Date
@@ -15,14 +38,18 @@ export class CalendarDate {
 		this.date = date ?? new Date()
 	}
 
-	add(props: CalendarDateMutation) {
-		return this.calc(props)
+	set(mutation: CalendarDateMutation) {
+		return this.clone(mutation)
 	}
 
-	sub(props: CalendarDateMutation) {
+	add(mutation: CalendarDateMutation) {
+		return this.calc(mutation)
+	}
+
+	sub(mutation: CalendarDateMutation) {
 		return this.calc(
 			Object.fromEntries(
-				Object.entries(props).map(([key, value = 0]) => [
+				Object.entries(mutation).map(([key, value = 0]) => [
 					key,
 					value * -1
 				])
@@ -57,7 +84,7 @@ export class CalendarDate {
 	formatRelative(
 		locale: string,
 		target: CalendarDate,
-		segment: CalendarDateSegment,
+		segment: CalendarDateSegmentTypeEditable,
 		options?: Intl.RelativeTimeFormatOptions
 	) {
 		const diff = this.getDiff(target)
@@ -69,11 +96,16 @@ export class CalendarDate {
 		)
 	}
 
+	get(segment: CalendarDateSegmentTypeEditable) {
+		return this[`get${capitalize(segment)}`]()
+	}
+
 	getYear() {
 		return this.getDate().getFullYear()
 	}
 
 	getMonth() {
+		// Normalize index of date
 		return this.getDate().getMonth() + 1
 	}
 
@@ -88,8 +120,8 @@ export class CalendarDate {
 	getDiff(date: CalendarDate) {
 		const difference = date.getTime() - this.getTime()
 		const oneDay = 1000 * 60 * 60 * 24 // Calculate the number of milliseconds in a day, month, and year
-		const oneMonth = oneDay * 30.436875 // Average number of days in a month
 		const oneYear = oneDay * 365.25 // Average number of days in a year
+		const oneMonth = oneDay * 30.436875 // Average number of days in a month
 
 		return {
 			year: Math.floor(difference / oneYear),
@@ -98,19 +130,24 @@ export class CalendarDate {
 		}
 	}
 
-	getSegment(segment: CalendarDateSegment) {
-		return this[`get${capitalize(segment)}`]()
+	getSegments(locale: string) {
+		return new Intl.DateTimeFormat(locale)
+			.formatToParts(this.getDate())
+			.reduce<CalendarDateSegment[]>((acc, part) => {
+				if (isCalendarDateSegment(part)) {
+					acc.push(part)
+				}
+
+				return acc
+			}, [])
+	}
+
+	getSegment(locale: string, type: CalendarDateSegmentType) {
+		return this.getSegments(locale).find((segment) => segment.type === type)
 	}
 
 	getSegmentByIndex(locale: string, index: number) {
 		return this.getSegments(locale)[index]
-	}
-
-	getSegments(locale: string) {
-		return new Intl.DateTimeFormat(locale)
-			.formatToParts(this.getDate())
-			.filter((part) => part.type !== 'literal')
-			.map((part) => part.type) as CalendarDateSegment[]
 	}
 
 	getFirstDateOfWeek(locale: string) {
@@ -209,12 +246,19 @@ export class CalendarDate {
 		return this.getDate() < date.getDate()
 	}
 
-	isEquals(
-		date: CalendarDate,
-		segments: CalendarDateSegment[] = ['year', 'month', 'day']
-	) {
-		return segments.every(
-			(segment) => this.getSegment(segment) === date.getSegment(segment)
+	isSameDay(date: CalendarDate) {
+		return (
+			this.isSameYear(date) &&
+			this.isSameMonth(date) &&
+			this.getDay() === date.getDay()
 		)
+	}
+
+	isSameMonth(date: CalendarDate) {
+		return this.isSameYear(date) && this.getMonth() === date.getMonth()
+	}
+
+	isSameYear(date: CalendarDate) {
+		return this.getYear() === date.getYear()
 	}
 }

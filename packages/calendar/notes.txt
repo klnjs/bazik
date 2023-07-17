@@ -1,8 +1,11 @@
-To Solve
+Notes
 	- Settle on an API when composing the parts.
+	  - Whats the best way to handle literal segments?
 	- Implement popover functionality.
 	- Maybe don't allow asChild on root element? (Seen on Radix)
 	- Maybe move all the min / max checking into the state hook / Date class?
-	- Maybe improve CalendarDate API
-		- Should we separate utility functions from the class?
-		- Should it internally always mutate or return new date?
+	- Should we use utility functions instead of CalendarDate class?
+
+
+Improvements
+	- Make CalendarDateSegments configurable to not include literals

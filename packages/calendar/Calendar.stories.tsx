@@ -12,6 +12,7 @@ import { CalendarTitle } from './CalendarTitle'
 import * as classes from './Calendar.stories.css'
 import { CalendarPopover } from './CalendarPopover'
 import { CalendarTrigger } from './CalendarTrigger'
+import { CalendarLiteral } from './CalendarLiteral'
 
 export default {
 	title: 'Calendar',
@@ -60,40 +61,28 @@ export const Default: StoryObj<typeof Calendar> = {
 					>
 						<CalendarField className={classes.field}>
 							<CalendarSegments>
-								{(segment) => (
-									<CalendarSegment
-										key={segment}
-										segment={segment}
-										className={classes.segment}
-									/>
-								)}
+								{(segment, index) =>
+									segment.type === 'literal' ? (
+										<CalendarLiteral key={index}>
+											{segment.value}
+										</CalendarLiteral>
+									) : (
+										<CalendarSegment
+											key={segment.type}
+											type={segment.type}
+											className={classes.segment}
+										/>
+									)
+								}
 							</CalendarSegments>
 							<CalendarTrigger>Open</CalendarTrigger>
 						</CalendarField>
 						<CalendarPopover className={classes.popover}>
-							<CalendarContent
-								style={{
-									display: 'flex',
-									flexDirection: 'column',
-									gap: 8
-								}}
-							>
-								<div
-									style={{
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'space-between',
-										gap: 8
-									}}
-								>
+							<CalendarContent className={classes.content}>
+								<div className={classes.header}>
 									<CalendarTitle className={classes.title} />
 
-									<div
-										style={{
-											display: 'inline-flex',
-											gap: 8
-										}}
-									>
+									<div className={classes.nav}>
 										<CalendarButton action='year-1'>
 											{'<<'}
 										</CalendarButton>
@@ -108,6 +97,7 @@ export const Default: StoryObj<typeof Calendar> = {
 										</CalendarButton>
 									</div>
 								</div>
+
 								<div className={classes.grid}>
 									<CalendarDays>
 										{(date) => (

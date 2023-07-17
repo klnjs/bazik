@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDateSegment } from './CalendarDate'
 
@@ -11,7 +11,11 @@ export const CalendarSegments = ({ children }: CalendarSegmentsProps) => {
 		state,
 		config: { locale }
 	} = useCalendarContext()
-	const segments = state.focusedDate.getSegments(locale)
+
+	const segments = useMemo(
+		() => state.focusedDate.getSegments(locale),
+		[state, locale]
+	)
 
 	return segments.map(children)
 }

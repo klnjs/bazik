@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useControllableState } from '../core'
-import { CalendarDate } from './CalendarDate'
+import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 
 export type UseCalendarStateOptions = {
 	locale: string
@@ -33,7 +33,7 @@ export const useCalendarState = ({
 	)
 
 	const [focusedSegment, setFocusedSegment] = useState(
-		focusedDate.getSegmentByIndex(locale, 0)
+		focusedDate.getSegmentByIndex(locale, 0).type as CalendarDateSegmentType
 	)
 
 	return useMemo(
