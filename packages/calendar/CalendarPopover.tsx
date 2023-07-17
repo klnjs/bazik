@@ -6,7 +6,7 @@ export type CalendarPopoverProps = Partial<PopoverProps>
 
 export const CalendarPopover = forwardRef<'div', CalendarPopoverProps>(
 	({ onClose, ...otherProps }, forwardedRef) => {
-		const { refs, state } = useCalendarContext()
+		const { state, elements } = useCalendarContext()
 
 		const handleClose = chain(onClose, () => {
 			state.setOpen(false)
@@ -17,7 +17,7 @@ export const CalendarPopover = forwardRef<'div', CalendarPopoverProps>(
 				ref={forwardedRef}
 				open={state.open}
 				trap={true}
-				anchor={refs.field.current}
+				anchor={elements.field.ref.current}
 				onClose={handleClose}
 				{...otherProps}
 			/>

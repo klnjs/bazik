@@ -23,7 +23,8 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 	) => {
 		const {
 			state,
-			config: { min, max, today, locale }
+			config: { min, max, today, locale },
+			elements
 		} = useCalendarContext()
 
 		const isAfter = Boolean(state.date && max && state.date.isAfter(max))
@@ -156,6 +157,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				data-segment={type}
 				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(type)}
+				aria-labelledby={elements.label.id}
 				// aria-valuemin={min}
 				// aria-valuemax={max}
 				aria-valuenow={value}

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta } from '@storybook/react'
 import { useState } from 'react'
 import { Calendar } from './Calendar'
 import { CalendarSegment } from './CalendarSegment'
@@ -13,6 +13,7 @@ import { CalendarPopover } from './CalendarPopover'
 import { CalendarTrigger } from './CalendarTrigger'
 import { CalendarLiteral } from './CalendarLiteral'
 import * as classes from './Calendar.stories.css'
+import { CalendarLabel } from './CalendarLabel'
 
 export default {
 	title: 'Calendar',
@@ -24,6 +25,7 @@ export const Controlled = () => {
 
 	return (
 		<Calendar value={selectedDate} onChange={setSelectedDate}>
+			<CalendarLabel>Date</CalendarLabel>
 			<CalendarField className={classes.field}>
 				<CalendarSegments>
 					{(segment, index) =>
@@ -40,8 +42,8 @@ export const Controlled = () => {
 						)
 					}
 				</CalendarSegments>
-				<CalendarTrigger>Open</CalendarTrigger>
 			</CalendarField>
+			<CalendarTrigger>Open</CalendarTrigger>
 			<CalendarPopover className={classes.popover}>
 				<CalendarContent className={classes.content}>
 					<div className={classes.header}>
@@ -84,6 +86,7 @@ export const Controlled = () => {
 
 export const Uncontrolled = () => (
 	<Calendar>
+		<CalendarLabel>Date</CalendarLabel>
 		<CalendarField className={classes.field}>
 			<CalendarSegments>
 				{(segment, index) =>
@@ -139,6 +142,7 @@ export const Boundaries = () => {
 
 	return (
 		<Calendar min={min} max={max}>
+			<CalendarLabel>Date</CalendarLabel>
 			<CalendarField className={classes.field}>
 				<CalendarSegments>
 					{(segment, index) =>
@@ -199,6 +203,7 @@ export const Boundaries = () => {
 
 export const Field = () => (
 	<Calendar>
+		<CalendarLabel>Date</CalendarLabel>
 		<CalendarField className={classes.field}>
 			<CalendarSegments>
 				{(segment, index) =>
@@ -221,6 +226,7 @@ export const Field = () => (
 
 export const Inline = () => (
 	<Calendar>
+		<CalendarLabel>Date</CalendarLabel>
 		<CalendarContent className={classes.content}>
 			<div className={classes.header}>
 				<CalendarTitle className={classes.title} />
