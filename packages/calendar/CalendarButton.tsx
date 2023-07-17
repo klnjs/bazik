@@ -2,12 +2,12 @@ import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDateSegmentTypeEditable } from './CalendarDate'
 
-export type CalendarButtonSegment = Extract<
+type CalendarButtonSegment = Extract<
 	CalendarDateSegmentTypeEditable,
 	'year' | 'month'
 >
 
-export type CalendarButtonAction =
+type CalendarButtonAction =
 	| `${CalendarButtonSegment}-1`
 	| `${CalendarButtonSegment}+1`
 

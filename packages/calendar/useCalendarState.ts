@@ -6,7 +6,7 @@ import {
 } from './CalendarDate'
 
 export type UseCalendarStateOptions = {
-	locale: string
+	locale?: string
 	value?: Date | null
 	defaultValue?: Date
 	defaultFocused?: Date
@@ -14,7 +14,7 @@ export type UseCalendarStateOptions = {
 }
 
 export const useCalendarState = ({
-	locale,
+	locale = navigator.language,
 	value,
 	defaultValue,
 	defaultFocused,

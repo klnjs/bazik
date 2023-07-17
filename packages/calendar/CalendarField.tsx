@@ -1,8 +1,8 @@
 import {
 	freya,
 	forwardRef,
-	type AsChildComponentProps,
-	useForwardedRef
+	useForwardedRef,
+	type AsChildComponentProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
 

@@ -8,14 +8,14 @@ import {
 	type UseCalendarStateOptions
 } from './useCalendarState'
 
-export type UseCalendarOptions = UseCalendarConfigOptions &
-	UseCalendarStateOptions
+export type UseCalendarOptions = UseCalendarStateOptions &
+	UseCalendarConfigOptions
 
 export const useCalendar = ({
 	min,
 	max,
 	value,
-	locale,
+	locale = navigator.language,
 	defaultValue,
 	onChange
 }: UseCalendarOptions) => {
