@@ -12,7 +12,14 @@ export type CreateContextOptions<T> = {
 	defaultValue?: T
 }
 
-export type CreateContextReturn<T> = [Provider<T>, () => T]
+export type UseContextOptions = {
+	strict?: boolean
+}
+
+export type CreateContextReturn<T> = [
+	Provider<T>,
+	(options?: UseContextOptions) => T
+]
 
 const createContextError = (
 	name: string,
@@ -27,7 +34,7 @@ const createContextError = (
 }
 
 export const createContext = <T extends object>({
-	strict = true,
+	strict: strictOption = true,
 	name = 'Context',
 	nameOfHook = 'useContext',
 	nameOfProvider = 'Provider',
@@ -37,7 +44,7 @@ export const createContext = <T extends object>({
 
 	Context.displayName = name
 
-	const useContext = () => {
+	const useContext = ({ strict = strictOption }: UseContextOptions = {}) => {
 		const context = useContextFromReact(Context)
 
 		if (!context && strict) {

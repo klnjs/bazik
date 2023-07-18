@@ -1,29 +1,10 @@
 import { style } from '@vanilla-extract/css'
 
-export const story = style({
-	display: 'grid',
-	gridTemplateColumns: '1fr 2fr',
-	gap: 32
-})
-
-export const section = style({
-	display: 'flex',
-	flexDirection: 'column',
-	gap: 8
-})
-
 export const title = style({
+	margin: 0,
 	padding: 0,
-	margin: 0
+	fontSize: 18
 })
-
-export const controls = style([
-	section,
-	{
-		background: '#F2F2F2',
-		padding: 16
-	}
-])
 
 export const grid = style({
 	display: 'grid',
@@ -31,7 +12,7 @@ export const grid = style({
 	gap: 4
 })
 
-export const content = style({
+export const calendar = style({
 	width: 300,
 	display: 'flex',
 	flexDirection: 'column',
@@ -87,6 +68,12 @@ export const day = style({
 })
 
 export const field = style({
+	display: 'flex',
+	gap: 6,
+	flexDirection: 'column'
+})
+
+export const anchor = style({
 	display: 'inline-flex',
 	gap: 2,
 	alignItems: 'center'

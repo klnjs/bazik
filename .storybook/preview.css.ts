@@ -1,7 +1,7 @@
-import { style, createTheme, globalStyle } from '@vanilla-extract/css'
+import { globalStyle, createGlobalTheme } from '@vanilla-extract/css'
 import { vars } from '../packages/theme/contract.css'
 
-export const theme = createTheme(vars, {
+createGlobalTheme(':root', vars, {
 	font: {
 		family: 'Arial',
 		size: {
@@ -65,14 +65,11 @@ export const theme = createTheme(vars, {
 	}
 })
 
-export const preview = style([
-	theme,
-	{
-		fontFamily: vars.font.family
-	}
-])
-
-globalStyle(`${preview} *`, {
+globalStyle(`*`, {
 	margin: 0,
 	padding: 0
+})
+
+globalStyle('body', {
+	fontFamily: vars.font.family
 })

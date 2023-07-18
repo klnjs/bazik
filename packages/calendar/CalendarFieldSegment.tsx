@@ -1,13 +1,14 @@
 import { useMemo, useCallback, type KeyboardEvent } from 'react'
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
-import { useCalendarContext } from './CalendarContext'
+import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import type {
-	CalendarDateMutation,
-	CalendarDateSegmentTypeEditable
+import {
+	CalendarDate,
+	type CalendarDateMutation,
+	type CalendarDateSegmentTypeEditable
 } from './CalendarDate'
 
-export type CalendarSegmentProps = AsChildComponentProps<
+export type CalendarFieldSegmentProps = AsChildComponentProps<
 	'div',
 	{
 		type: CalendarDateSegmentTypeEditable
@@ -16,25 +17,37 @@ export type CalendarSegmentProps = AsChildComponentProps<
 	}
 >
 
-export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
+export const CalendarFieldSegment = forwardRef<
+	'div',
+	CalendarFieldSegmentProps
+>(
 	(
 		{ type, mode = 'digit', style, placeholder, ...otherProps },
 		forwardedRef
 	) => {
 		const {
-			state,
-			config: { min, max, today, locale },
-			elements
-		} = useCalendarContext()
+			locale,
+			labelId,
+			minDate,
+			maxDate,
+			selectedDate,
+			setSelectedDate,
+			focusedSegment,
+			setFocusedSegment
+		} = useCalendarFieldContext()
 
-		const isAfter = Boolean(state.date && max && state.date.isAfter(max))
-		const isBefore = Boolean(state.date && min && state.date.isBefore(min))
+		const isAfter = Boolean(
+			maxDate && selectedDate && selectedDate.isAfter(maxDate)
+		)
+		const isBefore = Boolean(
+			minDate && selectedDate && selectedDate.isBefore(minDate)
+		)
 		const isInvalid = isAfter || isBefore
-		const isHighlighted = state.focusedSegment === type
+		const isHighlighted = focusedSegment === type
 
-		const localisation = useCalendarLocalisation()
-		const value = state.date?.get(type)
-		const text = state.date?.format(locale, {
+		const localisation = useCalendarLocalisation(locale)
+		const value = selectedDate?.get(type)
+		const text = selectedDate?.format(locale, {
 			year: 'numeric',
 			month: 'long',
 			weekday: 'long',
@@ -60,23 +73,23 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				mutation: CalendarDateMutation = {}
 			) => {
 				event.preventDefault()
-				state.setDate((prev) => {
+				setSelectedDate((prev) => {
 					if (action === 'clear') {
 						return null
 					}
 
 					if (!prev) {
-						return today
+						return new CalendarDate()
 					}
 
 					const next = prev[action](mutation)
-					const limit = action === 'add' ? max : min
+					const limit = action === 'add' ? minDate : maxDate
 					const check = action === 'add' ? 'isAfter' : 'isBefore'
 
 					return limit && next[check](limit) ? limit : next
 				})
 			},
-			[state, min, max, today]
+			[minDate, maxDate, setSelectedDate]
 		)
 
 		const changeFocusedSegment = useCallback(
@@ -89,18 +102,18 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 
 				if (element !== undefined) {
 					element.focus()
-					state.setFocusedSegment(
+					setFocusedSegment(
 						element.dataset
 							.segment as CalendarDateSegmentTypeEditable
 					)
 				}
 			},
-			[state]
+			[setFocusedSegment]
 		)
 
 		const handleClick = useCallback(() => {
-			state.setFocusedSegment(type)
-		}, [state, type])
+			setFocusedSegment(type)
+		}, [type, setFocusedSegment])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -157,7 +170,7 @@ export const CalendarSegment = forwardRef<'div', CalendarSegmentProps>(
 				data-segment={type}
 				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(type)}
-				aria-labelledby={elements.label.id}
+				aria-labelledby={labelId}
 				// aria-valuemin={min}
 				// aria-valuemax={max}
 				aria-valuenow={value}

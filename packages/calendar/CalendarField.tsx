@@ -1,19 +1,43 @@
+import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { CalendarFieldProvider } from './CalendarFieldContext'
 import {
-	freya,
-	forwardRef,
-	useForwardedRef,
-	type AsChildComponentProps
-} from '../core'
-import { useCalendarContext } from './CalendarContext'
+	useCalendarField,
+	type UseCalendarFieldOptions
+} from './useCalendarField'
 
-export type CalendarFieldProps = AsChildComponentProps<'div'>
+export type CalendarFieldProps = AsChildComponentProps<
+	'div',
+	UseCalendarFieldOptions
+>
 
 export const CalendarField = forwardRef<'div', CalendarFieldProps>(
-	(props, forwardedRef) => {
-		const { elements } = useCalendarContext()
+	(
+		{
+			min,
+			max,
+			value,
+			locale,
+			defaultValue,
+			defaultFocused,
+			onChange,
+			...otherProps
+		},
+		forwardedRef
+	) => {
+		const field = useCalendarField({
+			min,
+			max,
+			value,
+			locale,
+			defaultValue,
+			defaultFocused,
+			onChange
+		})
 
-		useForwardedRef(elements.field.ref, forwardedRef)
-
-		return <freya.div ref={elements.field.ref} role='group' {...props} />
+		return (
+			<CalendarFieldProvider value={field}>
+				<freya.div ref={forwardedRef} role='group' {...otherProps} />
+			</CalendarFieldProvider>
+		)
 	}
 )

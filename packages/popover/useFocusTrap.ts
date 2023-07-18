@@ -10,13 +10,11 @@ export const useFocusTrap = (
 	{ enabled = true }: UseFocusTrapOptions = {}
 ) => {
 	useEffect(() => {
-		const element = ref.current
-
-		if (element && enabled) {
+		if (ref.current && enabled) {
+			const element = ref.current
 			const trap = createFocusTrap(element, {
 				fallbackFocus: element,
-				allowOutsideClick: true,
-				returnFocusOnDeactivate: true
+				allowOutsideClick: true
 			})
 
 			trap.activate()

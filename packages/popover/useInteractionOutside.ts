@@ -1,31 +1,43 @@
-import { useEffect } from 'react'
+import { useRef, useEffect, type RefObject } from 'react'
 
-export const useInteractionOutside = (
-	ref,
-	handler,
-	{ on = 'click', enabled = true, capture = true, exclude } = {}
+export type UseInteractionOutsideEvent = 'click' | 'pointerdown'
+
+export type UseInteractionOutsideOptions<T extends UseInteractionOutsideEvent> =
+	{
+		enabled?: boolean
+		capture?: boolean
+		interaction?: T
+	}
+
+export const useInteractionOutside = <T extends UseInteractionOutsideEvent>(
+	ref: RefObject<HTMLElement>,
+	callback: (event: DocumentEventMap[T]) => void,
+	{
+		enabled = true,
+		capture = true,
+		interaction = 'pointerdown'
+	}: UseInteractionOutsideOptions<T>
 ) => {
+	const callbackRef = useRef(callback)
+
 	useEffect(() => {
-		if (ref.current && handler && enabled) {
+		callbackRef.current = callback
+	}, [callback])
+
+	useEffect(() => {
+		if (ref.current && enabled) {
 			const element = ref.current
-
-			const listener = (event) => {
-				const outside =
-					element &&
-					!element.contains(event.target) &&
-					!event.target.contains(element)
-				const excluded = exclude && exclude.contains(event.target)
-
-				if (outside && !excluded) {
-					handler(event)
+			const listener = (event: DocumentEventMap[T]) => {
+				if (!element.contains(event.target as HTMLElement)) {
+					callbackRef.current(event)
 				}
 			}
 
-			document.addEventListener(on, listener, { capture })
+			document.addEventListener(interaction, listener, { capture })
 
 			return () => {
-				document.removeEventListener(on, listener, { capture })
+				document.removeEventListener(interaction, listener, { capture })
 			}
 		}
-	}, [ref, handler, on, enabled, exclude, capture])
+	}, [ref, enabled, capture, interaction])
 }

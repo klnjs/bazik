@@ -35,19 +35,24 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		},
 		forwardedRef
 	) => {
-		const {
-			state,
-			config: { min, max, today, locale }
-		} = useCalendarContext()
 		const ref = useRef<HTMLDivElement>(null)
+		const {
+			locale,
+			minDate,
+			maxDate,
+			focusedDate,
+			selectedDate,
+			setFocusedDate,
+			setSelectedDate
+		} = useCalendarContext()
 
 		const isToday = date.isToday()
-		const isAfter = Boolean(max && date.isAfter(max))
-		const isBefore = Boolean(min && date.isBefore(min))
+		const isAfter = Boolean(maxDate && date.isAfter(maxDate))
+		const isBefore = Boolean(minDate && date.isBefore(minDate))
 		const isWeekend = date.isWeekend(locale)
-		const isSelected = Boolean(state.date && date.isSameDay(state.date))
-		const isOverflow = !date.isSameMonth(state.focusedDate)
-		const isHighlighted = date.isSameDay(state.focusedDate)
+		const isSelected = Boolean(selectedDate && date.isSameDay(selectedDate))
+		const isOverflow = !date.isSameMonth(focusedDate)
+		const isHighlighted = date.isSameDay(focusedDate)
 		const isDisabled =
 			disabled ||
 			(disabledOnWeekend && isWeekend) ||
@@ -65,7 +70,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		// Uncertain how this works in different locales, due to
 		// the concatenation of the two labels.
 		const label = isToday
-			? `${today.formatRelative(locale, today, 'day', {
+			? `${date.formatRelative(locale, date, 'day', {
 					numeric: 'auto'
 			  })}, ${formatted}`
 			: formatted
@@ -78,12 +83,12 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			) => {
 				if (!isDisabled) {
 					event.preventDefault()
-					state.setOpen((prev) => !prev)
-					state.setDate(date)
-					state.setFocusedDate(date)
+					//state.setOpen((prev) => !prev)
+					setFocusedDate(date)
+					setSelectedDate(date)
 				}
 			},
-			[date, state, isDisabled]
+			[date, isDisabled, setFocusedDate, setSelectedDate]
 		)
 
 		const changeFocusedDate = useCallback(
@@ -93,15 +98,15 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				options: CalendarDateMutation
 			) => {
 				event.preventDefault()
-				state.setFocusedDate((prev) => {
+				setFocusedDate((prev) => {
 					const next = prev[action](options)
-					const limit = action === 'add' ? max : min
+					const limit = action === 'add' ? minDate : maxDate
 					const check = action === 'add' ? 'isAfter' : 'isBefore'
 
 					return limit && next[check](limit) ? limit : next
 				})
 			},
-			[state, min, max]
+			[minDate, maxDate, setFocusedDate]
 		)
 
 		const handleClick = changeDate
@@ -137,14 +142,14 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'Home') {
-					state.setFocusedDate((prev) => prev.getFirstDateOfMonth())
+					setFocusedDate((prev) => prev.getFirstDateOfMonth())
 				}
 
 				if (event.code === 'End') {
-					state.setFocusedDate((prev) => prev.getLastDateOfMonth())
+					setFocusedDate((prev) => prev.getLastDateOfMonth())
 				}
 			},
-			[state, changeDate, changeFocusedDate]
+			[changeDate, changeFocusedDate, setFocusedDate]
 		)
 
 		useForwardedRef(ref, forwardedRef)

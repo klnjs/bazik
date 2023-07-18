@@ -1,16 +1,16 @@
-import { useRef } from 'react'
-import { useId } from '../core'
-import {
-	useCalendarConfig,
-	type UseCalendarConfigOptions
-} from './useCalendarConfig'
-import {
-	useCalendarState,
-	type UseCalendarStateOptions
-} from './useCalendarState'
+import { useState } from 'react'
+import { useControllableState } from '../core'
+import { CalendarDate } from './CalendarDate'
 
-export type UseCalendarOptions = UseCalendarStateOptions &
-	UseCalendarConfigOptions
+export type UseCalendarOptions = {
+	min?: Date
+	max?: Date
+	value?: Date | null
+	locale?: string
+	defaultValue?: Date
+	defaultFocused?: Date
+	onChange?: (value: Date | null) => void
+}
 
 export const useCalendar = ({
 	min,
@@ -18,26 +18,30 @@ export const useCalendar = ({
 	value,
 	locale = navigator.language,
 	defaultValue,
+	defaultFocused,
 	onChange
 }: UseCalendarOptions) => {
-	const config = useCalendarConfig({ min, max, locale })
+	const [focusedDate, setFocusedDate] = useState(
+		new CalendarDate(defaultFocused ?? value ?? undefined)
+	)
 
-	const state = useCalendarState({
-		value,
-		locale,
-		defaultValue,
-		defaultFocused: min ?? new Date(),
-		onChange
-	})
-
-	const elements = {
-		label: { id: useId() },
-		field: { ref: useRef<HTMLDivElement>(null) }
-	}
+	const [selectedDate, setSelectedDate] =
+		useControllableState<CalendarDate | null>({
+			value: value instanceof Date ? new CalendarDate(value) : value,
+			defaultValue:
+				defaultValue instanceof Date
+					? new CalendarDate(defaultValue)
+					: defaultValue,
+			onChange: (newValue) => onChange?.(newValue?.getDate() ?? null)
+		})
 
 	return {
-		state,
-		config,
-		elements
+		locale,
+		minDate: min ? new CalendarDate(min) : undefined,
+		maxDate: max ? new CalendarDate(max) : undefined,
+		focusedDate,
+		setFocusedDate,
+		selectedDate,
+		setSelectedDate
 	}
 }

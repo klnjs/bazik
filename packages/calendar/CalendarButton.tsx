@@ -18,17 +18,15 @@ export type CalendarButtonProps = AsChildComponentProps<
 
 export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 	({ action, ...otherProps }, forwardedRef) => {
-		const {
-			state,
-			config: { min, max }
-		} = useCalendarContext()
+		const { minDate, maxDate, focusedDate, setFocusedDate } =
+			useCalendarContext()
 
 		const [segment, number] = action.split(/(?=\+|-)/) as [
 			CalendarDateSegmentTypeEditable,
 			string
 		]
 
-		const limit = number.startsWith('-') ? min : max
+		const limit = number.startsWith('-') ? minDate : maxDate
 		const target = number.startsWith('-')
 			? 'getLastDateOfMonth'
 			: 'getFirstDateOfMonth'
@@ -37,7 +35,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 
 		const isDisabled =
 			limit &&
-			state.focusedDate
+			focusedDate
 				.calc({
 					[segment]: Number(number)
 				})
@@ -45,7 +43,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				[predicate](limit)
 
 		const onClick = () =>
-			state.setFocusedDate((prev) => {
+			setFocusedDate((prev) => {
 				const next = prev.calc({ [segment]: Number(number) })
 
 				return limit && next[predicate](limit) ? limit : next
