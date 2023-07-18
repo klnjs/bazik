@@ -5,6 +5,7 @@ import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
 	CalendarDate,
 	type CalendarDateMutation,
+	type CalendarDateSegmentStyle,
 	type CalendarDateSegmentTypeEditable
 } from './CalendarDate'
 
@@ -12,7 +13,7 @@ export type CalendarFieldSegmentProps = AsChildComponentProps<
 	'div',
 	{
 		type: CalendarDateSegmentTypeEditable
-		mode?: 'numeric' | 'digit'
+		mode?: CalendarDateSegmentStyle
 		placeholder?: string
 	}
 >
@@ -22,7 +23,7 @@ export const CalendarFieldSegment = forwardRef<
 	CalendarFieldSegmentProps
 >(
 	(
-		{ type, mode = 'digit', style, placeholder, ...otherProps },
+		{ type, mode = '2-digit', style, placeholder = '-', ...otherProps },
 		forwardedRef
 	) => {
 		const {
@@ -46,25 +47,27 @@ export const CalendarFieldSegment = forwardRef<
 		const isHighlighted = focusedSegment === type
 
 		const localisation = useCalendarLocalisation(locale)
+		const length = useMemo(
+			() =>
+				new CalendarDate().getSegment(locale, type, mode).value.length,
+			[locale, type, mode]
+		)
+
 		const value = selectedDate?.get(type)
-		const text = selectedDate?.format(locale, {
+		const valueText = selectedDate?.format(locale, {
 			year: 'numeric',
 			month: 'long',
 			weekday: 'long',
 			day: 'numeric'
 		})
 
-		const content = useMemo(() => {
-			if (value === undefined) {
-				return placeholder ?? ''.padStart(2, '-')
+		const children = useMemo(() => {
+			if (selectedDate === null) {
+				return ''.padStart(length, placeholder)
 			}
 
-			if (mode === 'digit') {
-				return String(value).padStart(2, '0')
-			}
-
-			return String(value)
-		}, [mode, value, placeholder])
+			return selectedDate.getSegment(locale, type, mode).value
+		}, [locale, mode, type, length, placeholder, selectedDate])
 
 		const changeSegment = useCallback(
 			(
@@ -78,15 +81,18 @@ export const CalendarFieldSegment = forwardRef<
 						return null
 					}
 
-					if (!prev) {
-						return new CalendarDate()
+					const base = prev ?? new CalendarDate()
+					const next = base[action](mutation)
+
+					if (minDate && next.isBefore(minDate)) {
+						return minDate
 					}
 
-					const next = prev[action](mutation)
-					const limit = action === 'add' ? minDate : maxDate
-					const check = action === 'add' ? 'isAfter' : 'isBefore'
+					if (maxDate && next.isAfter(maxDate)) {
+						return maxDate
+					}
 
-					return limit && next[check](limit) ? limit : next
+					return next
 				})
 			},
 			[minDate, maxDate, setSelectedDate]
@@ -117,10 +123,6 @@ export const CalendarFieldSegment = forwardRef<
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
-				if (event.code !== 'Tab') {
-					event.preventDefault()
-				}
-
 				if (event.code === 'ArrowUp') {
 					changeSegment(event, 'add', { [type]: 1 })
 				}
@@ -142,17 +144,19 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (/[0-9]/.test(event.key)) {
-					const valueString = String(value ?? '')
-					const valueIntent = Number(valueString + event.key)
+					const now = String(value ?? '')
+					const press = Number(event.key)
+					const intent = Number(`${now}${press}`)
+					const next = intent <= 31 ? intent : press
 
-					changeSegment(event, 'set', { [type]: valueIntent })
+					changeSegment(event, 'set', { [type]: next })
 
-					// if (String(valueMutation).length === String(max).length) {
-					// 	changeFocusedSegment(event, 'next')
-					// }
+					if (String(next).length === length) {
+						changeFocusedSegment(event, 'next')
+					}
 				}
 			},
-			[type, value, changeSegment, changeFocusedSegment]
+			[type, value, length, changeSegment, changeFocusedSegment]
 		)
 
 		return (
@@ -162,11 +166,15 @@ export const CalendarFieldSegment = forwardRef<
 				inputMode='numeric'
 				autoCorrect='off'
 				autoCapitalize='off'
+				style={{
+					width: `${length}ch`,
+					caretColor: 'transparent',
+					...style
+				}}
 				spellCheck={false}
 				contentEditable={true}
 				tabIndex={isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
-				style={{ ...style, caretColor: 'transparent' }}
 				data-segment={type}
 				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(type)}
@@ -174,14 +182,13 @@ export const CalendarFieldSegment = forwardRef<
 				// aria-valuemin={min}
 				// aria-valuemax={max}
 				aria-valuenow={value}
-				aria-valuetext={text ?? 'Empty'}
+				aria-valuetext={valueText ?? 'Empty'}
 				aria-invalid={isInvalid}
-				aria-description={text}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				{...otherProps}
 			>
-				{content}
+				{children}
 			</freya.div>
 		)
 	}

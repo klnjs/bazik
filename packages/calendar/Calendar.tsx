@@ -19,7 +19,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 		},
 		forwardedRef
 	) => {
-		const field = useCalendarFieldContext()
+		const field = useCalendarFieldContext({ strict: false })
 		const calendar = useCalendar({
 			min,
 			max,

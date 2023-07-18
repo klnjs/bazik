@@ -7,9 +7,10 @@ type CalendarButtonSegment = Extract<
 	'year' | 'month'
 >
 
+type CalendarButtonSegmentUpdate = '-1' | '+1'
+
 type CalendarButtonAction =
-	| `${CalendarButtonSegment}-1`
-	| `${CalendarButtonSegment}+1`
+	`${CalendarButtonSegment}${CalendarButtonSegmentUpdate}`
 
 export type CalendarButtonProps = AsChildComponentProps<
 	'button',
@@ -21,39 +22,26 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const { minDate, maxDate, focusedDate, setFocusedDate } =
 			useCalendarContext()
 
-		const [segment, number] = action.split(/(?=\+|-)/) as [
+		const [segment, update] = action.split(/(?=\+|-)/) as [
 			CalendarDateSegmentTypeEditable,
-			string
+			CalendarButtonSegmentUpdate
 		]
 
-		const limit = number.startsWith('-') ? minDate : maxDate
-		const target = number.startsWith('-')
-			? 'getLastDateOfMonth'
-			: 'getFirstDateOfMonth'
+		const n = Number(update)
+		const l = update === '-1' ? minDate : maxDate
+		const i = update === '-1' ? 'isBefore' : 'isAfter'
+		const g = update === '-1' ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
 
-		const predicate = number.startsWith('-') ? 'isBefore' : 'isAfter'
+		const target = focusedDate.calc({ [segment]: n })[g]()
+		const disabled = l && target[i](l)
 
-		const isDisabled =
-			limit &&
-			focusedDate
-				.calc({
-					[segment]: Number(number)
-				})
-				[target]()
-				[predicate](limit)
-
-		const onClick = () =>
-			setFocusedDate((prev) => {
-				const next = prev.calc({ [segment]: Number(number) })
-
-				return limit && next[predicate](limit) ? limit : next
-			})
+		const onClick = () => setFocusedDate(target)
 
 		return (
 			<freya.button
 				ref={forwardedRef}
 				type='button'
-				disabled={isDisabled}
+				disabled={disabled}
 				onClick={onClick}
 				{...otherProps}
 			/>

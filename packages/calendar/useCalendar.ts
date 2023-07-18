@@ -7,7 +7,7 @@ export type UseCalendarOptions = {
 	max?: Date
 	value?: Date | null
 	locale?: string
-	defaultValue?: Date
+	defaultValue?: Date | null
 	defaultFocused?: Date
 	onChange?: (value: Date | null) => void
 }
@@ -17,7 +17,7 @@ export const useCalendar = ({
 	max,
 	value,
 	locale = navigator.language,
-	defaultValue,
+	defaultValue = null,
 	defaultFocused,
 	onChange
 }: UseCalendarOptions) => {

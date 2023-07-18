@@ -9,6 +9,8 @@ export const calendarDateSegmentTypes = [
 
 export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
 
+export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
+
 export type CalendarDateSegmentTypeEditable = Exclude<
 	CalendarDateSegmentType,
 	'literal'
@@ -38,8 +40,14 @@ export class CalendarDate {
 		this.date = date ?? new Date()
 	}
 
-	set(mutation: CalendarDateMutation) {
-		return this.clone(mutation)
+	set({ year, month, day }: CalendarDateMutation) {
+		const date = this.getDate()
+
+		date.setFullYear(year ?? date.getFullYear())
+		date.setMonth(month ? month - 1 : date.getMonth())
+		date.setDate(day ?? date.getDate())
+
+		return new CalendarDate(date)
 	}
 
 	add(mutation: CalendarDateMutation) {
@@ -67,14 +75,8 @@ export class CalendarDate {
 		return new CalendarDate(date)
 	}
 
-	clone({ year, month, day }: CalendarDateMutation = {}) {
-		const date = this.getDate()
-
-		date.setFullYear(year ?? date.getFullYear())
-		date.setMonth(month ?? date.getMonth())
-		date.setDate(day ?? date.getDay())
-
-		return new CalendarDate(date)
+	clone() {
+		return new CalendarDate(this.getDate())
 	}
 
 	format(locale: string, options?: Intl.DateTimeFormatOptions) {
@@ -119,7 +121,7 @@ export class CalendarDate {
 
 	getDiff(date: CalendarDate) {
 		const difference = date.getTime() - this.getTime()
-		const oneDay = 1000 * 60 * 60 * 24 // Calculate the number of milliseconds in a day, month, and year
+		const oneDay = 1000 * 60 * 60 * 24 // Number of milliseconds in a day
 		const oneYear = oneDay * 365.25 // Average number of days in a year
 		const oneMonth = oneDay * 30.436875 // Average number of days in a month
 
@@ -130,8 +132,12 @@ export class CalendarDate {
 		}
 	}
 
-	getSegments(locale: string) {
-		return new Intl.DateTimeFormat(locale)
+	getSegments(locale: string, style: CalendarDateSegmentStyle = 'numeric') {
+		return new Intl.DateTimeFormat(locale, {
+			year: 'numeric',
+			month: style,
+			day: style
+		})
 			.formatToParts(this.getDate())
 			.reduce<CalendarDateSegment[]>((acc, part) => {
 				if (isCalendarDateSegment(part)) {
@@ -142,28 +148,39 @@ export class CalendarDate {
 			}, [])
 	}
 
-	getSegment(locale: string, type: CalendarDateSegmentType) {
-		return this.getSegments(locale).find((segment) => segment.type === type)
+	getSegment(
+		locale: string,
+		type: CalendarDateSegmentType,
+		style?: CalendarDateSegmentStyle
+	) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return this.getSegments(locale, style).find(
+			(segment) => segment.type === type
+		)!
 	}
 
-	getSegmentByIndex(locale: string, index: number) {
-		return this.getSegments(locale)[index]
+	getSegmentByIndex(
+		locale: string,
+		index: number,
+		style?: CalendarDateSegmentStyle
+	) {
+		return this.getSegments(locale, style)[index]
 	}
 
 	getFirstDateOfWeek(locale: string) {
 		return this.sub({ day: this.getWeekDay(locale) - 1 })
 	}
 
+	getFirstDateOfMonth() {
+		return this.set({ day: 1 })
+	}
+
 	getLastDateOfWeek(locale: string) {
 		return this.getFirstDateOfWeek(locale).add({ day: 7 })
 	}
 
-	getFirstDateOfMonth() {
-		return this.clone({ day: 1 })
-	}
-
 	getLastDateOfMonth() {
-		return this.clone({ month: this.getMonth(), day: 0 })
+		return this.set({ month: this.getMonth() + 1, day: 0 })
 	}
 
 	// eslint-disable-next-line
@@ -178,7 +195,6 @@ export class CalendarDate {
 				// eslint-disable-next-line
 				return new Intl.Locale(locale).getWeekInfo().firstDay as number
 			} catch (error) {
-				// Find a way to polyfill this
 				if (
 					locale.toLowerCase() === 'en' ||
 					locale.toLowerCase() === 'en-US'
@@ -262,3 +278,10 @@ export class CalendarDate {
 		return this.getYear() === date.getYear()
 	}
 }
+
+// const today = new CalendarDate()
+// const todayLastDayOfMonth = today.getLastDateOfMonth()
+// const todayLastDayOfWeek = todayLastDayOfMonth.getLastDateOfWeek('da')
+
+// console.log(todayLastDayOfMonth)
+// console.log(todayLastDayOfWeek)

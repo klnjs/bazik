@@ -11,8 +11,8 @@ import { CalendarFieldSegment } from './CalendarFieldSegment'
 import { CalendarFieldLiteral } from './CalendarFieldLiteral'
 import { CalendarFieldTrigger } from './CalendarFieldTrigger'
 import { CalendarFieldPopover } from './CalendarFieldPopover'
-import * as classes from './Calendar.stories.css'
 import { CalendarFieldAnchor } from './CalendarFieldAnchor'
+import * as classes from './Calendar.stories.css'
 
 export default {
 	title: 'Calendar',
@@ -25,10 +25,18 @@ export const Calendar = () => (
 			<CalendarTitle className={classes.title} />
 
 			<div className={classes.nav}>
-				<CalendarButton action='year-1'>{'<<'}</CalendarButton>
-				<CalendarButton action='month-1'>{'<'}</CalendarButton>
-				<CalendarButton action='month+1'>{'>'}</CalendarButton>
-				<CalendarButton action='year+1'>{'>>'}</CalendarButton>
+				<CalendarButton action='year-1' className={classes.button}>
+					«
+				</CalendarButton>
+				<CalendarButton action='month-1' className={classes.button}>
+					{'<'}
+				</CalendarButton>
+				<CalendarButton action='month+1' className={classes.button}>
+					{'>'}
+				</CalendarButton>
+				<CalendarButton action='year+1' className={classes.button}>
+					≫
+				</CalendarButton>
 			</div>
 		</div>
 
@@ -51,7 +59,7 @@ export const Calendar = () => (
 export const CalendarField = () => (
 	<CalendarFieldComponent className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
-		<CalendarFieldAnchor className={classes.anchor}>
+		<div className={classes.input}>
 			<CalendarFieldSegments>
 				{(segment, index) =>
 					segment.type === 'literal' ? (
@@ -67,18 +75,63 @@ export const CalendarField = () => (
 					)
 				}
 			</CalendarFieldSegments>
+		</div>
+	</CalendarFieldComponent>
+)
+
+export const CalendarFieldWithPopover = () => (
+	<CalendarFieldComponent className={classes.field}>
+		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<CalendarFieldAnchor className={classes.anchor}>
+			<div className={classes.input}>
+				<CalendarFieldSegments>
+					{(segment, index) =>
+						segment.type === 'literal' ? (
+							<CalendarFieldLiteral key={index}>
+								{segment.value}
+							</CalendarFieldLiteral>
+						) : (
+							<CalendarFieldSegment
+								key={segment.type}
+								type={segment.type}
+								className={classes.segment}
+							/>
+						)
+					}
+				</CalendarFieldSegments>
+				<CalendarFieldTrigger>🗓</CalendarFieldTrigger>
+			</div>
 		</CalendarFieldAnchor>
-		<CalendarFieldTrigger>Open</CalendarFieldTrigger>
 		<CalendarFieldPopover className={classes.popover}>
 			<CalendarComponent className={classes.calendar}>
 				<div className={classes.header}>
 					<CalendarTitle className={classes.title} />
 
 					<div className={classes.nav}>
-						<CalendarButton action='year-1'>{'<<'}</CalendarButton>
-						<CalendarButton action='month-1'>{'<'}</CalendarButton>
-						<CalendarButton action='month+1'>{'>'}</CalendarButton>
-						<CalendarButton action='year+1'>{'>>'}</CalendarButton>
+						<CalendarButton
+							action='year-1'
+							className={classes.button}
+						>
+							«
+						</CalendarButton>
+						<CalendarButton
+							action='month-1'
+							className={classes.button}
+						>
+							‹
+						</CalendarButton>
+						<CalendarButton
+							action='month+1'
+							className={classes.button}
+						>
+							›
+						</CalendarButton>
+						<CalendarButton
+							action='year+1'
+							className={classes.button}
+						>
+							»
+						</CalendarButton>
 					</div>
 				</div>
 

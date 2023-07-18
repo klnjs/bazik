@@ -49,7 +49,12 @@ export const createContext = <T extends object>({
 
 		if (!context && strict) {
 			const error = createContextError(name, nameOfHook, nameOfProvider)
-			Error.captureStackTrace(error, useContext)
+
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (Error.captureStackTrace !== undefined) {
+				Error.captureStackTrace(error, useContext)
+			}
+
 			throw error
 		}
 

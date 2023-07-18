@@ -31,6 +31,14 @@ export const nav = style({
 	gap: 8
 })
 
+export const button = style({
+	display: 'inline-flex',
+	width: 24,
+	height: 24,
+	alignItems: 'center',
+	justifyContent: 'center'
+})
+
 export const day = style({
 	appearance: 'none',
 	aspectRatio: '1 / 1',
@@ -68,21 +76,29 @@ export const day = style({
 })
 
 export const field = style({
-	display: 'flex',
+	display: 'inline-flex',
 	gap: 6,
 	flexDirection: 'column'
 })
 
-export const anchor = style({
+export const input = style({
 	display: 'inline-flex',
 	gap: 2,
-	alignItems: 'center'
+	padding: 4,
+	alignItems: 'center',
+	border: '1px solid black',
+	borderRadius: 4
+})
+
+export const anchor = style({
+	display: 'inline-flex'
 })
 
 export const segment = style({
+	textAlign: 'center',
 	border: 0,
 	borderRadius: 4,
-	padding: 8,
+	padding: 4,
 	':focus-visible': {
 		outline: '1px solid blue',
 		outlineOffset: -1
