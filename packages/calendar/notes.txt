@@ -9,3 +9,4 @@ Notes
 
 Improvements
 	- Make CalendarDateSegments configurable to not include literals
+	- Make CalendarButton support action='today'

@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { freya, forwardRef, type AsChildComponentProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDateSegmentTypeEditable } from './CalendarDate'
@@ -10,7 +11,7 @@ type CalendarButtonSegment = Extract<
 type CalendarButtonSegmentUpdate = '-1' | '+1'
 
 type CalendarButtonAction =
-	`${CalendarButtonSegment}${CalendarButtonSegmentUpdate}`
+	| `${CalendarButtonSegment}${CalendarButtonSegmentUpdate}`
 
 export type CalendarButtonProps = AsChildComponentProps<
 	'button',
@@ -22,20 +23,35 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const { minDate, maxDate, focusedDate, setFocusedDate } =
 			useCalendarContext()
 
-		const [segment, update] = action.split(/(?=\+|-)/) as [
+		const [segment, no] = action.split(/(?=\+|-)/) as [
 			CalendarDateSegmentTypeEditable,
 			CalendarButtonSegmentUpdate
 		]
 
-		const n = Number(update)
-		const l = update === '-1' ? minDate : maxDate
-		const i = update === '-1' ? 'isBefore' : 'isAfter'
-		const g = update === '-1' ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
+		const disabled = useMemo(() => {
+			const n = Number(no)
+			const l = no === '-1' ? minDate : maxDate
+			const i = no === '-1' ? 'isBefore' : 'isAfter'
+			const g = no === '-1' ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
+			const t = focusedDate.calc({ [segment]: n })[g]()
 
-		const target = focusedDate.calc({ [segment]: n })[g]()
-		const disabled = l && target[i](l)
+			return l && t[i](l)
+		}, [segment, no, maxDate, minDate, focusedDate])
 
-		const onClick = () => setFocusedDate(target)
+		const onClick = () =>
+			setFocusedDate((prev) => {
+				const next = prev.calc({ [segment]: Number(no) })
+
+				if (minDate && next.isBefore(minDate)) {
+					return minDate
+				}
+
+				if (maxDate && next.isAfter(maxDate)) {
+					return maxDate
+				}
+
+				return next
+			})
 
 		return (
 			<freya.button

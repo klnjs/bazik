@@ -35,6 +35,8 @@ export const button = style({
 	display: 'inline-flex',
 	width: 24,
 	height: 24,
+	lineHeight: 24,
+	paddingBlockEnd: 2,
 	alignItems: 'center',
 	justifyContent: 'center'
 })
