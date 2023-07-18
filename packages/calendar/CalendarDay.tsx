@@ -2,8 +2,8 @@ import {
 	useRef,
 	useEffect,
 	useCallback,
-	type KeyboardEvent,
-	type MouseEvent
+	type MouseEvent,
+	type KeyboardEvent
 } from 'react'
 import {
 	freya,
@@ -12,7 +12,7 @@ import {
 	type AsChildComponentProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import type { CalendarDate, CalendarDateMutation } from './CalendarDate'
+import type { CalendarDate } from './CalendarDate'
 
 export type CalendarDayProps = AsChildComponentProps<
 	'div',
@@ -83,7 +83,6 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			) => {
 				if (!isDisabled) {
 					event.preventDefault()
-					//state.setOpen((prev) => !prev)
 					setFocusedDate(date)
 					setSelectedDate(date)
 				}
@@ -94,16 +93,21 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const changeFocusedDate = useCallback(
 			(
 				event: KeyboardEvent<HTMLDivElement>,
-				action: 'add' | 'sub',
-				options: CalendarDateMutation
+				change: (prev: CalendarDate) => CalendarDate
 			) => {
 				event.preventDefault()
 				setFocusedDate((prev) => {
-					const next = prev[action](options)
-					const limit = action === 'add' ? minDate : maxDate
-					const check = action === 'add' ? 'isAfter' : 'isBefore'
+					const next = change(prev)
 
-					return limit && next[check](limit) ? limit : next
+					if (minDate && next.isBefore(minDate)) {
+						return minDate
+					}
+
+					if (maxDate && next.isAfter(maxDate)) {
+						return maxDate
+					}
+
+					return next
 				})
 			},
 			[minDate, maxDate, setFocusedDate]
@@ -118,38 +122,42 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					changeFocusedDate(event, 'sub', { day: 7 })
+					changeFocusedDate(event, (prev) => prev.sub({ day: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					changeFocusedDate(event, 'add', { day: 1 })
+					changeFocusedDate(event, (prev) => prev.add({ day: 1 }))
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeFocusedDate(event, 'add', { day: 7 })
+					changeFocusedDate(event, (prev) => prev.add({ day: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					changeFocusedDate(event, 'sub', { day: 1 })
+					changeFocusedDate(event, (prev) => prev.sub({ day: 1 }))
 				}
 
 				if (event.code === 'PageUp') {
-					changeFocusedDate(event, 'sub', { month: 1 })
+					changeFocusedDate(event, (prev) => prev.sub({ month: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					changeFocusedDate(event, 'add', { month: 1 })
+					changeFocusedDate(event, (prev) => prev.add({ month: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					setFocusedDate((prev) => prev.getFirstDateOfMonth())
+					changeFocusedDate(event, (prev) =>
+						prev.getFirstDateOfMonth()
+					)
 				}
 
 				if (event.code === 'End') {
-					setFocusedDate((prev) => prev.getLastDateOfMonth())
+					changeFocusedDate(event, (prev) =>
+						prev.getLastDateOfMonth()
+					)
 				}
 			},
-			[changeDate, changeFocusedDate, setFocusedDate]
+			[changeDate, changeFocusedDate]
 		)
 
 		useForwardedRef(ref, forwardedRef)

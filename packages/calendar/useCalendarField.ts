@@ -16,6 +16,7 @@ export const useCalendarField = ({
 }: UseCalendarFieldOptions) => {
 	const labelId = useId()
 	const anchorRef = useRef<HTMLDivElement>(null)
+	const segmentRef = useRef<HTMLDivElement>(null)
 
 	const { locale, focusedDate, setSelectedDate, ...calendarOptions } =
 		useCalendar(otherOptions)
@@ -40,6 +41,7 @@ export const useCalendarField = ({
 		locale,
 		labelId,
 		anchorRef,
+		segmentRef,
 		setOpen,
 		setSelectedDate: setSelectedDateAndClose,
 		focusedDate,

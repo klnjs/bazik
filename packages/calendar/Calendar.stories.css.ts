@@ -13,7 +13,7 @@ export const grid = style({
 })
 
 export const calendar = style({
-	width: 300,
+	width: 280,
 	display: 'flex',
 	flexDirection: 'column',
 	gap: 8
@@ -68,10 +68,10 @@ export const day = style({
 		},
 		'&[data-selected]': {
 			color: 'white',
-			background: 'blue'
+			background: '#96CBFE'
 		},
 		'&[data-highlighted]:focus-visible': {
-			outline: '1px solid blue',
+			outline: '1px solid #96CBFE',
 			outlineOffset: -1
 		}
 	}
@@ -89,7 +89,10 @@ export const input = style({
 	padding: 4,
 	alignItems: 'center',
 	border: '1px solid black',
-	borderRadius: 4
+	borderRadius: 4,
+	':focus-within': {
+		borderColor: '#96CBFE'
+	}
 })
 
 export const anchor = style({
@@ -98,12 +101,20 @@ export const anchor = style({
 
 export const segment = style({
 	textAlign: 'center',
+	fontSize: 14,
 	border: 0,
 	borderRadius: 4,
-	padding: 4,
+	paddingBlock: 2,
+	paddingInline: 4,
 	':focus-visible': {
-		outline: '1px solid blue',
+		outline: '1px solid #96CBFE',
 		outlineOffset: -1
+	},
+	selectors: {
+		'&[data-placeholder]': {
+			textIndent: 2,
+			letterSpacing: 2
+		}
 	}
 })
 
@@ -111,5 +122,7 @@ export const popover = style({
 	padding: 8,
 	background: 'white',
 	border: '1px solid black',
-	borderRadius: 4
+	borderRadius: 4,
+	boxShadow:
+		'rgba(14, 18, 22, 0.35) 0px 10px 38px -10px, rgba(14, 18, 22, 0.2) 0px 10px 20px -15px'
 })

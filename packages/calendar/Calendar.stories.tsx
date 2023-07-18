@@ -152,7 +152,9 @@ export const CalendarFieldWithPopover = () => (
 						)
 					}
 				</CalendarFieldSegments>
-				<CalendarFieldTrigger>🗓</CalendarFieldTrigger>
+				<CalendarFieldTrigger className={classes.button}>
+					🗓
+				</CalendarFieldTrigger>
 			</div>
 		</CalendarFieldAnchor>
 		<CalendarFieldPopover className={classes.popover}>

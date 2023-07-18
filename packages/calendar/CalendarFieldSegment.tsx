@@ -1,10 +1,14 @@
 import { useMemo, useCallback, type KeyboardEvent } from 'react'
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import {
+	freya,
+	forwardRef,
+	useForwardedRef,
+	type AsChildComponentProps
+} from '../core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
 	CalendarDate,
-	type CalendarDateMutation,
 	type CalendarDateSegmentStyle,
 	type CalendarDateSegmentTypeEditable
 } from './CalendarDate'
@@ -31,6 +35,7 @@ export const CalendarFieldSegment = forwardRef<
 			labelId,
 			minDate,
 			maxDate,
+			segmentRef,
 			selectedDate,
 			setSelectedDate,
 			focusedSegment,
@@ -72,23 +77,17 @@ export const CalendarFieldSegment = forwardRef<
 		const changeSegment = useCallback(
 			(
 				event: KeyboardEvent<HTMLDivElement>,
-				action: 'set' | 'add' | 'sub' | 'clear',
-				mutation: CalendarDateMutation = {}
+				change: (prev: CalendarDate) => CalendarDate | null
 			) => {
 				event.preventDefault()
 				setSelectedDate((prev) => {
-					if (action === 'clear') {
-						return null
-					}
+					const next = change(prev ?? new CalendarDate())
 
-					const base = prev ?? new CalendarDate()
-					const next = base[action](mutation)
-
-					if (minDate && next.isBefore(minDate)) {
+					if (minDate && next !== null && next.isBefore(minDate)) {
 						return minDate
 					}
 
-					if (maxDate && next.isAfter(maxDate)) {
+					if (maxDate && next !== null && next.isAfter(maxDate)) {
 						return maxDate
 					}
 
@@ -124,7 +123,7 @@ export const CalendarFieldSegment = forwardRef<
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
 				if (event.code === 'ArrowUp') {
-					changeSegment(event, 'add', { [type]: 1 })
+					changeSegment(event, (prev) => prev.add({ [type]: 1 }))
 				}
 
 				if (event.code === 'ArrowRight') {
@@ -132,7 +131,7 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeSegment(event, 'sub', { [type]: 1 })
+					changeSegment(event, (prev) => prev.sub({ [type]: 1 }))
 				}
 
 				if (event.code === 'ArrowLeft') {
@@ -140,7 +139,7 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (event.code === 'Backspace' || event.key === 'Delete') {
-					changeSegment(event, 'clear')
+					changeSegment(event, () => null)
 				}
 
 				if (/[0-9]/.test(event.key)) {
@@ -149,7 +148,7 @@ export const CalendarFieldSegment = forwardRef<
 					const intent = Number(`${now}${press}`)
 					const next = intent <= 31 ? intent : press
 
-					changeSegment(event, 'set', { [type]: next })
+					changeSegment(event, (prev) => prev.set({ [type]: next }))
 
 					if (String(next).length === length) {
 						changeFocusedSegment(event, 'next')
@@ -159,9 +158,11 @@ export const CalendarFieldSegment = forwardRef<
 			[type, value, length, changeSegment, changeFocusedSegment]
 		)
 
+		useForwardedRef(segmentRef, forwardedRef)
+
 		return (
 			<freya.div
-				ref={forwardedRef}
+				ref={isHighlighted ? segmentRef : forwardedRef}
 				role='spinbutton'
 				inputMode='numeric'
 				autoCorrect='off'
