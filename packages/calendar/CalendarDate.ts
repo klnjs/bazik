@@ -27,17 +27,22 @@ export type CalendarDateMutation = {
 	day?: number
 }
 
-export const isCalendarDateSegment = (
-	segment: object
-): segment is CalendarDateSegment =>
-	'type' in segment &&
-	calendarDateSegmentTypes.includes(segment.type as CalendarDateSegmentType)
-
 export class CalendarDate {
 	date: Date
+	locale: string
 
-	constructor(date?: Date) {
+	constructor(locale?: string, date?: Date) {
 		this.date = date ?? new Date()
+		this.locale = locale ?? navigator.language
+	}
+
+	static isValidSegment(segment: object): segment is CalendarDateSegment {
+		return (
+			'type' in segment &&
+			calendarDateSegmentTypes.includes(
+				segment.type as CalendarDateSegmentType
+			)
+		)
 	}
 
 	set({ year, month, day }: CalendarDateMutation) {
@@ -47,7 +52,7 @@ export class CalendarDate {
 		date.setMonth(month ? month - 1 : date.getMonth())
 		date.setDate(day ?? date.getDate())
 
-		return new CalendarDate(date)
+		return new CalendarDate(this.locale, date)
 	}
 
 	add(mutation: CalendarDateMutation) {
@@ -72,11 +77,11 @@ export class CalendarDate {
 		date.setMonth(date.getMonth() + month)
 		date.setDate(date.getDate() + day)
 
-		return new CalendarDate(date)
+		return new CalendarDate(this.locale, date)
 	}
 
 	clone() {
-		return new CalendarDate(this.getDate())
+		return new CalendarDate(this.locale, this.getDate())
 	}
 
 	clamp(min?: CalendarDate, max?: CalendarDate) {
@@ -91,12 +96,11 @@ export class CalendarDate {
 		return this
 	}
 
-	format(locale: string, options?: Intl.DateTimeFormatOptions) {
-		return this.getDate().toLocaleString(locale, options)
+	format(options?: Intl.DateTimeFormatOptions) {
+		return this.getDate().toLocaleString(this.locale, options)
 	}
 
 	formatRelative(
-		locale: string,
 		target: CalendarDate,
 		segment: CalendarDateSegmentTypeEditable,
 		options?: Intl.RelativeTimeFormatOptions
@@ -104,7 +108,7 @@ export class CalendarDate {
 		const diff = this.getDiff(target)
 		const segmentDiff = diff[segment]
 
-		return new Intl.RelativeTimeFormat(locale, options).format(
+		return new Intl.RelativeTimeFormat(this.locale, options).format(
 			segmentDiff,
 			segment
 		)
@@ -144,15 +148,19 @@ export class CalendarDate {
 		}
 	}
 
-	getSegments(locale: string, style: CalendarDateSegmentStyle = 'numeric') {
-		return new Intl.DateTimeFormat(locale, {
+	getLocale() {
+		return this.locale
+	}
+
+	getSegments(style: CalendarDateSegmentStyle = 'numeric') {
+		return new Intl.DateTimeFormat(this.locale, {
 			year: 'numeric',
 			month: style,
 			day: style
 		})
 			.formatToParts(this.getDate())
 			.reduce<CalendarDateSegment[]>((acc, part) => {
-				if (isCalendarDateSegment(part)) {
+				if (CalendarDate.isValidSegment(part)) {
 					acc.push(part)
 				}
 
@@ -161,34 +169,27 @@ export class CalendarDate {
 	}
 
 	getSegment(
-		locale: string,
 		type: CalendarDateSegmentType,
 		style?: CalendarDateSegmentStyle
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.getSegments(locale, style).find(
-			(segment) => segment.type === type
-		)!
+		return this.getSegments(style).find((segment) => segment.type === type)!
 	}
 
-	getSegmentByIndex(
-		locale: string,
-		index: number,
-		style?: CalendarDateSegmentStyle
-	) {
-		return this.getSegments(locale, style)[index]
+	getSegmentByIndex(index: number, style?: CalendarDateSegmentStyle) {
+		return this.getSegments(style)[index]
 	}
 
-	getFirstDateOfWeek(locale: string) {
-		return this.sub({ day: this.getWeekDay(locale) - 1 })
+	getFirstDateOfWeek() {
+		return this.sub({ day: this.getWeekDay() - 1 })
 	}
 
 	getFirstDateOfMonth() {
 		return this.set({ day: 1 })
 	}
 
-	getLastDateOfWeek(locale: string) {
-		return this.getFirstDateOfWeek(locale).add({ day: 7 })
+	getLastDateOfWeek() {
+		return this.getFirstDateOfWeek().add({ day: 7 })
 	}
 
 	getLastDateOfMonth() {
@@ -200,16 +201,17 @@ export class CalendarDate {
 		throw new Error('Not implemented')
 	}
 
-	getWeekDay(locale: string) {
+	getWeekDay() {
 		const firstDayOfWeek = (() => {
 			try {
 				// @ts-expect-error not in spec yet
 				// eslint-disable-next-line
-				return new Intl.Locale(locale).getWeekInfo().firstDay as number
+				return new Intl.Locale(this.locale).getWeekInfo()
+					.firstDay as number
 			} catch (error) {
 				if (
-					locale.toLowerCase() === 'en' ||
-					locale.toLowerCase() === 'en-US'
+					this.locale.toLowerCase() === 'en' ||
+					this.locale.toLowerCase() === 'en-US'
 				) {
 					return 7
 				}
@@ -219,13 +221,10 @@ export class CalendarDate {
 		})()
 
 		const dayOfWeek = this.getDate().getDay() || 7
-		const dayOfWeekLocalized = dayOfWeek - firstDayOfWeek + 1
+		const dayOfWeekIndex = dayOfWeek - firstDayOfWeek
+		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
-		if (dayOfWeekLocalized < 1) {
-			return dayOfWeekLocalized + 7
-		}
-
-		return dayOfWeekLocalized
+		return dayOfWeekIndex + dayOfWeekOffset
 	}
 
 	getDate() {
@@ -233,7 +232,7 @@ export class CalendarDate {
 	}
 
 	isToday() {
-		const today = new CalendarDate()
+		const today = new CalendarDate(this.locale)
 
 		return (
 			this.getYear() === today.getYear() &&
@@ -242,19 +241,19 @@ export class CalendarDate {
 		)
 	}
 
-	isWeekend(locale: string) {
-		const weekDay = this.getWeekDay(locale)
+	isWeekend() {
+		const weekDay = this.getWeekDay()
 		const weekendDaysInfo = (() => {
 			try {
 				// @ts-expect-error not in spec yet
 				// eslint-disable-next-line
-				return new Intl.Locale(locale).getWeekInfo()
+				return new Intl.Locale(this.locale).getWeekInfo()
 					.weekendInfo as number[]
 			} catch (error) {
 				// Find a way to polyfill this
 				if (
-					locale.toLowerCase() === 'en' ||
-					locale.toLowerCase() === 'en-US'
+					this.locale.toLowerCase() === 'en' ||
+					this.locale.toLowerCase() === 'en-US'
 				) {
 					return [1, 7]
 				}
@@ -290,10 +289,3 @@ export class CalendarDate {
 		return this.getYear() === date.getYear()
 	}
 }
-
-// const today = new CalendarDate()
-// const todayLastDayOfMonth = today.getLastDateOfMonth()
-// const todayLastDayOfWeek = todayLastDayOfMonth.getLastDateOfWeek('da')
-
-// console.log(todayLastDayOfMonth)
-// console.log(todayLastDayOfWeek)

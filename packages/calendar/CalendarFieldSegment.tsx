@@ -53,13 +53,12 @@ export const CalendarFieldSegment = forwardRef<
 
 		const localisation = useCalendarLocalisation(locale)
 		const length = useMemo(
-			() =>
-				new CalendarDate().getSegment(locale, type, mode).value.length,
+			() => new CalendarDate(locale).getSegment(type, mode).value.length,
 			[locale, type, mode]
 		)
 
 		const value = selectedDate?.get(type)
-		const valueText = selectedDate?.format(locale, {
+		const valueText = selectedDate?.format({
 			year: 'numeric',
 			month: 'long',
 			weekday: 'long',
@@ -71,8 +70,8 @@ export const CalendarFieldSegment = forwardRef<
 				return ''.padStart(length, placeholder)
 			}
 
-			return selectedDate.getSegment(locale, type, mode).value
-		}, [locale, mode, type, length, placeholder, selectedDate])
+			return selectedDate.getSegment(type, mode).value
+		}, [mode, type, length, placeholder, selectedDate])
 
 		const changeSegment = useCallback(
 			(
@@ -80,9 +79,11 @@ export const CalendarFieldSegment = forwardRef<
 				action: (prev: CalendarDate) => CalendarDate | null
 			) => {
 				event.preventDefault()
-				setSelectedDate((prev) => action(prev ?? new CalendarDate()))
+				setSelectedDate((prev) =>
+					action(prev ?? new CalendarDate(locale))
+				)
 			},
-			[setSelectedDate]
+			[locale, setSelectedDate]
 		)
 
 		const changeFocusedSegment = useCallback(

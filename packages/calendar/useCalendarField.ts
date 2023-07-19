@@ -24,8 +24,7 @@ export const useCalendarField = ({
 	const [open, setOpen] = useState(defaultOpen)
 
 	const [focusedSegment, setFocusedSegment] = useState(
-		focusedDate.getSegmentByIndex(locale, 0)
-			.type as CalendarDateSegmentTypeEditable
+		focusedDate.getSegmentByIndex(0).type as CalendarDateSegmentTypeEditable
 	)
 
 	const setSelectedDateAndClose = useCallback(

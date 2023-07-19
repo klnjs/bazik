@@ -1,10 +1,4 @@
-import {
-	useRef,
-	useEffect,
-	useCallback,
-	type MouseEvent,
-	type KeyboardEvent
-} from 'react'
+import { useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
 import {
 	freya,
 	forwardRef,
@@ -15,7 +9,7 @@ import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
 
 export type CalendarDayProps = AsChildComponentProps<
-	'div',
+	'button',
 	{
 		date: CalendarDate
 		disabled?: boolean
@@ -24,20 +18,10 @@ export type CalendarDayProps = AsChildComponentProps<
 	}
 >
 
-export const CalendarDay = forwardRef<'div', CalendarDayProps>(
-	(
-		{
-			date,
-			disabled,
-			disabledOnOverflow = true,
-			disabledOnWeekend,
-			...otherProps
-		},
-		forwardedRef
-	) => {
-		const ref = useRef<HTMLDivElement>(null)
+export const CalendarDay = forwardRef<'button', CalendarDayProps>(
+	({ date, disabled, ...otherProps }, forwardedRef) => {
+		const ref = useRef<HTMLButtonElement>(null)
 		const {
-			locale,
 			minDate,
 			maxDate,
 			focusedDate,
@@ -49,18 +33,13 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isToday = date.isToday()
 		const isAfter = Boolean(maxDate && date.isAfter(maxDate))
 		const isBefore = Boolean(minDate && date.isBefore(minDate))
-		const isWeekend = date.isWeekend(locale)
+		const isWeekend = date.isWeekend()
 		const isSelected = Boolean(selectedDate && date.isSameDay(selectedDate))
 		const isOverflow = !date.isSameMonth(focusedDate)
 		const isHighlighted = date.isSameDay(focusedDate)
-		const isDisabled =
-			disabled ||
-			(disabledOnWeekend && isWeekend) ||
-			(disabledOnOverflow && isOverflow) ||
-			isAfter ||
-			isBefore
+		const isDisabled = disabled ?? (isAfter || isBefore)
 
-		const formatted = date.format(locale, {
+		const formatted = date.format({
 			year: 'numeric',
 			month: 'long',
 			weekday: 'long',
@@ -70,98 +49,66 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		// Uncertain how this works in different locales, due to
 		// the concatenation of the two labels.
 		const label = isToday
-			? `${date.formatRelative(locale, date, 'day', {
+			? `${date.formatRelative(date, 'day', {
 					numeric: 'auto'
 			  })}, ${formatted}`
 			: formatted
 
-		const changeDate = useCallback(
-			(
-				event:
-					| KeyboardEvent<HTMLDivElement>
-					| MouseEvent<HTMLDivElement>
-			) => {
-				if (!isDisabled) {
-					event.preventDefault()
-					setFocusedDate(date)
-					setSelectedDate(date)
-				}
-			},
-			[date, isDisabled, setFocusedDate, setSelectedDate]
-		)
-
-		const changeFocusedDate = useCallback(
-			(
-				event: KeyboardEvent<HTMLDivElement>,
-				change: (prev: CalendarDate) => CalendarDate
-			) => {
-				event.preventDefault()
-				setFocusedDate((prev) => {
-					const next = change(prev)
-
-					if (minDate && next.isBefore(minDate)) {
-						return minDate
-					}
-
-					if (maxDate && next.isAfter(maxDate)) {
-						return maxDate
-					}
-
-					return next
-				})
-			},
-			[minDate, maxDate, setFocusedDate]
-		)
-
-		const handleClick = changeDate
+		const handleClick = useCallback(() => {
+			if (!isDisabled) {
+				setFocusedDate(date)
+				setSelectedDate(date)
+			}
+		}, [date, isDisabled, setFocusedDate, setSelectedDate])
 
 		const handleKeyDown = useCallback(
-			(event: KeyboardEvent<HTMLDivElement>) => {
+			(event: KeyboardEvent<HTMLButtonElement>) => {
+				if (event.code !== 'Tab') {
+					event.preventDefault()
+				}
+
 				if (event.code === 'Enter' || event.code === 'Space') {
-					changeDate(event)
+					handleClick()
 				}
 
 				if (event.code === 'ArrowUp') {
-					changeFocusedDate(event, (prev) => prev.sub({ day: 7 }))
+					setFocusedDate((prev) => prev.sub({ day: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					changeFocusedDate(event, (prev) => prev.add({ day: 1 }))
+					setFocusedDate((prev) => prev.add({ day: 1 }))
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeFocusedDate(event, (prev) => prev.add({ day: 7 }))
+					setFocusedDate((prev) => prev.add({ day: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					changeFocusedDate(event, (prev) => prev.sub({ day: 1 }))
+					setFocusedDate((prev) => prev.sub({ day: 1 }))
 				}
 
 				if (event.code === 'PageUp') {
-					changeFocusedDate(event, (prev) => prev.sub({ month: 1 }))
+					setFocusedDate((prev) => prev.sub({ month: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					changeFocusedDate(event, (prev) => prev.add({ month: 1 }))
+					setFocusedDate((prev) => prev.add({ month: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					changeFocusedDate(event, (prev) =>
-						prev.getFirstDateOfMonth()
-					)
+					setFocusedDate((prev) => prev.getFirstDateOfMonth())
 				}
 
 				if (event.code === 'End') {
-					changeFocusedDate(event, (prev) =>
-						prev.getLastDateOfMonth()
-					)
+					setFocusedDate((prev) => prev.getLastDateOfMonth())
 				}
 			},
-			[changeDate, changeFocusedDate]
+			[setFocusedDate, handleClick]
 		)
 
 		useForwardedRef(ref, forwardedRef)
 
+		// This currently grabs focus at incorrect times
 		useEffect(() => {
 			if (isHighlighted) {
 				ref.current?.focus({
@@ -173,16 +120,15 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		}, [isHighlighted])
 
 		return (
-			<freya.div
+			<freya.button
 				ref={ref}
-				role='button'
 				tabIndex={isHighlighted ? 0 : -1}
 				data-today={isToday ? '' : undefined}
 				data-weekend={isWeekend ? '' : undefined}
 				data-overflow={isOverflow ? '' : undefined}
-				data-selected={isSelected ? '' : undefined}
 				data-disabled={isDisabled ? '' : undefined}
 				data-highlighted={isHighlighted ? '' : undefined}
+				data-selected={isSelected ? '' : undefined}
 				aria-label={label}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}

@@ -12,6 +12,12 @@ export const grid = style({
 	gap: 4
 })
 
+export const gridWithoutWeekend = style({
+	display: 'grid',
+	gridTemplateColumns: 'repeat(5, 1fr)',
+	gap: 4
+})
+
 export const calendar = style({
 	width: 280,
 	display: 'flex',
@@ -23,7 +29,8 @@ export const header = style({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	gap: 8
+	gap: 8,
+	height: 24
 })
 
 export const nav = style({
@@ -41,41 +48,70 @@ export const button = style({
 	justifyContent: 'center'
 })
 
-export const day = style({
+export const cell = style({
 	appearance: 'none',
 	aspectRatio: '1 / 1',
 	display: 'flex',
+	fontFamily: 'inherit',
+	fontSize: 12,
 	alignItems: 'center',
 	justifyContent: 'center',
-	cursor: 'pointer',
 	userSelect: 'none',
 	border: 0,
 	borderRadius: 4,
-	background: 'none',
-	selectors: {
-		'&[data-today]': {
-			fontWeight: 'bold'
-		},
-		'&[data-disabled]': {
-			cursor: 'default',
-			opacity: 0.2
-		},
-		'&[data-weekend]': {
-			color: 'red'
-		},
-		'&[data-overflow]': {
-			visibility: 'hidden'
-		},
-		'&[data-selected]': {
-			color: 'white',
-			background: '#96CBFE'
-		},
-		'&[data-highlighted]:focus-visible': {
-			outline: '1px solid #96CBFE',
-			outlineOffset: -1
+	background: 'none'
+})
+
+export const day = style([
+	cell,
+	{
+		cursor: 'pointer',
+		selectors: {
+			'&[data-today]': {
+				fontWeight: 'bold'
+			},
+			'&[data-disabled]': {
+				cursor: 'default',
+				opacity: 0.4
+			},
+			'&[data-weekend]': {
+				color: 'orange'
+			},
+			'&[data-overflow]': {
+				visibility: 'hidden'
+			},
+			'&[data-selected]': {
+				color: 'white',
+				background: 'blue'
+			},
+			'&[data-highlighted]:focus-visible': {
+				outline: '1px solid blue',
+				outlineOffset: -1
+			}
 		}
 	}
-})
+])
+
+export const dayWithOverflowVisible = style([
+	day,
+	{
+		selectors: {
+			'&[data-overflow]': {
+				opacity: 0.4,
+				visibility: 'visible'
+			}
+		}
+	}
+])
+
+export const weekday = style([
+	cell,
+	{
+		display: 'inline-flex',
+		gap: 6,
+		flexDirection: 'column'
+	}
+])
 
 export const field = style({
 	display: 'inline-flex',
@@ -86,7 +122,8 @@ export const field = style({
 export const input = style({
 	display: 'inline-flex',
 	gap: 2,
-	padding: 4,
+	height: 42,
+	paddingInline: 8,
 	alignItems: 'center',
 	border: '1px solid black',
 	borderRadius: 4,

@@ -9,12 +9,9 @@ export type CalendarFieldSegmentsProps = {
 export const CalendarFieldSegments = ({
 	children
 }: CalendarFieldSegmentsProps) => {
-	const { locale, focusedDate } = useCalendarFieldContext()
+	const { focusedDate } = useCalendarFieldContext()
 
-	const segments = useMemo(
-		() => focusedDate.getSegments(locale),
-		[locale, focusedDate]
-	)
+	const segments = useMemo(() => focusedDate.getSegments(), [focusedDate])
 
 	return segments.map(children)
 }

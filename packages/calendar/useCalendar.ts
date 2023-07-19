@@ -22,23 +22,24 @@ export const useCalendar = ({
 	onChange
 }: UseCalendarOptions) => {
 	const minDate = useMemo(
-		() => (min ? new CalendarDate(min) : undefined),
-		[min]
+		() => (min ? new CalendarDate(locale, min) : undefined),
+		[locale, min]
 	)
 
 	const maxDate = useMemo(
-		() => (max ? new CalendarDate(max) : undefined),
-		[max]
+		() => (max ? new CalendarDate(locale, max) : undefined),
+		[locale, max]
 	)
 
 	const [focusedDate, setFocusedDate] = useState(
-		new CalendarDate(defaultFocused ?? value ?? undefined)
+		() => new CalendarDate(locale, defaultFocused ?? value ?? undefined)
 	)
 
 	const setFocusedDateClamp = useCallback(
 		(action: SetStateAction<CalendarDate>) => {
 			setFocusedDate((prev) => {
-				const next = typeof action === 'function' ? action(prev) : prev
+				const next =
+					typeof action === 'function' ? action(prev) : action
 
 				return next.clamp(minDate, maxDate)
 			})
@@ -48,10 +49,14 @@ export const useCalendar = ({
 
 	const [selectedDate, setSelectedDate] =
 		useControllableState<CalendarDate | null>({
-			value: value instanceof Date ? new CalendarDate(value) : value,
+			value:
+				value instanceof Date ? new CalendarDate(locale, value) : value,
 			defaultValue:
 				defaultValue instanceof Date
-					? new CalendarDate(defaultValue).clamp(minDate, maxDate)
+					? new CalendarDate(locale, defaultValue).clamp(
+							minDate,
+							maxDate
+					  )
 					: defaultValue,
 			onChange: (newValue) => onChange?.(newValue?.getDate() ?? null)
 		})
@@ -59,7 +64,8 @@ export const useCalendar = ({
 	const setSelectedDateClamp = useCallback(
 		(action: SetStateAction<CalendarDate | null>) => {
 			setSelectedDate((prev) => {
-				const next = typeof action === 'function' ? action(prev) : prev
+				const next =
+					typeof action === 'function' ? action(prev) : action
 
 				return next ? next.clamp(minDate, maxDate) : null
 			})

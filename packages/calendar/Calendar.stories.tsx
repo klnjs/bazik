@@ -23,6 +23,28 @@ export const Calendar = () => (
 	<CalendarRoot className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
+		</div>
+
+		<div className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
+
+export const CalendarWithNavigation = () => (
+	<CalendarRoot className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
 
 			<div className={classes.nav}>
 				<CalendarButton action='year-1' className={classes.button}>
@@ -30,6 +52,9 @@ export const Calendar = () => (
 				</CalendarButton>
 				<CalendarButton action='month-1' className={classes.button}>
 					‹
+				</CalendarButton>
+				<CalendarButton action='today' className={classes.button}>
+					·
 				</CalendarButton>
 				<CalendarButton action='month+1' className={classes.button}>
 					›
@@ -44,7 +69,7 @@ export const Calendar = () => (
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
-						key={date.format('da')}
+						key={date.format()}
 						date={date}
 						className={classes.day}
 					>
@@ -56,13 +81,51 @@ export const Calendar = () => (
 	</CalendarRoot>
 )
 
-export const CalendarWithMinMax = () => {
+export const CalendarWithWeekdays = () => (
+	<CalendarRoot className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='month-1' className={classes.button}>
+					‹
+				</CalendarButton>
+				<CalendarButton action='month+1' className={classes.button}>
+					›
+				</CalendarButton>
+			</div>
+		</div>
+
+		<div className={classes.grid}>
+			<CalendarDays rows={1}>
+				{(date) => (
+					<div key={date.getTime()} className={classes.weekday}>
+						{date.format({ weekday: 'short' })}
+					</div>
+				)}
+			</CalendarDays>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.getTime()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
+
+export const CalendarWithBoundaries = () => {
 	const today = new Date()
 
 	const min = new Date(
 		today.getFullYear(),
-		today.getMonth() - 1,
-		today.getDate()
+		today.getMonth(),
+		today.getDate() - 3
 	)
 
 	const max = new Date(
@@ -77,17 +140,11 @@ export const CalendarWithMinMax = () => {
 				<CalendarTitle className={classes.title} />
 
 				<div className={classes.nav}>
-					<CalendarButton action='year-1' className={classes.button}>
-						«
-					</CalendarButton>
 					<CalendarButton action='month-1' className={classes.button}>
 						‹
 					</CalendarButton>
 					<CalendarButton action='month+1' className={classes.button}>
 						›
-					</CalendarButton>
-					<CalendarButton action='year+1' className={classes.button}>
-						»
 					</CalendarButton>
 				</div>
 			</div>
@@ -96,7 +153,7 @@ export const CalendarWithMinMax = () => {
 				<CalendarDays>
 					{(date) => (
 						<CalendarDay
-							key={date.format('da')}
+							key={date.format()}
 							date={date}
 							className={classes.day}
 						>
@@ -108,6 +165,101 @@ export const CalendarWithMinMax = () => {
 		</CalendarRoot>
 	)
 }
+
+export const CalendarWithDisabled = () => (
+	<CalendarRoot className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='month-1' className={classes.button}>
+					‹
+				</CalendarButton>
+
+				<CalendarButton action='month+1' className={classes.button}>
+					›
+				</CalendarButton>
+			</div>
+		</div>
+
+		<div className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						disabled={date.isWeekend()}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
+
+export const CalendarWithOverflow = () => (
+	<CalendarRoot className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='month-1' className={classes.button}>
+					‹
+				</CalendarButton>
+				<CalendarButton action='month+1' className={classes.button}>
+					›
+				</CalendarButton>
+			</div>
+		</div>
+
+		<div className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						className={classes.dayWithOverflowVisible}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
+
+export const CalendarWithoutWeekend = () => (
+	<CalendarRoot className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='month-1' className={classes.button}>
+					‹
+				</CalendarButton>
+				<CalendarButton action='month+1' className={classes.button}>
+					›
+				</CalendarButton>
+			</div>
+		</div>
+
+		<div className={classes.gridWithoutWeekend}>
+			<CalendarDays filter={(date) => !date.isWeekend()}>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
 
 export const CalendarField = () => (
 	<CalendarFieldRoot className={classes.field}>
@@ -164,12 +316,6 @@ export const CalendarFieldWithPopover = () => (
 
 					<div className={classes.nav}>
 						<CalendarButton
-							action='year-1'
-							className={classes.button}
-						>
-							«
-						</CalendarButton>
-						<CalendarButton
 							action='month-1'
 							className={classes.button}
 						>
@@ -181,12 +327,6 @@ export const CalendarFieldWithPopover = () => (
 						>
 							›
 						</CalendarButton>
-						<CalendarButton
-							action='year+1'
-							className={classes.button}
-						>
-							»
-						</CalendarButton>
 					</div>
 				</div>
 
@@ -194,7 +334,7 @@ export const CalendarFieldWithPopover = () => (
 					<CalendarDays>
 						{(date) => (
 							<CalendarDay
-								key={date.format('da')}
+								key={date.format()}
 								date={date}
 								className={classes.day}
 							>
