@@ -251,7 +251,7 @@ export const CalendarWithoutWeekend = () => (
 					<CalendarDay
 						key={date.format()}
 						date={date}
-						className={classes.day}
+						className={classes.dayWithOverflowVisible}
 					>
 						{date.getDay()}
 					</CalendarDay>
