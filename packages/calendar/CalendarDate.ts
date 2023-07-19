@@ -79,6 +79,18 @@ export class CalendarDate {
 		return new CalendarDate(this.getDate())
 	}
 
+	clamp(min?: CalendarDate, max?: CalendarDate) {
+		if (min && this.isBefore(min)) {
+			return min.clone()
+		}
+
+		if (max && this.isAfter(max)) {
+			return max.clone()
+		}
+
+		return this
+	}
+
 	format(locale: string, options?: Intl.DateTimeFormatOptions) {
 		return this.getDate().toLocaleString(locale, options)
 	}

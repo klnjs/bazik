@@ -1,9 +1,5 @@
 Notes
-	- Settle on an API when composing the parts.
-	  - Whats the best way to handle literal segments?
 	- Implement popover functionality.
-	- Maybe don't allow asChild on root element? (Seen on Radix)
-	- Maybe move all the min / max checking into the state hook / Date class?
 	- Should we use utility functions instead of CalendarDate class?
 
 

@@ -39,19 +39,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		}, [segment, no, maxDate, minDate, focusedDate])
 
 		const onClick = () =>
-			setFocusedDate((prev) => {
-				const next = prev.calc({ [segment]: Number(no) })
-
-				if (minDate && next.isBefore(minDate)) {
-					return minDate
-				}
-
-				if (maxDate && next.isAfter(maxDate)) {
-					return maxDate
-				}
-
-				return next
-			})
+			setFocusedDate((prev) => prev.calc({ [segment]: Number(no) }))
 
 		return (
 			<freya.button

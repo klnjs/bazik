@@ -29,9 +29,9 @@ export const useCalendarField = ({
 	)
 
 	const setSelectedDateAndClose = useCallback(
-		(dispatch: SetStateAction<CalendarDate | null>) => {
+		(action: SetStateAction<CalendarDate | null>) => {
 			setOpen(false)
-			setSelectedDate(dispatch)
+			setSelectedDate(action)
 		},
 		[setOpen, setSelectedDate]
 	)

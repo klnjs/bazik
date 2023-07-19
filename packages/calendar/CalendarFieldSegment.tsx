@@ -77,24 +77,12 @@ export const CalendarFieldSegment = forwardRef<
 		const changeSegment = useCallback(
 			(
 				event: KeyboardEvent<HTMLDivElement>,
-				change: (prev: CalendarDate) => CalendarDate | null
+				action: (prev: CalendarDate) => CalendarDate | null
 			) => {
 				event.preventDefault()
-				setSelectedDate((prev) => {
-					const next = change(prev ?? new CalendarDate())
-
-					if (minDate && next !== null && next.isBefore(minDate)) {
-						return minDate
-					}
-
-					if (maxDate && next !== null && next.isAfter(maxDate)) {
-						return maxDate
-					}
-
-					return next
-				})
+				setSelectedDate((prev) => action(prev ?? new CalendarDate()))
 			},
-			[minDate, maxDate, setSelectedDate]
+			[setSelectedDate]
 		)
 
 		const changeFocusedSegment = useCallback(
@@ -176,6 +164,7 @@ export const CalendarFieldSegment = forwardRef<
 				contentEditable={true}
 				tabIndex={isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
+				// data-length={length} This would be really usefull for CSS width: 'attr(data-length ch)',
 				data-segment={type}
 				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(type)}

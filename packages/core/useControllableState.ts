@@ -53,5 +53,8 @@ export const useControllableState = <T>({
 		}
 	}, [isControlled])
 
+	// Would be nice to be able to tell eslint that these values
+	// are reference safe, when using this hook.
+	// Issue: https://github.com/facebook/react/issues/16873
 	return [value, setValue] as [T, Dispatch<SetStateAction<T>>]
 }
