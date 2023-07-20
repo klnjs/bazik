@@ -70,7 +70,7 @@ export const day = style([
 			'&[data-today]': {
 				fontWeight: 'bold'
 			},
-			'&[data-focused]': {
+			'&[data-focused]:focus-visible': {
 				outline: '1px solid blue',
 				outlineOffset: -1
 			},

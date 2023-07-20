@@ -1,4 +1,10 @@
-import { useMemo, useState, useCallback, type SetStateAction } from 'react'
+import {
+	useRef,
+	useMemo,
+	useState,
+	useCallback,
+	type SetStateAction
+} from 'react'
 import { useControllableState } from '../core'
 import { CalendarDate } from './CalendarDate'
 
@@ -14,7 +20,7 @@ export type UseCalendarOptions = {
 }
 
 export const useCalendar = ({
-	autoFocus,
+	autoFocus: autoFocusProp = false,
 	min,
 	max,
 	value,
@@ -23,6 +29,12 @@ export const useCalendar = ({
 	defaultFocused,
 	onChange
 }: UseCalendarOptions) => {
+	const autoFocusRef = useRef(autoFocusProp)
+
+	const setAutoFocus = (autoFocus: boolean) => {
+		autoFocusRef.current = autoFocus
+	}
+
 	const minDate = useMemo(
 		() => (min ? new CalendarDate(locale, min) : undefined),
 		[locale, min]
@@ -38,7 +50,8 @@ export const useCalendar = ({
 	)
 
 	const setFocusedDateClamp = useCallback(
-		(action: SetStateAction<CalendarDate>) => {
+		(action: SetStateAction<CalendarDate>, autoFocus = false) => {
+			setAutoFocus(autoFocus)
 			setFocusedDate((prev) => {
 				const next =
 					typeof action === 'function' ? action(prev) : action
@@ -79,7 +92,8 @@ export const useCalendar = ({
 		locale,
 		minDate,
 		maxDate,
-		autoFocus,
+		autoFocus: autoFocusRef.current,
+		setAutoFocus,
 		focusedDate,
 		setFocusedDate: setFocusedDateClamp,
 		selectedDate,

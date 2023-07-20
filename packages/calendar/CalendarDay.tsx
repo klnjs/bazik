@@ -1,4 +1,4 @@
-import { useCallback, type KeyboardEvent, useEffect } from 'react'
+import { useEffect, useCallback, type KeyboardEvent } from 'react'
 import {
 	freya,
 	forwardRef,
@@ -20,11 +20,12 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 	({ date, disabled, ...otherProps }, forwardedRef) => {
 		const {
 			autoFocus,
+			setAutoFocus,
 			minDate,
 			maxDate,
 			focusedDate,
-			selectedDate,
 			setFocusedDate,
+			selectedDate,
 			setSelectedDate
 		} = useCalendarContext()
 
@@ -71,56 +72,56 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					setFocusedDate((prev) => prev.sub({ day: 7 }))
+					setFocusedDate((prev) => prev.sub({ day: 7 }), true)
 				}
 
 				if (event.code === 'ArrowRight') {
-					setFocusedDate((prev) => prev.add({ day: 1 }))
+					setFocusedDate((prev) => prev.add({ day: 1 }), true)
 				}
 
 				if (event.code === 'ArrowDown') {
-					setFocusedDate((prev) => prev.add({ day: 7 }))
+					setFocusedDate((prev) => prev.add({ day: 7 }), true)
 				}
 
 				if (event.key === 'ArrowLeft') {
-					setFocusedDate((prev) => prev.sub({ day: 1 }))
+					setFocusedDate((prev) => prev.sub({ day: 1 }), true)
 				}
 
 				if (event.code === 'PageUp') {
-					setFocusedDate((prev) => prev.sub({ month: 1 }))
+					setFocusedDate((prev) => prev.sub({ month: 1 }), true)
 				}
 
 				if (event.code === 'PageDown') {
-					setFocusedDate((prev) => prev.add({ month: 1 }))
+					setFocusedDate((prev) => prev.add({ month: 1 }), true)
 				}
 
 				if (event.code === 'Home') {
-					setFocusedDate((prev) => prev.getFirstDateOfMonth())
+					setFocusedDate((prev) => prev.getFirstDateOfMonth(), true)
 				}
 
 				if (event.code === 'End') {
-					setFocusedDate((prev) => prev.getLastDateOfMonth())
+					setFocusedDate((prev) => prev.getLastDateOfMonth(), true)
 				}
 			},
-			[setFocusedDate, handleClick]
+			[handleClick, setFocusedDate]
 		)
 
 		// This currently grabs focus at incorrect times
 		useEffect(() => {
-			if (isFocused) {
+			if (isFocused && autoFocus) {
+				setAutoFocus(false)
 				ref.current?.focus({
 					// @ts-expect-error not yet implemented
 					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
 					focusVisible: true
 				})
 			}
-		}, [ref, isFocused])
+		}, [ref, isFocused, autoFocus, setAutoFocus])
 
 		return (
 			<freya.button
 				ref={ref}
 				tabIndex={isFocused ? 0 : -1}
-				autoFocus={isFocused && autoFocus ? true : undefined}
 				data-today={isToday ? '' : undefined}
 				data-focused={isFocused ? '' : undefined}
 				data-weekend={isWeekend ? '' : undefined}

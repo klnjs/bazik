@@ -47,17 +47,15 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			return l && t[i](l)
 		}, [segment, modifier, maxDate, minDate, focusedDate])
 
-		const onClick = useCallback(
-			() =>
-				setFocusedDate((prev) => {
-					if (segment === 'today') {
-						return new CalendarDate(locale)
-					}
+		const onClick = useCallback(() => {
+			setFocusedDate((prev) => {
+				if (segment === 'today') {
+					return new CalendarDate(locale)
+				}
 
-					return prev.calc({ [segment]: Number(modifier) })
-				}),
-			[locale, segment, modifier, setFocusedDate]
-		)
+				return prev.calc({ [segment]: Number(modifier) })
+			})
+		}, [locale, segment, modifier, setFocusedDate])
 
 		return (
 			<freya.button
