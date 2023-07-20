@@ -57,6 +57,7 @@ export const CalendarFieldSegment = forwardRef<
 			[locale, type, mode]
 		)
 
+		const ref = useForwardedRef(forwardedRef, segmentRef)
 		const value = selectedDate?.get(type)
 		const valueText = selectedDate?.format({
 			year: 'numeric',
@@ -147,11 +148,9 @@ export const CalendarFieldSegment = forwardRef<
 			[type, value, length, changeSegment, changeFocusedSegment]
 		)
 
-		useForwardedRef(segmentRef, forwardedRef)
-
 		return (
 			<freya.div
-				ref={isHighlighted ? segmentRef : forwardedRef}
+				ref={ref}
 				role='spinbutton'
 				inputMode='numeric'
 				autoCorrect='off'

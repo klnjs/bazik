@@ -50,7 +50,7 @@ export const Popover = forwardRef<'div', PopoverProps>(
 		forwardedRef
 	) => {
 		const id = useId(idProp)
-		const ref = useRef<HTMLDivElement>(null)
+		const ref = useForwardedRef(forwardedRef)
 		const [position, setPosition] = useState<CSSProperties>({
 			position: 'fixed',
 			insetBlockStart: 0,
@@ -65,8 +65,6 @@ export const Popover = forwardRef<'div', PopoverProps>(
 			enabled: open && closeOnClickOutside
 		})
 
-		useForwardedRef(ref, forwardedRef)
-
 		useLayoutEffect(() => {
 			const popover = ref.current
 
@@ -75,7 +73,7 @@ export const Popover = forwardRef<'div', PopoverProps>(
 					getPosition(popover, anchor, anchorOrigin, anchorAlignment)
 				)
 			}
-		}, [open, anchor, anchorOrigin, anchorAlignment])
+		}, [ref, open, anchor, anchorOrigin, anchorAlignment])
 
 		if (!open) {
 			return null

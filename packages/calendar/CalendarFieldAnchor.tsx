@@ -12,7 +12,7 @@ export const CalendarFieldAnchor = forwardRef<'div', CalendarFieldAnchorProps>(
 	(props, forwardedRef) => {
 		const { anchorRef } = useCalendarFieldContext()
 
-		useForwardedRef(anchorRef, forwardedRef)
+		useForwardedRef(forwardedRef, anchorRef)
 
 		return <freya.div ref={anchorRef} {...props} />
 	}

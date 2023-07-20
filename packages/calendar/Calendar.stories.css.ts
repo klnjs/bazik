@@ -70,9 +70,9 @@ export const day = style([
 			'&[data-today]': {
 				fontWeight: 'bold'
 			},
-			'&[data-disabled]': {
-				cursor: 'default',
-				opacity: 0.4
+			'&[data-focused]': {
+				outline: '1px solid blue',
+				outlineOffset: -1
 			},
 			'&[data-weekend]': {
 				color: 'orange'
@@ -84,9 +84,9 @@ export const day = style([
 				color: 'white',
 				background: 'blue'
 			},
-			'&[data-highlighted]:focus-visible': {
-				outline: '1px solid blue',
-				outlineOffset: -1
+			'&[data-disabled]': {
+				cursor: 'default',
+				opacity: 0.4
 			}
 		}
 	}

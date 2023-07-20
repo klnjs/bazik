@@ -8,6 +8,7 @@ export type CalendarProps = AsChildComponentProps<'div', UseCalendarOptions>
 export const Calendar = forwardRef<'div', CalendarProps>(
 	(
 		{
+			autoFocus,
 			min,
 			max,
 			value,
@@ -21,6 +22,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 	) => {
 		const field = useCalendarFieldContext({ strict: false })
 		const calendar = useCalendar({
+			autoFocus,
 			min,
 			max,
 			value,

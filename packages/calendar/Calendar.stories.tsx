@@ -20,7 +20,7 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Calendar = () => (
-	<CalendarRoot className={classes.calendar}>
+	<CalendarRoot autoFocus={true} className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
 		</div>

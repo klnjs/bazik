@@ -3,6 +3,7 @@ import { useControllableState } from '../core'
 import { CalendarDate } from './CalendarDate'
 
 export type UseCalendarOptions = {
+	autoFocus?: boolean
 	min?: Date
 	max?: Date
 	value?: Date | null
@@ -13,6 +14,7 @@ export type UseCalendarOptions = {
 }
 
 export const useCalendar = ({
+	autoFocus,
 	min,
 	max,
 	value,
@@ -77,6 +79,7 @@ export const useCalendar = ({
 		locale,
 		minDate,
 		maxDate,
+		autoFocus,
 		focusedDate,
 		setFocusedDate: setFocusedDateClamp,
 		selectedDate,

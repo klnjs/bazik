@@ -1,14 +1,19 @@
-import { useImperativeHandle, type ForwardedRef, type RefObject } from 'react'
+import {
+	useRef,
+	useImperativeHandle,
+	type ForwardedRef,
+	type RefObject
+} from 'react'
 
 export const useForwardedRef = <T>(
-	ref: RefObject<T>,
-	forwardedRef: ForwardedRef<T>
+	forwardedRef: ForwardedRef<T>,
+	ref?: RefObject<T>
 ) => {
-	// https://github.com/facebook/react/issues/16873
-	// const ref = useRef(initialValue)
+	const refInner = useRef<T>(null)
+	const refToUse = ref ?? refInner
 
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	useImperativeHandle(forwardedRef, () => ref.current!)
+	useImperativeHandle(forwardedRef, () => refToUse.current!)
 
-	// return ref
+	return refToUse
 }

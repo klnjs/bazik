@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
+import { useCallback, type KeyboardEvent, useEffect } from 'react'
 import {
 	freya,
 	forwardRef,
@@ -13,15 +13,13 @@ export type CalendarDayProps = AsChildComponentProps<
 	{
 		date: CalendarDate
 		disabled?: boolean
-		disabledOnWeekend?: boolean
-		disabledOnOverflow?: boolean
 	}
 >
 
 export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 	({ date, disabled, ...otherProps }, forwardedRef) => {
-		const ref = useRef<HTMLButtonElement>(null)
 		const {
+			autoFocus,
 			minDate,
 			maxDate,
 			focusedDate,
@@ -34,11 +32,12 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const isAfter = Boolean(maxDate && date.isAfter(maxDate))
 		const isBefore = Boolean(minDate && date.isBefore(minDate))
 		const isWeekend = date.isWeekend()
+		const isFocused = date.isSameDay(focusedDate)
 		const isSelected = Boolean(selectedDate && date.isSameDay(selectedDate))
 		const isOverflow = !date.isSameMonth(focusedDate)
-		const isHighlighted = date.isSameDay(focusedDate)
 		const isDisabled = disabled ?? (isAfter || isBefore)
 
+		const ref = useForwardedRef(forwardedRef)
 		const formatted = date.format({
 			year: 'numeric',
 			month: 'long',
@@ -106,28 +105,27 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			[setFocusedDate, handleClick]
 		)
 
-		useForwardedRef(ref, forwardedRef)
-
 		// This currently grabs focus at incorrect times
 		useEffect(() => {
-			if (isHighlighted) {
+			if (isFocused) {
 				ref.current?.focus({
 					// @ts-expect-error not yet implemented
 					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
 					focusVisible: true
 				})
 			}
-		}, [isHighlighted])
+		}, [ref, isFocused])
 
 		return (
 			<freya.button
 				ref={ref}
-				tabIndex={isHighlighted ? 0 : -1}
+				tabIndex={isFocused ? 0 : -1}
+				autoFocus={isFocused && autoFocus ? true : undefined}
 				data-today={isToday ? '' : undefined}
+				data-focused={isFocused ? '' : undefined}
 				data-weekend={isWeekend ? '' : undefined}
 				data-overflow={isOverflow ? '' : undefined}
 				data-disabled={isDisabled ? '' : undefined}
-				data-highlighted={isHighlighted ? '' : undefined}
 				data-selected={isSelected ? '' : undefined}
 				aria-label={label}
 				aria-selected={isSelected}
