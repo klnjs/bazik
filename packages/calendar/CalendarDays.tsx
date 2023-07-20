@@ -4,25 +4,25 @@ import type { CalendarDate } from './CalendarDate'
 
 export type CalendarDaysProps = {
 	rows?: number
-	filter?: (date: CalendarDate) => boolean
+	exclude?: (date: CalendarDate) => boolean
 	children: (date: CalendarDate, index: number) => ReactNode
 }
 
 export const CalendarDays = ({
 	rows,
-	filter = () => true,
+	exclude,
 	children
 }: CalendarDaysProps) => {
 	const { focusedDate } = useCalendarContext()
 
 	const days = useMemo(() => {
 		const dates: CalendarDate[] = []
-		const limit = rows ? rows * 7 : 1000
+		const limit = rows ? rows * 7 : Infinity
 		const max = focusedDate.getLastDateOfMonth().getLastDateOfWeek()
 		let date = focusedDate.getFirstDateOfMonth().getFirstDateOfWeek()
 
 		while (!date.isSameDay(max) && dates.length < limit) {
-			if (filter(date)) {
+			if (exclude === undefined || exclude(date)) {
 				dates.push(date)
 			}
 
@@ -30,7 +30,7 @@ export const CalendarDays = ({
 		}
 
 		return dates
-	}, [rows, filter, focusedDate])
+	}, [rows, exclude, focusedDate])
 
 	return days.map(children)
 }

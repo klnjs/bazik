@@ -246,7 +246,7 @@ export const CalendarWithoutWeekend = () => (
 		</div>
 
 		<div className={classes.gridWithoutWeekend}>
-			<CalendarDays filter={(date) => !date.isWeekend()}>
+			<CalendarDays exclude={(date) => !date.isWeekend()}>
 				{(date) => (
 					<CalendarDay
 						key={date.format()}
@@ -279,6 +279,23 @@ export const CalendarField = () => (
 						/>
 					)
 				}
+			</CalendarFieldSegments>
+		</div>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldWithoutSeparators = () => (
+	<CalendarFieldRoot className={classes.field}>
+		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<div className={classes.input}>
+			<CalendarFieldSegments exclude={['literal']}>
+				{(segment) => (
+					<CalendarFieldSegment
+						key={segment.type}
+						type={segment.type}
+						className={classes.segment}
+					/>
+				)}
 			</CalendarFieldSegments>
 		</div>
 	</CalendarFieldRoot>
