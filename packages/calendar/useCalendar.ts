@@ -16,7 +16,6 @@ export type UseCalendarOptions = {
 	locale?: string
 	disabled?: boolean
 	defaultValue?: Date | null
-	defaultFocused?: Date
 	onChange?: (value: Date | null) => void
 }
 
@@ -28,7 +27,6 @@ export const useCalendar = ({
 	locale = navigator.language,
 	disabled = false,
 	defaultValue = null,
-	defaultFocused,
 	onChange
 }: UseCalendarOptions) => {
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
@@ -48,7 +46,7 @@ export const useCalendar = ({
 	)
 
 	const [focusedDate, setFocusedDate] = useState(
-		() => new CalendarDate(locale, defaultFocused ?? value ?? undefined)
+		() => new CalendarDate(locale, value)
 	)
 
 	const setFocusedDateClamp = useCallback(

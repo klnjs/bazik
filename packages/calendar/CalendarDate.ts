@@ -34,7 +34,7 @@ export class CalendarDate {
 	date: Date
 	locale: string
 
-	constructor(locale?: string, date?: Date) {
+	constructor(locale?: string, date?: Date | null) {
 		this.date = date ?? new Date()
 		this.locale = locale ?? navigator.language
 	}
@@ -163,15 +163,15 @@ export class CalendarDate {
 		exclude?: T
 	) {
 		return new Intl.DateTimeFormat(this.locale, {
-			year: !exclude || exclude.includes('year') ? undefined : 'numeric',
-			month: !exclude || exclude.includes('month') ? undefined : style,
-			day: !exclude || exclude.includes('day') ? undefined : style
+			year: exclude?.includes('year') ? undefined : 'numeric',
+			month: exclude?.includes('month') ? undefined : style,
+			day: exclude?.includes('day') ? undefined : style
 		})
 			.formatToParts(this.getDate())
 			.reduce<CalendarDateSegment[]>((acc, part) => {
 				if (
 					CalendarDate.isValidSegment(part) &&
-					(!exclude || exclude.includes(part.type))
+					!exclude?.includes(part.type)
 				) {
 					acc.push(part)
 				}
@@ -301,13 +301,3 @@ export class CalendarDate {
 		return this.getYear() === date.getYear()
 	}
 }
-
-const test = new Date(2023, 7, 31)
-const testLast = new Date(
-	test.getFullYear(),
-	test.getMonth() + 1,
-	test.getDate()
-)
-
-console.log(test)
-console.log(testLast)

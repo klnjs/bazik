@@ -1,4 +1,10 @@
-import { useMemo, useCallback, type KeyboardEvent } from 'react'
+import {
+	useMemo,
+	useCallback,
+	type MouseEvent,
+	type KeyboardEvent,
+	type FocusEvent
+} from 'react'
 import {
 	freya,
 	forwardRef,
@@ -18,6 +24,7 @@ export type CalendarFieldSegmentProps = AsChildComponentProps<
 	{
 		type: CalendarDateSegmentTypeEditable
 		mode?: CalendarDateSegmentStyle
+		disabled?: boolean
 		placeholder?: string
 	}
 >
@@ -27,11 +34,19 @@ export const CalendarFieldSegment = forwardRef<
 	CalendarFieldSegmentProps
 >(
 	(
-		{ type, mode = '2-digit', style, placeholder = '-', ...otherProps },
+		{
+			type,
+			mode = '2-digit',
+			style,
+			disabled: disabledProp = false,
+			placeholder = '-',
+			...otherProps
+		},
 		forwardedRef
 	) => {
 		const {
 			locale,
+			disabled: disabledContext,
 			labelId,
 			minDate,
 			maxDate,
@@ -42,23 +57,14 @@ export const CalendarFieldSegment = forwardRef<
 			setFocusedSegment
 		} = useCalendarFieldContext()
 
-		const isAfter = Boolean(
-			maxDate && selectedDate && selectedDate.isAfter(maxDate)
-		)
-		const isBefore = Boolean(
-			minDate && selectedDate && selectedDate.isBefore(minDate)
-		)
-		const isInvalid = isAfter || isBefore
-		const isHighlighted = focusedSegment === type
-
-		const localisation = useCalendarLocalisation(locale)
-		const length = useMemo(
-			() => new CalendarDate(locale).getSegment(type, mode).value.length,
-			[locale, type, mode]
-		)
+		const isDisabled = disabledProp || disabledContext
+		const isFocused = focusedSegment === type
+		const isInvalid =
+			Boolean(maxDate && selectedDate && selectedDate.isAfter(maxDate)) ||
+			Boolean(minDate && selectedDate && selectedDate.isBefore(minDate))
 
 		const ref = useForwardedRef(forwardedRef, segmentRef)
-		const value = selectedDate?.getSegment(type).value ?? ''
+		const value = selectedDate?.getSegment(type, mode).value ?? ''
 		const valueText = selectedDate?.format({
 			year: 'numeric',
 			month: 'long',
@@ -66,13 +72,16 @@ export const CalendarFieldSegment = forwardRef<
 			day: 'numeric'
 		})
 
-		const children = useMemo(() => {
-			if (selectedDate === null) {
-				return ''.padStart(length, placeholder)
-			}
+		const localisation = useCalendarLocalisation(locale)
+		const length = useMemo(
+			() => new CalendarDate(locale).getSegment(type, mode).value.length,
+			[locale, type, mode]
+		)
 
-			return selectedDate.getSegment(type, mode).value
-		}, [mode, type, length, placeholder, selectedDate])
+		const children = useMemo(
+			() => value.padStart(length, placeholder),
+			[value, length, placeholder]
+		)
 
 		const changeSegment = useCallback(
 			(
@@ -80,11 +89,14 @@ export const CalendarFieldSegment = forwardRef<
 				action: (prev: CalendarDate) => CalendarDate | null
 			) => {
 				event.preventDefault()
-				setSelectedDate((prev) =>
-					action(prev ?? new CalendarDate(locale))
-				)
+
+				if (!isDisabled) {
+					setSelectedDate((prev) =>
+						action(prev ?? new CalendarDate(locale))
+					)
+				}
 			},
-			[locale, setSelectedDate]
+			[locale, isDisabled, setSelectedDate]
 		)
 
 		const changeFocusedSegment = useCallback(
@@ -106,9 +118,16 @@ export const CalendarFieldSegment = forwardRef<
 			[setFocusedSegment]
 		)
 
-		const handleClick = useCallback(() => {
-			setFocusedSegment(type)
-		}, [type, setFocusedSegment])
+		const handleFocus = useCallback(
+			(event: FocusEvent<HTMLDivElement>) => {
+				event.preventDefault()
+
+				if (!isDisabled) {
+					setFocusedSegment(type)
+				}
+			},
+			[type, isDisabled, setFocusedSegment]
+		)
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -160,11 +179,13 @@ export const CalendarFieldSegment = forwardRef<
 					...style
 				}}
 				spellCheck={false}
-				contentEditable={true}
-				tabIndex={isHighlighted ? 0 : -1}
+				contentEditable={!isDisabled}
+				tabIndex={isDisabled ? undefined : isFocused ? 0 : -1}
 				suppressContentEditableWarning={true}
-				// data-length={length} This would be really usefull for CSS width: 'attr(data-length ch)',
+				data-length={length}
 				data-segment={type}
+				data-focused={isFocused ? '' : undefined}
+				data-disabled={isDisabled ? '' : undefined}
 				data-placeholder={!value ? '' : undefined}
 				aria-label={localisation.of(type)}
 				aria-labelledby={labelId}
@@ -173,7 +194,8 @@ export const CalendarFieldSegment = forwardRef<
 				aria-valuenow={Number(value)}
 				aria-valuetext={valueText ?? 'Empty'}
 				aria-invalid={isInvalid}
-				onClick={handleClick}
+				aria-disabled={isDisabled}
+				onFocus={handleFocus}
 				onKeyDown={handleKeyDown}
 				{...otherProps}
 			>
@@ -183,12 +205,18 @@ export const CalendarFieldSegment = forwardRef<
 	}
 )
 
-const findSegment = (element: Element, direction: 'next' | 'previous') => {
+const findSegment = (element: HTMLElement, direction: 'next' | 'previous') => {
 	// @ts-expect-error element not allowed to be null
 	// eslint-disable-next-line no-cond-assign, no-param-reassign
 	while ((element = element[`${direction}ElementSibling`]) !== null) {
-		if (element.matches('[data-segment]')) {
-			return element as HTMLElement
+		const data = element.dataset
+
+		if (
+			data.segment !== undefined &&
+			data.segment !== 'literal' &&
+			data.disabled === undefined
+		) {
+			return element
 		}
 	}
 }

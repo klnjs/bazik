@@ -19,7 +19,6 @@ export const CalendarDays = ({
 		const dates: CalendarDate[] = []
 		const limit = rows ? rows * 7 : Infinity
 		const max = focusedDate.getLastDateOfMonth().getLastDateOfWeek()
-
 		let date = focusedDate.getFirstDateOfMonth().getFirstDateOfWeek()
 
 		while (!date.isAfter(max) && dates.length < limit) {

@@ -13,24 +13,26 @@ export type CalendarFieldProps = AsChildComponentProps<
 export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 	(
 		{
+			autoFocus,
 			min,
 			max,
 			value,
 			locale,
+			disabled,
 			defaultValue,
-			defaultFocused,
 			onChange,
 			...otherProps
 		},
 		forwardedRef
 	) => {
 		const field = useCalendarField({
+			autoFocus,
 			min,
 			max,
 			value,
 			locale,
+			disabled,
 			defaultValue,
-			defaultFocused,
 			onChange
 		})
 

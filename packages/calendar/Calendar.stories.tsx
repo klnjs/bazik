@@ -6,12 +6,13 @@ import { CalendarDays } from './CalendarDays'
 import { CalendarButton } from './CalendarButton'
 import { CalendarTitle } from './CalendarTitle'
 import { CalendarFieldLabel } from './CalendarFieldLabel'
+import { CalendarFieldInput } from './CalendarFieldInput'
+import { CalendarFieldAnchor } from './CalendarFieldAnchor'
 import { CalendarFieldSegments } from './CalendarFieldSegments'
 import { CalendarFieldSegment } from './CalendarFieldSegment'
 import { CalendarFieldLiteral } from './CalendarFieldLiteral'
 import { CalendarFieldTrigger } from './CalendarFieldTrigger'
 import { CalendarFieldPopover } from './CalendarFieldPopover'
-import { CalendarFieldAnchor } from './CalendarFieldAnchor'
 import * as classes from './Calendar.stories.css'
 
 export default {
@@ -20,7 +21,7 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Calendar = () => (
-	<CalendarRoot autoFocus={true} className={classes.calendar}>
+	<CalendarRoot autoFocus className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
 		</div>
@@ -42,7 +43,35 @@ export const Calendar = () => (
 )
 
 export const CalendarDisabled = () => (
-	<CalendarRoot disabled autoFocus={true} className={classes.calendar}>
+	<CalendarRoot disabled className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='today' className={classes.button}>
+					•
+				</CalendarButton>
+			</div>
+		</div>
+
+		<div className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
+
+export const CalendarRightToLeft = () => (
+	<CalendarRoot dir='rtl' className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
 
@@ -290,9 +319,9 @@ export const CalendarWithoutWeekend = () => (
 )
 
 export const CalendarField = () => (
-	<CalendarFieldRoot className={classes.field}>
+	<CalendarFieldRoot autoFocus className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
-		<div className={classes.input}>
+		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
 				{(segment, index) =>
 					segment.type === 'literal' ? (
@@ -308,7 +337,30 @@ export const CalendarField = () => (
 					)
 				}
 			</CalendarFieldSegments>
-		</div>
+		</CalendarFieldInput>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldDisabled = () => (
+	<CalendarFieldRoot disabled className={classes.field}>
+		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<CalendarFieldInput className={classes.input}>
+			<CalendarFieldSegments>
+				{(segment, index) =>
+					segment.type === 'literal' ? (
+						<CalendarFieldLiteral key={index}>
+							{segment.value}
+						</CalendarFieldLiteral>
+					) : (
+						<CalendarFieldSegment
+							key={segment.type}
+							type={segment.type}
+							className={classes.segment}
+						/>
+					)
+				}
+			</CalendarFieldSegments>
+		</CalendarFieldInput>
 	</CalendarFieldRoot>
 )
 
@@ -316,7 +368,7 @@ export const CalendarFieldWithPopover = () => (
 	<CalendarFieldRoot className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
 		<CalendarFieldAnchor className={classes.anchor}>
-			<div className={classes.input}>
+			<CalendarFieldInput className={classes.input}>
 				<CalendarFieldSegments>
 					{(segment, index) =>
 						segment.type === 'literal' ? (
@@ -335,7 +387,7 @@ export const CalendarFieldWithPopover = () => (
 				<CalendarFieldTrigger className={classes.button}>
 					🗓
 				</CalendarFieldTrigger>
-			</div>
+			</CalendarFieldInput>
 		</CalendarFieldAnchor>
 		<CalendarFieldPopover className={classes.popover}>
 			<CalendarRoot className={classes.calendar}>
@@ -379,7 +431,7 @@ export const CalendarFieldWithPopover = () => (
 export const CalendarFieldWithoutYear = () => (
 	<CalendarFieldRoot className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
-		<div className={classes.input}>
+		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments exclude={['year']}>
 				{(segment, index) =>
 					segment.type === 'literal' ? (
@@ -395,14 +447,14 @@ export const CalendarFieldWithoutYear = () => (
 					)
 				}
 			</CalendarFieldSegments>
-		</div>
+		</CalendarFieldInput>
 	</CalendarFieldRoot>
 )
 
 export const CalendarFieldWithoutLiterals = () => (
 	<CalendarFieldRoot className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
-		<div className={classes.input}>
+		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments exclude={['literal']}>
 				{(segment) => (
 					<CalendarFieldSegment
@@ -412,6 +464,6 @@ export const CalendarFieldWithoutLiterals = () => (
 					/>
 				)}
 			</CalendarFieldSegments>
-		</div>
+		</CalendarFieldInput>
 	</CalendarFieldRoot>
 )
