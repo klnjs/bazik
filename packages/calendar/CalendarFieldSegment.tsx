@@ -58,7 +58,7 @@ export const CalendarFieldSegment = forwardRef<
 		)
 
 		const ref = useForwardedRef(forwardedRef, segmentRef)
-		const value = selectedDate?.get(type)
+		const value = selectedDate?.getSegment(type).value ?? ''
 		const valueText = selectedDate?.format({
 			year: 'numeric',
 			month: 'long',
@@ -133,9 +133,8 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (/[0-9]/.test(event.key)) {
-					const now = String(value ?? '')
 					const press = Number(event.key)
-					const intent = Number(`${now}${press}`)
+					const intent = Number(`${value}${press}`)
 					const next = intent <= 31 ? intent : press
 
 					changeSegment(event, (prev) => prev.set({ [type]: next }))
@@ -171,7 +170,7 @@ export const CalendarFieldSegment = forwardRef<
 				aria-labelledby={labelId}
 				// aria-valuemin={min}
 				// aria-valuemax={max}
-				aria-valuenow={value}
+				aria-valuenow={Number(value)}
 				aria-valuetext={valueText ?? 'Empty'}
 				aria-invalid={isInvalid}
 				onClick={handleClick}

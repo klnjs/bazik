@@ -1,5 +1,3 @@
-import { capitalize } from '../core/capitalize'
-
 export const calendarDateSegmentTypes = [
 	'year',
 	'month',
@@ -52,12 +50,13 @@ export class CalendarDate {
 
 	set({ year, month, day }: CalendarDateMutation) {
 		const date = this.getDate()
+		const next = new Date(
+			year ?? date.getFullYear(),
+			month ? month - 1 : date.getMonth(),
+			day ?? date.getDate()
+		)
 
-		date.setFullYear(year ?? date.getFullYear())
-		date.setMonth(month ? month - 1 : date.getMonth())
-		date.setDate(day ?? date.getDate())
-
-		return new CalendarDate(this.locale, date)
+		return new CalendarDate(this.locale, next)
 	}
 
 	add(mutation: CalendarDateMutation) {
@@ -77,9 +76,15 @@ export class CalendarDate {
 
 	calc({ year = 0, month = 0, day = 0 }: CalendarDateMutation = {}) {
 		const date = this.getDate()
+		const dateOriginalDay = date.getDate()
 
 		date.setFullYear(date.getFullYear() + year)
 		date.setMonth(date.getMonth() + month)
+
+		if (dateOriginalDay !== date.getDate()) {
+			date.setDate(0)
+		}
+
 		date.setDate(date.getDate() + day)
 
 		return new CalendarDate(this.locale, date)
@@ -119,16 +124,12 @@ export class CalendarDate {
 		)
 	}
 
-	get(segment: CalendarDateSegmentTypeEditable) {
-		return this[`get${capitalize(segment)}`]()
-	}
-
 	getYear() {
 		return this.getDate().getFullYear()
 	}
 
 	getMonth() {
-		// Normalize index of date
+		// Normalize month value
 		return this.getDate().getMonth() + 1
 	}
 
@@ -200,7 +201,7 @@ export class CalendarDate {
 	}
 
 	getLastDateOfWeek() {
-		return this.getFirstDateOfWeek().add({ day: 7 })
+		return this.getFirstDateOfWeek().add({ day: 6 })
 	}
 
 	getLastDateOfMonth() {
@@ -300,3 +301,13 @@ export class CalendarDate {
 		return this.getYear() === date.getYear()
 	}
 }
+
+const test = new Date(2023, 7, 31)
+const testLast = new Date(
+	test.getFullYear(),
+	test.getMonth() + 1,
+	test.getDate()
+)
+
+console.log(test)
+console.log(testLast)

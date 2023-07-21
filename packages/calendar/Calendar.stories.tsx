@@ -54,7 +54,7 @@ export const CalendarWithNavigation = () => (
 					‹
 				</CalendarButton>
 				<CalendarButton action='today' className={classes.button}>
-					·
+					•
 				</CalendarButton>
 				<CalendarButton action='month+1' className={classes.button}>
 					›
@@ -81,7 +81,7 @@ export const CalendarWithNavigation = () => (
 	</CalendarRoot>
 )
 
-export const CalendarWithWeekdays = () => (
+export const CalendarWithWeekdayHeaders = () => (
 	<CalendarRoot className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
@@ -119,7 +119,7 @@ export const CalendarWithWeekdays = () => (
 	</CalendarRoot>
 )
 
-export const CalendarWithBoundaries = () => {
+export const CalendarWithMinMaxBoundaries = () => {
 	const today = new Date()
 
 	const min = new Date(
@@ -166,7 +166,7 @@ export const CalendarWithBoundaries = () => {
 	)
 }
 
-export const CalendarWithDisabled = () => (
+export const CalendarWithWeekendDisabled = () => (
 	<CalendarRoot className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
@@ -199,7 +199,7 @@ export const CalendarWithDisabled = () => (
 	</CalendarRoot>
 )
 
-export const CalendarWithOverflow = () => (
+export const CalendarWithOverflowVisible = () => (
 	<CalendarRoot className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
