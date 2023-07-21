@@ -20,7 +20,6 @@ export const Default: StoryObj<typeof Popover> = {
 			setAnchor((prev) => (prev ? undefined : (target as HTMLElement)))
 
 		const handleClose = () => {
-			console.log('close now')
 			setAnchor(undefined)
 		}
 
