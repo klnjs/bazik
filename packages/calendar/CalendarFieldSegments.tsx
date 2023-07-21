@@ -1,24 +1,24 @@
 import { useMemo, type ReactNode } from 'react'
 import { useCalendarFieldContext } from './CalendarFieldContext'
-import type { CalendarDateSegmentType } from './CalendarDate'
+import type {
+	CalendarDateSegmentType,
+	CalendarDateSegmentExclude
+} from './CalendarDate'
 
-export type CalendarFieldSegmentWithout<T> = {
-	type: T extends CalendarDateSegmentType
-		? Exclude<CalendarDateSegmentType, T>
-		: CalendarDateSegmentType
-	value: string
-}
-
-export type CalendarFieldSegmentsProps<T> = {
-	exclude?: T[]
+export type CalendarFieldSegmentsProps<
+	T extends readonly CalendarDateSegmentType[]
+> = {
+	exclude?: T
 	children: (
-		segment: CalendarFieldSegmentWithout<T>,
+		segment: CalendarDateSegmentExclude<T[number]>,
 		index: number
 	) => ReactNode
 }
 
-export const CalendarFieldSegments = <const T extends CalendarDateSegmentType>({
-	exclude = [],
+export const CalendarFieldSegments = <
+	const T extends readonly CalendarDateSegmentType[] = []
+>({
+	exclude,
 	children
 }: CalendarFieldSegmentsProps<T>) => {
 	const { focusedDate } = useCalendarFieldContext()
@@ -28,9 +28,9 @@ export const CalendarFieldSegments = <const T extends CalendarDateSegmentType>({
 			focusedDate
 				.getSegments()
 				.filter(
-					(segment) => !exclude.includes(segment.type as T)
-				) as CalendarFieldSegmentWithout<T>[],
-
+					(segment) =>
+						exclude === undefined || !exclude.includes(segment.type)
+				) as CalendarDateSegmentExclude<T[number]>[],
 		[exclude, focusedDate]
 	)
 

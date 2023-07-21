@@ -21,6 +21,11 @@ export type CalendarDateSegment = {
 	value: string
 }
 
+export type CalendarDateSegmentExclude<T extends CalendarDateSegmentType> = {
+	type: Exclude<CalendarDateSegmentType, T>
+	value: string
+}
+
 export type CalendarDateMutation = {
 	year?: number
 	month?: number
