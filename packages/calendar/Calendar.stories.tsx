@@ -284,23 +284,6 @@ export const CalendarField = () => (
 	</CalendarFieldRoot>
 )
 
-export const CalendarFieldWithoutSeparators = () => (
-	<CalendarFieldRoot className={classes.field}>
-		<CalendarFieldLabel>Date</CalendarFieldLabel>
-		<div className={classes.input}>
-			<CalendarFieldSegments exclude={['literal']}>
-				{(segment) => (
-					<CalendarFieldSegment
-						key={segment.type}
-						type={segment.type}
-						className={classes.segment}
-					/>
-				)}
-			</CalendarFieldSegments>
-		</div>
-	</CalendarFieldRoot>
-)
-
 export const CalendarFieldWithPopover = () => (
 	<CalendarFieldRoot className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
@@ -362,5 +345,22 @@ export const CalendarFieldWithPopover = () => (
 				</div>
 			</CalendarRoot>
 		</CalendarFieldPopover>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldWithoutSeparators = () => (
+	<CalendarFieldRoot className={classes.field}>
+		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<div className={classes.input}>
+			<CalendarFieldSegments exclude={['literal']}>
+				{(segment) => (
+					<CalendarFieldSegment
+						key={segment.type}
+						type={segment.type}
+						className={classes.segment}
+					/>
+				)}
+			</CalendarFieldSegments>
+		</div>
 	</CalendarFieldRoot>
 )
