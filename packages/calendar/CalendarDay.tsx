@@ -17,12 +17,13 @@ export type CalendarDayProps = AsChildComponentProps<
 >
 
 export const CalendarDay = forwardRef<'button', CalendarDayProps>(
-	({ date, disabled, ...otherProps }, forwardedRef) => {
+	({ date, disabled: disabledProp = false, ...otherProps }, forwardedRef) => {
 		const {
 			autoFocus,
 			setAutoFocus,
 			minDate,
 			maxDate,
+			disabled: disabledContext,
 			focusedDate,
 			setFocusedDate,
 			selectedDate,
@@ -30,13 +31,15 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		} = useCalendarContext()
 
 		const isToday = date.isToday()
-		const isAfter = Boolean(maxDate && date.isAfter(maxDate))
-		const isBefore = Boolean(minDate && date.isBefore(minDate))
 		const isWeekend = date.isWeekend()
 		const isFocused = date.isSameDay(focusedDate)
-		const isSelected = Boolean(selectedDate && date.isSameDay(selectedDate))
 		const isOverflow = !date.isSameMonth(focusedDate)
-		const isDisabled = disabled ?? (isAfter || isBefore)
+		const isSelected = Boolean(selectedDate && date.isSameDay(selectedDate))
+		const isDisabled =
+			disabledProp ||
+			disabledContext ||
+			Boolean(maxDate && date.isAfter(maxDate)) ||
+			Boolean(minDate && date.isBefore(minDate))
 
 		const ref = useForwardedRef(forwardedRef)
 		const formatted = date.format({
@@ -55,11 +58,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			: formatted
 
 		const handleClick = useCallback(() => {
-			if (!isDisabled) {
-				setFocusedDate(date)
-				setSelectedDate(date)
-			}
-		}, [date, isDisabled, setFocusedDate, setSelectedDate])
+			setFocusedDate(date)
+			setSelectedDate(date)
+		}, [date, setFocusedDate, setSelectedDate])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLButtonElement>) => {
@@ -121,6 +122,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		return (
 			<freya.button
 				ref={ref}
+				disabled={isDisabled}
 				tabIndex={isFocused ? 0 : -1}
 				data-today={isToday ? '' : undefined}
 				data-focused={isFocused ? '' : undefined}

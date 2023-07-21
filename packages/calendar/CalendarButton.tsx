@@ -23,16 +23,26 @@ export type CalendarButtonProps = AsChildComponentProps<
 >
 
 export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
-	({ action, ...otherProps }, forwardedRef) => {
-		const { locale, minDate, maxDate, focusedDate, setFocusedDate } =
-			useCalendarContext()
+	({ action, disabledProp = false, ...otherProps }, forwardedRef) => {
+		const {
+			locale,
+			disabled: disabledContext,
+			minDate,
+			maxDate,
+			focusedDate,
+			setFocusedDate
+		} = useCalendarContext()
 
 		const [segment, modifier] = action.split(/(?=\+|-)/) as [
 			CalendarButtonSegment | 'today',
 			CalendarButtonModifier
 		]
 
-		const disabled = useMemo(() => {
+		const isDisabled = useMemo(() => {
+			if (disabledProp || disabledContext) {
+				return true
+			}
+
 			if (segment === 'today') {
 				return false
 			}
@@ -45,7 +55,15 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			const t = focusedDate.calc({ [segment]: n })[g]()
 
 			return l && t[i](l)
-		}, [segment, modifier, maxDate, minDate, focusedDate])
+		}, [
+			segment,
+			modifier,
+			maxDate,
+			minDate,
+			focusedDate,
+			disabledProp,
+			disabledContext
+		])
 
 		const onClick = useCallback(() => {
 			setFocusedDate((prev) => {
@@ -61,7 +79,9 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			<freya.button
 				ref={forwardedRef}
 				type='button'
-				disabled={disabled}
+				disabled={isDisabled}
+				data-disabled={isDisabled ? '' : undefined}
+				aria-disabled={isDisabled}
 				onClick={onClick}
 				{...otherProps}
 			/>

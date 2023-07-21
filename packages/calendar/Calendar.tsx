@@ -13,6 +13,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			max,
 			value,
 			locale,
+			disabled,
 			defaultValue,
 			defaultFocused,
 			onChange,
@@ -27,6 +28,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			max,
 			value,
 			locale,
+			disabled,
 			defaultValue,
 			defaultFocused,
 			onChange

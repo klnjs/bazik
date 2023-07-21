@@ -41,6 +41,34 @@ export const Calendar = () => (
 	</CalendarRoot>
 )
 
+export const CalendarDisabled = () => (
+	<CalendarRoot disabled autoFocus={true} className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='today' className={classes.button}>
+					•
+				</CalendarButton>
+			</div>
+		</div>
+
+		<div className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</div>
+	</CalendarRoot>
+)
+
 export const CalendarWithNavigation = () => (
 	<CalendarRoot className={classes.calendar}>
 		<div className={classes.header}>

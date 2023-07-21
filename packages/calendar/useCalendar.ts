@@ -14,6 +14,7 @@ export type UseCalendarOptions = {
 	max?: Date
 	value?: Date | null
 	locale?: string
+	disabled?: boolean
 	defaultValue?: Date | null
 	defaultFocused?: Date
 	onChange?: (value: Date | null) => void
@@ -25,15 +26,16 @@ export const useCalendar = ({
 	max,
 	value,
 	locale = navigator.language,
+	disabled = false,
 	defaultValue = null,
 	defaultFocused,
 	onChange
 }: UseCalendarOptions) => {
-	const autoFocusRef = useRef(autoFocusProp)
+	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
-	const setAutoFocus = (autoFocus: boolean) => {
+	const setAutoFocus = useCallback((autoFocus: boolean) => {
 		autoFocusRef.current = autoFocus
-	}
+	}, [])
 
 	const minDate = useMemo(
 		() => (min ? new CalendarDate(locale, min) : undefined),
@@ -59,7 +61,7 @@ export const useCalendar = ({
 				return next.clamp(minDate, maxDate)
 			})
 		},
-		[minDate, maxDate]
+		[minDate, maxDate, setAutoFocus]
 	)
 
 	const [selectedDate, setSelectedDate] =
@@ -90,6 +92,7 @@ export const useCalendar = ({
 
 	return {
 		locale,
+		disabled,
 		minDate,
 		maxDate,
 		autoFocus: autoFocusRef.current,
