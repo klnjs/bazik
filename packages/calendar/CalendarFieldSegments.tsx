@@ -24,13 +24,7 @@ export const CalendarFieldSegments = <
 	const { focusedDate } = useCalendarFieldContext()
 
 	const segments = useMemo(
-		() =>
-			focusedDate
-				.getSegments()
-				.filter(
-					(segment) =>
-						exclude === undefined || !exclude.includes(segment.type)
-				) as CalendarDateSegmentExclude<T[number]>[],
+		() => focusedDate.getSegments('numeric', exclude),
 		[exclude, focusedDate]
 	)
 

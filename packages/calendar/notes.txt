@@ -1,3 +1,6 @@
 Notes
 	- Implement popover functionality.
 	- Should we use utility functions instead of CalendarDate class?
+
+Improvements
+  - Allow segmenets to be disabled?

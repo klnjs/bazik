@@ -157,20 +157,26 @@ export class CalendarDate {
 		return this.locale
 	}
 
-	getSegments(style: CalendarDateSegmentStyle = 'numeric') {
+	getSegments<T extends readonly CalendarDateSegmentType[] = []>(
+		style: CalendarDateSegmentStyle = 'numeric',
+		exclude?: T
+	) {
 		return new Intl.DateTimeFormat(this.locale, {
-			year: 'numeric',
-			month: style,
-			day: style
+			year: !exclude || exclude.includes('year') ? undefined : 'numeric',
+			month: !exclude || exclude.includes('month') ? undefined : style,
+			day: !exclude || exclude.includes('day') ? undefined : style
 		})
 			.formatToParts(this.getDate())
 			.reduce<CalendarDateSegment[]>((acc, part) => {
-				if (CalendarDate.isValidSegment(part)) {
+				if (
+					CalendarDate.isValidSegment(part) &&
+					(!exclude || exclude.includes(part.type))
+				) {
 					acc.push(part)
 				}
 
 				return acc
-			}, [])
+			}, []) as CalendarDateSegmentExclude<T[number]>[]
 	}
 
 	getSegment(

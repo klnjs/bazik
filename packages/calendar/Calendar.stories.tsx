@@ -348,7 +348,30 @@ export const CalendarFieldWithPopover = () => (
 	</CalendarFieldRoot>
 )
 
-export const CalendarFieldWithoutSeparators = () => (
+export const CalendarFieldWithoutYear = () => (
+	<CalendarFieldRoot className={classes.field}>
+		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<div className={classes.input}>
+			<CalendarFieldSegments exclude={['year']}>
+				{(segment, index) =>
+					segment.type === 'literal' ? (
+						<CalendarFieldLiteral key={index}>
+							{segment.value}
+						</CalendarFieldLiteral>
+					) : (
+						<CalendarFieldSegment
+							key={segment.type}
+							type={segment.type}
+							className={classes.segment}
+						/>
+					)
+				}
+			</CalendarFieldSegments>
+		</div>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldWithoutLiterals = () => (
 	<CalendarFieldRoot className={classes.field}>
 		<CalendarFieldLabel>Date</CalendarFieldLabel>
 		<div className={classes.input}>
