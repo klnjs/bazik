@@ -14,6 +14,7 @@ import { CalendarFieldLiteral } from './CalendarFieldLiteral'
 import { CalendarFieldTrigger } from './CalendarFieldTrigger'
 import { CalendarFieldPopover } from './CalendarFieldPopover'
 import * as classes from './Calendar.stories.css'
+import { CalendarGrid } from './CalendarGrid'
 
 export default {
 	title: 'Calendar',
@@ -21,12 +22,12 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Calendar = () => (
-	<CalendarRoot autoFocus className={classes.calendar}>
+	<CalendarRoot className={classes.calendar}>
 		<div className={classes.header}>
 			<CalendarTitle className={classes.title} />
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
@@ -38,7 +39,7 @@ export const Calendar = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -54,7 +55,7 @@ export const CalendarDisabled = () => (
 			</div>
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
@@ -66,7 +67,7 @@ export const CalendarDisabled = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -82,7 +83,7 @@ export const CalendarRightToLeft = () => (
 			</div>
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
@@ -94,7 +95,35 @@ export const CalendarRightToLeft = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
+		</CalendarGrid>
+	</CalendarRoot>
+)
+
+export const CalendarWithAutoFocus = () => (
+	<CalendarRoot autoFocus className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='today' className={classes.button}>
+					•
+				</CalendarButton>
+			</div>
 		</div>
+
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.format()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -122,7 +151,7 @@ export const CalendarWithNavigation = () => (
 			</div>
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
@@ -134,7 +163,7 @@ export const CalendarWithNavigation = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -153,7 +182,7 @@ export const CalendarWithWeekdayHeaders = () => (
 			</div>
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays rows={1}>
 				{(date) => (
 					<div key={date.getTime()} className={classes.weekday}>
@@ -172,7 +201,7 @@ export const CalendarWithWeekdayHeaders = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -206,7 +235,7 @@ export const CalendarWithMinMaxBoundaries = () => {
 				</div>
 			</div>
 
-			<div className={classes.grid}>
+			<CalendarGrid className={classes.grid}>
 				<CalendarDays>
 					{(date) => (
 						<CalendarDay
@@ -218,7 +247,7 @@ export const CalendarWithMinMaxBoundaries = () => {
 						</CalendarDay>
 					)}
 				</CalendarDays>
-			</div>
+			</CalendarGrid>
 		</CalendarRoot>
 	)
 }
@@ -239,7 +268,7 @@ export const CalendarWithWeekendDisabled = () => (
 			</div>
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
@@ -252,7 +281,7 @@ export const CalendarWithWeekendDisabled = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -271,7 +300,7 @@ export const CalendarWithOverflowVisible = () => (
 			</div>
 		</div>
 
-		<div className={classes.grid}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{(date) => (
 					<CalendarDay
@@ -283,7 +312,7 @@ export const CalendarWithOverflowVisible = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
@@ -302,7 +331,7 @@ export const CalendarWithoutWeekend = () => (
 			</div>
 		</div>
 
-		<div className={classes.gridWithoutWeekend}>
+		<CalendarGrid className={classes.grid}>
 			<CalendarDays exclude={(date) => !date.isWeekend()}>
 				{(date) => (
 					<CalendarDay
@@ -314,13 +343,13 @@ export const CalendarWithoutWeekend = () => (
 					</CalendarDay>
 				)}
 			</CalendarDays>
-		</div>
+		</CalendarGrid>
 	</CalendarRoot>
 )
 
 export const CalendarField = () => (
-	<CalendarFieldRoot autoFocus className={classes.field}>
-		<CalendarFieldLabel>Date</CalendarFieldLabel>
+	<CalendarFieldRoot className={classes.field}>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
 				{(segment, index) =>
@@ -343,7 +372,53 @@ export const CalendarField = () => (
 
 export const CalendarFieldDisabled = () => (
 	<CalendarFieldRoot disabled className={classes.field}>
-		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
+		<CalendarFieldInput className={classes.input}>
+			<CalendarFieldSegments>
+				{(segment, index) =>
+					segment.type === 'literal' ? (
+						<CalendarFieldLiteral key={index}>
+							{segment.value}
+						</CalendarFieldLiteral>
+					) : (
+						<CalendarFieldSegment
+							key={segment.type}
+							type={segment.type}
+							className={classes.segment}
+						/>
+					)
+				}
+			</CalendarFieldSegments>
+		</CalendarFieldInput>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldRightToLeft = () => (
+	<CalendarFieldRoot dir='rtl' className={classes.field}>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
+		<CalendarFieldInput className={classes.input}>
+			<CalendarFieldSegments>
+				{(segment, index) =>
+					segment.type === 'literal' ? (
+						<CalendarFieldLiteral key={index}>
+							{segment.value}
+						</CalendarFieldLiteral>
+					) : (
+						<CalendarFieldSegment
+							key={segment.type}
+							type={segment.type}
+							className={classes.segment}
+						/>
+					)
+				}
+			</CalendarFieldSegments>
+		</CalendarFieldInput>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldWithAutoFocus = () => (
+	<CalendarFieldRoot autoFocus className={classes.field}>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
 				{(segment, index) =>
@@ -366,7 +441,7 @@ export const CalendarFieldDisabled = () => (
 
 export const CalendarFieldWithPopover = () => (
 	<CalendarFieldRoot className={classes.field}>
-		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldAnchor className={classes.anchor}>
 			<CalendarFieldInput className={classes.input}>
 				<CalendarFieldSegments>
@@ -428,11 +503,35 @@ export const CalendarFieldWithPopover = () => (
 	</CalendarFieldRoot>
 )
 
-export const CalendarFieldWithoutYear = () => (
+export const CalendarFieldWithYearDisabled = () => (
 	<CalendarFieldRoot className={classes.field}>
-		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
-			<CalendarFieldSegments exclude={['year']}>
+			<CalendarFieldSegments>
+				{(segment, index) =>
+					segment.type === 'literal' ? (
+						<CalendarFieldLiteral key={index}>
+							{segment.value}
+						</CalendarFieldLiteral>
+					) : (
+						<CalendarFieldSegment
+							key={segment.type}
+							type={segment.type}
+							disabled={segment.type === 'year'}
+							className={classes.segment}
+						/>
+					)
+				}
+			</CalendarFieldSegments>
+		</CalendarFieldInput>
+	</CalendarFieldRoot>
+)
+
+export const CalendarFieldWithoutDay = () => (
+	<CalendarFieldRoot className={classes.field}>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
+		<CalendarFieldInput className={classes.input}>
+			<CalendarFieldSegments exclude={['day']}>
 				{(segment, index) =>
 					segment.type === 'literal' ? (
 						<CalendarFieldLiteral key={index}>
@@ -453,7 +552,7 @@ export const CalendarFieldWithoutYear = () => (
 
 export const CalendarFieldWithoutLiterals = () => (
 	<CalendarFieldRoot className={classes.field}>
-		<CalendarFieldLabel>Date</CalendarFieldLabel>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments exclude={['literal']}>
 				{(segment) => (

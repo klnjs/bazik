@@ -1,10 +1,4 @@
-import {
-	useMemo,
-	useCallback,
-	type MouseEvent,
-	type KeyboardEvent,
-	type FocusEvent
-} from 'react'
+import { useMemo, useEffect, useCallback, type KeyboardEvent } from 'react'
 import {
 	freya,
 	forwardRef,
@@ -51,6 +45,8 @@ export const CalendarFieldSegment = forwardRef<
 			minDate,
 			maxDate,
 			segmentRef,
+			autoFocus,
+			setAutoFocus,
 			selectedDate,
 			setSelectedDate,
 			focusedSegment,
@@ -63,7 +59,10 @@ export const CalendarFieldSegment = forwardRef<
 			Boolean(maxDate && selectedDate && selectedDate.isAfter(maxDate)) ||
 			Boolean(minDate && selectedDate && selectedDate.isBefore(minDate))
 
-		const ref = useForwardedRef(forwardedRef, segmentRef)
+		const ref = useForwardedRef(
+			forwardedRef,
+			isFocused ? segmentRef : undefined
+		)
 		const value = selectedDate?.getSegment(type, mode).value ?? ''
 		const valueText = selectedDate?.format({
 			year: 'numeric',
@@ -84,12 +83,7 @@ export const CalendarFieldSegment = forwardRef<
 		)
 
 		const changeSegment = useCallback(
-			(
-				event: KeyboardEvent<HTMLDivElement>,
-				action: (prev: CalendarDate) => CalendarDate | null
-			) => {
-				event.preventDefault()
-
+			(action: (prev: CalendarDate) => CalendarDate | null) => {
 				if (!isDisabled) {
 					setSelectedDate((prev) =>
 						action(prev ?? new CalendarDate(locale))
@@ -100,55 +94,45 @@ export const CalendarFieldSegment = forwardRef<
 		)
 
 		const changeFocusedSegment = useCallback(
-			(
-				event: KeyboardEvent<HTMLDivElement>,
-				action: 'next' | 'previous'
-			) => {
-				event.preventDefault()
-				const element = findSegment(event.currentTarget, action)
+			(action: 'next' | 'previous') => {
+				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+				const found = findSegment(ref.current!, action)
 
-				if (element !== undefined) {
-					element.focus()
-					setFocusedSegment(
-						element.dataset
-							.segment as CalendarDateSegmentTypeEditable
-					)
+				if (found !== undefined) {
+					found.focus()
 				}
 			},
-			[setFocusedSegment]
+			[ref]
 		)
 
-		const handleFocus = useCallback(
-			(event: FocusEvent<HTMLDivElement>) => {
-				event.preventDefault()
-
-				if (!isDisabled) {
-					setFocusedSegment(type)
-				}
-			},
-			[type, isDisabled, setFocusedSegment]
-		)
+		const handleFocus = useCallback(() => {
+			setFocusedSegment(type)
+		}, [type, setFocusedSegment])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
+				if (event.code !== 'Tab') {
+					event.preventDefault()
+				}
+
 				if (event.code === 'ArrowUp') {
-					changeSegment(event, (prev) => prev.add({ [type]: 1 }))
+					changeSegment((prev) => prev.add({ [type]: 1 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					changeFocusedSegment(event, 'next')
+					changeFocusedSegment('next')
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeSegment(event, (prev) => prev.sub({ [type]: 1 }))
+					changeSegment((prev) => prev.sub({ [type]: 1 }))
 				}
 
 				if (event.code === 'ArrowLeft') {
-					changeFocusedSegment(event, 'previous')
+					changeFocusedSegment('previous')
 				}
 
 				if (event.code === 'Backspace' || event.key === 'Delete') {
-					changeSegment(event, () => null)
+					changeSegment(() => null)
 				}
 
 				if (/[0-9]/.test(event.key)) {
@@ -156,15 +140,26 @@ export const CalendarFieldSegment = forwardRef<
 					const intent = Number(`${value}${press}`)
 					const next = intent <= 31 ? intent : press
 
-					changeSegment(event, (prev) => prev.set({ [type]: next }))
+					changeSegment((prev) => prev.set({ [type]: next }))
 
 					if (String(next).length === length) {
-						changeFocusedSegment(event, 'next')
+						changeFocusedSegment('next')
 					}
 				}
 			},
 			[type, value, length, changeSegment, changeFocusedSegment]
 		)
+
+		useEffect(() => {
+			if (isFocused && autoFocus) {
+				setAutoFocus(false)
+				ref.current?.focus({
+					// @ts-expect-error not yet implemented
+					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
+					focusVisible: true
+				})
+			}
+		}, [ref, isFocused, autoFocus, setAutoFocus])
 
 		return (
 			<freya.div
@@ -205,7 +200,9 @@ export const CalendarFieldSegment = forwardRef<
 	}
 )
 
-const findSegment = (element: HTMLElement, direction: 'next' | 'previous') => {
+const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
+	const direction = findDirection(element, action)
+
 	// @ts-expect-error element not allowed to be null
 	// eslint-disable-next-line no-cond-assign, no-param-reassign
 	while ((element = element[`${direction}ElementSibling`]) !== null) {
@@ -219,4 +216,24 @@ const findSegment = (element: HTMLElement, direction: 'next' | 'previous') => {
 			return element
 		}
 	}
+}
+
+const findDirection = (
+	element: HTMLElement,
+	direction: 'next' | 'previous'
+) => {
+	const dir = getComputedStyle(element).direction
+
+	if (dir === 'rtl') {
+		switch (direction) {
+			case 'next':
+				return 'previous'
+			case 'previous':
+				return 'next'
+			default:
+				throw new Error('unsupported action')
+		}
+	}
+
+	return direction
 }

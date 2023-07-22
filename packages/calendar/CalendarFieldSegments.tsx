@@ -1,8 +1,9 @@
-import { useMemo, type ReactNode } from 'react'
+import { useMemo, type ReactNode, useEffect } from 'react'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import type {
 	CalendarDateSegmentType,
-	CalendarDateSegmentExclude
+	CalendarDateSegmentExclude,
+	CalendarDateSegmentTypeEditable
 } from './CalendarDate'
 
 export type CalendarFieldSegmentsProps<
@@ -21,12 +22,19 @@ export const CalendarFieldSegments = <
 	exclude,
 	children
 }: CalendarFieldSegmentsProps<T>) => {
-	const { focusedDate } = useCalendarFieldContext()
+	const { focusedDate, setFocusedSegment } = useCalendarFieldContext()
 
 	const segments = useMemo(
 		() => focusedDate.getSegments('numeric', exclude),
 		[exclude, focusedDate]
 	)
+
+	useEffect(() => {
+		// First segment can never be literal, therefore
+		// this cast is safe
+		setFocusedSegment(segments[0].type as CalendarDateSegmentTypeEditable)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
 	return segments.map(children)
 }

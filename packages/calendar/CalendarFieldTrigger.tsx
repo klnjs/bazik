@@ -12,8 +12,8 @@ export const CalendarFieldTrigger = forwardRef<
 		useCalendarFieldContext()
 
 	const handleClick = () => {
-		setFocusedDate(selectedDate ?? new CalendarDate())
 		setOpen((prev) => !prev)
+		setFocusedDate(selectedDate ?? new CalendarDate(), true)
 	}
 
 	return (

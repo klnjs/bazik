@@ -77,7 +77,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowRight') {
-					setFocusedDate((prev) => prev.add({ day: 1 }), true)
+					setFocusedDate(
+						(prev) =>
+							prev.add({
+								day: findDayChange(ref.current)
+							}),
+						true
+					)
 				}
 
 				if (event.code === 'ArrowDown') {
@@ -85,7 +91,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.key === 'ArrowLeft') {
-					setFocusedDate((prev) => prev.sub({ day: 1 }), true)
+					setFocusedDate(
+						(prev) =>
+							prev.sub({
+								day: findDayChange(ref.current)
+							}),
+						true
+					)
 				}
 
 				if (event.code === 'PageUp') {
@@ -104,10 +116,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 					setFocusedDate((prev) => prev.getLastDateOfMonth(), true)
 				}
 			},
-			[handleClick, setFocusedDate]
+			[ref, handleClick, setFocusedDate]
 		)
 
-		// This currently grabs focus at incorrect times
 		useEffect(() => {
 			if (isFocused && autoFocus) {
 				setAutoFocus(false)
@@ -140,3 +151,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		)
 	}
 )
+
+const findDayChange = (element: HTMLElement | null) => {
+	const target = element ?? document.body
+
+	return getComputedStyle(target).direction === 'rtl' ? -1 : 1
+}

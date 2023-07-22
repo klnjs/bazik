@@ -154,7 +154,8 @@ export const segment = style({
 	},
 	selectors: {
 		'&[data-disabled]': {
-			opacity: 0.2
+			opacity: 0.2,
+			cursor: 'default'
 		},
 		'&[data-placeholder]': {
 			textIndent: 2,
