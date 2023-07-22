@@ -5,13 +5,13 @@ export type CalendarFieldLabelProps = AsChildComponentProps<'label'>
 
 export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
 	(props, forwardedRef) => {
-		const { labelId, segmentRef } = useCalendarFieldContext()
+		const { labelId, focusedSegmentRef } = useCalendarFieldContext()
 
 		return (
 			<freya.label
 				id={labelId}
 				ref={forwardedRef}
-				onClick={() => segmentRef.current?.focus()}
+				onClick={() => focusedSegmentRef.current?.focus()}
 				{...props}
 			/>
 		)

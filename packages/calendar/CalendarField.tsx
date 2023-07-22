@@ -19,6 +19,7 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			value,
 			locale,
 			disabled,
+			defaultOpen,
 			defaultValue,
 			onChange,
 			...otherProps
@@ -32,6 +33,7 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			value,
 			locale,
 			disabled,
+			defaultOpen,
 			defaultValue,
 			onChange
 		})

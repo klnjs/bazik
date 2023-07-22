@@ -44,11 +44,11 @@ export const CalendarFieldSegment = forwardRef<
 			labelId,
 			minDate,
 			maxDate,
-			segmentRef,
 			autoFocus,
 			setAutoFocus,
 			selectedDate,
 			setSelectedDate,
+			focusedSegmentRef,
 			focusedSegment,
 			setFocusedSegment
 		} = useCalendarFieldContext()
@@ -61,7 +61,7 @@ export const CalendarFieldSegment = forwardRef<
 
 		const ref = useForwardedRef(
 			forwardedRef,
-			isFocused ? segmentRef : undefined
+			isFocused ? focusedSegmentRef : undefined
 		)
 		const value = selectedDate?.getSegment(type, mode).value ?? ''
 		const valueText = selectedDate?.format({
