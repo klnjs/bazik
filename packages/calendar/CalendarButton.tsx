@@ -5,6 +5,7 @@ import {
 	CalendarDate,
 	type CalendarDateSegmentTypeEditable
 } from './CalendarDate'
+import { useCalendarLocalisation } from './useCalendarLocalisation'
 
 type CalendarButtonSegment = Extract<
 	CalendarDateSegmentTypeEditable,
@@ -23,7 +24,10 @@ export type CalendarButtonProps = AsChildComponentProps<
 >
 
 export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
-	({ action, disabledProp = false, ...otherProps }, forwardedRef) => {
+	(
+		{ action, disabled: disabledProp = false, ...otherProps },
+		forwardedRef
+	) => {
 		const {
 			locale,
 			disabled: disabledContext,
@@ -32,6 +36,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			focusedDate,
 			setFocusedDate
 		} = useCalendarContext()
+		const { t } = useCalendarLocalisation(locale)
 
 		const [segment, modifier] = action.split(/(?=\+|-)/) as [
 			CalendarButtonSegment | 'today',
@@ -52,9 +57,9 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			const l = m ? minDate : maxDate
 			const i = m ? 'isBefore' : 'isAfter'
 			const g = m ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
-			const t = focusedDate.calc({ [segment]: n })[g]()
+			const a = focusedDate.calc({ [segment]: n })[g]()
 
-			return l && t[i](l)
+			return l && a[i](l)
 		}, [
 			segment,
 			modifier,
@@ -81,6 +86,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				type='button'
 				disabled={isDisabled}
 				data-disabled={isDisabled ? '' : undefined}
+				aria-label={t('next', { segment })}
 				aria-disabled={isDisabled}
 				onClick={onClick}
 				{...otherProps}

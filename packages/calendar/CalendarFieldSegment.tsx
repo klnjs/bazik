@@ -52,6 +52,7 @@ export const CalendarFieldSegment = forwardRef<
 			focusedSegment,
 			setFocusedSegment
 		} = useCalendarFieldContext()
+		const { names } = useCalendarLocalisation(locale)
 
 		const isDisabled = disabledProp || disabledContext
 		const isFocused = focusedSegment === type
@@ -71,7 +72,6 @@ export const CalendarFieldSegment = forwardRef<
 			day: 'numeric'
 		})
 
-		const localisation = useCalendarLocalisation(locale)
 		const length = useMemo(
 			() => new CalendarDate(locale).getSegment(type, mode).value.length,
 			[locale, type, mode]
@@ -182,7 +182,7 @@ export const CalendarFieldSegment = forwardRef<
 				data-focused={isFocused ? '' : undefined}
 				data-disabled={isDisabled ? '' : undefined}
 				data-placeholder={!value ? '' : undefined}
-				aria-label={localisation.of(type)}
+				aria-label={names.of(type)}
 				aria-labelledby={labelId}
 				// aria-valuemin={min}
 				// aria-valuemax={max}
