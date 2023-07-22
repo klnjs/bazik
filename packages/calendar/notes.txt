@@ -3,5 +3,4 @@ Notes
 	- Should we use utility functions instead of CalendarDate class?
 
 Improvements
-	- Allow entire Calendar / Calendar field to be disabled
 	- Allow individual segmenets to be disabled

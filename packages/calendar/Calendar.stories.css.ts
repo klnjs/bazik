@@ -129,6 +129,11 @@ export const input = style({
 	borderRadius: 4,
 	':focus-within': {
 		borderColor: '#96CBFE'
+	},
+	selectors: {
+		'&[data-disabled]': {
+			opacity: 0.2
+		}
 	}
 })
 
@@ -148,6 +153,9 @@ export const segment = style({
 		outlineOffset: -1
 	},
 	selectors: {
+		'&[data-disabled]': {
+			opacity: 0.2
+		},
 		'&[data-placeholder]': {
 			textIndent: 2,
 			letterSpacing: 2
