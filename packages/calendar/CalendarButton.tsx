@@ -43,6 +43,10 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			CalendarButtonModifier
 		]
 
+		const label = t(modifier === '-1' ? 'previous' : 'next', {
+			segment
+		})
+
 		const isDisabled = useMemo(() => {
 			if (disabledProp || disabledContext) {
 				return true
@@ -86,7 +90,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				type='button'
 				disabled={isDisabled}
 				data-disabled={isDisabled ? '' : undefined}
-				aria-label={t('next', { segment })}
+				aria-label={label}
 				aria-disabled={isDisabled}
 				onClick={onClick}
 				{...otherProps}
