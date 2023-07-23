@@ -1,3 +1,5 @@
+import { weekInfo } from './calendarWeekInfo'
+
 export const calendarDateSegmentTypes = [
 	'year',
 	'month',
@@ -32,11 +34,11 @@ export type CalendarDateMutation = {
 
 export class CalendarDate {
 	date: Date
-	locale: string
+	locale: Intl.Locale
 
-	constructor(locale?: string, date?: Date | null) {
+	constructor(locale?: string | Intl.Locale, date?: Date | null) {
 		this.date = date ?? new Date()
-		this.locale = locale ?? navigator.language
+		this.locale = new Intl.Locale(locale ?? navigator.language).maximize()
 	}
 
 	static isValidSegment(segment: object): segment is CalendarDateSegment {
@@ -118,10 +120,10 @@ export class CalendarDate {
 		const diff = this.getDiff(target)
 		const segmentDiff = diff[segment]
 
-		return new Intl.RelativeTimeFormat(this.locale, options).format(
-			segmentDiff,
-			segment
-		)
+		return new Intl.RelativeTimeFormat(
+			this.locale.language,
+			options
+		).format(segmentDiff, segment)
 	}
 
 	getYear() {
@@ -135,6 +137,10 @@ export class CalendarDate {
 
 	getDay() {
 		return this.getDate().getDate()
+	}
+
+	getDayOfWeek() {
+		return this.getDate().getDay() || 7
 	}
 
 	getTime() {
@@ -162,7 +168,7 @@ export class CalendarDate {
 		style: CalendarDateSegmentStyle = 'numeric',
 		exclude?: T
 	) {
-		return new Intl.DateTimeFormat(this.locale, {
+		return new Intl.DateTimeFormat(this.locale.language, {
 			year: exclude?.includes('year') ? undefined : 'numeric',
 			month: exclude?.includes('month') ? undefined : style,
 			day: exclude?.includes('day') ? undefined : style
@@ -218,21 +224,14 @@ export class CalendarDate {
 			try {
 				// @ts-expect-error not in spec yet
 				// eslint-disable-next-line
-				return new Intl.Locale(this.locale).getWeekInfo()
-					.firstDay as number
+				return this.locale.getWeekInfo().firstDay as number
 			} catch (error) {
-				if (
-					this.locale.toLowerCase() === 'en' ||
-					this.locale.toLowerCase() === 'en-US'
-				) {
-					return 7
-				}
-
-				return 1
+				return weekInfo[this.locale.region as keyof typeof weekInfo]
+					.firstDay
 			}
 		})()
 
-		const dayOfWeek = this.getDate().getDay() || 7
+		const dayOfWeek = this.getDayOfWeek()
 		const dayOfWeekIndex = dayOfWeek - firstDayOfWeek
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
@@ -254,27 +253,20 @@ export class CalendarDate {
 	}
 
 	isWeekend() {
-		const weekDay = this.getWeekDay()
-		const weekendDaysInfo = (() => {
+		const weekend = (() => {
 			try {
 				// @ts-expect-error not in spec yet
 				// eslint-disable-next-line
-				return new Intl.Locale(this.locale).getWeekInfo()
-					.weekendInfo as number[]
+				return this.locale.getWeekInfo().weekend as number[]
 			} catch (error) {
-				// Find a way to polyfill this
-				if (
-					this.locale.toLowerCase() === 'en' ||
-					this.locale.toLowerCase() === 'en-US'
-				) {
-					return [1, 7]
-				}
-
-				return [6, 7]
+				return weekInfo[this.locale.region as keyof typeof weekInfo]
+					.weekend
 			}
 		})()
 
-		return weekendDaysInfo.includes(weekDay)
+		const dayOfWeek = this.getDayOfWeek()
+
+		return weekend.includes(dayOfWeek)
 	}
 
 	isAfter(date: CalendarDate) {

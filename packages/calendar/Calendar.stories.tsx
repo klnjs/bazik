@@ -1,10 +1,11 @@
 import type { Meta } from '@storybook/react'
 import { Calendar as CalendarRoot } from './Calendar'
 import { CalendarField as CalendarFieldRoot } from './CalendarField'
-import { CalendarDay } from './CalendarDay'
+import { CalendarGrid } from './CalendarGrid'
 import { CalendarDays } from './CalendarDays'
-import { CalendarButton } from './CalendarButton'
+import { CalendarDay } from './CalendarDay'
 import { CalendarTitle } from './CalendarTitle'
+import { CalendarButton } from './CalendarButton'
 import { CalendarFieldLabel } from './CalendarFieldLabel'
 import { CalendarFieldInput } from './CalendarFieldInput'
 import { CalendarFieldAnchor } from './CalendarFieldAnchor'
@@ -14,7 +15,6 @@ import { CalendarFieldLiteral } from './CalendarFieldLiteral'
 import { CalendarFieldTrigger } from './CalendarFieldTrigger'
 import { CalendarFieldPopover } from './CalendarFieldPopover'
 import * as classes from './Calendar.stories.css'
-import { CalendarGrid } from './CalendarGrid'
 
 export default {
 	title: 'Calendar',
@@ -167,44 +167,6 @@ export const CalendarWithNavigation = () => (
 	</CalendarRoot>
 )
 
-export const CalendarWithWeekdayHeaders = () => (
-	<CalendarRoot className={classes.calendar}>
-		<div className={classes.header}>
-			<CalendarTitle className={classes.title} />
-
-			<div className={classes.nav}>
-				<CalendarButton action='month-1' className={classes.button}>
-					‹
-				</CalendarButton>
-				<CalendarButton action='month+1' className={classes.button}>
-					›
-				</CalendarButton>
-			</div>
-		</div>
-
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays rows={1}>
-				{(date) => (
-					<div key={date.getTime()} className={classes.weekday}>
-						{date.format({ weekday: 'short' })}
-					</div>
-				)}
-			</CalendarDays>
-			<CalendarDays>
-				{(date) => (
-					<CalendarDay
-						key={date.getTime()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</CalendarRoot>
-)
-
 export const CalendarWithMinMaxBoundaries = () => {
 	const today = new Date()
 
@@ -307,6 +269,79 @@ export const CalendarWithOverflowVisible = () => (
 						key={date.format()}
 						date={date}
 						className={classes.dayWithOverflowVisible}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</CalendarRoot>
+)
+
+export const CalendarWithWeekdayHeaders = () => (
+	<CalendarRoot className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='month-1' className={classes.button}>
+					‹
+				</CalendarButton>
+				<CalendarButton action='month+1' className={classes.button}>
+					›
+				</CalendarButton>
+			</div>
+		</div>
+
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays rows={1}>
+				{(date) => (
+					<div key={date.getTime()} className={classes.weekday}>
+						{date.format({ weekday: 'short' })}
+					</div>
+				)}
+			</CalendarDays>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.getTime()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</CalendarRoot>
+)
+
+export const CalendarWithSpecificLocale = () => (
+	<CalendarRoot locale='en-US' className={classes.calendar}>
+		<div className={classes.header}>
+			<CalendarTitle className={classes.title} />
+
+			<div className={classes.nav}>
+				<CalendarButton action='today' className={classes.button}>
+					•
+				</CalendarButton>
+			</div>
+		</div>
+
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays rows={1}>
+				{(date) => (
+					<div key={date.getTime()} className={classes.weekday}>
+						{date.format({ weekday: 'short' })}
+					</div>
+				)}
+			</CalendarDays>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.getTime()}
+						date={date}
+						className={classes.day}
 					>
 						{date.getDay()}
 					</CalendarDay>
