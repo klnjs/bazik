@@ -1,8 +1,8 @@
 import { useCallback, type PointerEvent } from 'react'
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 
-export type CalendarFieldInputProps = AsChildComponentProps<'div'>
+export type CalendarFieldInputProps = CoreProps<'div'>
 
 export const CalendarFieldInput = forwardRef<'div', CalendarFieldInputProps>(
 	(props, forwardedRef) => {

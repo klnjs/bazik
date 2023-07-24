@@ -1,10 +1,11 @@
-import { useMemo, useEffect, useCallback, type KeyboardEvent } from 'react'
 import {
-	freya,
-	forwardRef,
-	useForwardedRef,
-	type AsChildComponentProps
-} from '../core'
+	useRef,
+	useMemo,
+	useEffect,
+	useCallback,
+	type KeyboardEvent
+} from 'react'
+import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
@@ -13,7 +14,7 @@ import {
 	type CalendarDateSegmentTypeEditable
 } from './CalendarDate'
 
-export type CalendarFieldSegmentProps = AsChildComponentProps<
+export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
 		type: CalendarDateSegmentTypeEditable
@@ -60,10 +61,13 @@ export const CalendarFieldSegment = forwardRef<
 			Boolean(maxDate && selectedDate && selectedDate.isAfter(maxDate)) ||
 			Boolean(minDate && selectedDate && selectedDate.isBefore(minDate))
 
-		const ref = useForwardedRef(
-			forwardedRef,
-			isFocused ? focusedSegmentRef : undefined
+		const ref = useRef<HTMLDivElement>(null)
+		const refCallback = useMergeRefs(
+			ref,
+			isFocused ? focusedSegmentRef : undefined,
+			forwardedRef
 		)
+
 		const value = selectedDate?.getSegment(type, mode).value ?? ''
 		const valueText = selectedDate?.format({
 			year: 'numeric',
@@ -102,7 +106,7 @@ export const CalendarFieldSegment = forwardRef<
 					found.focus()
 				}
 			},
-			[ref]
+			[]
 		)
 
 		const handleFocus = useCallback(() => {
@@ -159,11 +163,11 @@ export const CalendarFieldSegment = forwardRef<
 					focusVisible: true
 				})
 			}
-		}, [ref, isFocused, autoFocus, setAutoFocus])
+		}, [isFocused, autoFocus, setAutoFocus])
 
 		return (
 			<freya.div
-				ref={ref}
+				ref={refCallback}
 				role='spinbutton'
 				inputMode='numeric'
 				autoCorrect='off'

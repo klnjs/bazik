@@ -71,34 +71,6 @@ export const CalendarDisabled = () => (
 	</CalendarRoot>
 )
 
-export const CalendarRightToLeft = () => (
-	<CalendarRoot dir='rtl' className={classes.calendar}>
-		<div className={classes.header}>
-			<CalendarTitle className={classes.title} />
-
-			<div className={classes.nav}>
-				<CalendarButton action='today' className={classes.button}>
-					•
-				</CalendarButton>
-			</div>
-		</div>
-
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays>
-				{(date) => (
-					<CalendarDay
-						key={date.format()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</CalendarRoot>
-)
-
 export const CalendarWithAutoFocus = () => (
 	<CalendarRoot autoFocus className={classes.calendar}>
 		<div className={classes.header}>
@@ -407,29 +379,6 @@ export const CalendarField = () => (
 
 export const CalendarFieldDisabled = () => (
 	<CalendarFieldRoot disabled className={classes.field}>
-		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
-		<CalendarFieldInput className={classes.input}>
-			<CalendarFieldSegments>
-				{(segment, index) =>
-					segment.type === 'literal' ? (
-						<CalendarFieldLiteral key={index}>
-							{segment.value}
-						</CalendarFieldLiteral>
-					) : (
-						<CalendarFieldSegment
-							key={segment.type}
-							type={segment.type}
-							className={classes.segment}
-						/>
-					)
-				}
-			</CalendarFieldSegments>
-		</CalendarFieldInput>
-	</CalendarFieldRoot>
-)
-
-export const CalendarFieldRightToLeft = () => (
-	<CalendarFieldRoot dir='rtl' className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>

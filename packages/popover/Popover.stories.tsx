@@ -1,135 +1,46 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { useState, type MouseEvent } from 'react'
-import { Popover } from './Popover'
+import type { Meta } from '@storybook/react'
+import { Popover as PopoverRoot } from './Popover'
+import { PopoverAnchor } from './PopoverAnchor'
+import { PopoverTrigger } from './PopoverTrigger'
+import { PopoverContent } from './PopoverContent'
 import * as classes from './Popover.stories.css'
 
 export default {
 	title: 'Popover',
-	component: Popover
-} satisfies Meta<typeof Popover>
-
-export const Default: StoryObj<typeof Popover> = {
-	render: (args) => {
-		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [anchor, setAnchor] = useState<HTMLElement>()
-
-		// eslint-disable-next-line react-hooks/rules-of-hooks
-		const [direction, setDirection] = useState('ltr')
-
-		const handleOpen = ({ target }: MouseEvent) =>
-			setAnchor((prev) => (prev ? undefined : (target as HTMLElement)))
-
-		const handleClose = () => {
-			setAnchor(undefined)
-		}
-
-		return (
-			<div className={classes.story}>
-				<div className={classes.controls}>
-					<h2>Controls</h2>
-
-					<button onClick={() => setDirection('ltr')}>Set LTR</button>
-
-					<button onClick={() => setDirection('rtl')}>Set RTL</button>
-				</div>
-
-				<div dir={direction} className={classes.section}>
-					<button className={classes.anchor} onClick={handleOpen}>
-						Open
-					</button>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='start start'
-						anchorAlignment='end end'
-						className={classes.popover}
-						{...args}
-						onClose={handleClose}
-					>
-						SS
-					</Popover>
-
-					{/* 
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='start center'
-						anchorAlignment='end center'
-						className={classes.popover}
-						{...args}
-					>
-						SEC
-					</Popover>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='start end'
-						anchorAlignment='end start'
-						className={classes.popover}
-						{...args}
-					>
-						SE
-					</Popover>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='center end'
-						anchorAlignment='center start'
-						className={classes.popover}
-						{...args}
-					>
-						CES
-					</Popover>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='end end'
-						anchorAlignment='start start'
-						className={classes.popover}
-						{...args}
-					>
-						EE
-					</Popover>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='end center'
-						anchorAlignment='start center'
-						className={classes.popover}
-						{...args}
-					>
-						ESC
-					</Popover>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='end start'
-						anchorAlignment='start end'
-						className={classes.popover}
-						{...args}
-					>
-						ES
-					</Popover>
-
-					<Popover
-						open={Boolean(anchor)}
-						anchor={anchor}
-						anchorOrigin='center start'
-						anchorAlignment='center end'
-						className={classes.popover}
-						{...args}
-					>
-						CSE
-					</Popover>
-					*/}
-				</div>
-			</div>
-		)
+	component: PopoverRoot,
+	parameters: {
+		layout: 'centered'
 	}
-}
+} satisfies Meta<typeof PopoverRoot>
+
+export const Popover = () => (
+	<PopoverRoot placement='bottom-start'>
+		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
+		<PopoverContent className={classes.popover}>
+			I am a popover
+		</PopoverContent>
+	</PopoverRoot>
+)
+
+export const PopoverRightToLeft = () => (
+	<div dir='rtl'>
+		<PopoverRoot placement='bottom-start'>
+			<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
+			<PopoverContent className={classes.popover}>
+				I am a popover
+			</PopoverContent>
+		</PopoverRoot>
+	</div>
+)
+
+export const PopoverWithAnchor = () => (
+	<PopoverRoot>
+		<div className={classes.layout}>
+			<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
+			<PopoverAnchor className={classes.anchor}>Anchor</PopoverAnchor>
+		</div>
+		<PopoverContent className={classes.popover}>
+			I am a popover
+		</PopoverContent>
+	</PopoverRoot>
+)

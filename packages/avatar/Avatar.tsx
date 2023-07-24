@@ -1,9 +1,9 @@
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 import { mergeProps } from '../core/mergeProps'
 import { AvatarProvider } from './AvatarContext'
 import { useAvatar, type UseAvatarOptions } from './useAvatar'
 
-export type AvatarProps = AsChildComponentProps<'div', UseAvatarOptions>
+export type AvatarProps = CoreProps<'div', UseAvatarOptions>
 
 export const Avatar = forwardRef<'div', AvatarProps>(
 	({ onLoad, onError, ...otherProps }, forwardedRef) => {

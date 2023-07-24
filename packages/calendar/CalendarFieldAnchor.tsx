@@ -1,19 +1,5 @@
-import {
-	freya,
-	forwardRef,
-	useForwardedRef,
-	type AsChildComponentProps
-} from '../core'
-import { useCalendarFieldContext } from './CalendarFieldContext'
+import { PopoverAnchor, type PopoverAnchorProps } from '../popover'
 
-export type CalendarFieldAnchorProps = AsChildComponentProps<'div'>
+export type CalendarFieldAnchorProps = PopoverAnchorProps
 
-export const CalendarFieldAnchor = forwardRef<'div', CalendarFieldAnchorProps>(
-	(props, forwardedRef) => {
-		const { anchorRef } = useCalendarFieldContext()
-
-		useForwardedRef(forwardedRef, anchorRef)
-
-		return <freya.div ref={anchorRef} {...props} />
-	}
-)
+export const CalendarFieldAnchor = PopoverAnchor

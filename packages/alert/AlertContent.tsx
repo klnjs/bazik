@@ -1,8 +1,8 @@
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 import { mergeProps } from '../core/mergeProps'
 import { useAlertContext } from './AlertContext'
 
-export type AlertContentProps = AsChildComponentProps<'div'>
+export type AlertContentProps = CoreProps<'div'>
 
 export const AlertContent = forwardRef<'div', AlertContentProps>(
 	(props, forwardedRef) => {

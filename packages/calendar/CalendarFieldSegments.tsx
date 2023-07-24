@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode, useEffect } from 'react'
+import { useMemo, useLayoutEffect, type ReactNode } from 'react'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import type {
 	CalendarDateSegmentType,
@@ -29,9 +29,8 @@ export const CalendarFieldSegments = <
 		[exclude, focusedDate]
 	)
 
-	useEffect(() => {
-		// First segment can never be literal, therefore
-		// this cast is safe
+	useLayoutEffect(() => {
+		// First segment can never be literal
 		setFocusedSegment(segments[0].type as CalendarDateSegmentTypeEditable)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])

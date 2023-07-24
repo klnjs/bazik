@@ -1,6 +1,6 @@
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 
-export type CalendarGridProps = AsChildComponentProps<
+export type CalendarGridProps = CoreProps<
 	'div',
 	{
 		columns?: number

@@ -19,6 +19,7 @@
 		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
+		"@floating-ui/react": "^0.24.8",
 		"@klnjs/eslint-config": "0.0.1-rc.9",
 		"@klnjs/eslint-config-react": "0.0.1-rc.9",
 		"@klnjs/eslint-config-typescript": "0.0.1-rc.9",

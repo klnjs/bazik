@@ -1,6 +1,6 @@
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 
-export type CalendarFieldLiteralProps = AsChildComponentProps<'span'>
+export type CalendarFieldLiteralProps = CoreProps<'span'>
 
 export const CalendarFieldLiteral = forwardRef<
 	'span',

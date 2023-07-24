@@ -25,8 +25,6 @@ export const useCalendarLocalisation = (locale = 'en') => {
 			// @ts-expect-error just hacking away
 			const lang: keyof typeof texts = !texts[locale] ? 'en' : locale
 
-			console.log(lang)
-
 			return Object.entries(interpolation).reduce<string>(
 				(acc, [name, value]) => acc.replaceAll(`{{${name}}}`, value),
 				texts[lang][key]

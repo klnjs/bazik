@@ -1,14 +1,9 @@
-import { useEffect, useCallback, type KeyboardEvent } from 'react'
-import {
-	freya,
-	forwardRef,
-	useForwardedRef,
-	type AsChildComponentProps
-} from '../core'
+import { useEffect, useCallback, type KeyboardEvent, useRef } from 'react'
+import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
 
-export type CalendarDayProps = AsChildComponentProps<
+export type CalendarDayProps = CoreProps<
 	'button',
 	{
 		date: CalendarDate
@@ -41,7 +36,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			Boolean(maxDate && date.isAfter(maxDate)) ||
 			Boolean(minDate && date.isBefore(minDate))
 
-		const ref = useForwardedRef(forwardedRef)
+		const ref = useRef<HTMLButtonElement>(null)
+		const refCallback = useMergeRefs(ref, forwardedRef)
+
 		const formatted = date.format({
 			year: 'numeric',
 			month: 'long',
@@ -116,11 +113,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 					setFocusedDate((prev) => prev.getLastDateOfMonth(), true)
 				}
 			},
-			[ref, handleClick, setFocusedDate]
+			[handleClick, setFocusedDate]
 		)
 
 		useEffect(() => {
+			console.log(isFocused, autoFocus)
 			if (isFocused && autoFocus) {
+				console.log('hey?')
 				setAutoFocus(false)
 				ref.current?.focus({
 					// @ts-expect-error not yet implemented
@@ -128,11 +127,11 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 					focusVisible: true
 				})
 			}
-		}, [ref, isFocused, autoFocus, setAutoFocus])
+		}, [isFocused, autoFocus, setAutoFocus])
 
 		return (
 			<freya.button
-				ref={ref}
+				ref={refCallback}
 				disabled={isDisabled}
 				tabIndex={isFocused ? 0 : -1}
 				data-today={isToday ? '' : undefined}

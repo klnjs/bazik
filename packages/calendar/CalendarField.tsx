@@ -1,13 +1,16 @@
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { useState } from 'react'
+import { freya, forwardRef, chain, type CoreProps } from '../core'
+import { usePopover, PopoverProvider, type UsePopoverOptions } from '../popover'
 import { CalendarFieldProvider } from './CalendarFieldContext'
 import {
 	useCalendarField,
 	type UseCalendarFieldOptions
 } from './useCalendarField'
 
-export type CalendarFieldProps = AsChildComponentProps<
+export type CalendarFieldProps = CoreProps<
 	'div',
-	UseCalendarFieldOptions
+	UseCalendarFieldOptions &
+		Pick<UsePopoverOptions, 'offset' | 'placement' | 'onOpenChange'>
 >
 
 export const CalendarField = forwardRef<'div', CalendarFieldProps>(
@@ -17,15 +20,19 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			min,
 			max,
 			value,
+			offset,
 			locale,
 			disabled,
-			defaultOpen,
+			placement = 'bottom-start',
 			defaultValue,
 			onChange,
+			onOpenChange,
 			...otherProps
 		},
 		forwardedRef
 	) => {
+		const [open, setOpen] = useState(false)
+
 		const field = useCalendarField({
 			autoFocus,
 			min,
@@ -33,14 +40,26 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			value,
 			locale,
 			disabled,
-			defaultOpen,
 			defaultValue,
-			onChange
+			onChange: chain(() => setOpen(false), onChange)
+		})
+
+		const popover = usePopover({
+			open,
+			offset,
+			placement,
+			onOpenChange: chain(field.setAutoFocus, setOpen, onOpenChange)
 		})
 
 		return (
 			<CalendarFieldProvider value={field}>
-				<freya.div ref={forwardedRef} role='group' {...otherProps} />
+				<PopoverProvider value={popover}>
+					<freya.div
+						ref={forwardedRef}
+						role='group'
+						{...otherProps}
+					/>
+				</PopoverProvider>
 			</CalendarFieldProvider>
 		)
 	}

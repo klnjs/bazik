@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import {
 	CalendarDate,
@@ -18,7 +18,7 @@ type CalendarButtonAction =
 	| 'today'
 	| `${CalendarButtonSegment}${CalendarButtonModifier}`
 
-export type CalendarButtonProps = AsChildComponentProps<
+export type CalendarButtonProps = CoreProps<
 	'button',
 	{ action: CalendarButtonAction }
 >

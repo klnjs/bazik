@@ -1,7 +1,7 @@
-import { freya, forwardRef, type AsChildComponentProps } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 
-export type CalendarTitleProps = AsChildComponentProps<'h2'>
+export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	(props, forwardedRef) => {
