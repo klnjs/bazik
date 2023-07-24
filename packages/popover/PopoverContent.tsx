@@ -1,15 +1,11 @@
-import {
-	FloatingPortal,
-	FloatingFocusManager,
-	type FloatingFocusManagerProps
-} from '@floating-ui/react'
+import { FloatingPortal, FloatingFocusManager } from '@floating-ui/react'
 import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
 import { usePopoverContext } from './PopoverContext'
 
-export type PopoverContentProps = CoreProps<'div', FloatingFocusManagerProps>
+export type PopoverContentProps = CoreProps<'div'>
 
 export const PopoverContent = forwardRef<'div', PopoverContentProps>(
-	({ initialFocus, style, ...otherProps }, forwardedRef) => {
+	({ style, ...otherProps }, forwardedRef) => {
 		const { refs, modal, context, getFloatingProps } = usePopoverContext()
 		const ref = useMergeRefs(refs.setFloating, forwardedRef)
 
@@ -23,7 +19,6 @@ export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 					modal={modal}
 					guards={!modal}
 					context={context}
-					initialFocus={initialFocus}
 				>
 					<freya.div
 						ref={ref}

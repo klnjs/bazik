@@ -23,14 +23,12 @@ export const Popover = () => (
 )
 
 export const PopoverRightToLeft = () => (
-	<div dir='rtl'>
-		<PopoverRoot placement='bottom-start'>
-			<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-			<PopoverContent className={classes.popover}>
-				I am a popover
-			</PopoverContent>
-		</PopoverRoot>
-	</div>
+	<PopoverRoot placement='bottom-start'>
+		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
+		<PopoverContent dir='rtl' className={classes.popover}>
+			I am a popover
+		</PopoverContent>
+	</PopoverRoot>
 )
 
 export const PopoverWithAnchor = () => (

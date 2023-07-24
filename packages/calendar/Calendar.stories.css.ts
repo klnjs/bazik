@@ -122,9 +122,10 @@ export const field = style({
 export const input = style({
 	display: 'inline-flex',
 	gap: 2,
-	height: 42,
+	height: 36,
 	paddingInline: 8,
 	alignItems: 'center',
+	boxSizing: 'border-box',
 	border: '1px solid black',
 	borderRadius: 4,
 	':focus-within': {
@@ -139,6 +140,11 @@ export const input = style({
 
 export const anchor = style({
 	display: 'inline-flex'
+})
+
+export const trigger = style({
+	width: 36,
+	height: 36
 })
 
 export const segment = style({

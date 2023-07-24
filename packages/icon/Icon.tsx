@@ -1,6 +1,6 @@
-import { forwardRef, type ComponentProps } from '../core'
+import { forwardRef, type CoreProps } from '../core'
 
-export type IconProps = ComponentProps<'svg'>
+export type IconProps = CoreProps<'svg'>
 
 export const Icon = forwardRef<'svg', IconProps>((props, forwardedRef) => (
 	<svg ref={forwardedRef} aria-hidden={true} {...props} />

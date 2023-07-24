@@ -443,10 +443,10 @@ export const CalendarFieldWithPopover = () => (
 						)
 					}
 				</CalendarFieldSegments>
-				<CalendarFieldTrigger className={classes.button}>
-					🗓
-				</CalendarFieldTrigger>
 			</CalendarFieldInput>
+			<CalendarFieldTrigger className={classes.trigger}>
+				🗓
+			</CalendarFieldTrigger>
 		</CalendarFieldAnchor>
 		<CalendarFieldPopover className={classes.popover}>
 			<CalendarRoot className={classes.calendar}>
