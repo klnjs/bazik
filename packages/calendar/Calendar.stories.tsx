@@ -323,37 +323,6 @@ export const CalendarWithSpecificLocale = () => (
 	</CalendarRoot>
 )
 
-export const CalendarWithoutWeekend = () => (
-	<CalendarRoot className={classes.calendar}>
-		<div className={classes.header}>
-			<CalendarTitle className={classes.title} />
-
-			<div className={classes.nav}>
-				<CalendarButton action='month-1' className={classes.button}>
-					‹
-				</CalendarButton>
-				<CalendarButton action='month+1' className={classes.button}>
-					›
-				</CalendarButton>
-			</div>
-		</div>
-
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays exclude={(date) => !date.isWeekend()}>
-				{(date) => (
-					<CalendarDay
-						key={date.format()}
-						date={date}
-						className={classes.dayWithOverflowVisible}
-					>
-						{date.getDay()}
-					</CalendarDay>
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</CalendarRoot>
-)
-
 export const CalendarField = () => (
 	<CalendarFieldRoot className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>

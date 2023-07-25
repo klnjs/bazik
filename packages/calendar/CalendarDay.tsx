@@ -117,9 +117,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		)
 
 		useEffect(() => {
-			console.log(isFocused, autoFocus)
 			if (isFocused && autoFocus) {
-				console.log('hey?')
 				setAutoFocus(false)
 				ref.current?.focus({
 					// @ts-expect-error not yet implemented

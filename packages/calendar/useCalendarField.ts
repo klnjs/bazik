@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react'
-import { useId } from '../core'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
 import type { CalendarDateSegmentTypeEditable } from './CalendarDate'
 
 export type UseCalendarFieldOptions = UseCalendarOptions
 
 export const useCalendarField = (options: UseCalendarFieldOptions) => {
-	const labelId = useId()
+	const [labelId, setLabelId] = useState<string>()
 
 	const calendar = useCalendar({ ...options })
 
@@ -18,8 +17,9 @@ export const useCalendarField = (options: UseCalendarFieldOptions) => {
 	return {
 		...calendar,
 		labelId,
-		focusedSegmentRef,
+		setLabelId,
 		focusedSegment,
+		focusedSegmentRef,
 		setFocusedSegment
 	}
 }
