@@ -7,17 +7,13 @@ export type PopoverProps = UsePopoverOptions & { children: ReactNode }
 export const Popover = ({
 	open,
 	modal,
-	offset,
 	children,
-	placement,
 	defaultOpen,
 	onOpenChange
 }: PopoverProps) => {
 	const popover = usePopover({
 		open,
 		modal,
-		offset,
-		placement,
 		defaultOpen,
 		onOpenChange
 	})

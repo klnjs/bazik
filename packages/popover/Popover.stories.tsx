@@ -14,7 +14,7 @@ export default {
 } satisfies Meta<typeof PopoverRoot>
 
 export const Popover = () => (
-	<PopoverRoot placement='bottom-start'>
+	<PopoverRoot>
 		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
 		<PopoverContent className={classes.popover}>
 			I am a popover
@@ -22,10 +22,19 @@ export const Popover = () => (
 	</PopoverRoot>
 )
 
-export const PopoverRightToLeft = () => (
-	<PopoverRoot placement='bottom-start'>
+export const PopoverWithOffset = () => (
+	<PopoverRoot>
 		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-		<PopoverContent dir='rtl' className={classes.popover}>
+		<PopoverContent offset={10} className={classes.popover}>
+			I am a popover
+		</PopoverContent>
+	</PopoverRoot>
+)
+
+export const PopoverWithPlacement = () => (
+	<PopoverRoot>
+		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
+		<PopoverContent placement='bottom-start' className={classes.popover}>
 			I am a popover
 		</PopoverContent>
 	</PopoverRoot>

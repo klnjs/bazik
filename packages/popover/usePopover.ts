@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import {
-	offset,
+	offset as offsetMiddleware,
 	autoUpdate,
 	useRole,
 	useClick,
@@ -13,8 +14,6 @@ import { useControllableState } from '../core'
 export type UsePopoverOptions = {
 	open?: boolean
 	modal?: boolean
-	offset?: number
-	placement?: Placement
 	defaultOpen?: boolean
 	onOpenChange?: (open: boolean) => void
 }
@@ -22,8 +21,6 @@ export type UsePopoverOptions = {
 export const usePopover = ({
 	open: openProp,
 	modal,
-	offset: offsetProp = 0,
-	placement,
 	defaultOpen,
 	onOpenChange
 }: UsePopoverOptions) => {
@@ -33,12 +30,16 @@ export const usePopover = ({
 		onChange: onOpenChange
 	})
 
+	const [offset, setOffset] = useState<number>()
+
+	const [placement, setPlacement] = useState<Placement>()
+
 	const { refs, context, floatingStyles } = useFloating({
 		open,
 		placement,
 		whileElementsMounted: autoUpdate,
 		onOpenChange: setOpen,
-		middleware: [offset(offsetProp)]
+		middleware: [offsetMiddleware(offset)]
 	})
 
 	const { getFloatingProps, getReferenceProps } = useInteractions([
@@ -49,12 +50,15 @@ export const usePopover = ({
 
 	return {
 		refs,
-		open,
 		modal,
-		offset,
-		setOpen,
 		context,
 		floatingStyles,
+		open,
+		setOpen,
+		offset,
+		setOffset,
+		placement,
+		setPlacement,
 		getFloatingProps,
 		getReferenceProps
 	}
