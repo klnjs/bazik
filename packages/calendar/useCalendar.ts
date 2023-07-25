@@ -29,11 +29,7 @@ export const useCalendar = ({
 	defaultValue = null,
 	onChange
 }: UseCalendarOptions) => {
-	const autoFocusRef = useRef(autoFocusProp && !disabled)
-
-	const setAutoFocus = useCallback((autoFocus: boolean) => {
-		autoFocusRef.current = autoFocus
-	}, [])
+	const [titleId, setTitleId] = useState<string>()
 
 	const minDate = useMemo(
 		() => (min ? new CalendarDate(locale, min) : undefined),
@@ -44,6 +40,12 @@ export const useCalendar = ({
 		() => (max ? new CalendarDate(locale, max) : undefined),
 		[locale, max]
 	)
+
+	const autoFocusRef = useRef(autoFocusProp && !disabled)
+
+	const setAutoFocus = useCallback((autoFocus: boolean) => {
+		autoFocusRef.current = autoFocus
+	}, [])
 
 	const [focusedDate, setFocusedDate] = useState(
 		() => new CalendarDate(locale, value)
@@ -93,6 +95,8 @@ export const useCalendar = ({
 		disabled,
 		minDate,
 		maxDate,
+		titleId,
+		setTitleId,
 		autoFocus: autoFocusRef.current,
 		setAutoFocus,
 		focusedDate,

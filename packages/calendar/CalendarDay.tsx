@@ -130,6 +130,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		return (
 			<freya.button
 				ref={refCallback}
+				role='gridcell'
 				disabled={isDisabled}
 				tabIndex={isFocused ? 0 : -1}
 				data-today={isToday ? '' : undefined}

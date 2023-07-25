@@ -9,8 +9,7 @@ import {
 
 export type CalendarFieldProps = CoreProps<
 	'div',
-	UseCalendarFieldOptions &
-		Pick<UsePopoverOptions, 'offset' | 'placement' | 'onOpenChange'>
+	UseCalendarFieldOptions & Pick<UsePopoverOptions, 'onOpenChange'>
 >
 
 export const CalendarField = forwardRef<'div', CalendarFieldProps>(
@@ -20,10 +19,8 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			min,
 			max,
 			value,
-			offset,
 			locale,
 			disabled,
-			placement = 'bottom-start',
 			defaultValue,
 			onChange,
 			onOpenChange,
@@ -46,8 +43,6 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 
 		const popover = usePopover({
 			open,
-			offset,
-			placement,
 			onOpenChange: chain(field.setAutoFocus, setOpen, onOpenChange)
 		})
 

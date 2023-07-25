@@ -5,10 +5,10 @@ import { useCalendarFieldContext } from './CalendarFieldContext'
 export type CalendarFieldLabelProps = CoreProps<'label'>
 
 export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
-	(props, forwardedRef) => {
-		const { labelId, setLabelId, focusedSegmentRef } =
+	({ id: idProp, ...otherProps }, forwardedRef) => {
+		const { focusedSegmentRef, labelId, setLabelId } =
 			useCalendarFieldContext()
-		const id = useId()
+		const id = useId(idProp)
 
 		useLayoutEffect(() => {
 			setLabelId(id)
@@ -23,7 +23,7 @@ export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
 				id={labelId}
 				ref={forwardedRef}
 				onClick={() => focusedSegmentRef.current?.focus()}
-				{...props}
+				{...otherProps}
 			/>
 		)
 	}
