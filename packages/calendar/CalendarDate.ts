@@ -34,11 +34,11 @@ export type CalendarDateMutation = {
 
 export class CalendarDate {
 	date: Date
-	locale: Intl.Locale
+	locale: string
 
-	constructor(locale?: string | Intl.Locale, date?: Date | null) {
+	constructor(locale?: string, date?: Date | null) {
 		this.date = date ?? new Date()
-		this.locale = new Intl.Locale(locale ?? navigator.language).maximize()
+		this.locale = locale ?? navigator.language
 	}
 
 	static isValidSegment(segment: object): segment is CalendarDateSegment {
@@ -52,11 +52,11 @@ export class CalendarDate {
 
 	set({ year, month, day }: CalendarDateMutation) {
 		const date = this.getDate()
-		const next = new Date(
-			year ?? date.getFullYear(),
-			month ? month - 1 : date.getMonth(),
-			day ?? date.getDate()
-		)
+		const next = new Date()
+
+		next.setFullYear(year ?? date.getFullYear())
+		next.setMonth(month ? month - 1 : date.getMonth())
+		next.setDate(day ?? date.getDate())
 
 		return new CalendarDate(this.locale, next)
 	}
@@ -120,10 +120,10 @@ export class CalendarDate {
 		const diff = this.getDiff(target)
 		const segmentDiff = diff[segment]
 
-		return new Intl.RelativeTimeFormat(
-			this.locale.language,
-			options
-		).format(segmentDiff, segment)
+		return new Intl.RelativeTimeFormat(this.locale, options).format(
+			segmentDiff,
+			segment
+		)
 	}
 
 	getYear() {
@@ -137,10 +137,6 @@ export class CalendarDate {
 
 	getDay() {
 		return this.getDate().getDate()
-	}
-
-	getDayOfWeek() {
-		return this.getDate().getDay() || 7
 	}
 
 	getTime() {
@@ -168,7 +164,7 @@ export class CalendarDate {
 		style: CalendarDateSegmentStyle = 'numeric',
 		exclude?: T
 	) {
-		return new Intl.DateTimeFormat(this.locale.language, {
+		return new Intl.DateTimeFormat(this.locale, {
 			year: exclude?.includes('year') ? undefined : 'numeric',
 			month: exclude?.includes('month') ? undefined : style,
 			day: exclude?.includes('day') ? undefined : style
@@ -194,10 +190,6 @@ export class CalendarDate {
 		return this.getSegments(style).find((segment) => segment.type === type)!
 	}
 
-	getSegmentByIndex(index: number, style?: CalendarDateSegmentStyle) {
-		return this.getSegments(style)[index]
-	}
-
 	getFirstDateOfWeek() {
 		return this.sub({ day: this.getWeekDay() - 1 })
 	}
@@ -214,6 +206,10 @@ export class CalendarDate {
 		return this.set({ month: this.getMonth() + 1, day: 0 })
 	}
 
+	getDaysInMonth() {
+		return this.getLastDateOfMonth().getDay()
+	}
+
 	// eslint-disable-next-line
 	getWeek() {
 		throw new Error('Not implemented')
@@ -224,14 +220,17 @@ export class CalendarDate {
 			try {
 				// @ts-expect-error not in spec yet
 				// eslint-disable-next-line
-				return this.locale.getWeekInfo().firstDay as number
+				return new Intl.Locale(this.locale).getWeekInfo()
+					.firstDay as number
 			} catch (error) {
-				return weekInfo[this.locale.region as keyof typeof weekInfo]
-					.firstDay
+				return weekInfo[
+					new Intl.Locale(this.locale).maximize()
+						.region as keyof typeof weekInfo
+				].firstDay
 			}
 		})()
 
-		const dayOfWeek = this.getDayOfWeek()
+		const dayOfWeek = this.getDate().getDay() || 7
 		const dayOfWeekIndex = dayOfWeek - firstDayOfWeek
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
@@ -257,14 +256,17 @@ export class CalendarDate {
 			try {
 				// @ts-expect-error not in spec yet
 				// eslint-disable-next-line
-				return this.locale.getWeekInfo().weekend as number[]
+				return new Intl.Locale(this.locale).getWeekInfo()
+					.weekend as number[]
 			} catch (error) {
-				return weekInfo[this.locale.region as keyof typeof weekInfo]
-					.weekend
+				return weekInfo[
+					new Intl.Locale(this.locale).maximize()
+						.region as keyof typeof weekInfo
+				].weekend
 			}
 		})()
 
-		const dayOfWeek = this.getDayOfWeek()
+		const dayOfWeek = this.getDate().getDay() || 7
 
 		return weekend.includes(dayOfWeek)
 	}

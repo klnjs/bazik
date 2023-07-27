@@ -76,13 +76,26 @@ export const CalendarFieldSegment = forwardRef<
 			day: 'numeric'
 		})
 
+		const max = useMemo(() => {
+			switch (type) {
+				case 'year':
+					return 9999
+				case 'month':
+					return 12
+				case 'day':
+					return selectedDate?.getDaysInMonth() ?? 31
+				default:
+					throw new Error('Invalid segment type')
+			}
+		}, [type, selectedDate])
+
 		const length = useMemo(
 			() => new CalendarDate(locale).getSegment(type, mode).value.length,
-			[locale, type, mode]
+			[type, mode, locale]
 		)
 
 		const children = useMemo(
-			() => value.padStart(length, placeholder),
+			() => (!value ? value.padStart(length, placeholder) : value),
 			[value, length, placeholder]
 		)
 
@@ -140,9 +153,9 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (/[0-9]/.test(event.key)) {
-					const press = Number(event.key)
-					const intent = Number(`${value}${press}`)
-					const next = intent <= 31 ? intent : press
+					const pressed = Number(event.key)
+					const intent = Number(`${value}${pressed}`)
+					const next = max && intent <= max ? intent : pressed
 
 					changeSegment((prev) => prev.set({ [type]: next }))
 
@@ -151,7 +164,7 @@ export const CalendarFieldSegment = forwardRef<
 					}
 				}
 			},
-			[type, value, length, changeSegment, changeFocusedSegment]
+			[max, type, value, length, changeSegment, changeFocusedSegment]
 		)
 
 		useEffect(() => {
@@ -188,8 +201,8 @@ export const CalendarFieldSegment = forwardRef<
 				data-placeholder={!value ? '' : undefined}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
-				// aria-valuemin={min}
-				// aria-valuemax={max}
+				aria-valuemin={1}
+				aria-valuemax={max}
 				aria-valuenow={Number(value)}
 				aria-valuetext={valueText ?? 'Empty'}
 				aria-invalid={isInvalid}
@@ -235,7 +248,7 @@ const findDirection = (
 			case 'previous':
 				return 'next'
 			default:
-				throw new Error('unsupported action')
+				throw new Error('Invalid action')
 		}
 	}
 

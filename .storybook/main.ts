@@ -4,8 +4,16 @@ import prettierConfig from '@klnjs/prettier-config'
 import { mergeConfig } from 'vite'
 
 export default {
-	framework: '@storybook/react-vite',
 	stories: ['../packages/**/*.stories.tsx'],
+	core: {
+		disableTelemetry: true
+	},
+	framework: {
+		name: '@storybook/react-vite',
+		options: {
+			strictMode: true
+		}
+	},
 	addons: [
 		{
 			name: '@storybook/addon-storysource',
@@ -18,10 +26,6 @@ export default {
 			}
 		}
 	],
-	core: {
-		disableTelemetry: true,
-		builder: '@storybook/builder-vite'
-	},
 	typescript: {
 		check: false,
 		reactDocgen: 'react-docgen-typescript',
