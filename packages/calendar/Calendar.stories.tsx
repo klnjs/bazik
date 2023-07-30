@@ -90,6 +90,25 @@ export const Navigation = () => (
 	</Calendar>
 )
 
+export const Localization = () => (
+	<Calendar locale="en-US" className={classes.calendar}>
+		<CalendarTitle className={classes.title} />
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays>
+				{(date) => (
+					<CalendarDay
+						key={date.getTime()}
+						date={date}
+						className={classes.day}
+					>
+						{date.getDay()}
+					</CalendarDay>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</Calendar>
+)
+
 export const MinAndMax = () => {
 	const today = new Date()
 
@@ -183,21 +202,73 @@ export const WeekendDisabled = () => (
 	</Calendar>
 )
 
-export const Localization = () => (
-	<Calendar locale="en-US" className={classes.calendar}>
-		<CalendarTitle className={classes.title} />
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays>
-				{(date) => (
-					<CalendarDay
-						key={date.getTime()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</Calendar>
-)
+export const Schedule = () => {
+	const events = [
+		{
+			date: new Date('2023-07-01'),
+			name: 'Party',
+			color: 'lime'
+		},
+		{
+			date: new Date('2023-07-04'),
+			name: 'Doctors',
+			color: 'aqua'
+		},
+		{
+			date: new Date('2023-07-12'),
+			name: 'Dentist',
+			color: 'aqua'
+		},
+		{
+			date: new Date('2023-07-22'),
+			name: 'Funeral',
+			color: 'coral'
+		},
+		{
+			date: new Date('2023-07-23'),
+			name: 'Birthday',
+			color: 'crimson'
+		}
+	] as const
+
+	return (
+		<Calendar className={classes.calendar} style={{ width: 700 }}>
+			<CalendarTitle className={classes.title} />
+			<CalendarGrid className={classes.grid} style={{ gap: 0 }}>
+				<CalendarDays>
+					{(date) => (
+						<div
+							key={date.format()}
+							style={{
+								aspectRatio: '1 / 1',
+								padding: 4,
+								border: '1px solid grey',
+								borderRadius: 4
+							}}
+						>
+							<div style={{ fontSize: 12 }}>{date.getDay()}</div>
+							<div>
+								{events
+									.filter((event) =>
+										date.isSameDay(event.date)
+									)
+									.map((event) => (
+										<div
+											style={{
+												background: event.color,
+												borderRadius: 4,
+												fontSize: 12,
+												padding: 2
+											}}
+										>
+											{event.name}
+										</div>
+									))}
+							</div>
+						</div>
+					)}
+				</CalendarDays>
+			</CalendarGrid>
+		</Calendar>
+	)
+}

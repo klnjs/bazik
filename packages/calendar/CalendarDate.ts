@@ -277,27 +277,36 @@ export class CalendarDate {
 		return weekend.includes(dayOfWeek)
 	}
 
-	isAfter(date: CalendarDate) {
-		return this.getDate() > date.getDate()
+	isAfter(date: CalendarDate | Date) {
+		return this.getDate().getTime() > date.getTime()
 	}
 
-	isBefore(date: CalendarDate) {
-		return this.getDate() < date.getDate()
+	isBefore(date: CalendarDate | Date) {
+		return this.getDate().getTime() < date.getTime()
 	}
 
-	isSameDay(date: CalendarDate) {
+	isSameYear(input: CalendarDate | Date) {
+		const date =
+			input instanceof Date ? new CalendarDate(this.locale, input) : input
+
+		return this.getYear() === date.getYear()
+	}
+
+	isSameMonth(input: CalendarDate | Date) {
+		const date =
+			input instanceof Date ? new CalendarDate(this.locale, input) : input
+
+		return this.isSameYear(date) && this.getMonth() === date.getMonth()
+	}
+
+	isSameDay(input: CalendarDate | Date) {
+		const date =
+			input instanceof Date ? new CalendarDate(this.locale, input) : input
+
 		return (
 			this.isSameYear(date) &&
 			this.isSameMonth(date) &&
 			this.getDay() === date.getDay()
 		)
-	}
-
-	isSameMonth(date: CalendarDate) {
-		return this.isSameYear(date) && this.getMonth() === date.getMonth()
-	}
-
-	isSameYear(date: CalendarDate) {
-		return this.getYear() === date.getYear()
 	}
 }
