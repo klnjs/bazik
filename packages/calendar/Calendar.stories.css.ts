@@ -16,7 +16,7 @@ export const title = style({
 
 export const grid = style({
 	display: 'grid',
-	gridTemplateColumns: 'repeat(8, 1fr)',
+	gridTemplateColumns: 'repeat(7, 1fr)',
 	gap: 4
 })
 
