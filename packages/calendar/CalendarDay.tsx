@@ -55,7 +55,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			: formatted
 
 		const handleClick = useCallback(() => {
-			setFocusedDate(date)
+			setFocusedDate(date, true)
 			setSelectedDate(date)
 		}, [date, setFocusedDate, setSelectedDate])
 
@@ -130,7 +130,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		return (
 			<freya.button
 				ref={refCallback}
-				role='gridcell'
+				role="gridcell"
 				disabled={isDisabled}
 				tabIndex={isFocused ? 0 : -1}
 				data-today={isToday ? '' : undefined}

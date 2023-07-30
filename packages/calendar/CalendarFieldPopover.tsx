@@ -6,4 +6,6 @@ export type CalendarFieldPopoverProps = PopoverContentProps
 export const CalendarFieldPopover = forwardRef<
 	'div',
 	CalendarFieldPopoverProps
->((props, forwardedRef) => <PopoverContent ref={forwardedRef} {...props} />)
+>(({ placement = 'bottom-start', ...otherProps }, forwardedRef) => (
+	<PopoverContent ref={forwardedRef} placement={placement} {...otherProps} />
+))

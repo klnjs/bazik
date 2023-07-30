@@ -51,7 +51,7 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 				<PopoverProvider value={popover}>
 					<freya.div
 						ref={forwardedRef}
-						role='group'
+						role="group"
 						{...otherProps}
 					/>
 				</PopoverProvider>

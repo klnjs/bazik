@@ -1,14 +1,23 @@
-import { freya, forwardRef, type CoreProps } from '../core'
-import { mergeProps } from '../core/mergeProps'
+import { freya, chain, forwardRef, type CoreProps } from '../core'
 import { useAvatarContext } from './AvatarContext'
 
 export type AvatarImageProps = CoreProps<'img'>
 
 export const AvatarImage = forwardRef<'img', AvatarImageProps>(
-	(props, forwardedRef) => {
-		const { imageProps } = useAvatarContext()
-		const mergedProps = mergeProps(props, imageProps)
+	({ onLoad, onError, ...otherProps }, forwardedRef) => {
+		const { ready, setReady } = useAvatarContext()
 
-		return <freya.img ref={forwardedRef} {...mergedProps} />
+		const handleLoad = chain(onLoad, () => setReady(true))
+		const handleError = chain(onError, () => setReady(false))
+
+		return (
+			<freya.img
+				ref={forwardedRef}
+				hidden={!ready}
+				onLoad={handleLoad}
+				onError={handleError}
+				{...otherProps}
+			/>
+		)
 	}
 )

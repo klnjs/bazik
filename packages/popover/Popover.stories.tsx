@@ -34,7 +34,7 @@ export const PopoverWithOffset = () => (
 export const PopoverWithPlacement = () => (
 	<PopoverRoot>
 		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-		<PopoverContent placement='bottom-start' className={classes.popover}>
+		<PopoverContent placement="bottom-start" className={classes.popover}>
 			I am a popover
 		</PopoverContent>
 	</PopoverRoot>

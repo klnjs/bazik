@@ -1,6 +1,3 @@
-Notes
-	- Implement popover functionality.
-	- Should we use utility functions instead of CalendarDate class?
-
 Improvements
-	- Allow individual segmenets to be disabled
+ - Implement readOnly behaviour
+ - Implement week numbers

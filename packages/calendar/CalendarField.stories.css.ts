@@ -1,13 +1,5 @@
 import { style } from '@vanilla-extract/css'
 
-export const calendar = style({
-	width: 280,
-	display: 'flex',
-	flexDirection: 'column',
-	gap: 8,
-	fontFamily: 'Arial'
-})
-
 export const title = style({
 	margin: 0,
 	padding: 0,
@@ -16,8 +8,16 @@ export const title = style({
 
 export const grid = style({
 	display: 'grid',
-	gridTemplateColumns: 'repeat(8, 1fr)',
+	gridTemplateColumns: 'repeat(7, 1fr)',
 	gap: 4
+})
+
+export const calendar = style({
+	width: 280,
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 8,
+	fontFamily: 'Arial'
 })
 
 export const header = style({
@@ -87,18 +87,6 @@ export const day = style([
 	}
 ])
 
-export const dayWithOverflowVisible = style([
-	day,
-	{
-		selectors: {
-			'&[data-overflow]': {
-				opacity: 0.4,
-				visibility: 'visible'
-			}
-		}
-	}
-])
-
 export const weekday = style([
 	cell,
 	{
@@ -111,7 +99,8 @@ export const weekday = style([
 export const field = style({
 	display: 'inline-flex',
 	gap: 6,
-	flexDirection: 'column'
+	flexDirection: 'column',
+	fontFamily: 'Arial'
 })
 
 export const input = style({

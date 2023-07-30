@@ -9,27 +9,25 @@ export const calendarDateSegmentTypes = [
 
 export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
 
-export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
-
-export type CalendarDateSegmentTypeEditable = Exclude<
+export type CalendarDateSegmentTypeWithoutLiteral = Exclude<
 	CalendarDateSegmentType,
 	'literal'
 >
+
+export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
 
 export type CalendarDateSegment = {
 	type: CalendarDateSegmentType
 	value: string
 }
 
-export type CalendarDateSegmentExclude<T extends CalendarDateSegmentType> = {
-	type: Exclude<CalendarDateSegmentType, T>
+export type CalendarDateSegmentWithoutLiterals = {
+	type: CalendarDateSegmentTypeWithoutLiteral
 	value: string
 }
 
 export type CalendarDateMutation = {
-	year?: number
-	month?: number
-	day?: number
+	[key in CalendarDateSegmentType]?: number
 }
 
 export class CalendarDate {
@@ -114,7 +112,7 @@ export class CalendarDate {
 
 	formatRelative(
 		target: CalendarDate,
-		segment: CalendarDateSegmentTypeEditable,
+		segment: CalendarDateSegmentTypeWithoutLiteral,
 		options?: Intl.RelativeTimeFormatOptions
 	) {
 		const diff = this.getDiff(target)
@@ -160,26 +158,20 @@ export class CalendarDate {
 		return this.locale
 	}
 
-	getSegments<T extends readonly CalendarDateSegmentType[] = []>(
-		style: CalendarDateSegmentStyle = 'numeric',
-		exclude?: T
-	) {
+	getSegments(style: CalendarDateSegmentStyle = 'numeric') {
 		return new Intl.DateTimeFormat(this.locale, {
-			year: exclude?.includes('year') ? undefined : 'numeric',
-			month: exclude?.includes('month') ? undefined : style,
-			day: exclude?.includes('day') ? undefined : style
+			year: 'numeric',
+			month: style,
+			day: style
 		})
 			.formatToParts(this.getDate())
 			.reduce<CalendarDateSegment[]>((acc, part) => {
-				if (
-					CalendarDate.isValidSegment(part) &&
-					!exclude?.includes(part.type)
-				) {
+				if (CalendarDate.isValidSegment(part)) {
 					acc.push(part)
 				}
 
 				return acc
-			}, []) as CalendarDateSegmentExclude<T[number]>[]
+			}, [])
 	}
 
 	getSegment(
@@ -210,9 +202,23 @@ export class CalendarDate {
 		return this.getLastDateOfMonth().getDay()
 	}
 
-	// eslint-disable-next-line
 	getWeek() {
-		throw new Error('Not implemented')
+		const date = new Date(this.getTime())
+		date.setHours(0, 0, 0, 0)
+		// Thursday in current week decides the year.
+		date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7))
+		// January 4 is always in week 1.
+		const week1 = new Date(date.getFullYear(), 0, 4)
+		// Adjust to Thursday in week 1 and count number of weeks from date to week1.
+		return (
+			1 +
+			Math.round(
+				((date.getTime() - week1.getTime()) / 86400000 -
+					3 +
+					((week1.getDay() + 6) % 7)) /
+					7
+			)
+		)
 	}
 
 	getWeekDay() {

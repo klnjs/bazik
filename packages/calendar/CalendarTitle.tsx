@@ -21,7 +21,7 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 			<freya.h2
 				id={titleId}
 				ref={forwardedRef}
-				aria-live='polite'
+				aria-live="polite"
 				{...otherProps}
 			>
 				{focusedDate.format({

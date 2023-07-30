@@ -1,16 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import {
-	CalendarDate,
-	type CalendarDateSegmentTypeEditable
-} from './CalendarDate'
+import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 
-type CalendarButtonSegment = Extract<
-	CalendarDateSegmentTypeEditable,
-	'year' | 'month'
->
+type CalendarButtonSegment = Extract<CalendarDateSegmentType, 'year' | 'month'>
 
 type CalendarButtonModifier = '-1' | '+1'
 
@@ -87,7 +81,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		return (
 			<freya.button
 				ref={forwardedRef}
-				type='button'
+				type="button"
 				disabled={isDisabled}
 				data-disabled={isDisabled ? '' : undefined}
 				aria-label={label}

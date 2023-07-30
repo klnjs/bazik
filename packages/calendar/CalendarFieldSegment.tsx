@@ -10,14 +10,14 @@ import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
 	CalendarDate,
-	type CalendarDateSegmentStyle,
-	type CalendarDateSegmentTypeEditable
+	type CalendarDateSegmentTypeWithoutLiteral,
+	type CalendarDateSegmentStyle
 } from './CalendarDate'
 
 export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
-		type: CalendarDateSegmentTypeEditable
+		type: CalendarDateSegmentTypeWithoutLiteral
 		mode?: CalendarDateSegmentStyle
 		disabled?: boolean
 		placeholder?: string
@@ -181,10 +181,10 @@ export const CalendarFieldSegment = forwardRef<
 		return (
 			<freya.div
 				ref={refCallback}
-				role='spinbutton'
-				inputMode='numeric'
-				autoCorrect='off'
-				autoCapitalize='off'
+				role="spinbutton"
+				inputMode="numeric"
+				autoCorrect="off"
+				autoCapitalize="off"
 				style={{
 					width: `${length}ch`,
 					caretColor: 'transparent',

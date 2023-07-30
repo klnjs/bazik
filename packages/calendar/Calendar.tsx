@@ -36,7 +36,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			<CalendarProvider value={{ ...calendar, ...field }}>
 				<freya.div
 					ref={forwardedRef}
-					role='application'
+					role="application"
 					{...otherProps}
 				/>
 			</CalendarProvider>

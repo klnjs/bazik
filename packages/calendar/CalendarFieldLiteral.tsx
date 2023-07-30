@@ -6,5 +6,5 @@ export const CalendarFieldLiteral = forwardRef<
 	'span',
 	CalendarFieldLiteralProps
 >((props, forwardedRef) => (
-	<freya.span ref={forwardedRef} role='presentation' aria-hidden {...props} />
+	<freya.span ref={forwardedRef} role="presentation" aria-hidden {...props} />
 ))

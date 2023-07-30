@@ -1,39 +1,29 @@
 import { useMemo, useLayoutEffect, type ReactNode } from 'react'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import type {
-	CalendarDateSegmentType,
-	CalendarDateSegmentExclude,
-	CalendarDateSegmentTypeEditable
+	CalendarDateSegment,
+	CalendarDateSegmentTypeWithoutLiteral
 } from './CalendarDate'
 
-export type CalendarFieldSegmentsProps<
-	T extends readonly CalendarDateSegmentType[]
-> = {
-	exclude?: T
-	children: (
-		segment: CalendarDateSegmentExclude<T[number]>,
-		index: number
-	) => ReactNode
+export type CalendarFieldSegmentsProps = {
+	children: (segment: CalendarDateSegment, index: number) => ReactNode
 }
 
-export const CalendarFieldSegments = <
-	const T extends readonly CalendarDateSegmentType[] = []
->({
-	exclude,
+export const CalendarFieldSegments = ({
 	children
-}: CalendarFieldSegmentsProps<T>) => {
-	const { focusedDate, setFocusedSegment } = useCalendarFieldContext()
+}: CalendarFieldSegmentsProps) => {
+	const { focusedDate, focusedSegment, setFocusedSegment } =
+		useCalendarFieldContext()
 
-	const segments = useMemo(
-		() => focusedDate.getSegments('numeric', exclude),
-		[exclude, focusedDate]
-	)
+	const segments = useMemo(() => focusedDate.getSegments(), [focusedDate])
 
 	useLayoutEffect(() => {
-		// First segment can never be literal
-		setFocusedSegment(segments[0].type as CalendarDateSegmentTypeEditable)
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+		if (!focusedSegment) {
+			setFocusedSegment(
+				segments[0].type as CalendarDateSegmentTypeWithoutLiteral
+			)
+		}
+	}, [segments, focusedSegment, setFocusedSegment])
 
 	return segments.map(children)
 }
