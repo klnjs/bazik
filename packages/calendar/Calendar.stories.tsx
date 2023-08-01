@@ -17,7 +17,7 @@ export const Basic = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.format()}
 						date={date}
@@ -36,7 +36,7 @@ export const Disabled = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.format()}
 						date={date}
@@ -45,6 +45,47 @@ export const Disabled = () => (
 						{date.getDay()}
 					</CalendarDay>
 				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</Calendar>
+)
+
+export const Weekinfo = () => (
+	<Calendar className={classes.calendar}>
+		<CalendarTitle className={classes.title} />
+		<CalendarGrid className={classes.gridWithWeekInfo}>
+			<CalendarDays week={true} weekday={true}>
+				{({ role, date }) => {
+					if (role === 'blank') {
+						return <span />
+					}
+
+					if (role === 'weekday') {
+						return (
+							<span className={classes.cell}>
+								{date.format({ weekday: 'short' })}
+							</span>
+						)
+					}
+
+					if (role === 'week') {
+						return (
+							<span className={classes.cell}>
+								{date.getWeek()}
+							</span>
+						)
+					}
+
+					return (
+						<CalendarDay
+							key={date.format()}
+							date={date}
+							className={classes.day}
+						>
+							{date.getDay()}
+						</CalendarDay>
+					)
+				}}
 			</CalendarDays>
 		</CalendarGrid>
 	</Calendar>
@@ -76,7 +117,7 @@ export const Navigation = () => (
 
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.format()}
 						date={date}
@@ -95,7 +136,7 @@ export const Localization = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.getTime()}
 						date={date}
@@ -129,7 +170,7 @@ export const MinAndMax = () => {
 			<CalendarTitle className={classes.title} />
 			<CalendarGrid className={classes.grid}>
 				<CalendarDays>
-					{(date) => (
+					{({ date }) => (
 						<CalendarDay
 							key={date.format()}
 							date={date}
@@ -149,7 +190,7 @@ export const OverflowVisible = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.format()}
 						date={date}
@@ -168,7 +209,7 @@ export const WeekdayHeaders = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.getTime()}
 						date={date}
@@ -187,7 +228,7 @@ export const WeekendDisabled = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{(date) => (
+				{({ date }) => (
 					<CalendarDay
 						key={date.format()}
 						date={date}
@@ -236,7 +277,7 @@ export const Schedule = () => {
 			<CalendarTitle className={classes.title} />
 			<CalendarGrid className={classes.grid} style={{ gap: 0 }}>
 				<CalendarDays>
-					{(date) => (
+					{({ date }) => (
 						<div
 							key={date.format()}
 							style={{

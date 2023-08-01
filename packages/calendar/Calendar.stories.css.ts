@@ -20,6 +20,12 @@ export const grid = style({
 	gap: 4
 })
 
+export const gridWithWeekInfo = style({
+	display: 'grid',
+	gridTemplateColumns: 'repeat(8, 1fr)',
+	gap: 4
+})
+
 export const header = style({
 	display: 'flex',
 	alignItems: 'center',
