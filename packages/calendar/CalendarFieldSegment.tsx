@@ -10,14 +10,14 @@ import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
 	CalendarDate,
-	type CalendarDateSegmentTypeWithoutLiteral,
+	type CalendarDateSegmentType,
 	type CalendarDateSegmentStyle
 } from './CalendarDate'
 
 export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
-		type: CalendarDateSegmentTypeWithoutLiteral
+		type: CalendarDateSegmentType
 		mode?: CalendarDateSegmentStyle
 		disabled?: boolean
 		placeholder?: string

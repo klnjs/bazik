@@ -1,29 +1,25 @@
 import { weekInfo } from './calendarWeekInfo'
 
-export const calendarDateSegmentTypes = [
-	'year',
-	'month',
-	'day',
-	'literal'
-] as const
+export const calendarDateSegmentTypes = ['year', 'month', 'day'] as const
 
 export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
 
-export type CalendarDateSegmentTypeWithoutLiteral = Exclude<
-	CalendarDateSegmentType,
-	'literal'
->
+export type CalendarDateSegmentTypeWithLiteral =
+	| CalendarDateSegmentType
+	| 'literal'
 
 export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
 
 export type CalendarDateSegment = {
 	type: CalendarDateSegmentType
 	value: string
+	index: number
 }
 
-export type CalendarDateSegmentWithoutLiterals = {
-	type: CalendarDateSegmentTypeWithoutLiteral
+export type CalendarDateSegmentWithLiterals = {
+	type: CalendarDateSegmentTypeWithLiteral
 	value: string
+	index: number
 }
 
 export type CalendarDateMutation = {
@@ -39,13 +35,18 @@ export class CalendarDate {
 		this.locale = locale ?? navigator.language
 	}
 
-	static isValidSegment(segment: object): segment is CalendarDateSegment {
-		return (
-			'type' in segment &&
-			calendarDateSegmentTypes.includes(
-				segment.type as CalendarDateSegmentType
-			)
+	static isSegment(
+		segment: Intl.DateTimeFormatPart
+	): segment is CalendarDateSegment {
+		return calendarDateSegmentTypes.includes(
+			segment.type as CalendarDateSegmentType
 		)
+	}
+
+	static isLiteral(
+		segment: Intl.DateTimeFormatPart
+	): segment is CalendarDateSegmentWithLiterals {
+		return segment.type === 'literal'
 	}
 
 	set({ year, month, day }: CalendarDateMutation) {
@@ -112,7 +113,7 @@ export class CalendarDate {
 
 	formatRelative(
 		target: CalendarDate,
-		segment: CalendarDateSegmentTypeWithoutLiteral,
+		segment: CalendarDateSegmentType,
 		options?: Intl.RelativeTimeFormatOptions
 	) {
 		const diff = this.getDiff(target)
@@ -158,20 +159,32 @@ export class CalendarDate {
 		return this.locale
 	}
 
-	getSegments(style: CalendarDateSegmentStyle = 'numeric') {
+	getSegments<L extends boolean = false>({
+		style = 'numeric',
+		literals
+	}: {
+		style?: CalendarDateSegmentStyle
+		literals?: L
+	} = {}) {
 		return new Intl.DateTimeFormat(this.locale, {
 			year: 'numeric',
 			month: style,
 			day: style
 		})
 			.formatToParts(this.getDate())
-			.reduce<CalendarDateSegment[]>((acc, part) => {
-				if (CalendarDate.isValidSegment(part)) {
-					acc.push(part)
+			.reduce<CalendarDateSegmentWithLiterals[]>((acc, part, index) => {
+				if (CalendarDate.isSegment(part)) {
+					acc.push({ ...part, index })
+				}
+
+				if (literals === true && CalendarDate.isLiteral(part)) {
+					acc.push({ ...part, index })
 				}
 
 				return acc
-			}, [])
+			}, []) as L extends true
+			? CalendarDateSegmentWithLiterals[]
+			: CalendarDateSegment[]
 	}
 
 	getSegment(
@@ -179,7 +192,9 @@ export class CalendarDate {
 		style?: CalendarDateSegmentStyle
 	) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.getSegments(style).find((segment) => segment.type === type)!
+		return this.getSegments({ style }).find(
+			(segment) => segment.type === type
+		)!
 	}
 
 	getFirstDateOfWeek() {
@@ -310,3 +325,7 @@ export class CalendarDate {
 		)
 	}
 }
+
+const d = new CalendarDate()
+
+const aaa = d.getSegments({ literals: true })

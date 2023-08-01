@@ -26,14 +26,31 @@ export const Basic = () => (
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
-				{(segment, index) =>
+				{(segment) => (
+					<CalendarFieldSegment
+						key={segment.index}
+						type={segment.type}
+						className={classes.segment}
+					/>
+				)}
+			</CalendarFieldSegments>
+		</CalendarFieldInput>
+	</CalendarField>
+)
+
+export const Literals = () => (
+	<CalendarField className={classes.field}>
+		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
+		<CalendarFieldInput className={classes.input}>
+			<CalendarFieldSegments literals={true}>
+				{(segment) =>
 					segment.type === 'literal' ? (
-						<CalendarFieldLiteral key={index}>
+						<CalendarFieldLiteral key={segment.index}>
 							{segment.value}
 						</CalendarFieldLiteral>
 					) : (
 						<CalendarFieldSegment
-							key={segment.type}
+							key={segment.index}
 							type={segment.type}
 							className={classes.segment}
 						/>
@@ -49,19 +66,13 @@ export const Disabled = () => (
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
-				{(segment, index) =>
-					segment.type === 'literal' ? (
-						<CalendarFieldLiteral key={index}>
-							{segment.value}
-						</CalendarFieldLiteral>
-					) : (
-						<CalendarFieldSegment
-							key={segment.type}
-							type={segment.type}
-							className={classes.segment}
-						/>
-					)
-				}
+				{(segment) => (
+					<CalendarFieldSegment
+						key={segment.index}
+						type={segment.type}
+						className={classes.segment}
+					/>
+				)}
 			</CalendarFieldSegments>
 		</CalendarFieldInput>
 	</CalendarField>
@@ -73,19 +84,13 @@ export const Picker = () => (
 		<CalendarFieldAnchor className={classes.anchor}>
 			<CalendarFieldInput className={classes.input}>
 				<CalendarFieldSegments>
-					{(segment, index) =>
-						segment.type === 'literal' ? (
-							<CalendarFieldLiteral key={index}>
-								{segment.value}
-							</CalendarFieldLiteral>
-						) : (
-							<CalendarFieldSegment
-								key={segment.type}
-								type={segment.type}
-								className={classes.segment}
-							/>
-						)
-					}
+					{(segment) => (
+						<CalendarFieldSegment
+							key={segment.index}
+							type={segment.type}
+							className={classes.segment}
+						/>
+					)}
 				</CalendarFieldSegments>
 			</CalendarFieldInput>
 			<CalendarFieldTrigger className={classes.trigger}>

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
-import type { CalendarDateSegmentTypeWithoutLiteral } from './CalendarDate'
+import type { CalendarDateSegmentType } from './CalendarDate'
 
 export type UseCalendarFieldOptions = UseCalendarOptions
 
@@ -12,7 +12,7 @@ export const useCalendarField = (options: UseCalendarFieldOptions) => {
 	const focusedSegmentRef = useRef<HTMLDivElement>(null)
 
 	const [focusedSegment, setFocusedSegment] =
-		useState<CalendarDateSegmentTypeWithoutLiteral>()
+		useState<CalendarDateSegmentType>()
 
 	return {
 		...calendar,
