@@ -5,40 +5,29 @@ import {
 	useCallback,
 	type SetStateAction
 } from 'react'
-import { useControllableState, type Range } from '../core'
-import { CalendarDate, type CalendarDateRange } from './CalendarDate'
+import { useControllableState } from '../core'
+import { CalendarDate } from './CalendarDate'
 
-export type UseCalendarOptions = (
-	| {
-			range?: false
-			value?: Date | null
-			defaultValue?: Date | null
-			onChange?: (value: Date | null) => void
-	  }
-	| {
-			range: true
-			value?: Range<Date> | null
-			defaultValue?: Range<Date> | null
-			onChange?: (value: Range<Date> | null) => void
-	  }
-) & {
+export type UseCalendarOptions = {
 	autoFocus?: boolean
 	min?: Date
 	max?: Date
+	value?: Date | null
 	locale?: string
 	disabled?: boolean
+	defaultValue?: Date | null
+	onChange?: (value: Date | null) => void
 }
 
 export const useCalendar = ({
 	autoFocus: autoFocusProp = false,
 	min,
 	max,
-	range,
-	value: valueProp,
+	value,
 	locale = navigator.language,
 	disabled = false,
-	defaultValue: defaultValueProp = null,
-	onChange: onChangeProp
+	defaultValue = null,
+	onChange
 }: UseCalendarOptions) => {
 	const [titleId, setTitleId] = useState<string>()
 
@@ -52,58 +41,53 @@ export const useCalendar = ({
 		[locale, max]
 	)
 
-	const value = useMemo(
-		() => normalize(locale, valueProp),
-		[locale, valueProp]
-	)
-
-	const defaultValue = useMemo(
-		() => normalize(locale, defaultValueProp),
-		[locale, defaultValueProp]
-	)
-
-	const onChange = useCallback(
-		(newValue: typeof value) => {
-			if (onChangeProp) {
-				onChangeProp(denormalize(newValue) as Date & Range<Date>)
-			}
-		},
-		[onChangeProp]
-	)
-
-	const [transient, setTransient] = useState<CalendarDate>()
-
-	const [selection, setSelection] = useControllableState({
-		value,
-		defaultValue,
-		onChange
-	})
-
-	const setSelectionTransient = (date: CalendarDate) => {
-		if (!range) {
-			setSelection(date)
-		}
-
-		if (transient !== undefined) {
-			setSelection(transient)
-			setTransient(undefined)
-		} else {
-			setTransient(date)
-		}
-	}
-
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
 	const setAutoFocus = useCallback((autoFocus: boolean) => {
 		autoFocusRef.current = autoFocus
 	}, [])
 
-	const [highlight, setHighlight] = useState(
-		() =>
-			new CalendarDate(
-				locale,
-				Array.isArray(valueProp) ? valueProp[0] : valueProp
-			)
+	const [focusedDate, setFocusedDate] = useState(
+		() => new CalendarDate(locale, value)
+	)
+
+	const setFocusedDateClamp = useCallback(
+		(action: SetStateAction<CalendarDate>, autoFocus = false) => {
+			setAutoFocus(autoFocus)
+			setFocusedDate((prev) => {
+				const next =
+					typeof action === 'function' ? action(prev) : action
+
+				return next.clamp(minDate, maxDate)
+			})
+		},
+		[minDate, maxDate, setAutoFocus]
+	)
+
+	const [selectedDate, setSelectedDate] =
+		useControllableState<CalendarDate | null>({
+			value:
+				value instanceof Date ? new CalendarDate(locale, value) : value,
+			defaultValue:
+				defaultValue instanceof Date
+					? new CalendarDate(locale, defaultValue).clamp(
+							minDate,
+							maxDate
+					  )
+					: defaultValue,
+			onChange: (newValue) => onChange?.(newValue?.getDate() ?? null)
+		})
+
+	const setSelectedDateClamp = useCallback(
+		(action: SetStateAction<CalendarDate | null>) => {
+			setSelectedDate((prev) => {
+				const next =
+					typeof action === 'function' ? action(prev) : action
+
+				return next ? next.clamp(minDate, maxDate) : null
+			})
+		},
+		[minDate, maxDate, setSelectedDate]
 	)
 
 	return {
@@ -115,38 +99,9 @@ export const useCalendar = ({
 		setTitleId,
 		autoFocus: autoFocusRef.current,
 		setAutoFocus,
-		highlight,
-		setHighlight,
-		transient,
-		setTransient,
-		selection,
-		setSelection: setSelectionTransient
+		focusedDate,
+		setFocusedDate: setFocusedDateClamp,
+		selectedDate,
+		setSelectedDate: setSelectedDateClamp
 	}
-}
-
-const normalize = (locale: string, value?: Date | Range<Date> | null) => {
-	if (value instanceof Date) {
-		return new CalendarDate(locale, value)
-	}
-
-	if (Array.isArray(value)) {
-		return [
-			new CalendarDate(locale, value[0]),
-			new CalendarDate(locale, value[1])
-		] as [CalendarDate, CalendarDate]
-	}
-
-	return value
-}
-
-const denormalize = (value?: CalendarDate | CalendarDateRange | null) => {
-	if (value instanceof CalendarDate) {
-		return value.getDate()
-	}
-
-	if (Array.isArray(value)) {
-		return [value[0].getDate(), value[1].getDate()] as Range<Date>
-	}
-
-	return null
 }

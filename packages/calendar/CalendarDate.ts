@@ -1,4 +1,3 @@
-import type { Range } from '../core'
 import { weekInfo } from './calendarWeekInfo'
 
 export const calendarDateSegmentTypes = ['year', 'month', 'day'] as const
@@ -26,8 +25,6 @@ export type CalendarDateSegmentWithLiterals = {
 export type CalendarDateMutation = {
 	[key in CalendarDateSegmentType]?: number
 }
-
-export type CalendarDateRange = Range<CalendarDate>
 
 export class CalendarDate {
 	date: Date
