@@ -1,11 +1,12 @@
 import {
-	forwardRef as fr,
+	forwardRef as forwardRefReact,
 	type ElementRef,
 	type ElementType,
-	type ComponentProps,
-	type ForwardRefRenderFunction,
+	type ComponentPropsWithoutRef,
+	type ForwardRefRenderFunction
 } from 'react'
 import type { Assign } from './types'
+import type { AsChildComponentProps, AsChildProps } from './factory'
 
 export const forwardRef = <
 	E extends ElementType,
@@ -13,6 +14,9 @@ export const forwardRef = <
 >(
 	component: ForwardRefRenderFunction<
 		ElementRef<E>,
-		Assign<ComponentProps<E>, P>
+		Assign<ComponentPropsWithoutRef<E>, P & AsChildProps>
 	>
-) => fr(component)
+) =>
+	forwardRefReact(component) as unknown as React.ForwardRefExoticComponent<
+		Assign<AsChildComponentProps<E>, P>
+	>

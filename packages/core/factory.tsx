@@ -9,35 +9,54 @@ import {
 	cloneElement,
 	isValidElement,
 	Children,
-	type ElementType
+	type ElementType,
+	type ComponentProps,
+	type PropsWithChildren,
+	type ForwardRefExoticComponent
 } from 'react'
-import { mergeRefs } from './mergeRefs'
+import { mergeRefs } from './useMergeRefs'
 import { mergeProps } from './mergeProps'
-import type { AsChildProps, AsChildForwardRefComponent } from './types'
+import type { Assign, Pretty } from './types'
+
+export type AsChildProps = {
+	asChild?: boolean
+}
+
+export type AsChildForwardRefComponent<E extends ElementType> =
+	ForwardRefExoticComponent<AsChildComponentProps<E>>
+
+export type AsChildComponentProps<E extends ElementType> = ComponentProps<E> &
+	AsChildProps
+
+export type CoreProps<E extends ElementType, P = unknown> = P extends object
+	? Pretty<Assign<AsChildComponentProps<E>, P>>
+	: Pretty<AsChildComponentProps<E>>
 
 const withAsChild = (Component: ElementType) => {
-	const Comp = forwardRef<unknown, AsChildProps>((props, ref) => {
-		const { asChild, children, ...otherProps } = props
+	const Comp = forwardRef<unknown, PropsWithChildren<AsChildProps>>(
+		(props, ref) => {
+			const { asChild, children, ...otherProps } = props
 
-		if (!asChild) {
-			return (
-				<Component ref={ref} {...otherProps}>
-					{children}
-				</Component>
-			)
+			if (!asChild) {
+				return (
+					<Component ref={ref} {...otherProps}>
+						{children}
+					</Component>
+				)
+			}
+
+			const child = Children.only(children)
+
+			return isValidElement(child)
+				? cloneElement(child, {
+						ref: ref
+							? mergeRefs(ref, (child as any).ref)
+							: (child as any).ref,
+						...mergeProps(otherProps, child.props)
+				  })
+				: null
 		}
-
-		const child = Children.only(children)
-
-		return isValidElement(child)
-			? cloneElement(child, {
-					ref: ref
-						? mergeRefs(ref, (child as any).ref)
-						: (child as any).ref,
-					...mergeProps(otherProps, child.props)
-			  })
-			: null
-	})
+	)
 
 	// @ts-expect-error - it exists
 	Comp.displayName = Component.displayName || Component.name

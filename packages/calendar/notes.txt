@@ -1,0 +1,3 @@
+Improvements
+ - Implement readOnly behaviour
+ - Implement week numbers

@@ -1,18 +1,31 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
+import prettierConfig from '@klnjs/prettier-config'
 import { mergeConfig } from 'vite'
 
 export default {
-	framework: '@storybook/react-vite',
-	addons: ['@storybook/addon-essentials'],
 	stories: ['../packages/**/*.stories.tsx'],
 	core: {
-		disableTelemetry: true,
-		builder: '@storybook/builder-vite'
+		disableTelemetry: true
 	},
-	docs: {
-		autodocs: true
+	framework: {
+		name: '@storybook/react-vite',
+		options: {
+			strictMode: true
+		}
 	},
+	addons: [
+		{
+			name: '@storybook/addon-storysource',
+			options: {
+				loaderOptions: {
+					parser: 'typescript',
+					prettierConfig,
+					injectStoryParameters: false
+				}
+			}
+		}
+	],
 	typescript: {
 		check: false,
 		reactDocgen: 'react-docgen-typescript',

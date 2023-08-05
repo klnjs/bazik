@@ -1,4 +1,8 @@
-import { createContext as cc, useContext as uc, type Provider } from 'react'
+import {
+	useContext as useContextFromReact,
+	createContext as createContextFromReact,
+	type Provider
+} from 'react'
 
 export type CreateContextOptions<T> = {
 	strict?: boolean
@@ -8,7 +12,14 @@ export type CreateContextOptions<T> = {
 	defaultValue?: T
 }
 
-export type CreateContextReturn<T> = [Provider<T>, () => T]
+export type UseContextOptions = {
+	strict?: boolean
+}
+
+export type CreateContextReturn<T> = [
+	Provider<T>,
+	(options?: UseContextOptions) => T
+]
 
 const createContextError = (
 	name: string,
@@ -23,22 +34,27 @@ const createContextError = (
 }
 
 export const createContext = <T extends object>({
-	strict = true,
+	strict: strictOption = true,
 	name = 'Context',
 	nameOfHook = 'useContext',
 	nameOfProvider = 'Provider',
 	defaultValue
 }: CreateContextOptions<T>) => {
-	const Context = cc<T | undefined>(defaultValue)
+	const Context = createContextFromReact<T | undefined>(defaultValue)
 
 	Context.displayName = name
 
-	const useContext = () => {
-		const context = uc(Context)
+	const useContext = ({ strict = strictOption }: UseContextOptions = {}) => {
+		const context = useContextFromReact(Context)
 
 		if (!context && strict) {
 			const error = createContextError(name, nameOfHook, nameOfProvider)
-			Error.captureStackTrace(error, useContext)
+
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			if (Error.captureStackTrace !== undefined) {
+				Error.captureStackTrace(error, useContext)
+			}
+
 			throw error
 		}
 

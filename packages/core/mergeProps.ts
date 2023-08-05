@@ -4,7 +4,8 @@
 
 import { clsx } from './clsx'
 import { chain } from './chain'
-import type { Props } from './types'
+
+type Props = Record<string, any>
 
 type TupleTypes<T> = { [P in keyof T]: T[P] } extends Record<number, infer V>
 	? NullToObject<V>
