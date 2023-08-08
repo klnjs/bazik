@@ -328,7 +328,3 @@ export class CalendarDate {
 		)
 	}
 }
-
-const d = new CalendarDate()
-
-const aaa = d.getSegments({ literals: true })

@@ -11,29 +11,29 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@floating-ui/react": "0.24.8",
-		"clsx": "1.2.1",
+		"@floating-ui/react": "0.25.0",
+		"clsx": "2.0.0",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
-		"@klnjs/eslint-config": "0.0.1-rc.10",
-		"@klnjs/eslint-config-react": "0.0.1-rc.10",
-		"@klnjs/eslint-config-typescript": "0.0.1-rc.10",
-		"@klnjs/prettier-config": "0.0.1-rc.10",
+		"@klnjs/eslint-config": "1.0.0-rc.2",
+		"@klnjs/eslint-config-react": "1.0.0-rc.2",
+		"@klnjs/eslint-config-typescript": "1.0.0-rc.2",
+		"@klnjs/prettier-config": "1.0.0-rc.2",
 		"@mdi/js": "7.2.96",
-		"@storybook/addon-storysource": "7.1.1",
-		"@storybook/react": "7.1.1",
-		"@storybook/react-vite": "7.1.1",
-		"@types/react": "18.2.12",
-		"@types/react-dom": "18.2.5",
-		"@vanilla-extract/css": "1.11.1",
+		"@storybook/addon-storysource": "7.2.1",
+		"@storybook/react": "7.2.1",
+		"@storybook/react-vite": "7.2.1",
+		"@types/react": "18.2.19",
+		"@types/react-dom": "18.2.7",
+		"@vanilla-extract/css": "1.12.0",
 		"@vanilla-extract/vite-plugin": "3.8.2",
-		"eslint": "8.42.0",
+		"eslint": "8.46.0",
 		"globals": "13.20.0",
-		"prettier": "2.8.8",
-		"storybook": "7.1.1",
-		"typescript": "5.1.3",
-		"vite": "4.3.9"
+		"prettier": "3.0.1",
+		"storybook": "7.2.1",
+		"typescript": "5.1.6",
+		"vite": "4.4.9"
 	}
 }

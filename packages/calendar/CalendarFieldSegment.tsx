@@ -221,7 +221,7 @@ const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
 	const direction = findDirection(element, action)
 
 	// @ts-expect-error element not allowed to be null
-	// eslint-disable-next-line no-cond-assign, no-param-reassign
+	// eslint-disable-next-line no-param-reassign
 	while ((element = element[`${direction}ElementSibling`]) !== null) {
 		const data = element.dataset
 

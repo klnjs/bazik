@@ -120,7 +120,7 @@ export const Picker = () => (
 
 				<CalendarGrid className={classes.grid}>
 					<CalendarDays>
-						{(date) => (
+						{({ date }) => (
 							<CalendarDay
 								key={date.format()}
 								date={date}
