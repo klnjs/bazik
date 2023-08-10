@@ -1,12 +1,8 @@
-import {
-	useRef,
-	useMemo,
-	useState,
-	useCallback,
-	type SetStateAction
-} from 'react'
-import { useControllableState, type Range } from '../core'
+import { useRef, useMemo, useState, useCallback } from 'react'
+import { useControllableState, type Range, type Assign } from '../core'
 import { CalendarDate, type CalendarDateRange } from './CalendarDate'
+
+type DateRange = Range<Date>
 
 export type UseCalendarOptions = (
 	| {
@@ -17,9 +13,9 @@ export type UseCalendarOptions = (
 	  }
 	| {
 			range: true
-			value?: Range<Date> | null
-			defaultValue?: Range<Date> | null
-			onChange?: (value: Range<Date> | null) => void
+			value?: DateRange | null
+			defaultValue?: DateRange | null
+			onChange?: (value: DateRange | null) => void
 	  }
 ) & {
 	autoFocus?: boolean
@@ -71,34 +67,21 @@ export const useCalendar = ({
 		[onChangeProp]
 	)
 
-	const [transient, setTransient] = useState<CalendarDate>()
-
-	const [selection, setSelection] = useControllableState({
-		value,
-		defaultValue,
-		onChange
-	})
-
-	const setSelectionTransient = (date: CalendarDate) => {
-		if (!range) {
-			setSelection(date)
-		}
-
-		if (transient !== undefined) {
-			setSelection(transient)
-			setTransient(undefined)
-		} else {
-			setTransient(date)
-		}
-	}
-
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
 	const setAutoFocus = useCallback((autoFocus: boolean) => {
 		autoFocusRef.current = autoFocus
 	}, [])
 
-	const [highlight, setHighlight] = useState(
+	const [selected, setSelected] = useControllableState({
+		value,
+		defaultValue,
+		onChange
+	})
+
+	const [transient, setTransient] = useState<CalendarDate>()
+
+	const [highlighted, setHighlighted] = useState(
 		() =>
 			new CalendarDate(
 				locale,
@@ -106,7 +89,36 @@ export const useCalendar = ({
 			)
 	)
 
-	return {
+	const selection = useMemo(() => {
+		if (transient) {
+			// @ts-expect-error available in TS 5.2
+			// eslint-disable-next-line
+			return [transient, highlighted].toSorted((a, b) =>
+				// eslint-disable-next-line
+				a.isAfter(b)
+			) as CalendarDateRange
+		}
+
+		return selected
+	}, [selected, transient, highlighted])
+
+	const setSelection = useCallback(
+		(date: CalendarDate) => {
+			if (!range) {
+				setSelected(date)
+			} else if (transient !== undefined) {
+				// @ts-expect-error available in TS 5.2
+				// eslint-disable-next-line
+				setSelected([transient, date].toSorted((a, b) => a.isAfter(b)))
+				setTransient(undefined)
+			} else {
+				setTransient(date)
+			}
+		},
+		[range, transient, setSelected]
+	)
+
+	const sharedProps = {
 		locale,
 		disabled,
 		minDate,
@@ -115,13 +127,37 @@ export const useCalendar = ({
 		setTitleId,
 		autoFocus: autoFocusRef.current,
 		setAutoFocus,
-		highlight,
-		setHighlight,
 		transient,
 		setTransient,
-		selection,
-		setSelection: setSelectionTransient
+		highlighted,
+		setHighlighted,
+		selected: selection,
+		setSelected: setSelection
 	}
+
+	if (range) {
+		return {
+			range: true,
+			...sharedProps
+		} as Assign<
+			typeof sharedProps,
+			{
+				range: true
+				selected: CalendarDateRange | null
+			}
+		>
+	}
+
+	return {
+		range: false,
+		...sharedProps
+	} as Assign<
+		typeof sharedProps,
+		{
+			range: false
+			selected: CalendarDate | null
+		}
+	>
 }
 
 const normalize = (locale: string, value?: Date | Range<Date> | null) => {
@@ -133,7 +169,7 @@ const normalize = (locale: string, value?: Date | Range<Date> | null) => {
 		return [
 			new CalendarDate(locale, value[0]),
 			new CalendarDate(locale, value[1])
-		] as [CalendarDate, CalendarDate]
+		] as CalendarDateRange
 	}
 
 	return value

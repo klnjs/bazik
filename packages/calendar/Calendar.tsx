@@ -39,6 +39,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 				<freya.div
 					ref={forwardedRef}
 					role="application"
+					aria-labelledby={calendar.titleId}
 					{...otherProps}
 				/>
 			</CalendarProvider>

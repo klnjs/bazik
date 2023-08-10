@@ -1,5 +1,5 @@
 import type { Range } from '../core'
-import { weekInfo } from './calendarWeekInfo'
+import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
 export const calendarDateSegmentTypes = ['year', 'month', 'day'] as const
 
@@ -240,22 +240,9 @@ export class CalendarDate {
 	}
 
 	getWeekDay() {
-		const firstDayOfWeek = (() => {
-			try {
-				// @ts-expect-error not in spec yet
-				// eslint-disable-next-line
-				return new Intl.Locale(this.locale).getWeekInfo()
-					.firstDay as number
-			} catch (error) {
-				return weekInfo[
-					new Intl.Locale(this.locale).maximize()
-						.region as keyof typeof weekInfo
-				].firstDay
-			}
-		})()
-
+		const weekInfo = getCalendarWeekInfo(this.locale)
 		const dayOfWeek = this.getDate().getDay() || 7
-		const dayOfWeekIndex = dayOfWeek - firstDayOfWeek
+		const dayOfWeekIndex = dayOfWeek - weekInfo.firstDay
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
 		return dayOfWeekIndex + dayOfWeekOffset
@@ -276,23 +263,10 @@ export class CalendarDate {
 	}
 
 	isWeekend() {
-		const weekend = (() => {
-			try {
-				// @ts-expect-error not in spec yet
-				// eslint-disable-next-line
-				return new Intl.Locale(this.locale).getWeekInfo()
-					.weekend as number[]
-			} catch (error) {
-				return weekInfo[
-					new Intl.Locale(this.locale).maximize()
-						.region as keyof typeof weekInfo
-				].weekend
-			}
-		})()
-
+		const weekInfo = getCalendarWeekInfo(this.locale)
 		const dayOfWeek = this.getDate().getDay() || 7
 
-		return weekend.includes(dayOfWeek)
+		return weekInfo.weekend.includes(dayOfWeek)
 	}
 
 	isAfter(date: CalendarDate | Date) {
@@ -301,6 +275,10 @@ export class CalendarDate {
 
 	isBefore(date: CalendarDate | Date) {
 		return this.getDate().getTime() < date.getTime()
+	}
+
+	isBetween(min: CalendarDate | Date, max: CalendarDate | Date) {
+		return !this.isBefore(min) && !this.isAfter(max)
 	}
 
 	isSameYear(input: CalendarDate | Date) {

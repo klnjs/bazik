@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react'
 
-const texts = {
+export const calendarLocalisation = {
 	en: {
 		next: 'Next {{segment}}',
 		previous: 'Previous {{segment}}'
@@ -9,27 +9,35 @@ const texts = {
 		next: 'Næste {{segment}}',
 		previous: 'Forrige {{segment}}'
 	}
-} as const
+}
 
-export const useCalendarLocalisation = (locale = 'en') => {
-	const names = useMemo(
-		() => new Intl.DisplayNames(locale, { type: 'dateTimeField' }),
-		[locale]
-	)
+export type CalendarLocalisationLocale = keyof typeof calendarLocalisation
 
+export type CalendarLocalisationKey = keyof (typeof calendarLocalisation)['en']
+
+export const useCalendarLocalisation = (locale: string) => {
 	const t = useCallback(
 		(
-			key: keyof (typeof texts)['en'],
+			key: CalendarLocalisationKey,
 			interpolation: Record<string, string> = {}
 		) => {
-			// @ts-expect-error just hacking away
-			const lang: keyof typeof texts = !texts[locale] ? 'en' : locale
+			const lang: CalendarLocalisationLocale = Object.hasOwn(
+				calendarLocalisation,
+				locale
+			)
+				? (locale as CalendarLocalisationLocale)
+				: 'en'
 
 			return Object.entries(interpolation).reduce<string>(
 				(acc, [name, value]) => acc.replaceAll(`{{${name}}}`, value),
-				texts[lang][key]
+				calendarLocalisation[lang][key]
 			)
 		},
+		[locale]
+	)
+
+	const names = useMemo(
+		() => new Intl.DisplayNames(locale, { type: 'dateTimeField' }),
 		[locale]
 	)
 

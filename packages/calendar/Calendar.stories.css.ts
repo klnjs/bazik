@@ -1,8 +1,7 @@
 import { style } from '@vanilla-extract/css'
 
 export const calendar = style({
-	width: 280,
-	display: 'flex',
+	display: 'inline-flex',
 	flexDirection: 'column',
 	gap: 8,
 	fontFamily: 'Arial'
@@ -17,7 +16,7 @@ export const title = style({
 export const grid = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(7, 1fr)',
-	gap: 4
+	rowGap: 2
 })
 
 export const gridWithWeekInfo = style({
@@ -50,6 +49,8 @@ export const button = style({
 })
 
 export const cell = style({
+	width: 32,
+	height: 32,
 	appearance: 'none',
 	aspectRatio: '1 / 1',
 	display: 'flex',
@@ -58,6 +59,7 @@ export const cell = style({
 	alignItems: 'center',
 	justifyContent: 'center',
 	userSelect: 'none',
+	padding: 0,
 	border: 0,
 	borderRadius: 4,
 	background: 'none'
@@ -67,13 +69,11 @@ export const day = style([
 	cell,
 	{
 		cursor: 'pointer',
+		border: 0,
+		outline: 0,
 		selectors: {
 			'&[data-today]': {
 				fontWeight: 'bold'
-			},
-			'&[data-focused]:focus-visible': {
-				outline: '1px solid blue',
-				outlineOffset: -1
 			},
 			'&[data-weekend]': {
 				color: 'orange'
@@ -83,11 +83,35 @@ export const day = style([
 			},
 			'&[data-selected]': {
 				color: 'white',
-				background: 'blue'
+				background: '#0080FF'
+			},
+			'&[data-highlighted]:focus-visible': {
+				outline: '1px solid #0080FF',
+				outlineOffset: -2
 			},
 			'&[data-disabled]': {
 				cursor: 'default',
 				opacity: 0.4
+			},
+			'&[data-range-start]': {
+				borderStartEndRadius: 0,
+				borderEndEndRadius: 0
+			},
+			'&[data-range-end]': {
+				borderStartStartRadius: 0,
+				borderEndStartRadius: 0
+			},
+			'&[data-range-in]': {
+				background: '#89CCFF',
+				borderRadius: 0
+			},
+			'&[data-week-start]': {
+				borderStartStartRadius: 4,
+				borderEndStartRadius: 4
+			},
+			'&[data-week-end]': {
+				borderStartEndRadius: 4,
+				borderEndEndRadius: 4
 			}
 		}
 	}
