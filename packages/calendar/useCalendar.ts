@@ -1,31 +1,22 @@
 import { useRef, useMemo, useState, useCallback } from 'react'
-import { useControllableState, type Range, type Assign } from '../core'
+import { useControllableState, type Range } from '../core'
 import { CalendarDate, type CalendarDateRange } from './CalendarDate'
 
 type DateRange = Range<Date>
 
-export type UseCalendarOptions = (
-	| {
-			range?: false
-			value?: Date | null
-			defaultValue?: Date | null
-			onChange?: (value: Date | null) => void
-	  }
-	| {
-			range: true
-			value?: DateRange | null
-			defaultValue?: DateRange | null
-			onChange?: (value: DateRange | null) => void
-	  }
-) & {
+export type UseCalendarOptions<R extends boolean = false> = {
 	autoFocus?: boolean
 	min?: Date
 	max?: Date
 	locale?: string
 	disabled?: boolean
+	range?: R
+	value?: (R extends false ? Date : DateRange) | null
+	defaultValue?: (R extends false ? Date : DateRange) | null
+	onChange?: (value: (R extends false ? Date : DateRange) | null) => void
 }
 
-export const useCalendar = ({
+export const useCalendar = <R extends boolean = false>({
 	autoFocus: autoFocusProp = false,
 	min,
 	max,
@@ -35,7 +26,7 @@ export const useCalendar = ({
 	disabled = false,
 	defaultValue: defaultValueProp = null,
 	onChange: onChangeProp
-}: UseCalendarOptions) => {
+}: UseCalendarOptions<R>) => {
 	const [titleId, setTitleId] = useState<string>()
 
 	const minDate = useMemo(
@@ -61,7 +52,7 @@ export const useCalendar = ({
 	const onChange = useCallback(
 		(newValue: typeof value) => {
 			if (onChangeProp) {
-				onChangeProp(denormalize(newValue) as Date & Range<Date>)
+				onChangeProp(denormalize(newValue) as Date & DateRange)
 			}
 		},
 		[onChangeProp]
@@ -118,7 +109,7 @@ export const useCalendar = ({
 		[range, transient, setSelected]
 	)
 
-	const sharedProps = {
+	return {
 		locale,
 		disabled,
 		minDate,
@@ -134,33 +125,9 @@ export const useCalendar = ({
 		selected: selection,
 		setSelected: setSelection
 	}
-
-	if (range) {
-		return {
-			range: true,
-			...sharedProps
-		} as Assign<
-			typeof sharedProps,
-			{
-				range: true
-				selected: CalendarDateRange | null
-			}
-		>
-	}
-
-	return {
-		range: false,
-		...sharedProps
-	} as Assign<
-		typeof sharedProps,
-		{
-			range: false
-			selected: CalendarDate | null
-		}
-	>
 }
 
-const normalize = (locale: string, value?: Date | Range<Date> | null) => {
+const normalize = (locale: string, value?: Date | DateRange | null) => {
 	if (value instanceof Date) {
 		return new CalendarDate(locale, value)
 	}
@@ -176,13 +143,9 @@ const normalize = (locale: string, value?: Date | Range<Date> | null) => {
 }
 
 const denormalize = (value?: CalendarDate | CalendarDateRange | null) => {
-	if (value instanceof CalendarDate) {
-		return value.getDate()
-	}
-
 	if (Array.isArray(value)) {
-		return [value[0].getDate(), value[1].getDate()] as Range<Date>
+		return [value[0].getDate(), value[1].getDate()] as DateRange
 	}
 
-	return null
+	return value?.getDate() ?? null
 }

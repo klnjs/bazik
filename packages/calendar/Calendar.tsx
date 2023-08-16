@@ -1,12 +1,21 @@
-import { freya, forwardRef, type CoreProps } from '../core'
+import {
+	forwardRef,
+	type ForwardedRef,
+	type Ref,
+	type ReactElement
+} from 'react'
+import { freya, type CoreProps } from '../core'
 import { CalendarProvider } from './CalendarContext'
-import { useCalendarFieldContext } from './CalendarFieldContext'
+// import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
 
-export type CalendarProps = CoreProps<'div', UseCalendarOptions>
+export type CalendarProps<R extends boolean = false> = CoreProps<
+	'div',
+	UseCalendarOptions<R>
+>
 
-export const Calendar = forwardRef<'div', CalendarProps>(
-	(
+export const Calendar = forwardRef(
+	<R extends boolean = false>(
 		{
 			autoFocus,
 			min,
@@ -18,10 +27,10 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			defaultValue,
 			onChange,
 			...otherProps
-		},
-		forwardedRef
+		}: CalendarProps<R>,
+		forwardedRef: ForwardedRef<HTMLDivElement>
 	) => {
-		const field = useCalendarFieldContext({ strict: false })
+		//const field = useCalendarFieldContext({ strict: false })
 		const calendar = useCalendar({
 			autoFocus,
 			min,
@@ -35,14 +44,16 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 		})
 
 		return (
-			<CalendarProvider value={{ ...calendar, ...field }}>
+			<CalendarProvider value={{ ...calendar }}>
 				<freya.div
 					ref={forwardedRef}
-					role="application"
+					role='application'
 					aria-labelledby={calendar.titleId}
 					{...otherProps}
 				/>
 			</CalendarProvider>
 		)
 	}
-)
+) as <M extends boolean = false>(
+	props: CalendarProps<M> & { ref?: Ref<HTMLDivElement> }
+) => ReactElement

@@ -14,7 +14,6 @@ export type CalendarDayProps = CoreProps<
 export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 	({ date, disabled: disabledProp = false, ...otherProps }, forwardedRef) => {
 		const {
-			range: isRange,
 			disabled: disabledContext,
 			minDate,
 			maxDate,
@@ -26,6 +25,8 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			setHighlighted
 		} = useCalendarContext()
 
+		const isRange = Array.isArray(selected)
+		const isSolo = !isRange && selected !== null
 		const isToday = date.isToday()
 		const isWeekStart = date.getWeekDay() === 1
 		const isWeekEnd = date.getWeekDay() === 7
@@ -38,22 +39,16 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			Boolean(maxDate && date.isAfter(maxDate)) ||
 			Boolean(minDate && date.isBefore(minDate))
 
-		const isRangeStart =
-			isRange && Boolean(selected && date.isSameDay(selected[0]))
-
-		const isRangeEnd =
-			isRange && Boolean(selected && date.isSameDay(selected[1]))
-
+		const isRangeStart = isRange && date.isSameDay(selected[0])
+		const isRangeEnd = isRange && date.isSameDay(selected[1])
 		const isRangeIn =
 			!isRangeStart &&
 			!isRangeEnd &&
 			isRange &&
-			Boolean(selected && date.isBetween(selected[0], selected[1]))
+			date.isBetween(selected[0], selected[1])
 
 		const isSelected =
-			isRangeStart ||
-			isRangeEnd ||
-			(!isRange && Boolean(selected && date.isSameDay(selected)))
+			(isSolo && date.isSameDay(selected)) || isRangeStart || isRangeEnd
 
 		const ref = useRef<HTMLButtonElement>(null)
 		const refCallback = useMergeRefs(ref, forwardedRef)
