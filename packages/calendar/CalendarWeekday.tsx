@@ -4,13 +4,13 @@ import type { CalendarDate } from './CalendarDate'
 export type CalendarTitleProps = CoreProps<'abbr', { date: CalendarDate }>
 
 export const CalendarWeekday = forwardRef<'abbr', CalendarTitleProps>(
-	({ date, ...otherProps }, forwardedRef) => (
+	({ date, children, ...otherProps }, forwardedRef) => (
 		<freya.abbr
 			ref={forwardedRef}
 			title={date.format({ weekday: 'long' })}
 			{...otherProps}
 		>
-			{date.format({ weekday: 'short' })}
+			{children ?? date.format({ weekday: 'short' })}
 		</freya.abbr>
 	)
 )

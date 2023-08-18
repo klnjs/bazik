@@ -270,11 +270,11 @@ export class CalendarDate {
 	}
 
 	isAfter(date: CalendarDate | Date) {
-		return this.toDate().getTime() > date.getTime()
+		return this.getTime() > date.getTime()
 	}
 
 	isBefore(date: CalendarDate | Date) {
-		return this.toDate().getTime() < date.getTime()
+		return this.getTime() < date.getTime()
 	}
 
 	isBetween(min: CalendarDate | Date, max: CalendarDate | Date) {

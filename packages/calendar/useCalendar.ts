@@ -29,6 +29,8 @@ export const useCalendar = <R extends boolean = false>({
 }: UseCalendarOptions<R>) => {
 	const [titleId, setTitleId] = useState<string>()
 
+	const titleRef = useRef<HTMLHeadingElement>()
+
 	const minDate = useMemo(
 		() => (min ? new CalendarDate(locale, min) : undefined),
 		[locale, min]
@@ -80,17 +82,20 @@ export const useCalendar = <R extends boolean = false>({
 			)
 	)
 
-	const selection = useMemo(() => {
+	const [selection, selectionIsTransient] = useMemo(() => {
 		if (transient) {
-			// @ts-expect-error available in TS 5.2
-			// eslint-disable-next-line
-			return [transient, highlighted].toSorted((a, b) =>
+			return [
+				// @ts-expect-error available in TS 5.2
 				// eslint-disable-next-line
-				a.isAfter(b)
-			) as CalendarDateRange
+				[transient, highlighted].toSorted((a, b) =>
+					// eslint-disable-next-line
+					a.isAfter(b)
+				) as CalendarDateRange,
+				true
+			]
 		}
 
-		return selected
+		return [selected, false]
 	}, [selected, transient, highlighted])
 
 	const setSelection = useCallback(
@@ -115,15 +120,15 @@ export const useCalendar = <R extends boolean = false>({
 		minDate,
 		maxDate,
 		titleId,
+		titleRef,
 		setTitleId,
 		autoFocus: autoFocusRef.current,
 		setAutoFocus,
-		transient,
-		setTransient,
 		highlighted,
 		setHighlighted,
-		selected: selection,
-		setSelected: setSelection
+		selectionIsTransient,
+		selection,
+		setSelection
 	}
 }
 

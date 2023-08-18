@@ -5,7 +5,7 @@ import { useCalendarContext } from './CalendarContext'
 export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
-	({ id: idProp, ...otherProps }, forwardedRef) => {
+	({ id: idProp, children, ...otherProps }, forwardedRef) => {
 		const { highlighted, titleId, setTitleId } = useCalendarContext()
 		const id = useId(idProp)
 
@@ -24,10 +24,11 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 				aria-live="polite"
 				{...otherProps}
 			>
-				{highlighted.format({
-					year: 'numeric',
-					month: 'long'
-				})}
+				{children ??
+					highlighted.format({
+						year: 'numeric',
+						month: 'long'
+					})}
 			</freya.h2>
 		)
 	}

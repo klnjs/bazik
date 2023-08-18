@@ -1,4 +1,4 @@
-import { useEffect, useCallback, type KeyboardEvent, useRef } from 'react'
+import { useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
 import { freya, forwardRef, useMergeRefs, isRTL, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
@@ -12,22 +12,26 @@ export type CalendarDayProps = CoreProps<
 >
 
 export const CalendarDay = forwardRef<'button', CalendarDayProps>(
-	({ date, disabled: disabledProp = false, ...otherProps }, forwardedRef) => {
+	(
+		{ date, disabled: disabledProp = false, children, ...otherProps },
+		forwardedRef
+	) => {
 		const {
 			disabled: disabledContext,
 			minDate,
 			maxDate,
 			autoFocus,
 			setAutoFocus,
-			selected,
-			setSelected,
+			selection,
+			selectionIsTransient,
+			setSelection,
 			highlighted,
 			setHighlighted
 		} = useCalendarContext()
 
-		const isRange = Array.isArray(selected)
-		const isSolo = !isRange && selected !== null
 		const isToday = date.isToday()
+		const isRange = Array.isArray(selection)
+		const isSingle = !isRange && selection !== null
 		const isWeekStart = date.getWeekDay() === 1
 		const isWeekEnd = date.getWeekDay() === 7
 		const isWeekend = date.isWeekend()
@@ -39,16 +43,18 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			Boolean(maxDate && date.isAfter(maxDate)) ||
 			Boolean(minDate && date.isBefore(minDate))
 
-		const isRangeStart = isRange && date.isSameDay(selected[0])
-		const isRangeEnd = isRange && date.isSameDay(selected[1])
+		const isRangeStart = isRange && date.isSameDay(selection[0])
+		const isRangeEnd = isRange && date.isSameDay(selection[1])
 		const isRangeIn =
 			!isRangeStart &&
 			!isRangeEnd &&
 			isRange &&
-			date.isBetween(selected[0], selected[1])
+			date.isBetween(selection[0], selection[1])
 
 		const isSelected =
-			(isSolo && date.isSameDay(selected)) || isRangeStart || isRangeEnd
+			(isSingle && date.isSameDay(selection)) ||
+			isRangeStart ||
+			isRangeEnd
 
 		const ref = useRef<HTMLButtonElement>(null)
 		const refCallback = useMergeRefs(ref, forwardedRef)
@@ -76,21 +82,39 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			[setAutoFocus, setHighlighted]
 		)
 
-		const handleClick = useCallback(() => {
-			if (!isDisabled) {
-				setSelected(date)
+		const handleOver = useCallback(() => {
+			if (!isDisabled && selectionIsTransient) {
 				setHighlightedAndFocus(date)
 			}
-		}, [date, isDisabled, setSelected, setHighlightedAndFocus])
+		}, [date, isDisabled, selectionIsTransient, setHighlightedAndFocus])
 
-		const handleKeyDown = useCallback(
+		const handleBlur = useCallback(() => {
+			if (!isDisabled && isHighlighted && selectionIsTransient) {
+				setSelection(date)
+			}
+		}, [
+			date,
+			isDisabled,
+			isHighlighted,
+			selectionIsTransient,
+			setSelection
+		])
+
+		const handleSelect = useCallback(() => {
+			if (!isDisabled) {
+				setSelection(date)
+				setHighlightedAndFocus(date)
+			}
+		}, [date, isDisabled, setSelection, setHighlightedAndFocus])
+
+		const handleKeyboard = useCallback(
 			(event: KeyboardEvent<HTMLButtonElement>) => {
 				if (event.code !== 'Tab') {
 					event.preventDefault()
 				}
 
 				if (event.code === 'Enter' || event.code === 'Space') {
-					handleClick()
+					handleSelect()
 				}
 
 				if (event.code === 'ArrowUp') {
@@ -133,7 +157,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 					setHighlightedAndFocus((prev) => prev.getLastDateOfMonth())
 				}
 			},
-			[handleClick, setHighlightedAndFocus]
+			[handleSelect, setHighlightedAndFocus]
 		)
 
 		useEffect(() => {
@@ -165,11 +189,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				aria-label={label}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
-				onClick={handleClick}
-				onKeyDown={handleKeyDown}
+				onBlur={handleBlur}
+				onClick={handleSelect}
+				onKeyDown={handleKeyboard}
+				onPointerOver={handleOver}
 				{...otherProps}
 			>
-				{date.getDay()}
+				{children ?? date.getDay()}
 			</freya.button>
 		)
 	}

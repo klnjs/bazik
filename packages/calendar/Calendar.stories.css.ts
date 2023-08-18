@@ -40,8 +40,8 @@ export const nav = style({
 
 export const button = style({
 	display: 'inline-flex',
-	width: 24,
-	height: 24,
+	width: 32,
+	height: 32,
 	cursor: 'pointer',
 	border: 'none',
 	borderRadius: 4,
@@ -79,6 +79,9 @@ export const day = style([
 		border: 0,
 		outline: 0,
 		selectors: {
+			'&:hover:not([data-disabled], [data-selected])': {
+				background: 'lightgrey'
+			},
 			'&[data-today]': {
 				fontWeight: 'bold'
 			},
