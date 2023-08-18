@@ -53,7 +53,7 @@ export class CalendarDate {
 	}
 
 	set({ year, month, day }: CalendarDateMutation) {
-		const date = this.getDate()
+		const date = this.toDate()
 		const next = new Date()
 
 		next.setFullYear(year ?? date.getFullYear())
@@ -79,7 +79,7 @@ export class CalendarDate {
 	}
 
 	calc({ year = 0, month = 0, day = 0 }: CalendarDateMutation = {}) {
-		const date = this.getDate()
+		const date = this.toDate()
 		const dateOriginalDay = date.getDate()
 
 		date.setFullYear(date.getFullYear() + year)
@@ -95,7 +95,7 @@ export class CalendarDate {
 	}
 
 	clone() {
-		return new CalendarDate(this.locale, this.getDate())
+		return new CalendarDate(this.locale, this.toDate())
 	}
 
 	clamp(min?: CalendarDate, max?: CalendarDate) {
@@ -111,7 +111,7 @@ export class CalendarDate {
 	}
 
 	format(options?: Intl.DateTimeFormatOptions) {
-		return this.getDate().toLocaleString(this.locale, options)
+		return this.toDate().toLocaleString(this.locale, options)
 	}
 
 	formatRelative(
@@ -129,20 +129,20 @@ export class CalendarDate {
 	}
 
 	getYear() {
-		return this.getDate().getFullYear()
+		return this.toDate().getFullYear()
 	}
 
 	getMonth() {
 		// Normalize month value
-		return this.getDate().getMonth() + 1
+		return this.toDate().getMonth() + 1
 	}
 
 	getDay() {
-		return this.getDate().getDate()
+		return this.toDate().getDate()
 	}
 
 	getTime() {
-		return this.getDate().getTime()
+		return this.toDate().getTime()
 	}
 
 	getDiff(date: CalendarDate) {
@@ -174,7 +174,7 @@ export class CalendarDate {
 			month: style,
 			day: style
 		})
-			.formatToParts(this.getDate())
+			.formatToParts(this.toDate())
 			.reduce<CalendarDateSegmentWithLiterals[]>((acc, part, index) => {
 				if (CalendarDate.isSegment(part)) {
 					acc.push({ ...part, index })
@@ -241,14 +241,14 @@ export class CalendarDate {
 
 	getWeekDay() {
 		const weekInfo = getCalendarWeekInfo(this.locale)
-		const dayOfWeek = this.getDate().getDay() || 7
+		const dayOfWeek = this.toDate().getDay() || 7
 		const dayOfWeekIndex = dayOfWeek - weekInfo.firstDay
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
 		return dayOfWeekIndex + dayOfWeekOffset
 	}
 
-	getDate() {
+	toDate() {
 		return new Date(this.date)
 	}
 
@@ -264,17 +264,17 @@ export class CalendarDate {
 
 	isWeekend() {
 		const weekInfo = getCalendarWeekInfo(this.locale)
-		const dayOfWeek = this.getDate().getDay() || 7
+		const dayOfWeek = this.toDate().getDay() || 7
 
 		return weekInfo.weekend.includes(dayOfWeek)
 	}
 
 	isAfter(date: CalendarDate | Date) {
-		return this.getDate().getTime() > date.getTime()
+		return this.toDate().getTime() > date.getTime()
 	}
 
 	isBefore(date: CalendarDate | Date) {
-		return this.getDate().getTime() < date.getTime()
+		return this.toDate().getTime() < date.getTime()
 	}
 
 	isBetween(min: CalendarDate | Date, max: CalendarDate | Date) {

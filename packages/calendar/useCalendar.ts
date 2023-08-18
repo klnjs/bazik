@@ -133,10 +133,9 @@ const normalize = (locale: string, value?: Date | DateRange | null) => {
 	}
 
 	if (Array.isArray(value)) {
-		return [
-			new CalendarDate(locale, value[0]),
-			new CalendarDate(locale, value[1])
-		] as CalendarDateRange
+		return value.map(
+			(v) => new CalendarDate(locale, v)
+		) as CalendarDateRange
 	}
 
 	return value
@@ -144,8 +143,8 @@ const normalize = (locale: string, value?: Date | DateRange | null) => {
 
 const denormalize = (value?: CalendarDate | CalendarDateRange | null) => {
 	if (Array.isArray(value)) {
-		return [value[0].getDate(), value[1].getDate()] as DateRange
+		return value.map((v) => v.toDate()) as DateRange
 	}
 
-	return value?.getDate() ?? null
+	return value?.toDate() ?? null
 }

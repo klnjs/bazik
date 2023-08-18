@@ -42,10 +42,17 @@ export const button = style({
 	display: 'inline-flex',
 	width: 24,
 	height: 24,
+	cursor: 'pointer',
+	border: 'none',
+	borderRadius: 4,
+	background: 'none',
 	lineHeight: 24,
 	paddingBlockEnd: 2,
 	alignItems: 'center',
-	justifyContent: 'center'
+	justifyContent: 'center',
+	':hover': {
+		background: 'lightgrey'
+	}
 })
 
 export const cell = style({
