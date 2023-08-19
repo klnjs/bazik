@@ -30,23 +30,20 @@ export const useCalendar = <R extends boolean = false>({
 	const [titleId, setTitleId] = useState<string>()
 
 	const minDate = useMemo(
-		() => (min ? new CalendarDate(locale, min) : undefined),
-		[locale, min]
+		() => (min ? new CalendarDate(min) : undefined),
+		[min]
 	)
 
 	const maxDate = useMemo(
-		() => (max ? new CalendarDate(locale, max) : undefined),
-		[locale, max]
+		() => (max ? new CalendarDate(max) : undefined),
+		[max]
 	)
 
-	const value = useMemo(
-		() => normalize(locale, valueProp),
-		[locale, valueProp]
-	)
+	const value = useMemo(() => normalize(valueProp), [valueProp])
 
 	const defaultValue = useMemo(
-		() => normalize(locale, defaultValueProp),
-		[locale, defaultValueProp]
+		() => normalize(defaultValueProp),
+		[defaultValueProp]
 	)
 
 	const onChange = useCallback(
@@ -72,13 +69,13 @@ export const useCalendar = <R extends boolean = false>({
 
 	const [transient, setTransient] = useState<CalendarDate>()
 
-	const [highlighted, setHighlighted] = useState(
-		() =>
-			new CalendarDate(
-				locale,
-				Array.isArray(valueProp) ? valueProp[0] : valueProp
-			)
-	)
+	const [highlighted, setHighlighted] = useState(() => {
+		if (Array.isArray(valueProp)) {
+			return new CalendarDate(valueProp[1])
+		}
+
+		return new CalendarDate(valueProp)
+	})
 
 	const [selection, selectionIsTransient] = useMemo(() => {
 		if (transient) {
@@ -129,15 +126,13 @@ export const useCalendar = <R extends boolean = false>({
 	}
 }
 
-const normalize = (locale: string, value?: Date | DateRange | null) => {
+const normalize = (value?: Date | DateRange | null) => {
 	if (value instanceof Date) {
-		return new CalendarDate(locale, value)
+		return new CalendarDate(value)
 	}
 
 	if (Array.isArray(value)) {
-		return value.map(
-			(v) => new CalendarDate(locale, v)
-		) as CalendarDateRange
+		return value.map((v) => new CalendarDate(v)) as CalendarDateRange
 	}
 
 	return value

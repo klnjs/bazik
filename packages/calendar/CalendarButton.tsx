@@ -71,12 +71,12 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const onClick = useCallback(() => {
 			setHighlighted((prev) => {
 				if (segment === 'today') {
-					return new CalendarDate(locale)
+					return new CalendarDate()
 				}
 
 				return prev.calc({ [segment]: Number(modifier) })
 			})
-		}, [locale, segment, modifier, setHighlighted])
+		}, [segment, modifier, setHighlighted])
 
 		return (
 			<freya.button

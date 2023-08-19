@@ -6,7 +6,8 @@ export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	({ id: idProp, children, ...otherProps }, forwardedRef) => {
-		const { highlighted, titleId, setTitleId } = useCalendarContext()
+		const { locale, highlighted, titleId, setTitleId } =
+			useCalendarContext()
 		const id = useId(idProp)
 
 		useLayoutEffect(() => {
@@ -25,7 +26,7 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 				{...otherProps}
 			>
 				{children ??
-					highlighted.format({
+					highlighted.format(locale, {
 						year: 'numeric',
 						month: 'long'
 					})}

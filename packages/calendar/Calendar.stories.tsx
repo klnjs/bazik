@@ -20,7 +20,7 @@ export const Basic = () => (
 			<CalendarDays>
 				{({ date }) => (
 					<CalendarDay
-						key={date.format()}
+						key={date.toUTCString()}
 						date={date}
 						className={classes.day}
 					/>
@@ -37,7 +37,7 @@ export const Range = () => (
 			<CalendarDays>
 				{({ date }) => (
 					<CalendarDay
-						key={date.format()}
+						key={date.toUTCString()}
 						date={date}
 						className={classes.day}
 					/>
@@ -136,7 +136,7 @@ export const Localization = () => (
 
 					return (
 						<CalendarDay
-							key={date.format()}
+							key={date.toUTCString()}
 							date={date}
 							className={classes.day}
 						/>
@@ -169,7 +169,7 @@ export const MinAndMax = () => {
 				<CalendarDays>
 					{({ date }) => (
 						<CalendarDay
-							key={date.format()}
+							key={date.toUTCString()}
 							date={date}
 							className={classes.day}
 						/>
@@ -187,7 +187,7 @@ export const OverflowVisible = () => (
 			<CalendarDays>
 				{({ date }) => (
 					<CalendarDay
-						key={date.format()}
+						key={date.toUTCString()}
 						date={date}
 						className={classes.dayWithOverflowVisible}
 					/>
@@ -219,11 +219,11 @@ export const WeekendDisabled = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{({ date }) => (
+				{({ date, locale }) => (
 					<CalendarDay
-						key={date.format()}
+						key={date.toUTCString()}
 						date={date}
-						disabled={date.isWeekend()}
+						disabled={date.isWeekend(locale)}
 						className={classes.day}
 					/>
 				)}
@@ -264,7 +264,7 @@ export const Schedule = () => {
 				<CalendarDays>
 					{({ date }) => (
 						<div
-							key={date.format()}
+							key={date.toUTCString()}
 							style={{
 								aspectRatio: '1 / 1',
 								padding: 4,
@@ -274,7 +274,15 @@ export const Schedule = () => {
 						>
 							<div style={{ fontSize: 12 }}>{date.getDay()}</div>
 							{events
-								.filter((event) => date.isSameDay(event.date))
+								.filter(
+									(event) =>
+										date.toDate().getFullYear() ===
+											event.date.getFullYear() &&
+										date.toDate().getMonth() ===
+											event.date.getMonth() &&
+										date.toDate().getDate() ===
+											event.date.getDate()
+								)
 								.map((event) => (
 									<div
 										style={{

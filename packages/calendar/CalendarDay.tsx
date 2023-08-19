@@ -23,6 +23,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		forwardedRef
 	) => {
 		const {
+			locale,
 			disabled: disabledContext,
 			minDate,
 			maxDate,
@@ -38,9 +39,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const isToday = date.isToday()
 		const isRange = Array.isArray(selection)
 		const isSingle = !isRange && selection !== null
-		const isWeekStart = date.getWeekDay() === 1
-		const isWeekEnd = date.getWeekDay() === 7
-		const isWeekend = date.isWeekend()
+		const isWeekStart = date.getWeekDay(locale) === 1
+		const isWeekEnd = date.getWeekDay(locale) === 7
+		const isWeekend = date.isWeekend(locale)
 		const isOverflow = !date.isSameMonth(highlighted)
 		const isHighlighted = date.isSameDay(highlighted)
 		const isDisabled =
@@ -75,7 +76,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const refCallback = useMergeRefs(ref, forwardedRef)
 
 		const label = useMemo(() => {
-			const formatted = date.format({
+			const formatted = date.format(locale, {
 				year: 'numeric',
 				month: 'long',
 				weekday: 'long',
@@ -85,13 +86,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			if (isToday) {
 				// Uncertain how this works in different locales, due to
 				// the concatenation of the two labels.
-				return `${date.formatRelative(date, 'day', {
+				return `${date.formatRelativeTo(locale, date, 'day', {
 					numeric: 'auto'
 				})}, ${formatted}`
 			}
 
 			return formatted
-		}, [date, isToday])
+		}, [locale, date, isToday])
 
 		const setHighlightedAndFocus = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {

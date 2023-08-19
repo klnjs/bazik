@@ -1,10 +1,11 @@
 import { useMemo, type ReactNode } from 'react'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate } from './CalendarDate'
+import { CalendarDate, type CalendarDateLocale } from './CalendarDate'
 
 export type CalendarDaysItem = {
 	role: 'week' | 'weekday' | 'date' | 'blank'
 	date: CalendarDate
+	locale: CalendarDateLocale
 }
 
 export type CalendarDaysProps = {
@@ -24,9 +25,9 @@ export const CalendarDays = ({
 	const month = highlighted.getMonth()
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
-		const reference = new CalendarDate(locale).set({ year, month })
-		const max = reference.getLastDateOfMonth().getLastDateOfWeek()
-		let date = reference.getFirstDateOfMonth().getFirstDateOfWeek()
+		const reference = new CalendarDate().set({ year, month })
+		const max = reference.getLastDateOfMonth().getLastDateOfWeek(locale)
+		let date = reference.getFirstDateOfMonth().getFirstDateOfWeek(locale)
 		let itrs = 0
 
 		if (weekday) {
@@ -34,14 +35,19 @@ export const CalendarDays = ({
 		}
 
 		while (!date.isAfter(max)) {
-			if (weeknumber && date.getWeekDay() === 1) {
+			if (weeknumber && date.getWeekDay(locale) === 1) {
 				dates.push({
 					role: weekday && itrs === 0 ? 'blank' : 'week',
-					date
+					date,
+					locale
 				})
 			}
 
-			dates.push({ role: weekday && itrs < 7 ? 'weekday' : 'date', date })
+			dates.push({
+				role: weekday && itrs < 7 ? 'weekday' : 'date',
+				date,
+				locale
+			})
 			date = date.add({ day: 1 })
 			itrs = itrs + 1
 		}

@@ -9,17 +9,17 @@ export const useCalendarField = (options: UseCalendarFieldOptions) => {
 
 	const calendar = useCalendar({ ...options })
 
-	const focusedSegmentRef = useRef<HTMLDivElement>(null)
+	const highlightedSegmentRef = useRef<HTMLDivElement>(null)
 
-	const [focusedSegment, setFocusedSegment] =
+	const [highlightedSegment, setHighlightedSegment] =
 		useState<CalendarDateSegmentType>()
 
 	return {
 		...calendar,
 		labelId,
 		setLabelId,
-		focusedSegment,
-		focusedSegmentRef,
-		setFocusedSegment
+		highlightedSegment,
+		highlightedSegmentRef,
+		setHighlightedSegment
 	}
 }
