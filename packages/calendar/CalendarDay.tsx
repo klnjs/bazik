@@ -50,15 +50,6 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			Boolean(maxDate && date.isAfter(maxDate)) ||
 			Boolean(minDate && date.isBefore(minDate))
 
-		if (date.getDay() === 18) {
-			console.log(date.toDate().toString())
-			console.log(
-				minDate?.toDate().toString(),
-				' - ',
-				maxDate?.toDate().toString()
-			)
-		}
-
 		const isRangeStart = isRange && date.isSameDay(selection[0])
 		const isRangeEnd = isRange && date.isSameDay(selection[1])
 		const isRangeIn =
@@ -86,13 +77,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			if (isToday) {
 				// Uncertain how this works in different locales, due to
 				// the concatenation of the two labels.
-				return `${date.formatRelativeTo(locale, date, 'day', {
+				return `${date.formatRelativeTo(locale, highlighted, 'day', {
 					numeric: 'auto'
 				})}, ${formatted}`
 			}
 
 			return formatted
-		}, [locale, date, isToday])
+		}, [locale, date, highlighted, isToday])
 
 		const setHighlightedAndFocus = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {
