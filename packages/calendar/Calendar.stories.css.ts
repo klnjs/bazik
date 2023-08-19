@@ -22,7 +22,7 @@ export const grid = style({
 export const gridWithWeekInfo = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(8, 1fr)',
-	gap: 4
+	rowGap: 2
 })
 
 export const header = style({
@@ -35,7 +35,7 @@ export const header = style({
 
 export const nav = style({
 	display: 'inline-flex',
-	gap: 8
+	gap: 4
 })
 
 export const button = style({

@@ -1,7 +1,13 @@
 import type { Range } from '../core'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
-export const calendarDateSegmentTypes = ['year', 'month', 'day'] as const
+export const calendarDateSegmentTypes = [
+	'year',
+	'month',
+	'day',
+	'hour',
+	'minute'
+] as const
 
 export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
 
@@ -52,13 +58,15 @@ export class CalendarDate {
 		return segment.type === 'literal'
 	}
 
-	set({ year, month, day }: CalendarDateMutation) {
+	set({ year, month, day, hour, minute }: CalendarDateMutation) {
 		const date = this.toDate()
 		const next = new Date()
 
 		next.setFullYear(year ?? date.getFullYear())
 		next.setMonth(month ? month - 1 : date.getMonth())
 		next.setDate(day ?? date.getDate())
+		next.setHours(hour ?? date.getHours())
+		next.setMinutes(minute ?? date.getMinutes())
 
 		return new CalendarDate(this.locale, next)
 	}
@@ -78,7 +86,13 @@ export class CalendarDate {
 		)
 	}
 
-	calc({ year = 0, month = 0, day = 0 }: CalendarDateMutation = {}) {
+	calc({
+		year = 0,
+		month = 0,
+		day = 0,
+		hour = 0,
+		minute = 0
+	}: CalendarDateMutation = {}) {
 		const date = this.toDate()
 		const dateOriginalDay = date.getDate()
 
@@ -90,6 +104,10 @@ export class CalendarDate {
 		}
 
 		date.setDate(date.getDate() + day)
+		date.setHours(date.getHours() + hour)
+		date.setMinutes(date.getMinutes() + minute)
+		date.setSeconds(0)
+		date.setMilliseconds(0)
 
 		return new CalendarDate(this.locale, date)
 	}
@@ -150,11 +168,20 @@ export class CalendarDate {
 		const oneDay = 1000 * 60 * 60 * 24 // Number of milliseconds in a day
 		const oneYear = oneDay * 365.25 // Average number of days in a year
 		const oneMonth = oneDay * 30.436875 // Average number of days in a month
+		const oneMinute = 1000 * 60 // Number of milliseconds in a minute
+		const oneHour = oneMinute * 60 // Number of milliseconds in an hour
 
 		return {
 			year: Math.floor(difference / oneYear),
 			month: Math.floor((difference % oneYear) / oneMonth),
-			day: Math.floor(((difference % oneYear) % oneMonth) / oneDay)
+			day: Math.floor(((difference % oneYear) % oneMonth) / oneDay),
+			hour: Math.floor(
+				(((difference % oneYear) % oneMonth) % oneDay) / oneHour
+			),
+			minute: Math.floor(
+				((((difference % oneYear) % oneMonth) % oneDay) % oneHour) /
+					oneMinute
+			)
 		}
 	}
 
@@ -201,11 +228,11 @@ export class CalendarDate {
 	}
 
 	getFirstDateOfWeek() {
-		return this.sub({ day: this.getWeekDay() - 1 })
+		return this.getMidnight().sub({ day: this.getWeekDay() - 1 })
 	}
 
 	getFirstDateOfMonth() {
-		return this.set({ day: 1 })
+		return this.getMidnight().set({ day: 1 })
 	}
 
 	getLastDateOfWeek() {
@@ -213,7 +240,7 @@ export class CalendarDate {
 	}
 
 	getLastDateOfMonth() {
-		return this.set({ month: this.getMonth() + 1, day: 0 })
+		return this.getMidnight().set({ month: this.getMonth() + 1, day: 0 })
 	}
 
 	getDaysInMonth() {
@@ -246,6 +273,10 @@ export class CalendarDate {
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
 		return dayOfWeekIndex + dayOfWeekOffset
+	}
+
+	getMidnight() {
+		return this.set({ hour: 0, minute: 0 })
 	}
 
 	toDate() {

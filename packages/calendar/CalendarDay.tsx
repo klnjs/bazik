@@ -1,4 +1,10 @@
-import { useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
+import {
+	useRef,
+	useMemo,
+	useEffect,
+	useCallback,
+	type KeyboardEvent
+} from 'react'
 import { freya, forwardRef, useMergeRefs, isRTL, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
@@ -43,6 +49,15 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			Boolean(maxDate && date.isAfter(maxDate)) ||
 			Boolean(minDate && date.isBefore(minDate))
 
+		if (date.getDay() === 18) {
+			console.log(date.toDate().toString())
+			console.log(
+				minDate?.toDate().toString(),
+				' - ',
+				maxDate?.toDate().toString()
+			)
+		}
+
 		const isRangeStart = isRange && date.isSameDay(selection[0])
 		const isRangeEnd = isRange && date.isSameDay(selection[1])
 		const isRangeIn =
@@ -52,34 +67,44 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			date.isBetween(selection[0], selection[1])
 
 		const isSelected =
-			(isSingle && date.isSameDay(selection)) ||
 			isRangeStart ||
-			isRangeEnd
+			isRangeEnd ||
+			(isSingle && date.isSameDay(selection))
 
 		const ref = useRef<HTMLButtonElement>(null)
 		const refCallback = useMergeRefs(ref, forwardedRef)
 
-		const formatted = date.format({
-			year: 'numeric',
-			month: 'long',
-			weekday: 'long',
-			day: 'numeric'
-		})
+		const label = useMemo(() => {
+			const formatted = date.format({
+				year: 'numeric',
+				month: 'long',
+				weekday: 'long',
+				day: 'numeric'
+			})
 
-		// Uncertain how this works in different locales, due to
-		// the concatenation of the two labels.
-		const label = isToday
-			? `${date.formatRelative(date, 'day', {
+			if (isToday) {
+				// Uncertain how this works in different locales, due to
+				// the concatenation of the two labels.
+				return `${date.formatRelative(date, 'day', {
 					numeric: 'auto'
-			  })}, ${formatted}`
-			: formatted
+				})}, ${formatted}`
+			}
+
+			return formatted
+		}, [date, isToday])
 
 		const setHighlightedAndFocus = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {
 				setAutoFocus(true)
-				setHighlighted(action)
+				setHighlighted((prev) => {
+					if (typeof action === 'function') {
+						return action(prev).clamp(minDate, maxDate)
+					}
+
+					return action.clamp(minDate, maxDate)
+				})
 			},
-			[setAutoFocus, setHighlighted]
+			[minDate, maxDate, setAutoFocus, setHighlighted]
 		)
 
 		const handleOver = useCallback(() => {

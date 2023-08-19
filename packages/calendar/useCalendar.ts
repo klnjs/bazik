@@ -29,8 +29,6 @@ export const useCalendar = <R extends boolean = false>({
 }: UseCalendarOptions<R>) => {
 	const [titleId, setTitleId] = useState<string>()
 
-	const titleRef = useRef<HTMLHeadingElement>()
-
 	const minDate = useMemo(
 		() => (min ? new CalendarDate(locale, min) : undefined),
 		[locale, min]
@@ -120,7 +118,6 @@ export const useCalendar = <R extends boolean = false>({
 		minDate,
 		maxDate,
 		titleId,
-		titleRef,
 		setTitleId,
 		autoFocus: autoFocusRef.current,
 		setAutoFocus,

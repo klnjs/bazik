@@ -100,20 +100,11 @@ export const Navigation = () => (
 			<CalendarTitle className={classes.title} />
 
 			<div className={classes.nav}>
-				<CalendarButton action="year-1" className={classes.button}>
-					«
-				</CalendarButton>
 				<CalendarButton action="month-1" className={classes.button}>
 					‹
 				</CalendarButton>
-				<CalendarButton action="today" className={classes.button}>
-					•
-				</CalendarButton>
 				<CalendarButton action="month+1" className={classes.button}>
 					›
-				</CalendarButton>
-				<CalendarButton action="year+1" className={classes.button}>
-					»
 				</CalendarButton>
 			</div>
 		</div>
@@ -131,27 +122,15 @@ export const Navigation = () => (
 export const Localization = () => (
 	<Calendar locale="en-US" className={classes.calendar}>
 		<CalendarTitle className={classes.title} />
-		<CalendarGrid className={classes.gridWithWeekInfo}>
-			<CalendarDays weekday={true} weeknumber={true}>
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays weekday={true}>
 				{({ role, date }) => {
-					if (role === 'blank') {
-						return <span />
-					}
-
 					if (role === 'weekday') {
 						return (
 							<CalendarWeekday
 								date={date}
 								className={classes.cell}
 							/>
-						)
-					}
-
-					if (role === 'week') {
-						return (
-							<span className={classes.cell}>
-								{date.getWeek()}
-							</span>
 						)
 					}
 
