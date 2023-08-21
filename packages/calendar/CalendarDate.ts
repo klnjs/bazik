@@ -35,6 +35,8 @@ export type CalendarDateMutation = {
 	[key in CalendarDateSegmentType]?: number
 }
 
+export type DateRange = Range<Date>
+
 export type CalendarDateRange = Range<CalendarDate>
 
 export class CalendarDate {

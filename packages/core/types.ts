@@ -1,4 +1,4 @@
-export type Range<T> = [T, T]
+export type Range<T> = [start: T, end: T]
 
 export type Assign<T, P> = Omit<T, keyof P> & P
 

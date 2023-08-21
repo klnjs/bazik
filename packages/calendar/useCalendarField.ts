@@ -18,8 +18,8 @@ export const useCalendarField = (options: UseCalendarFieldOptions) => {
 		...calendar,
 		labelId,
 		setLabelId,
-		highlightedSegment,
 		highlightedSegmentRef,
+		highlightedSegment,
 		setHighlightedSegment
 	}
 }

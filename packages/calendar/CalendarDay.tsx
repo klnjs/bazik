@@ -5,7 +5,14 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
-import { freya, forwardRef, useMergeRefs, isRTL, type CoreProps } from '../core'
+import {
+	freya,
+	forwardRef,
+	useMergeRefs,
+	isRTL,
+	isRange as isRangeCheck,
+	type CoreProps
+} from '../core'
 import { useCalendarContext } from './CalendarContext'
 import type { CalendarDate } from './CalendarDate'
 
@@ -37,7 +44,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		} = useCalendarContext()
 
 		const isToday = date.isToday()
-		const isRange = Array.isArray(selection)
+		const isRange = isRangeCheck(selection)
 		const isSingle = !isRange && selection !== null
 		const isWeekStart = date.getWeekDay(locale) === 1
 		const isWeekEnd = date.getWeekDay(locale) === 7

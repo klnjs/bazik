@@ -1,8 +1,11 @@
 import { useRef, useMemo, useState, useCallback } from 'react'
-import { useControllableState, type Range } from '../core'
-import { CalendarDate, type CalendarDateRange } from './CalendarDate'
-
-type DateRange = Range<Date>
+import { useControllableState, isRange } from '../core'
+import { useCalendarValue, toDate } from './useCalendarValue'
+import {
+	CalendarDate,
+	type CalendarDateRange,
+	type DateRange
+} from './CalendarDate'
 
 export type UseCalendarOptions<R extends boolean = false> = {
 	autoFocus?: boolean
@@ -29,27 +32,18 @@ export const useCalendar = <R extends boolean = false>({
 }: UseCalendarOptions<R>) => {
 	const [titleId, setTitleId] = useState<string>()
 
-	const minDate = useMemo(
-		() => (min ? new CalendarDate(min) : undefined),
-		[min]
-	)
+	const minDate = useCalendarValue(min)
 
-	const maxDate = useMemo(
-		() => (max ? new CalendarDate(max) : undefined),
-		[max]
-	)
+	const maxDate = useCalendarValue(max)
 
-	const value = useMemo(() => normalize(valueProp), [valueProp])
+	const value = useCalendarValue(valueProp)
 
-	const defaultValue = useMemo(
-		() => normalize(defaultValueProp),
-		[defaultValueProp]
-	)
+	const defaultValue = useCalendarValue(defaultValueProp)
 
 	const onChange = useCallback(
 		(newValue: typeof value) => {
 			if (onChangeProp) {
-				onChangeProp(denormalize(newValue) as Date & DateRange)
+				onChangeProp(toDate(newValue) as Date & DateRange)
 			}
 		},
 		[onChangeProp]
@@ -69,13 +63,9 @@ export const useCalendar = <R extends boolean = false>({
 
 	const [transient, setTransient] = useState<CalendarDate>()
 
-	const [highlighted, setHighlighted] = useState(() => {
-		if (Array.isArray(valueProp)) {
-			return new CalendarDate(valueProp[1])
-		}
-
-		return new CalendarDate(valueProp)
-	})
+	const [highlighted, setHighlighted] = useState(
+		() => new CalendarDate(isRange(valueProp) ? valueProp[1] : valueProp)
+	)
 
 	const [selection, selectionIsTransient] = useMemo(() => {
 		if (transient) {
@@ -124,24 +114,4 @@ export const useCalendar = <R extends boolean = false>({
 		selection,
 		setSelection
 	}
-}
-
-const normalize = (value?: Date | DateRange | null) => {
-	if (value instanceof Date) {
-		return new CalendarDate(value)
-	}
-
-	if (Array.isArray(value)) {
-		return value.map((v) => new CalendarDate(v)) as CalendarDateRange
-	}
-
-	return value
-}
-
-const denormalize = (value?: CalendarDate | CalendarDateRange | null) => {
-	if (Array.isArray(value)) {
-		return value.map((v) => v.toDate()) as DateRange
-	}
-
-	return value?.toDate() ?? null
 }
