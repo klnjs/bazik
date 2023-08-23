@@ -29,7 +29,7 @@ export const Basic = () => (
 				{(segment) => (
 					<CalendarFieldSegment
 						key={segment.index}
-						type={segment.type}
+						segment={segment}
 						className={classes.segment}
 					/>
 				)}

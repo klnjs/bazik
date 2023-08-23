@@ -19,11 +19,7 @@ export const Basic = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.toUTCString()}
-						date={date}
-						className={classes.day}
-					/>
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -36,11 +32,7 @@ export const Range = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.toUTCString()}
-						date={date}
-						className={classes.day}
-					/>
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -134,13 +126,7 @@ export const Localization = () => (
 						)
 					}
 
-					return (
-						<CalendarDay
-							key={date.toUTCString()}
-							date={date}
-							className={classes.day}
-						/>
-					)
+					return <CalendarDay date={date} className={classes.day} />
 				}}
 			</CalendarDays>
 		</CalendarGrid>
@@ -168,11 +154,7 @@ export const MinAndMax = () => {
 			<CalendarGrid className={classes.grid}>
 				<CalendarDays>
 					{({ date }) => (
-						<CalendarDay
-							key={date.toUTCString()}
-							date={date}
-							className={classes.day}
-						/>
+						<CalendarDay date={date} className={classes.day} />
 					)}
 				</CalendarDays>
 			</CalendarGrid>
@@ -187,7 +169,6 @@ export const OverflowVisible = () => (
 			<CalendarDays>
 				{({ date }) => (
 					<CalendarDay
-						key={date.toUTCString()}
 						date={date}
 						className={classes.dayWithOverflowVisible}
 					/>
@@ -203,11 +184,7 @@ export const WeekdayHeaders = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.getTime()}
-						date={date}
-						className={classes.day}
-					/>
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -221,7 +198,6 @@ export const WeekendDisabled = () => (
 			<CalendarDays>
 				{({ date, locale }) => (
 					<CalendarDay
-						key={date.toUTCString()}
 						date={date}
 						disabled={date.isWeekend(locale)}
 						className={classes.day}
@@ -264,7 +240,6 @@ export const Schedule = () => {
 				<CalendarDays>
 					{({ date }) => (
 						<div
-							key={date.toUTCString()}
 							style={{
 								aspectRatio: '1 / 1',
 								padding: 4,

@@ -13,14 +13,16 @@ export type CalendarDateLocale = string
 
 export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
 
-export type CalendarDateSegmentType<L extends boolean = false> = L extends false
-	? (typeof calendarDateSegmentTypes)[number]
-	: (typeof calendarDateSegmentTypes)[number] | 'literal'
+export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
 
-export type CalendarDateSegment<L extends boolean = false> = {
-	type: CalendarDateSegmentType<L>
+export type CalendarDateSegment = {
+	type: CalendarDateSegmentType
 	value: string
-	index: number
+}
+
+export type CalendarDateLiteral = {
+	type: 'literal'
+	value: string
 }
 
 export type CalendarDateMutation = {
@@ -48,7 +50,7 @@ export class CalendarDate {
 
 	static isLiteral(
 		part: Intl.DateTimeFormatPart
-	): part is CalendarDateSegment<true> {
+	): part is CalendarDateLiteral {
 		return part.type === 'literal'
 	}
 
@@ -182,31 +184,28 @@ export class CalendarDate {
 
 	getSegments<L extends boolean = false>(
 		locale: CalendarDateLocale,
-		{
-			style = 'numeric',
-			literals
-		}: {
-			style?: CalendarDateSegmentStyle
-			literals?: L
-		} = {}
+		literals?: L
 	) {
 		return new Intl.DateTimeFormat(locale, {
 			year: 'numeric',
-			month: style,
-			day: style
+			month: 'numeric',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric'
 		})
 			.formatToParts(this.toDate())
-			.reduce<CalendarDateSegment<L>[]>((acc, part, index) => {
-				if (CalendarDate.isSegment(part)) {
-					acc.push({ ...part, index })
-				}
-
-				if (literals === true && CalendarDate.isLiteral(part)) {
-					acc.push({ ...part, index })
+			.reduce<unknown[]>((acc, part) => {
+				if (
+					CalendarDate.isSegment(part) ||
+					(CalendarDate.isLiteral(part) && literals === true)
+				) {
+					acc.push(part)
 				}
 
 				return acc
-			}, [])
+			}, []) as L extends false
+			? CalendarDateSegment[]
+			: (CalendarDateSegment | CalendarDateLiteral)[]
 	}
 
 	getSegment(
@@ -214,10 +213,9 @@ export class CalendarDate {
 		type: CalendarDateSegmentType,
 		style?: CalendarDateSegmentStyle
 	) {
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.getSegments(locale, { style }).find(
-			(segment) => segment.type === type
-		)!
+		return new Intl.DateTimeFormat(locale, {
+			[type]: style
+		}).formatToParts(this.toDate())[0] as CalendarDateSegment
 	}
 
 	getFirstDateOfWeek(locale: CalendarDateLocale) {
