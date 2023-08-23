@@ -11,22 +11,14 @@ export const calendarDateSegmentTypes = [
 
 export type CalendarDateLocale = string
 
-export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
-
-export type CalendarDateSegmentTypeWithLiteral =
-	| CalendarDateSegmentType
-	| 'literal'
-
 export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
 
-export type CalendarDateSegment = {
-	type: CalendarDateSegmentType
-	value: string
-	index: number
-}
+export type CalendarDateSegmentType<L extends boolean = false> = L extends false
+	? (typeof calendarDateSegmentTypes)[number]
+	: (typeof calendarDateSegmentTypes)[number] | 'literal'
 
-export type CalendarDateSegmentWithLiterals = {
-	type: CalendarDateSegmentTypeWithLiteral
+export type CalendarDateSegment<L extends boolean = false> = {
+	type: CalendarDateSegmentType<L>
 	value: string
 	index: number
 }
@@ -47,17 +39,17 @@ export class CalendarDate {
 	}
 
 	static isSegment(
-		segment: Intl.DateTimeFormatPart
-	): segment is CalendarDateSegment {
+		part: Intl.DateTimeFormatPart
+	): part is CalendarDateSegment {
 		return calendarDateSegmentTypes.includes(
-			segment.type as CalendarDateSegmentType
+			part.type as CalendarDateSegmentType
 		)
 	}
 
 	static isLiteral(
-		segment: Intl.DateTimeFormatPart
-	): segment is CalendarDateSegmentWithLiterals {
-		return segment.type === 'literal'
+		part: Intl.DateTimeFormatPart
+	): part is CalendarDateSegment<true> {
+		return part.type === 'literal'
 	}
 
 	set({ year, month, day, hour, minute }: CalendarDateMutation) {
@@ -204,7 +196,7 @@ export class CalendarDate {
 			day: style
 		})
 			.formatToParts(this.toDate())
-			.reduce<CalendarDateSegmentWithLiterals[]>((acc, part, index) => {
+			.reduce<CalendarDateSegment<L>[]>((acc, part, index) => {
 				if (CalendarDate.isSegment(part)) {
 					acc.push({ ...part, index })
 				}
@@ -214,9 +206,7 @@ export class CalendarDate {
 				}
 
 				return acc
-			}, []) as L extends true
-			? CalendarDateSegmentWithLiterals[]
-			: CalendarDateSegment[]
+			}, [])
 	}
 
 	getSegment(

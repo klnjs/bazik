@@ -6,7 +6,7 @@ export type CalendarFieldLabelProps = CoreProps<'label'>
 
 export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
 	({ id: idProp, ...otherProps }, forwardedRef) => {
-		const { focusedSegmentRef, labelId, setLabelId } =
+		const { highlightedSegmentRef, labelId, setLabelId } =
 			useCalendarFieldContext()
 		const id = useId(idProp)
 
@@ -22,7 +22,7 @@ export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
 			<freya.label
 				id={labelId}
 				ref={forwardedRef}
-				onClick={() => focusedSegmentRef.current?.focus()}
+				onClick={() => highlightedSegmentRef.current?.focus()}
 				{...otherProps}
 			/>
 		)

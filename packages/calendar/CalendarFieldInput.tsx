@@ -6,16 +6,16 @@ export type CalendarFieldInputProps = CoreProps<'div'>
 
 export const CalendarFieldInput = forwardRef<'div', CalendarFieldInputProps>(
 	(props, forwardedRef) => {
-		const { disabled, focusedSegmentRef } = useCalendarFieldContext()
+		const { disabled, highlightedSegmentRef } = useCalendarFieldContext()
 
 		const handlePointerDown = useCallback(
 			(event: PointerEvent<HTMLDivElement>) => {
 				if (!disabled && event.target === event.currentTarget) {
 					event.preventDefault()
-					focusedSegmentRef.current?.focus()
+					highlightedSegmentRef.current?.focus()
 				}
 			},
-			[disabled, focusedSegmentRef]
+			[disabled, highlightedSegmentRef]
 		)
 
 		return (

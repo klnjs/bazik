@@ -43,19 +43,23 @@ export const Literals = () => (
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments literals={true}>
-				{(segment) =>
-					segment.type === 'literal' ? (
-						<CalendarFieldLiteral key={segment.index}>
-							{segment.value}
-						</CalendarFieldLiteral>
-					) : (
+				{(segment) => {
+					if (segment.type === 'literal') {
+						return (
+							<CalendarFieldLiteral key={segment.index}>
+								{segment.value}
+							</CalendarFieldLiteral>
+						)
+					}
+
+					return (
 						<CalendarFieldSegment
 							key={segment.index}
-							type={segment.type}
+							segment={segment}
 							className={classes.segment}
 						/>
 					)
-				}
+				}}
 			</CalendarFieldSegments>
 		</CalendarFieldInput>
 	</CalendarField>
@@ -69,7 +73,7 @@ export const Disabled = () => (
 				{(segment) => (
 					<CalendarFieldSegment
 						key={segment.index}
-						type={segment.type}
+						segment={segment}
 						className={classes.segment}
 					/>
 				)}
@@ -87,7 +91,7 @@ export const Picker = () => (
 					{(segment) => (
 						<CalendarFieldSegment
 							key={segment.index}
-							type={segment.type}
+							segment={segment}
 							className={classes.segment}
 						/>
 					)}

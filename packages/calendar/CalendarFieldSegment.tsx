@@ -5,19 +5,19 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
-import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
-import { useCalendarFieldContext } from './CalendarFieldContext'
-import { useCalendarLocalisation } from './useCalendarLocalisation'
+import { freya, forwardRef, useMergeRefs, isRTL, type CoreProps } from '../core'
 import {
 	CalendarDate,
-	type CalendarDateSegmentType,
+	type CalendarDateSegment,
 	type CalendarDateSegmentStyle
 } from './CalendarDate'
+import { useCalendarFieldContext } from './CalendarFieldContext'
+import { useCalendarLocalisation } from './useCalendarLocalisation'
 
 export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
-		type: CalendarDateSegmentType
+		segment: CalendarDateSegment
 		mode?: CalendarDateSegmentStyle
 		disabled?: boolean
 		placeholder?: string
@@ -30,9 +30,9 @@ export const CalendarFieldSegment = forwardRef<
 >(
 	(
 		{
-			type,
 			mode = '2-digit',
 			style,
+			segment,
 			disabled: disabledProp = false,
 			placeholder = '-',
 			...otherProps
@@ -47,29 +47,29 @@ export const CalendarFieldSegment = forwardRef<
 			maxDate,
 			autoFocus,
 			setAutoFocus,
-			selectedDate,
-			setSelectedDate,
-			focusedSegmentRef,
-			focusedSegment,
-			setFocusedSegment
+			selected,
+			setSelected,
+			highlightedSegment,
+			highlightedSegmentRef,
+			setHighlightedSegment
 		} = useCalendarFieldContext()
 		const { names } = useCalendarLocalisation(locale)
 
 		const isDisabled = disabledProp || disabledContext
-		const isFocused = focusedSegment === type
+		const isHighlighted = segment.type === highlightedSegment
 		const isInvalid =
-			Boolean(maxDate && selectedDate && selectedDate.isAfter(maxDate)) ||
-			Boolean(minDate && selectedDate && selectedDate.isBefore(minDate))
+			Boolean(maxDate && selected && selected.isAfter(maxDate)) ||
+			Boolean(minDate && selected && selected.isBefore(minDate))
 
 		const ref = useRef<HTMLDivElement>(null)
 		const refCallback = useMergeRefs(
 			ref,
-			isFocused ? focusedSegmentRef : undefined,
+			isHighlighted ? highlightedSegmentRef : undefined,
 			forwardedRef
 		)
 
-		const value = selectedDate?.getSegment(type, mode).value ?? ''
-		const valueText = selectedDate?.format({
+		const value = selected?.getSegment(type, mode).value ?? ''
+		const valueText = selected?.format({
 			year: 'numeric',
 			month: 'long',
 			weekday: 'long',
@@ -83,7 +83,7 @@ export const CalendarFieldSegment = forwardRef<
 				case 'month':
 					return 12
 				case 'day':
-					return selectedDate?.getDaysInMonth() ?? 31
+					return selected?.getDaysInMonth() ?? 31
 				default:
 					throw new Error('Invalid segment type')
 			}
@@ -102,12 +102,12 @@ export const CalendarFieldSegment = forwardRef<
 		const changeSegment = useCallback(
 			(action: (prev: CalendarDate) => CalendarDate | null) => {
 				if (!isDisabled) {
-					setSelectedDate((prev) =>
+					setSelected((prev) =>
 						action(prev ?? new CalendarDate(locale))
 					)
 				}
 			},
-			[locale, isDisabled, setSelectedDate]
+			[locale, isDisabled, setSelected]
 		)
 
 		const changeFocusedSegment = useCallback(
@@ -123,8 +123,8 @@ export const CalendarFieldSegment = forwardRef<
 		)
 
 		const handleFocus = useCallback(() => {
-			setFocusedSegment(type)
-		}, [type, setFocusedSegment])
+			setHighlightedSegment(type)
+		}, [type, setHighlightedSegment])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -235,22 +235,5 @@ const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
 	}
 }
 
-const findDirection = (
-	element: HTMLElement,
-	direction: 'next' | 'previous'
-) => {
-	const dir = getComputedStyle(element).direction
-
-	if (dir === 'rtl') {
-		switch (direction) {
-			case 'next':
-				return 'previous'
-			case 'previous':
-				return 'next'
-			default:
-				throw new Error('Invalid action')
-		}
-	}
-
-	return direction
-}
+const findDirection = (element: HTMLElement, direction: 'next' | 'previous') =>
+	isRTL(element) ? (direction === 'next' ? 'previous' : 'next') : direction
