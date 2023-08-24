@@ -1,5 +1,5 @@
 import { useCallback, type PointerEvent } from 'react'
-import { freya, forwardRef, type CoreProps } from '../core'
+import { freya, forwardRef, toData, type CoreProps } from '../core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 
 export type CalendarFieldInputProps = CoreProps<'div'>
@@ -22,7 +22,7 @@ export const CalendarFieldInput = forwardRef<'div', CalendarFieldInputProps>(
 			<freya.div
 				ref={forwardedRef}
 				onPointerDown={handlePointerDown}
-				data-disabled={disabled ? '' : undefined}
+				data-disabled={toData(disabled)}
 				{...props}
 			/>
 		)

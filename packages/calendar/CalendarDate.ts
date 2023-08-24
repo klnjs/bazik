@@ -1,4 +1,4 @@
-import type { Range } from '../core'
+import type { Range, RangeOptional } from '../core'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
 export const calendarDateSegmentTypes = [

@@ -38,6 +38,7 @@ export const Basic = () => (
 	</CalendarField>
 )
 
+/*
 export const Literals = () => (
 	<CalendarField className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
@@ -139,3 +140,4 @@ export const Picker = () => (
 		</CalendarFieldPopover>
 	</CalendarField>
 )
+*/

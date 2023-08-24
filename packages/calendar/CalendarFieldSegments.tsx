@@ -15,24 +15,22 @@ export type CalendarFieldSegmentItem<L extends boolean = false> = {
 
 export type CalendarFieldSegmentsProps<L extends boolean = false> = {
 	literals?: L
-	children: L extends false
-		? (segment: CalendarDateSegment, index: number) => ReactNode
-		: (
-				segment: CalendarDateSegment | CalendarDateLiteral,
-				index: number
-		  ) => ReactNode
+	children: (segment: CalendarFieldSegmentItem<L>, index: number) => ReactNode
 }
 
 export const CalendarFieldSegments = <L extends boolean = false>({
 	literals,
 	children
 }: CalendarFieldSegmentsProps<L>) => {
-	const { locale } = useCalendarFieldContext()
+	const { locale, range, value } = useCalendarFieldContext()
 
-	const segments = useMemo(
-		() => new CalendarDate().getSegments(locale, literals),
-		[locale, literals]
-	)
+	const segments = useMemo(() => {
+		if (range) {
+			value.map((v) => new CalendarDate(v).getSegments(locale, literals))
+		}
+
+		return new CalendarDate(value).getSegments(locale, literals)
+	}, [range, value, locale, literals])
 
 	// @ts-expect-error unsure why this doesn't work
 	return segments.map(children)

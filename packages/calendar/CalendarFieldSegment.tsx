@@ -5,7 +5,14 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
-import { freya, forwardRef, useMergeRefs, isRTL, type CoreProps } from '../core'
+import {
+	freya,
+	forwardRef,
+	useMergeRefs,
+	toData,
+	isRTL,
+	type CoreProps
+} from '../core'
 import {
 	CalendarDate,
 	type CalendarDateSegment,
@@ -194,11 +201,11 @@ export const CalendarFieldSegment = forwardRef<
 				contentEditable={!isDisabled}
 				tabIndex={isDisabled ? undefined : isFocused ? 0 : -1}
 				suppressContentEditableWarning={true}
-				data-length={length}
-				data-segment={type}
-				data-focused={isFocused ? '' : undefined}
-				data-disabled={isDisabled ? '' : undefined}
-				data-placeholder={!value ? '' : undefined}
+				data-length={toData(length)}
+				data-segment={toData(type)}
+				data-focused={toData(isFocused)}
+				data-disabled={toData(isDisabled)}
+				data-placeholder={toData(!value)}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
 				aria-valuemin={1}
