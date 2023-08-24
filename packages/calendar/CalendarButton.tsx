@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { freya, forwardRef, type CoreProps } from '../core'
+import { freya, forwardRef, toData, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
@@ -23,10 +23,10 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		forwardedRef
 	) => {
 		const {
+			min,
+			max,
 			locale,
 			disabled: disabledContext,
-			minDate,
-			maxDate,
 			highlighted,
 			setHighlighted
 		} = useCalendarContext()
@@ -52,18 +52,18 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 
 			const n = Number(modifier)
 			const m = modifier === '-1'
-			const l = m ? minDate : maxDate
+			const l = m ? min : max
 			const i = m ? 'isBefore' : 'isAfter'
 			const g = m ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
 			const a = highlighted.calc({ [segment]: n })[g]()
 
 			return l && a[i](l)
 		}, [
+			min,
+			max,
 			segment,
 			modifier,
 			highlighted,
-			maxDate,
-			minDate,
 			disabledProp,
 			disabledContext
 		])
@@ -83,7 +83,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				ref={forwardedRef}
 				type="button"
 				disabled={isDisabled}
-				data-disabled={isDisabled ? '' : undefined}
+				data-disabled={toData(isDisabled)}
 				aria-label={label}
 				aria-disabled={isDisabled}
 				onClick={onClick}

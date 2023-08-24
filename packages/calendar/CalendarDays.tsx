@@ -26,7 +26,7 @@ export const CalendarDays = ({
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
 		const reference = new CalendarDate().set({ year, month })
-		const max = reference.getLastDateOfMonth().getLastDateOfWeek(locale)
+		const end = reference.getLastDateOfMonth().getLastDateOfWeek(locale)
 		let date = reference.getFirstDateOfMonth().getFirstDateOfWeek(locale)
 		let itrs = 0
 
@@ -34,7 +34,7 @@ export const CalendarDays = ({
 			date = date.sub({ day: 7 })
 		}
 
-		while (!date.isAfter(max)) {
+		while (!date.isAfter(end)) {
 			if (weeknumber && date.getWeekDay(locale) === 1) {
 				dates.push({
 					role: weekday && itrs === 0 ? 'blank' : 'week',

@@ -9,7 +9,9 @@ import {
 	freya,
 	forwardRef,
 	useMergeRefs,
+	toData,
 	isRTL,
+	isSet as isSetCheck,
 	isRange as isRangeCheck,
 	type CoreProps
 } from '../core'
@@ -30,10 +32,11 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		forwardedRef
 	) => {
 		const {
+			min,
+			max,
+			range,
 			locale,
 			disabled: disabledContext,
-			minDate,
-			maxDate,
 			autoFocus,
 			setAutoFocus,
 			selection,
@@ -43,9 +46,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			setHighlighted
 		} = useCalendarContext()
 
+		const isRange = range && isRangeCheck(selection)
+		const isSingle = !range && isSetCheck(selection)
 		const isToday = date.isToday()
-		const isRange = isRangeCheck(selection)
-		const isSingle = !isRange && selection !== null
 		const isWeekStart = date.getWeekDay(locale) === 1
 		const isWeekEnd = date.getWeekDay(locale) === 7
 		const isWeekend = date.isWeekend(locale)
@@ -54,8 +57,8 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
-			Boolean(maxDate && date.isAfter(maxDate)) ||
-			Boolean(minDate && date.isBefore(minDate))
+			Boolean(max && date.isAfter(max)) ||
+			Boolean(min && date.isBefore(min))
 
 		const isRangeStart = isRange && date.isSameDay(selection[0])
 		const isRangeEnd = isRange && date.isSameDay(selection[1])
@@ -97,13 +100,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				setAutoFocus(true)
 				setHighlighted((prev) => {
 					if (typeof action === 'function') {
-						return action(prev).clamp(minDate, maxDate)
+						return action(prev).clamp(min, max)
 					}
 
-					return action.clamp(minDate, maxDate)
+					return action.clamp(min, max)
 				})
 			},
-			[minDate, maxDate, setAutoFocus, setHighlighted]
+			[min, max, setAutoFocus, setHighlighted]
 		)
 
 		const handleOver = useCallback(() => {
@@ -199,17 +202,17 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			<freya.button
 				ref={refCallback}
 				tabIndex={isHighlighted ? 0 : -1}
-				data-today={isToday ? '' : undefined}
-				data-weekend={isWeekend ? '' : undefined}
-				data-week-start={isWeekStart ? '' : undefined}
-				data-week-end={isWeekEnd ? '' : undefined}
-				data-overflow={isOverflow ? '' : undefined}
-				data-disabled={isDisabled ? '' : undefined}
-				data-selected={isSelected ? '' : undefined}
-				data-range-in={isRangeIn ? '' : undefined}
-				data-range-end={isRangeEnd ? '' : undefined}
-				data-range-start={isRangeStart ? '' : undefined}
-				data-highlighted={isHighlighted ? '' : undefined}
+				data-today={toData(isToday)}
+				data-weekend={toData(isWeekend)}
+				data-week-start={toData(isWeekStart)}
+				data-week-end={toData(isWeekEnd)}
+				data-overflow={toData(isOverflow)}
+				data-disabled={toData(isDisabled)}
+				data-selected={toData(isSelected)}
+				data-range-in={toData(isRangeIn)}
+				data-range-end={toData(isRangeEnd)}
+				data-range-start={toData(isRangeStart)}
+				data-highlighted={toData(isHighlighted)}
 				aria-label={label}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}

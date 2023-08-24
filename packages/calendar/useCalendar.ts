@@ -21,8 +21,8 @@ export type UseCalendarOptions<R extends boolean = false> = {
 
 export const useCalendar = <R extends boolean = false>({
 	autoFocus: autoFocusProp = false,
-	min,
-	max,
+	min: minProp,
+	max: maxProp,
 	range,
 	value: valueProp,
 	locale = navigator.language,
@@ -32,33 +32,23 @@ export const useCalendar = <R extends boolean = false>({
 }: UseCalendarOptions<R>) => {
 	const [titleId, setTitleId] = useState<string>()
 
-	const minDate = useCalendarValue(min)
-
-	const maxDate = useCalendarValue(max)
-
-	const value = useCalendarValue(valueProp)
-
-	const defaultValue = useCalendarValue(defaultValueProp)
-
-	const onChange = useCallback(
-		(newValue: typeof value) => {
-			if (onChangeProp) {
-				onChangeProp(toDate(newValue) as Date & DateRange)
-			}
-		},
-		[onChangeProp]
-	)
-
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
 	const setAutoFocus = useCallback((autoFocus: boolean) => {
 		autoFocusRef.current = autoFocus
 	}, [])
 
-	const [selected, setSelected] = useControllableState({
-		value,
-		defaultValue,
-		onChange
+	const [value, setValue] = useControllableState({
+		value: useCalendarValue(valueProp),
+		defaultValue: useCalendarValue(defaultValueProp),
+		onChange: useCallback(
+			(newValue: CalendarDate | CalendarDateRange | null) => {
+				if (onChangeProp) {
+					onChangeProp(toDate(newValue) as Date & DateRange)
+				}
+			},
+			[onChangeProp]
+		)
 	})
 
 	const [transient, setTransient] = useState<CalendarDate>()
@@ -80,30 +70,30 @@ export const useCalendar = <R extends boolean = false>({
 			]
 		}
 
-		return [selected, false]
-	}, [selected, transient, highlighted])
+		return [value, false]
+	}, [value, transient, highlighted])
 
 	const setSelection = useCallback(
 		(date: CalendarDate) => {
 			if (!range) {
-				setSelected(date)
+				setValue(date)
 			} else if (transient !== undefined) {
 				// @ts-expect-error available in TS 5.2
 				// eslint-disable-next-line
-				setSelected([transient, date].toSorted((a, b) => a.isAfter(b)))
+				setValue([transient, date].toSorted((a, b) => a.isAfter(b)))
 				setTransient(undefined)
 			} else {
 				setTransient(date)
 			}
 		},
-		[range, transient, setSelected]
+		[range, transient, setValue]
 	)
 
-	return {
+	const shared = {
+		min: useCalendarValue(minProp),
+		max: useCalendarValue(maxProp),
 		locale,
 		disabled,
-		minDate,
-		maxDate,
 		titleId,
 		setTitleId,
 		autoFocus: autoFocusRef.current,
@@ -111,7 +101,20 @@ export const useCalendar = <R extends boolean = false>({
 		highlighted,
 		setHighlighted,
 		selectionIsTransient,
-		selection,
-		setSelection
+		setSelection: setSelection
 	}
+
+	if (!range) {
+		return {
+			...shared,
+			range: false,
+			selection: selection
+		} as typeof shared & { range: false; selection: CalendarDate | null }
+	}
+
+	return {
+		...shared,
+		range: true,
+		selection: selection
+	} as typeof shared & { range: true; selection: CalendarDateRange | null }
 }
