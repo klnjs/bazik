@@ -1,19 +1,16 @@
 import { useRef, useMemo, useState, useCallback } from 'react'
-import { useControllableState, isRange } from '../core'
-import { useCalendarValue, toDate } from './useCalendarValue'
-import {
-	CalendarDate,
-	type CalendarDateRange,
-	type DateRange
-} from './CalendarDate'
+import { useControllableState, isRange, type Assign, type Range } from '../core'
+import { CalendarDate, type CalendarDateRange } from './CalendarDate'
+
+export type DateRange = Range<Date>
 
 export type UseCalendarOptions<R extends boolean = false> = {
 	autoFocus?: boolean
 	min?: Date
 	max?: Date
 	locale?: string
-	disabled?: boolean
 	range?: R
+	disabled?: boolean
 	value?: (R extends false ? Date : DateRange) | null
 	defaultValue?: (R extends false ? Date : DateRange) | null
 	onChange?: (value: (R extends false ? Date : DateRange) | null) => void
@@ -30,32 +27,29 @@ export const useCalendar = <R extends boolean = false>({
 	defaultValue: defaultValueProp = null,
 	onChange: onChangeProp
 }: UseCalendarOptions<R>) => {
-	const [titleId, setTitleId] = useState<string>()
-
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
 	const setAutoFocus = useCallback((autoFocus: boolean) => {
 		autoFocusRef.current = autoFocus
 	}, [])
 
-	const [value, setValue] = useControllableState({
-		value: useCalendarValue(valueProp),
-		defaultValue: useCalendarValue(defaultValueProp),
-		onChange: useCallback(
-			(newValue: CalendarDate | CalendarDateRange | null) => {
-				if (onChangeProp) {
-					onChangeProp(toDate(newValue) as Date & DateRange)
-				}
-			},
-			[onChangeProp]
-		)
-	})
+	const [titleId, setTitleId] = useState<string>()
 
-	const [transient, setTransient] = useState<CalendarDate>()
+	const [value, setValue] = useControllableState({
+		value: useValue(valueProp),
+		defaultValue: useValue(defaultValueProp),
+		onChange: (next) => {
+			if (onChangeProp) {
+				onChangeProp(unuseValue(next) as Date & DateRange & null)
+			}
+		}
+	})
 
 	const [highlighted, setHighlighted] = useState(
 		() => new CalendarDate(isRange(valueProp) ? valueProp[1] : valueProp)
 	)
+
+	const [transient, setTransient] = useState<CalendarDate>()
 
 	const [selection, selectionIsTransient] = useMemo(() => {
 		if (transient) {
@@ -90,8 +84,9 @@ export const useCalendar = <R extends boolean = false>({
 	)
 
 	const shared = {
-		min: useCalendarValue(minProp),
-		max: useCalendarValue(maxProp),
+		min: useValue(minProp),
+		max: useValue(maxProp),
+		range: Boolean(range),
 		locale,
 		disabled,
 		titleId,
@@ -101,20 +96,58 @@ export const useCalendar = <R extends boolean = false>({
 		highlighted,
 		setHighlighted,
 		selectionIsTransient,
+		selection,
 		setSelection: setSelection
 	}
 
 	if (!range) {
-		return {
-			...shared,
-			range: false,
-			selection: selection
-		} as typeof shared & { range: false; selection: CalendarDate | null }
+		return shared as Assign<
+			typeof shared,
+			{
+				range: false
+				selection: CalendarDate | null
+			}
+		>
 	}
 
-	return {
-		...shared,
-		range: true,
-		selection: selection
-	} as typeof shared & { range: true; selection: CalendarDateRange | null }
+	return shared as Assign<
+		typeof shared,
+		{
+			range: true
+			selection: CalendarDateRange | null
+		}
+	>
+}
+
+function useValue(value?: Date): CalendarDate | undefined
+function useValue(value?: DateRange): CalendarDateRange | undefined
+function useValue(
+	value?: Date | DateRange | null
+): CalendarDate | CalendarDateRange | null
+function useValue(value?: Date | DateRange | null) {
+	return useMemo(() => {
+		if (value instanceof Date) {
+			return new CalendarDate(value)
+		}
+
+		if (isRange(value)) {
+			return value.map((v) => new CalendarDate(v)) as CalendarDateRange
+		}
+
+		return value
+	}, [value])
+}
+
+function unuseValue(
+	value?: CalendarDate | CalendarDateRange | null
+): Date | DateRange | null {
+	if (value instanceof CalendarDate) {
+		return value.toDate()
+	}
+
+	if (isRange(value)) {
+		return value.map((v) => v.toDate()) as DateRange
+	}
+
+	return null
 }

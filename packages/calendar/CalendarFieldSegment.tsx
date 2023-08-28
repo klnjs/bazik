@@ -47,26 +47,27 @@ export const CalendarFieldSegment = forwardRef<
 		forwardedRef
 	) => {
 		const {
+			min: minDate,
+			max: maxDate,
 			locale,
 			disabled: disabledContext,
 			labelId,
-			minDate,
-			maxDate,
 			autoFocus,
 			setAutoFocus,
-			selected,
-			setSelected,
+			selection,
+			setSelection,
 			highlightedSegment,
 			highlightedSegmentRef,
 			setHighlightedSegment
 		} = useCalendarFieldContext()
 		const { names } = useCalendarLocalisation(locale)
+		const { type } = segment
 
 		const isDisabled = disabledProp || disabledContext
-		const isHighlighted = segment.type === highlightedSegment
+		const isHighlighted = type === highlightedSegment
 		const isInvalid =
-			Boolean(maxDate && selected && selected.isAfter(maxDate)) ||
-			Boolean(minDate && selected && selected.isBefore(minDate))
+			Boolean(maxDate && selection && selection.isAfter(maxDate)) ||
+			Boolean(minDate && selection && selection.isBefore(minDate))
 
 		const ref = useRef<HTMLDivElement>(null)
 		const refCallback = useMergeRefs(
@@ -75,13 +76,15 @@ export const CalendarFieldSegment = forwardRef<
 			forwardedRef
 		)
 
-		const value = selected?.getSegment(type, mode).value ?? ''
-		const valueText = selected?.format({
-			year: 'numeric',
-			month: 'long',
-			weekday: 'long',
-			day: 'numeric'
-		})
+		const now = selection?.getSegment(locale, type, mode).value ?? ''
+
+		const min = useMemo(() => {
+			if (type === 'hour' || type === 'minute') {
+				return 0
+			}
+
+			return 1
+		}, [type])
 
 		const max = useMemo(() => {
 			switch (type) {
@@ -90,31 +93,45 @@ export const CalendarFieldSegment = forwardRef<
 				case 'month':
 					return 12
 				case 'day':
-					return selected?.getDaysInMonth() ?? 31
+					return selection?.getDaysInMonth() ?? 31
+				case 'hour':
+					return 23
+				case 'minute':
+					return 59
 				default:
 					throw new Error('Invalid segment type')
 			}
-		}, [type, selectedDate])
+		}, [type, selection])
+
+		const text = useMemo(
+			() =>
+				selection?.format(locale, {
+					year: 'numeric',
+					month: 'long',
+					weekday: 'long',
+					day: 'numeric'
+				}),
+			[locale, selection]
+		)
 
 		const length = useMemo(
-			() => new CalendarDate(locale).getSegment(type, mode).value.length,
+			() =>
+				new CalendarDate().getSegment(locale, type, mode).value.length,
 			[type, mode, locale]
 		)
 
 		const children = useMemo(
-			() => (!value ? value.padStart(length, placeholder) : value),
-			[value, length, placeholder]
+			() => (!now ? now.padStart(length, placeholder) : now),
+			[now, length, placeholder]
 		)
 
 		const changeSegment = useCallback(
 			(action: (prev: CalendarDate) => CalendarDate | null) => {
 				if (!isDisabled) {
-					setSelected((prev) =>
-						action(prev ?? new CalendarDate(locale))
-					)
+					setSelection((prev) => action(prev ?? new CalendarDate()))
 				}
 			},
-			[locale, isDisabled, setSelected]
+			[isDisabled, setSelection]
 		)
 
 		const changeFocusedSegment = useCallback(
@@ -161,7 +178,7 @@ export const CalendarFieldSegment = forwardRef<
 
 				if (/[0-9]/.test(event.key)) {
 					const pressed = Number(event.key)
-					const intent = Number(`${value}${pressed}`)
+					const intent = Number(`${now}${pressed}`)
 					const next = max && intent <= max ? intent : pressed
 
 					changeSegment((prev) => prev.set({ [type]: next }))
@@ -171,11 +188,11 @@ export const CalendarFieldSegment = forwardRef<
 					}
 				}
 			},
-			[max, type, value, length, changeSegment, changeFocusedSegment]
+			[now, max, type, length, changeSegment, changeFocusedSegment]
 		)
 
 		useEffect(() => {
-			if (isFocused && autoFocus) {
+			if (isHighlighted && autoFocus) {
 				setAutoFocus(false)
 				ref.current?.focus({
 					// @ts-expect-error not yet implemented
@@ -183,7 +200,7 @@ export const CalendarFieldSegment = forwardRef<
 					focusVisible: true
 				})
 			}
-		}, [isFocused, autoFocus, setAutoFocus])
+		}, [isHighlighted, autoFocus, setAutoFocus])
 
 		return (
 			<freya.div
@@ -199,19 +216,19 @@ export const CalendarFieldSegment = forwardRef<
 				}}
 				spellCheck={false}
 				contentEditable={!isDisabled}
-				tabIndex={isDisabled ? undefined : isFocused ? 0 : -1}
+				tabIndex={isDisabled ? undefined : isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
 				data-length={toData(length)}
 				data-segment={toData(type)}
-				data-focused={toData(isFocused)}
 				data-disabled={toData(isDisabled)}
-				data-placeholder={toData(!value)}
+				data-placeholder={toData(!now)}
+				data-highlighted={toData(isHighlighted)}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
-				aria-valuemin={1}
+				aria-valuemin={min}
 				aria-valuemax={max}
-				aria-valuenow={Number(value)}
-				aria-valuetext={valueText ?? 'Empty'}
+				aria-valuenow={Number(now)}
+				aria-valuetext={text ?? 'Empty'}
 				aria-invalid={isInvalid}
 				aria-disabled={isDisabled}
 				onFocus={handleFocus}

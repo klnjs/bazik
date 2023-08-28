@@ -1,4 +1,4 @@
-import type { Range, RangeOptional } from '../core'
+import { isRecord, type Range } from '../core'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
 export const calendarDateSegmentTypes = [
@@ -29,8 +29,6 @@ export type CalendarDateMutation = {
 	[key in CalendarDateSegmentType]?: number
 }
 
-export type DateRange = Range<Date>
-
 export type CalendarDateRange = Range<CalendarDate>
 
 export class CalendarDate {
@@ -40,18 +38,21 @@ export class CalendarDate {
 		this.date = date ? new Date(date.getTime()) : new Date()
 	}
 
-	static isSegment(
-		part: Intl.DateTimeFormatPart
-	): part is CalendarDateSegment {
-		return calendarDateSegmentTypes.includes(
-			part.type as CalendarDateSegmentType
+	static isCalendarDate(value: unknown): value is CalendarDate {
+		return value instanceof CalendarDate
+	}
+
+	static isCalendarDateSegment(value: unknown): value is CalendarDateSegment {
+		return (
+			isRecord(value) &&
+			calendarDateSegmentTypes.includes(
+				value.type as CalendarDateSegmentType
+			)
 		)
 	}
 
-	static isLiteral(
-		part: Intl.DateTimeFormatPart
-	): part is CalendarDateLiteral {
-		return part.type === 'literal'
+	static isCalendarDateLiteral(value: unknown): value is CalendarDateLiteral {
+		return isRecord(value) && value.type === 'literal'
 	}
 
 	set({ year, month, day, hour, minute }: CalendarDateMutation) {
@@ -196,8 +197,9 @@ export class CalendarDate {
 			.formatToParts(this.toDate())
 			.reduce<unknown[]>((acc, part) => {
 				if (
-					CalendarDate.isSegment(part) ||
-					(CalendarDate.isLiteral(part) && literals === true)
+					CalendarDate.isCalendarDateSegment(part) ||
+					(CalendarDate.isCalendarDateLiteral(part) &&
+						literals === true)
 				) {
 					acc.push(part)
 				}

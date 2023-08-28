@@ -1,72 +1,84 @@
-import {
-	useRef,
-	useState,
-	useCallback,
-	type Dispatch,
-	type SetStateAction
-} from 'react'
-import { useControllableState, type RangeOptional } from '../core'
-import { useCalendarValue, toDate } from './useCalendarValue'
-import type { CalendarDate, CalendarDateRange, DateRange } from './CalendarDate'
+import { useRef, useMemo, useState, useCallback } from 'react'
+import { useControllableState } from '../core'
+import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 
-export type UseCalendarFieldOptions<R extends boolean = false> = {
+export type UseCalendarFieldOptions = {
 	autoFocus?: boolean
 	min?: Date
 	max?: Date
 	locale?: string
 	disabled?: boolean
-	range?: R
-	value?: (R extends false ? Date : DateRange) | null
-	defaultValue?: (R extends false ? Date : DateRange) | null
-	onChange?: (value: (R extends false ? Date : DateRange) | null) => void
+	value?: Date | null
+	defaultValue?: Date | null
+	onChange?: (value: Date | null) => void
 }
 
-export const useCalendarField = <R extends boolean = false>({
+export const useCalendarField = ({
 	autoFocus: autoFocusProp = false,
 	min,
 	max,
-	range,
 	value: valueProp,
 	locale = navigator.language,
 	disabled = false,
 	defaultValue: defaultValueProp = null,
 	onChange: onChangeProp
-}: UseCalendarFieldOptions<R>) => {
-	const [titleId, setTitleId] = useState<string>()
-
+}: UseCalendarFieldOptions) => {
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
 	const setAutoFocus = useCallback((autoFocus: boolean) => {
 		autoFocusRef.current = autoFocus
 	}, [])
 
-	const [value, setValue] = useControllableState({
-		value: useCalendarValue(valueProp),
-		defaultValue: useCalendarValue(defaultValueProp),
-		onChange: useCallback(
-			(newValue: CalendarDate | CalendarDateRange | null) => {
-				if (onChangeProp) {
-					onChangeProp(toDate(newValue) as Date & DateRange)
-				}
-			},
-			[onChangeProp]
-		)
-	}) as [
-		RangeOptional<CalendarDate>,
-		Dispatch<SetStateAction<RangeOptional<CalendarDate>>>
-	]
+	const [labelId, setLabelId] = useState<string>()
+
+	const [selection, setSelection] = useControllableState({
+		value: useValue(valueProp),
+		defaultValue: useValue(defaultValueProp),
+		onChange: (next) => {
+			if (onChangeProp) {
+				onChangeProp(unuseValue(next))
+			}
+		}
+	})
+
+	const highlightedSegmentRef = useRef<HTMLDivElement>(null)
+
+	const [highlightedSegment, setHighlightedSegment] =
+		useState<CalendarDateSegmentType>()
 
 	return {
-		min: useCalendarValue(min),
-		max: useCalendarValue(max),
-		range,
+		min: useValue(min),
+		max: useValue(max),
 		locale,
 		disabled,
-		titleId,
-		setTitleId,
+		labelId,
+		setLabelId,
 		autoFocus: autoFocusRef.current,
 		setAutoFocus,
-		value,
-		setValue
+		selection,
+		setSelection,
+		highlightedSegmentRef,
+		highlightedSegment,
+		setHighlightedSegment
 	}
+}
+
+function useValue(value?: Date): CalendarDate | undefined
+function useValue(value?: Date | null): CalendarDate | null
+function useValue(value?: Date | null) {
+	return useMemo(() => {
+		if (value instanceof Date) {
+			return new CalendarDate(value)
+		}
+
+		return value
+	}, [value])
+}
+
+function unuseValue(value?: CalendarDate | null): Date | null {
+	if (value instanceof CalendarDate) {
+		return value.toDate()
+	}
+
+	return null
 }
