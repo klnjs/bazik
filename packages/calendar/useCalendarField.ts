@@ -44,7 +44,9 @@ export const useCalendarField = ({
 	const highlightedSegmentRef = useRef<HTMLDivElement>(null)
 
 	const [highlightedSegment, setHighlightedSegment] =
-		useState<CalendarDateSegmentType>()
+		useState<CalendarDateSegmentType>(
+			() => new CalendarDate().getSegments(locale)[0].type
+		)
 
 	return {
 		min: useValue(min),

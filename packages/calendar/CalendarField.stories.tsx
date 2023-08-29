@@ -28,7 +28,6 @@ export const Basic = () => (
 			<CalendarFieldSegments>
 				{(segment) => (
 					<CalendarFieldSegment
-						key={segment.index}
 						segment={segment}
 						className={classes.segment}
 					/>
@@ -38,7 +37,6 @@ export const Basic = () => (
 	</CalendarField>
 )
 
-/*
 export const Literals = () => (
 	<CalendarField className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
@@ -47,7 +45,7 @@ export const Literals = () => (
 				{(segment) => {
 					if (segment.type === 'literal') {
 						return (
-							<CalendarFieldLiteral key={segment.index}>
+							<CalendarFieldLiteral>
 								{segment.value}
 							</CalendarFieldLiteral>
 						)
@@ -55,7 +53,6 @@ export const Literals = () => (
 
 					return (
 						<CalendarFieldSegment
-							key={segment.index}
 							segment={segment}
 							className={classes.segment}
 						/>
@@ -66,6 +63,7 @@ export const Literals = () => (
 	</CalendarField>
 )
 
+/*
 export const Disabled = () => (
 	<CalendarField disabled className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
@@ -82,20 +80,30 @@ export const Disabled = () => (
 		</CalendarFieldInput>
 	</CalendarField>
 )
+*/
 
 export const Picker = () => (
 	<CalendarField className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldAnchor className={classes.anchor}>
 			<CalendarFieldInput className={classes.input}>
-				<CalendarFieldSegments>
-					{(segment) => (
-						<CalendarFieldSegment
-							key={segment.index}
-							segment={segment}
-							className={classes.segment}
-						/>
-					)}
+				<CalendarFieldSegments literals={true}>
+					{(segment) => {
+						if (segment.type === 'literal') {
+							return (
+								<CalendarFieldLiteral>
+									{segment.value}
+								</CalendarFieldLiteral>
+							)
+						}
+
+						return (
+							<CalendarFieldSegment
+								segment={segment}
+								className={classes.segment}
+							/>
+						)
+					}}
 				</CalendarFieldSegments>
 			</CalendarFieldInput>
 			<CalendarFieldTrigger className={classes.trigger}>
@@ -126,11 +134,7 @@ export const Picker = () => (
 				<CalendarGrid className={classes.grid}>
 					<CalendarDays>
 						{({ date }) => (
-							<CalendarDay
-								key={date.format()}
-								date={date}
-								className={classes.day}
-							>
+							<CalendarDay date={date} className={classes.day}>
 								{date.getDay()}
 							</CalendarDay>
 						)}
@@ -140,4 +144,3 @@ export const Picker = () => (
 		</CalendarFieldPopover>
 	</CalendarField>
 )
-*/

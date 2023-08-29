@@ -25,7 +25,12 @@ export const CalendarDays = ({
 	const month = highlighted.getMonth()
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
-		const reference = new CalendarDate().set({ year, month })
+		const reference = new CalendarDate()
+			.set({
+				year,
+				month
+			})
+			.calc({ month: offset })
 		const end = reference.getLastDateOfMonth().getLastDateOfWeek(locale)
 		let date = reference.getFirstDateOfMonth().getFirstDateOfWeek(locale)
 		let itrs = 0
@@ -53,7 +58,7 @@ export const CalendarDays = ({
 		}
 
 		return dates
-	}, [locale, year, month, weekday, weeknumber])
+	}, [locale, year, month, offset, weekday, weeknumber])
 
 	return days.map(children)
 }

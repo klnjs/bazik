@@ -17,7 +17,7 @@ export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
 
 export type CalendarDateSegment = {
 	type: CalendarDateSegmentType
-	value: string
+	value: number
 }
 
 export type CalendarDateLiteral = {
@@ -195,29 +195,42 @@ export class CalendarDate {
 			minute: 'numeric'
 		})
 			.formatToParts(this.toDate())
-			.reduce<unknown[]>((acc, part) => {
-				if (
-					CalendarDate.isCalendarDateSegment(part) ||
-					(CalendarDate.isCalendarDateLiteral(part) &&
-						literals === true)
-				) {
-					acc.push(part)
-				}
+			.reduce<(CalendarDateSegment | CalendarDateLiteral)[]>(
+				(acc, part) => {
+					if (CalendarDate.isCalendarDateSegment(part)) {
+						acc.push({ type: part.type, value: Number(part.value) })
+					}
 
-				return acc
-			}, []) as L extends false
+					if (
+						CalendarDate.isCalendarDateLiteral(part) &&
+						literals === true
+					) {
+						acc.push(part)
+					}
+
+					return acc
+				},
+				[]
+			) as L extends false
 			? CalendarDateSegment[]
 			: (CalendarDateSegment | CalendarDateLiteral)[]
 	}
 
-	getSegment(
+	getSegment(locale: CalendarDateLocale, type: CalendarDateSegmentType) {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return this.getSegments(locale).find(
+			(segment) => segment.type === type
+		)!
+	}
+
+	getSegmentLength(
 		locale: CalendarDateLocale,
 		type: CalendarDateSegmentType,
-		style?: CalendarDateSegmentStyle
+		style: CalendarDateSegmentStyle
 	) {
 		return new Intl.DateTimeFormat(locale, {
 			[type]: style
-		}).formatToParts(this.toDate())[0] as CalendarDateSegment
+		}).formatToParts(this.toDate())[0].value.length
 	}
 
 	getFirstDateOfWeek(locale: CalendarDateLocale) {

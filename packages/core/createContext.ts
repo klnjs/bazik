@@ -43,7 +43,7 @@ export const createContext = <T extends object>({
 
 	const useContext = <S extends boolean = true>({
 		strict: strictOption
-	}: UseContextOptions<S>) => {
+	}: UseContextOptions<S> = {}) => {
 		const strict = strictOption ?? true
 		const context = useContextFromReact(Context)
 

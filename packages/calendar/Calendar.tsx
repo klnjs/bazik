@@ -1,15 +1,16 @@
 import type { Ref, ReactElement } from 'react'
 import { freya, forwardRef, type CoreProps } from '../core'
 import { CalendarProvider } from './CalendarContext'
-// import { useCalendarFieldContext } from './CalendarFieldContext'
+import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
+import { CalendarDate } from './CalendarDate'
 
 export type CalendarProps<R extends boolean = false> = CoreProps<
 	'div',
 	UseCalendarOptions<R>
 >
 
-export const Calendar = forwardRef<'div', CalendarProps<true | false>>(
+export const Calendar = forwardRef<'div', CalendarProps>(
 	(
 		{
 			autoFocus,
@@ -25,17 +26,26 @@ export const Calendar = forwardRef<'div', CalendarProps<true | false>>(
 		},
 		forwardedRef
 	) => {
-		//const field = useCalendarFieldContext({ strict: false })
+		const field = useCalendarFieldContext({ strict: false })
 		const calendar = useCalendar({
-			autoFocus,
-			min,
-			max,
-			range,
-			value,
-			locale,
-			disabled,
-			defaultValue,
-			onChange
+			autoFocus: field ? true : autoFocus,
+			min: field?.min?.toDate() ?? min,
+			max: field?.max?.toDate() ?? max,
+			range: field ? false : range,
+			value: field ? field.selection?.toDate() ?? null : value,
+			locale: field?.locale ?? locale,
+			disabled: field?.disabled ?? disabled,
+			defaultValue: field ? undefined : defaultValue,
+			onChange: field
+				? (next: Date | null) => {
+						field.setSelection(
+							new CalendarDate(next).set({
+								hour: next?.getHours(),
+								minute: next?.getMinutes()
+							})
+						)
+				  }
+				: onChange
 		})
 
 		return (

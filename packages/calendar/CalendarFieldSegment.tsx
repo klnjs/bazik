@@ -25,7 +25,7 @@ export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
 		segment: CalendarDateSegment
-		mode?: CalendarDateSegmentStyle
+		variant?: CalendarDateSegmentStyle
 		disabled?: boolean
 		placeholder?: string
 	}
@@ -37,9 +37,9 @@ export const CalendarFieldSegment = forwardRef<
 >(
 	(
 		{
-			mode = '2-digit',
 			style,
 			segment,
+			variant: variantProp,
 			disabled: disabledProp = false,
 			placeholder = '-',
 			...otherProps
@@ -76,7 +76,7 @@ export const CalendarFieldSegment = forwardRef<
 			forwardedRef
 		)
 
-		const now = selection?.getSegment(locale, type, mode).value ?? ''
+		const now = selection?.getSegment(locale, type).value
 
 		const min = useMemo(() => {
 			if (type === 'hour' || type === 'minute') {
@@ -114,16 +114,27 @@ export const CalendarFieldSegment = forwardRef<
 			[locale, selection]
 		)
 
+		const variant = useMemo(() => {
+			if (variantProp) {
+				return variantProp
+			}
+
+			return type === 'year' ? 'numeric' : '2-digit'
+		}, [type, variantProp])
+
 		const length = useMemo(
-			() =>
-				new CalendarDate().getSegment(locale, type, mode).value.length,
-			[type, mode, locale]
+			() => new CalendarDate().getSegmentLength(locale, type, variant),
+			[type, variant, locale]
 		)
 
-		const children = useMemo(
-			() => (!now ? now.padStart(length, placeholder) : now),
-			[now, length, placeholder]
-		)
+		console.log(type, length, variant)
+
+		const content = useMemo(() => {
+			const padding = now === undefined ? placeholder : '0'
+			const current = now === undefined ? '' : now.toString()
+
+			return current.padStart(length, padding)
+		}, [now, length, placeholder])
 
 		const changeSegment = useCallback(
 			(action: (prev: CalendarDate) => CalendarDate | null) => {
@@ -210,7 +221,7 @@ export const CalendarFieldSegment = forwardRef<
 				autoCorrect="off"
 				autoCapitalize="off"
 				style={{
-					width: `${length}ch`,
+					width: `${content.length}ch`,
 					caretColor: 'transparent',
 					...style
 				}}
@@ -221,13 +232,13 @@ export const CalendarFieldSegment = forwardRef<
 				data-length={toData(length)}
 				data-segment={toData(type)}
 				data-disabled={toData(isDisabled)}
-				data-placeholder={toData(!now)}
+				data-placeholder={toData(now === undefined)}
 				data-highlighted={toData(isHighlighted)}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
 				aria-valuemin={min}
 				aria-valuemax={max}
-				aria-valuenow={Number(now)}
+				aria-valuenow={now}
 				aria-valuetext={text ?? 'Empty'}
 				aria-invalid={isInvalid}
 				aria-disabled={isDisabled}
@@ -235,7 +246,7 @@ export const CalendarFieldSegment = forwardRef<
 				onKeyDown={handleKeyDown}
 				{...otherProps}
 			>
-				{children}
+				{content}
 			</freya.div>
 		)
 	}
