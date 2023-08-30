@@ -11,10 +11,10 @@ export const CalendarWeekday = forwardRef<'abbr', CalendarTitleProps>(
 		return (
 			<freya.abbr
 				ref={forwardedRef}
-				title={date.format(locale, { weekday: 'long' })}
+				title={date.toLocaleString(locale, { weekday: 'long' })}
 				{...otherProps}
 			>
-				{children ?? date.format(locale, { weekday: 'short' })}
+				{children ?? date.toLocaleString(locale, { weekday: 'short' })}
 			</freya.abbr>
 		)
 	}

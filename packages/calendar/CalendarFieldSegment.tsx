@@ -105,7 +105,7 @@ export const CalendarFieldSegment = forwardRef<
 
 		const text = useMemo(
 			() =>
-				selection?.format(locale, {
+				selection?.toLocaleString(locale, {
 					year: 'numeric',
 					month: 'long',
 					weekday: 'long',
@@ -126,8 +126,6 @@ export const CalendarFieldSegment = forwardRef<
 			() => new CalendarDate().getSegmentLength(locale, type, variant),
 			[type, variant, locale]
 		)
-
-		console.log(type, length, variant)
 
 		const content = useMemo(() => {
 			const padding = now === undefined ? placeholder : '0'

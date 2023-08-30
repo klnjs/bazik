@@ -125,25 +125,6 @@ export class CalendarDate {
 		return this
 	}
 
-	format(locale: CalendarDateLocale, options?: Intl.DateTimeFormatOptions) {
-		return this.toDate().toLocaleString(locale, options)
-	}
-
-	formatRelativeTo(
-		locale: CalendarDateLocale,
-		offset: CalendarDate,
-		segment: CalendarDateSegmentType,
-		options?: Intl.RelativeTimeFormatOptions
-	) {
-		const diff = this.getDiff(offset)
-		const segmentDiff = diff[segment]
-
-		return new Intl.RelativeTimeFormat(locale, options).format(
-			segmentDiff,
-			segment
-		)
-	}
-
 	getYear() {
 		return this.toDate().getFullYear()
 	}
@@ -159,28 +140,6 @@ export class CalendarDate {
 
 	getTime() {
 		return this.toDate().getTime()
-	}
-
-	getDiff(date: CalendarDate) {
-		const difference = date.getTime() - this.getTime()
-		const oneDay = 1000 * 60 * 60 * 24 // Number of milliseconds in a day
-		const oneYear = oneDay * 365.25 // Average number of days in a year
-		const oneMonth = oneDay * 30.436875 // Average number of days in a month
-		const oneMinute = 1000 * 60 // Number of milliseconds in a minute
-		const oneHour = oneMinute * 60 // Number of milliseconds in an hour
-
-		return {
-			year: Math.floor(difference / oneYear),
-			month: Math.floor((difference % oneYear) / oneMonth),
-			day: Math.floor(((difference % oneYear) % oneMonth) / oneDay),
-			hour: Math.floor(
-				(((difference % oneYear) % oneMonth) % oneDay) / oneHour
-			),
-			minute: Math.floor(
-				((((difference % oneYear) % oneMonth) % oneDay) % oneHour) /
-					oneMinute
-			)
-		}
 	}
 
 	getSegments<L extends boolean = false>(
@@ -291,6 +250,13 @@ export class CalendarDate {
 
 	toUTCString() {
 		return this.toDate().toUTCString()
+	}
+
+	toLocaleString(
+		locale: CalendarDateLocale,
+		options?: Intl.DateTimeFormatOptions
+	) {
+		return this.toDate().toLocaleString(locale, options)
 	}
 
 	isToday() {

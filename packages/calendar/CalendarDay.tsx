@@ -16,6 +16,7 @@ import {
 	type CoreProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
+import { useCalendarLocalisation } from './useCalendarLocalisation'
 import type { CalendarDate } from './CalendarDate'
 
 export type CalendarDayProps = CoreProps<
@@ -45,6 +46,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			highlighted,
 			setHighlighted
 		} = useCalendarContext()
+		const { names } = useCalendarLocalisation(locale)
 
 		const isRange = range && isRangeCheck(selection)
 		const isSingle = !range && isSetCheck(selection)
@@ -77,7 +79,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const refCallback = useMergeRefs(ref, forwardedRef)
 
 		const label = useMemo(() => {
-			const formatted = date.format(locale, {
+			const formatted = date.toLocaleString(locale, {
 				year: 'numeric',
 				month: 'long',
 				weekday: 'long',
@@ -87,13 +89,11 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			if (isToday) {
 				// Uncertain how this works in different locales, due to
 				// the concatenation of the two labels.
-				return `${date.formatRelativeTo(locale, highlighted, 'day', {
-					numeric: 'auto'
-				})}, ${formatted}`
+				return `${names.of('today')}, ${formatted}`
 			}
 
 			return formatted
-		}, [locale, date, highlighted, isToday])
+		}, [locale, date, names, isToday])
 
 		const setHighlightedAndFocus = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {

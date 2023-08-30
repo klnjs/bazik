@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from 'react'
+import { isRecordProperty } from '../core'
 
 export const calendarLocalisation = {
 	en: {
@@ -9,7 +10,7 @@ export const calendarLocalisation = {
 		next: 'Næste {{segment}}',
 		previous: 'Forrige {{segment}}'
 	}
-}
+} as const
 
 export type CalendarLocalisationLocale = keyof typeof calendarLocalisation
 
@@ -21,11 +22,11 @@ export const useCalendarLocalisation = (locale: string) => {
 			key: CalendarLocalisationKey,
 			interpolation: Record<string, string> = {}
 		) => {
-			const lang: CalendarLocalisationLocale = Object.hasOwn(
+			const lang: CalendarLocalisationLocale = isRecordProperty(
 				calendarLocalisation,
 				locale
 			)
-				? (locale as CalendarLocalisationLocale)
+				? locale
 				: 'en'
 
 			return Object.entries(interpolation).reduce<string>(
@@ -36,10 +37,31 @@ export const useCalendarLocalisation = (locale: string) => {
 		[locale]
 	)
 
-	const names = useMemo(
-		() => new Intl.DisplayNames(locale, { type: 'dateTimeField' }),
-		[locale]
-	)
+	const names = useMemo(() => {
+		const dn = new Intl.DisplayNames(locale, { type: 'dateTimeField' })
+		const rtf = new Intl.RelativeTimeFormat(locale)
+
+		return {
+			of: (code: string) => {
+				switch (code) {
+					case 'today':
+						return rtf.format(0, 'day')
+					case 'yesterday':
+						return rtf.format(-1, 'day')
+					case 'tommorow':
+						return rtf.format(1, 'day')
+					default:
+						return dn.of(code)
+				}
+			},
+			resolvedOptions: () => ({
+				type: 'calendar',
+				locale,
+				style: 'long',
+				fallback: 'code'
+			})
+		}
+	}, [locale])
 
 	return { t, names }
 }

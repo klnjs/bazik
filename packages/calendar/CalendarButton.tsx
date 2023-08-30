@@ -30,16 +30,22 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			highlighted,
 			setHighlighted
 		} = useCalendarContext()
-		const { t } = useCalendarLocalisation(locale)
+		const { t, names } = useCalendarLocalisation(locale)
 
 		const [segment, modifier] = action.split(/(?=\+|-)/) as [
 			CalendarButtonSegment | 'today',
 			CalendarButtonModifier
 		]
 
-		const label = t(modifier === '-1' ? 'previous' : 'next', {
-			segment
-		})
+		const label = useMemo(() => {
+			if (segment === 'today') {
+				return names.of('today')
+			}
+
+			return t(modifier === '-1' ? 'previous' : 'next', {
+				segment
+			})
+		}, [segment, modifier, t, names])
 
 		const isDisabled = useMemo(() => {
 			if (disabledProp || disabledContext) {

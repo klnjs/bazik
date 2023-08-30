@@ -26,7 +26,7 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 				{...otherProps}
 			>
 				{children ??
-					highlighted.format(locale, {
+					highlighted.toLocaleString(locale, {
 						year: 'numeric',
 						month: 'long'
 					})}
