@@ -14,18 +14,19 @@ import {
 	type CoreProps
 } from '../core'
 import {
-	CalendarDate,
-	type CalendarDateSegment,
-	type CalendarDateSegmentStyle
-} from './CalendarDate'
+	DateTime,
+	type DateSegment,
+	type TimeSegment,
+	type SegmentStyle
+} from './CalendarDateTime'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 
 export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
-		segment: CalendarDateSegment
-		variant?: CalendarDateSegmentStyle
+		segment: DateSegment | TimeSegment
+		variant?: SegmentStyle
 		disabled?: boolean
 		placeholder?: string
 	}
@@ -123,7 +124,7 @@ export const CalendarFieldSegment = forwardRef<
 		}, [type, variantProp])
 
 		const length = useMemo(
-			() => new CalendarDate().getSegmentLength(locale, type, variant),
+			() => new DateTime().getSegmentLength(locale, type, variant),
 			[type, variant, locale]
 		)
 
@@ -135,9 +136,9 @@ export const CalendarFieldSegment = forwardRef<
 		}, [now, length, placeholder])
 
 		const changeSegment = useCallback(
-			(action: (prev: CalendarDate) => CalendarDate | null) => {
+			(action: (prev: DateTime) => DateTime | null) => {
 				if (!isDisabled) {
-					setSelection((prev) => action(prev ?? new CalendarDate()))
+					setSelection((prev) => action(prev ?? new DateTime()))
 				}
 			},
 			[isDisabled, setSelection]

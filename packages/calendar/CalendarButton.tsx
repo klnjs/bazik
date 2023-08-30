@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
 import { freya, forwardRef, toData, type CoreProps } from '../core'
+import { DateTime } from './CalendarDateTime'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 
-type CalendarButtonSegment = Extract<CalendarDateSegmentType, 'year' | 'month'>
+type CalendarButtonSegment = 'year' | 'month'
 
 type CalendarButtonModifier = '-1' | '+1'
 
@@ -77,7 +77,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const onClick = useCallback(() => {
 			setHighlighted((prev) => {
 				if (segment === 'today') {
-					return new CalendarDate()
+					return new DateTime()
 				}
 
 				return prev.calc({ [segment]: Number(modifier) })

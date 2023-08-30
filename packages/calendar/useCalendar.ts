@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState, useCallback } from 'react'
 import { useControllableState, isRange, type Assign, type Range } from '../core'
-import { CalendarDate, type CalendarDateRange } from './CalendarDate'
+import { DateTime, type DateTimeRange } from './CalendarDateTime'
 
 export type DateRange = Range<Date>
 
@@ -9,8 +9,8 @@ export type UseCalendarOptions<R extends boolean = false> = {
 	min?: Date
 	max?: Date
 	locale?: string
-	range?: R
 	disabled?: boolean
+	range?: R
 	value?: (R extends false ? Date : DateRange) | null
 	defaultValue?: (R extends false ? Date : DateRange) | null
 	onChange?: (value: (R extends false ? Date : DateRange) | null) => void
@@ -46,10 +46,10 @@ export const useCalendar = <R extends boolean = false>({
 	})
 
 	const [highlighted, setHighlighted] = useState(
-		() => new CalendarDate(isRange(valueProp) ? valueProp[1] : valueProp)
+		() => new DateTime(isRange(valueProp) ? valueProp[1] : valueProp)
 	)
 
-	const [transient, setTransient] = useState<CalendarDate>()
+	const [transient, setTransient] = useState<DateTime>()
 
 	const [selection, selectionIsTransient] = useMemo(() => {
 		if (transient) {
@@ -59,7 +59,7 @@ export const useCalendar = <R extends boolean = false>({
 				[transient, highlighted].toSorted((a, b) =>
 					// eslint-disable-next-line
 					a.isAfter(b)
-				) as CalendarDateRange,
+				) as DateTimeRange,
 				true
 			]
 		}
@@ -68,7 +68,7 @@ export const useCalendar = <R extends boolean = false>({
 	}, [value, transient, highlighted])
 
 	const setSelection = useCallback(
-		(date: CalendarDate) => {
+		(date: DateTime) => {
 			if (!range) {
 				setValue(date)
 			} else if (transient !== undefined) {
@@ -105,7 +105,7 @@ export const useCalendar = <R extends boolean = false>({
 			typeof shared,
 			{
 				range: false
-				selection: CalendarDate | null
+				selection: DateTime | null
 			}
 		>
 	}
@@ -114,24 +114,24 @@ export const useCalendar = <R extends boolean = false>({
 		typeof shared,
 		{
 			range: true
-			selection: CalendarDateRange | null
+			selection: DateTimeRange | null
 		}
 	>
 }
 
-function useValue(value?: Date): CalendarDate | undefined
-function useValue(value?: DateRange): CalendarDateRange | undefined
+function useValue(value?: Date): DateTime | undefined
+function useValue(value?: DateRange): DateTimeRange | undefined
 function useValue(
 	value?: Date | DateRange | null
-): CalendarDate | CalendarDateRange | null
+): DateTime | DateTimeRange | null
 function useValue(value?: Date | DateRange | null) {
 	return useMemo(() => {
 		if (value instanceof Date) {
-			return new CalendarDate(value)
+			return new DateTime(value)
 		}
 
 		if (isRange(value)) {
-			return value.map((v) => new CalendarDate(v)) as CalendarDateRange
+			return value.map((v) => new DateTime(v)) as DateTimeRange
 		}
 
 		return value
@@ -139,9 +139,9 @@ function useValue(value?: Date | DateRange | null) {
 }
 
 function unuseValue(
-	value?: CalendarDate | CalendarDateRange | null
+	value?: DateTime | DateTimeRange | null
 ): Date | DateRange | null {
-	if (value instanceof CalendarDate) {
+	if (value instanceof DateTime) {
 		return value.toDate()
 	}
 

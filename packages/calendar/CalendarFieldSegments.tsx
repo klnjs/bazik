@@ -1,30 +1,29 @@
 import { useMemo, type ReactNode } from 'react'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import {
-	CalendarDate,
-	type CalendarDateLiteral,
-	type CalendarDateSegment
-} from './CalendarDate'
+	DateTime,
+	type DateSegment,
+	type TimeSegment,
+	type LiteralSegment
+} from './CalendarDateTime'
 
 export type CalendarFieldSegmentsProps<L extends boolean = false> = {
+	time?: T
 	literals?: L
 	children: L extends false
-		? (segment: CalendarDateSegment, index: number) => ReactNode
-		: (
-				segment: CalendarDateSegment | CalendarDateLiteral,
-				index: number
-		  ) => ReactNode
+		? (segment: DateSegment, index: number) => ReactNode
+		: (segment: DateSegment | LiteralSegment, index: number) => ReactNode
 }
 
 export const CalendarFieldSegments = <L extends boolean = false>({
+	time,
 	literals,
 	children
 }: CalendarFieldSegmentsProps<L>) => {
 	const { locale } = useCalendarFieldContext()
 
 	const segments = useMemo(
-		() => new CalendarDate().getSegments(locale, literals),
-		[locale, literals]
+		() => new DateTime().getSegments(locale, literals)[(locale, literals)]
 	)
 
 	// @ts-expect-error unsure why this doesn't work

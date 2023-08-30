@@ -1,11 +1,11 @@
 import { useMemo, type ReactNode } from 'react'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate, type CalendarDateLocale } from './CalendarDate'
+import { DateTime } from './CalendarDateTime'
 
 export type CalendarDaysItem = {
 	role: 'week' | 'weekday' | 'date' | 'blank'
-	date: CalendarDate
-	locale: CalendarDateLocale
+	date: DateTime
+	locale: string
 }
 
 export type CalendarDaysProps = {
@@ -25,7 +25,7 @@ export const CalendarDays = ({
 	const month = highlighted.getMonth()
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
-		const ref = new CalendarDate().set({ year, month })
+		const ref = new DateTime().set({ year, month })
 		const end = ref.getLastDateOfMonth().getLastDateOfWeek(locale)
 		let date = ref.getFirstDateOfMonth().getFirstDateOfWeek(locale)
 		let itrs = 0

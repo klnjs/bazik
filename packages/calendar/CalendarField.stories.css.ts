@@ -141,7 +141,7 @@ export const input = style({
 	border: '1px solid black',
 	borderRadius: 4,
 	':focus-within': {
-		borderColor: '#96CBFE'
+		borderColor: '#0080FF'
 	},
 	selectors: {
 		'&[data-disabled]': {
@@ -157,7 +157,7 @@ export const segment = style({
 	borderRadius: 4,
 	padding: 2,
 	':focus-visible': {
-		outline: '1px solid #96CBFE',
+		outline: '1px solid #0080FF',
 		outlineOffset: -1
 	},
 	selectors: {

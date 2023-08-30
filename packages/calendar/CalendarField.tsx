@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { freya, forwardRef, chain, type CoreProps } from '../core'
 import { usePopover, PopoverProvider, type UsePopoverOptions } from '../popover'
 import { CalendarFieldProvider } from './CalendarFieldContext'
@@ -28,8 +27,6 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 		},
 		forwardedRef
 	) => {
-		const [open, setOpen] = useState(false)
-
 		const field = useCalendarField({
 			autoFocus,
 			min,
@@ -38,12 +35,12 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			locale,
 			disabled,
 			defaultValue,
-			onChange: chain(() => setOpen(false), onChange)
+			onChange: chain(() => field.setOpen(false), onChange)
 		})
 
 		const popover = usePopover({
-			open,
-			onOpenChange: chain(field.setAutoFocus, setOpen, onOpenChange)
+			open: field.open,
+			onOpenChange: chain(field.setOpen, onOpenChange)
 		})
 
 		return (

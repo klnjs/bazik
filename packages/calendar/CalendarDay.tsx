@@ -17,12 +17,12 @@ import {
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import type { CalendarDate } from './CalendarDate'
+import type { DateTime } from './CalendarDateTime'
 
 export type CalendarDayProps = CoreProps<
 	'button',
 	{
-		date: CalendarDate
+		date: DateTime
 		disabled?: boolean
 	}
 >

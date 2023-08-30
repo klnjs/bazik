@@ -10,12 +10,17 @@ export const isRecord = (
 	isSet(value) && !isArray(value) && typeof value === 'object'
 
 export const isRecordProperty = <T extends Record<PropertyKey, unknown>>(
-	value: T,
+	record: T,
 	property: PropertyKey
-): property is keyof T => property in value
+): property is keyof T => property in record
 
 export const isArray = (value: unknown): value is unknown[] =>
 	Array.isArray(value)
+
+export const isArrayValue = <T>(
+	array: T[] | readonly T[],
+	value: unknown
+): boolean => array.includes(value as T)
 
 export const isString = (value: unknown): value is string =>
 	typeof value === 'string'

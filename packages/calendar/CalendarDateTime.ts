@@ -1,61 +1,65 @@
-import { isRecord, type Range } from '../core'
+import { isArrayValue, isRecord, type Range } from '../core'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
-export const calendarDateSegmentTypes = [
-	'year',
-	'month',
-	'day',
-	'hour',
-	'minute'
-] as const
+export const dateSegments = ['year', 'month', 'day'] as const
 
-export type CalendarDateLocale = string
+export const timeSegments = ['hour', 'minute'] as const
 
-export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
+export const literalSegments = ['literal'] as const
 
-export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
+export type SegmentStyle = 'numeric' | '2-digit'
 
-export type CalendarDateSegment = {
-	type: CalendarDateSegmentType
+export type DateSegmentType = (typeof dateSegments)[number]
+
+export type TimeSegmentType = (typeof timeSegments)[number]
+
+export type LiteralSegmentType = (typeof literalSegments)[number]
+
+export type DateSegment = {
+	type: DateSegmentType
 	value: number
 }
 
-export type CalendarDateLiteral = {
-	type: 'literal'
+export type TimeSegment = {
+	type: TimeSegmentType
+	value: number
+}
+
+export type LiteralSegment = {
+	type: LiteralSegmentType
 	value: string
 }
 
-export type CalendarDateMutation = {
-	[key in CalendarDateSegmentType]?: number
+export type DateTimeMutation = {
+	[key in DateSegmentType | TimeSegmentType]?: number
 }
 
-export type CalendarDateRange = Range<CalendarDate>
+export type DateTimeRange = Range<DateTime>
 
-export class CalendarDate {
+export class DateTime {
 	date: Date
 
-	constructor(date?: CalendarDate | Date | null) {
+	constructor(date?: DateTime | Date | null) {
 		this.date = date ? new Date(date.getTime()) : new Date()
 	}
 
-	static isCalendarDate(value: unknown): value is CalendarDate {
-		return value instanceof CalendarDate
+	static isDateTime(value: unknown): value is DateTime {
+		return value instanceof DateTime
 	}
 
-	static isCalendarDateSegment(value: unknown): value is CalendarDateSegment {
-		return (
-			isRecord(value) &&
-			calendarDateSegmentTypes.includes(
-				value.type as CalendarDateSegmentType
-			)
-		)
+	static isDateSegment(value: unknown): value is DateSegment {
+		return isRecord(value) && isArrayValue(dateSegments, value.type)
 	}
 
-	static isCalendarDateLiteral(value: unknown): value is CalendarDateLiteral {
-		return isRecord(value) && value.type === 'literal'
+	static isTimeSegment(value: unknown): value is TimeSegment {
+		return isRecord(value) && isArrayValue(timeSegments, value.type)
 	}
 
-	set({ year, month, day, hour, minute }: CalendarDateMutation) {
+	static isLiteralSegment(value: unknown): value is LiteralSegment {
+		return isRecord(value) && isArrayValue(literalSegments, value.type)
+	}
+
+	set({ year, month, day, hour, minute }: DateTimeMutation) {
 		const date = this.toDate()
 		const next = new Date()
 
@@ -65,14 +69,14 @@ export class CalendarDate {
 		next.setHours(hour ?? date.getHours())
 		next.setMinutes(minute ?? date.getMinutes())
 
-		return new CalendarDate(next)
+		return new DateTime(next)
 	}
 
-	add(mutation: CalendarDateMutation) {
+	add(mutation: DateTimeMutation) {
 		return this.calc(mutation)
 	}
 
-	sub(mutation: CalendarDateMutation) {
+	sub(mutation: DateTimeMutation) {
 		return this.calc(
 			Object.fromEntries(
 				Object.entries(mutation).map(([key, value = 0]) => [
@@ -89,7 +93,7 @@ export class CalendarDate {
 		day = 0,
 		hour = 0,
 		minute = 0
-	}: CalendarDateMutation = {}) {
+	}: DateTimeMutation = {}) {
 		const date = this.toDate()
 		const dateOriginalDay = date.getDate()
 
@@ -106,14 +110,14 @@ export class CalendarDate {
 		date.setSeconds(0)
 		date.setMilliseconds(0)
 
-		return new CalendarDate(date)
+		return new DateTime(date)
 	}
 
 	clone() {
-		return new CalendarDate(this)
+		return new DateTime(this)
 	}
 
-	clamp(min?: CalendarDate, max?: CalendarDate) {
+	clamp(min?: DateTime, max?: DateTime) {
 		if (min && this.isBefore(min)) {
 			return min.clone()
 		}
@@ -142,10 +146,7 @@ export class CalendarDate {
 		return this.toDate().getTime()
 	}
 
-	getSegments<L extends boolean = false>(
-		locale: CalendarDateLocale,
-		literals?: L
-	) {
+	getSegments<L extends boolean = false>(locale: string, literals?: L) {
 		return new Intl.DateTimeFormat(locale, {
 			year: 'numeric',
 			month: 'numeric',
@@ -154,16 +155,17 @@ export class CalendarDate {
 			minute: 'numeric'
 		})
 			.formatToParts(this.toDate())
-			.reduce<(CalendarDateSegment | CalendarDateLiteral)[]>(
+			.reduce<(DateSegment | TimeSegment | LiteralSegment)[]>(
 				(acc, part) => {
-					if (CalendarDate.isCalendarDateSegment(part)) {
+					if (DateTime.isDateSegment(part)) {
 						acc.push({ type: part.type, value: Number(part.value) })
 					}
 
-					if (
-						CalendarDate.isCalendarDateLiteral(part) &&
-						literals === true
-					) {
+					if (DateTime.isTimeSegment(part)) {
+						acc.push({ type: part.type, value: Number(part.value) })
+					}
+
+					if (DateTime.isLiteralSegment(part) && literals === true) {
 						acc.push(part)
 					}
 
@@ -171,11 +173,11 @@ export class CalendarDate {
 				},
 				[]
 			) as L extends false
-			? CalendarDateSegment[]
-			: (CalendarDateSegment | CalendarDateLiteral)[]
+			? (DateSegment | TimeSegment)[]
+			: (DateSegment | TimeSegment | LiteralSegment)[]
 	}
 
-	getSegment(locale: CalendarDateLocale, type: CalendarDateSegmentType) {
+	getSegment(locale: string, type: DateSegmentType | TimeSegmentType) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		return this.getSegments(locale).find(
 			(segment) => segment.type === type
@@ -183,16 +185,16 @@ export class CalendarDate {
 	}
 
 	getSegmentLength(
-		locale: CalendarDateLocale,
-		type: CalendarDateSegmentType,
-		style: CalendarDateSegmentStyle
+		locale: string,
+		type: DateSegmentType | TimeSegmentType,
+		style: SegmentStyle
 	) {
 		return new Intl.DateTimeFormat(locale, {
 			[type]: style
 		}).formatToParts(this.toDate())[0].value.length
 	}
 
-	getFirstDateOfWeek(locale: CalendarDateLocale) {
+	getFirstDateOfWeek(locale: string) {
 		return this.getMidnight().sub({ day: this.getWeekDay(locale) - 1 })
 	}
 
@@ -200,7 +202,7 @@ export class CalendarDate {
 		return this.getMidnight().set({ day: 1 })
 	}
 
-	getLastDateOfWeek(locale: CalendarDateLocale) {
+	getLastDateOfWeek(locale: string) {
 		return this.getFirstDateOfWeek(locale).add({ day: 6 })
 	}
 
@@ -231,7 +233,7 @@ export class CalendarDate {
 		)
 	}
 
-	getWeekDay(locale: CalendarDateLocale) {
+	getWeekDay(locale: string) {
 		const weekInfo = getCalendarWeekInfo(locale)
 		const dayOfWeek = this.toDate().getDay() || 7
 		const dayOfWeekIndex = dayOfWeek - weekInfo.firstDay
@@ -252,15 +254,12 @@ export class CalendarDate {
 		return this.toDate().toUTCString()
 	}
 
-	toLocaleString(
-		locale: CalendarDateLocale,
-		options?: Intl.DateTimeFormatOptions
-	) {
+	toLocaleString(locale: string, options?: Intl.DateTimeFormatOptions) {
 		return this.toDate().toLocaleString(locale, options)
 	}
 
 	isToday() {
-		const today = new CalendarDate()
+		const today = new DateTime()
 
 		return (
 			this.getYear() === today.getYear() &&
@@ -269,34 +268,34 @@ export class CalendarDate {
 		)
 	}
 
-	isWeekend(locale: CalendarDateLocale) {
+	isWeekend(locale: string) {
 		const weekInfo = getCalendarWeekInfo(locale)
 		const dayOfWeek = this.toDate().getDay() || 7
 
 		return weekInfo.weekend.includes(dayOfWeek)
 	}
 
-	isAfter(date: CalendarDate) {
+	isAfter(date: DateTime) {
 		return this.getTime() > date.getTime()
 	}
 
-	isBefore(date: CalendarDate) {
+	isBefore(date: DateTime) {
 		return this.getTime() < date.getTime()
 	}
 
-	isBetween(min: CalendarDate, max: CalendarDate) {
+	isBetween(min: DateTime, max: DateTime) {
 		return !this.isBefore(min) && !this.isAfter(max)
 	}
 
-	isSameYear(date: CalendarDate) {
+	isSameYear(date: DateTime) {
 		return this.getYear() === date.getYear()
 	}
 
-	isSameMonth(date: CalendarDate) {
+	isSameMonth(date: DateTime) {
 		return this.isSameYear(date) && this.getMonth() === date.getMonth()
 	}
 
-	isSameDay(date: CalendarDate) {
+	isSameDay(date: DateTime) {
 		return (
 			this.isSameYear(date) &&
 			this.isSameMonth(date) &&

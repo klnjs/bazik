@@ -3,7 +3,7 @@ import { freya, forwardRef, type CoreProps } from '../core'
 import { CalendarProvider } from './CalendarContext'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
-import { CalendarDate } from './CalendarDate'
+import { CalendarDate } from './CalendarDateTime'
 
 export type CalendarProps<R extends boolean = false> = CoreProps<
 	'div',
@@ -38,10 +38,11 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			defaultValue: field ? undefined : defaultValue,
 			onChange: field
 				? (next: Date | null) => {
-						field.setSelection(
-							new CalendarDate(next).set({
-								hour: next?.getHours(),
-								minute: next?.getMinutes()
+						field.setSelection((prev) =>
+							new CalendarDate(prev).set({
+								year: next?.getFullYear(),
+								month: next ? next.getMonth() + 1 : undefined,
+								day: next?.getDate()
 							})
 						)
 				  }

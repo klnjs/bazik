@@ -1,6 +1,10 @@
 import { useRef, useMemo, useState, useCallback } from 'react'
 import { useControllableState } from '../core'
-import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
+import {
+	DateTime,
+	type DateSegmentType,
+	type TimeSegmentType
+} from './CalendarDateTime'
 
 export type UseCalendarFieldOptions = {
 	autoFocus?: boolean
@@ -29,6 +33,8 @@ export const useCalendarField = ({
 		autoFocusRef.current = autoFocus
 	}, [])
 
+	const [open, setOpen] = useState(false)
+
 	const [labelId, setLabelId] = useState<string>()
 
 	const [selection, setSelection] = useControllableState({
@@ -43,16 +49,17 @@ export const useCalendarField = ({
 
 	const highlightedSegmentRef = useRef<HTMLDivElement>(null)
 
-	const [highlightedSegment, setHighlightedSegment] =
-		useState<CalendarDateSegmentType>(
-			() => new CalendarDate().getSegments(locale)[0].type
-		)
+	const [highlightedSegment, setHighlightedSegment] = useState<
+		DateSegmentType | TimeSegmentType
+	>(() => new DateTime().getSegments(locale)[0].type)
 
 	return {
 		min: useValue(min),
 		max: useValue(max),
 		locale,
 		disabled,
+		open,
+		setOpen,
 		labelId,
 		setLabelId,
 		autoFocus: autoFocusRef.current,
@@ -65,20 +72,20 @@ export const useCalendarField = ({
 	}
 }
 
-function useValue(value?: Date): CalendarDate | undefined
-function useValue(value?: Date | null): CalendarDate | null
+function useValue(value?: Date): DateTime | undefined
+function useValue(value?: Date | null): DateTime | null
 function useValue(value?: Date | null) {
 	return useMemo(() => {
 		if (value instanceof Date) {
-			return new CalendarDate(value)
+			return new DateTime(value)
 		}
 
 		return value
 	}, [value])
 }
 
-function unuseValue(value?: CalendarDate | null): Date | null {
-	if (value instanceof CalendarDate) {
+function unuseValue(value?: DateTime | null): Date | null {
+	if (value instanceof DateTime) {
 		return value.toDate()
 	}
 
