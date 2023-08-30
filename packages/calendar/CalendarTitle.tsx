@@ -1,12 +1,13 @@
 import { useLayoutEffect } from 'react'
-import { freya, forwardRef, type CoreProps, useId } from '../core'
+import { freya, forwardRef, useId, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 
 export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
-	({ id: idProp, ...otherProps }, forwardedRef) => {
-		const { focusedDate, titleId, setTitleId } = useCalendarContext()
+	({ id: idProp, children, ...otherProps }, forwardedRef) => {
+		const { locale, highlighted, titleId, setTitleId } =
+			useCalendarContext()
 		const id = useId(idProp)
 
 		useLayoutEffect(() => {
@@ -24,10 +25,11 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 				aria-live="polite"
 				{...otherProps}
 			>
-				{focusedDate.format({
-					year: 'numeric',
-					month: 'long'
-				})}
+				{children ??
+					highlighted.toLocaleString(locale, {
+						year: 'numeric',
+						month: 'long'
+					})}
 			</freya.h2>
 		)
 	}

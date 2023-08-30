@@ -1,6 +1,7 @@
 import { useMemo, useCallback } from 'react'
+import { isRecordProperty } from '../core'
 
-const texts = {
+export const calendarLocalisation = {
 	en: {
 		next: 'Next {{segment}}',
 		previous: 'Previous {{segment}}'
@@ -11,27 +12,56 @@ const texts = {
 	}
 } as const
 
-export const useCalendarLocalisation = (locale = 'en') => {
-	const names = useMemo(
-		() => new Intl.DisplayNames(locale, { type: 'dateTimeField' }),
-		[locale]
-	)
+export type CalendarLocalisationLocale = keyof typeof calendarLocalisation
 
+export type CalendarLocalisationKey = keyof (typeof calendarLocalisation)['en']
+
+export const useCalendarLocalisation = (locale: string) => {
 	const t = useCallback(
 		(
-			key: keyof (typeof texts)['en'],
+			key: CalendarLocalisationKey,
 			interpolation: Record<string, string> = {}
 		) => {
-			// @ts-expect-error just hacking away
-			const lang: keyof typeof texts = !texts[locale] ? 'en' : locale
+			const lang: CalendarLocalisationLocale = isRecordProperty(
+				calendarLocalisation,
+				locale
+			)
+				? locale
+				: 'en'
 
 			return Object.entries(interpolation).reduce<string>(
 				(acc, [name, value]) => acc.replaceAll(`{{${name}}}`, value),
-				texts[lang][key]
+				calendarLocalisation[lang][key]
 			)
 		},
 		[locale]
 	)
+
+	const names = useMemo(() => {
+		const dn = new Intl.DisplayNames(locale, { type: 'dateTimeField' })
+		const rtf = new Intl.RelativeTimeFormat(locale)
+
+		return {
+			of: (code: string) => {
+				switch (code) {
+					case 'today':
+						return rtf.format(0, 'day')
+					case 'yesterday':
+						return rtf.format(-1, 'day')
+					case 'tommorow':
+						return rtf.format(1, 'day')
+					default:
+						return dn.of(code)
+				}
+			},
+			resolvedOptions: () => ({
+				type: 'calendar',
+				locale,
+				style: 'long',
+				fallback: 'code'
+			})
+		}
+	}, [locale])
 
 	return { t, names }
 }

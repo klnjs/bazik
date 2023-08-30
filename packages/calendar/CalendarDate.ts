@@ -1,63 +1,71 @@
-import { weekInfo } from './calendarWeekInfo'
+import { isRecord, type Range } from '../core'
+import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
-export const calendarDateSegmentTypes = ['year', 'month', 'day'] as const
+export const calendarDateSegmentTypes = [
+	'year',
+	'month',
+	'day',
+	'hour',
+	'minute'
+] as const
 
-export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
-
-export type CalendarDateSegmentTypeWithLiteral =
-	| CalendarDateSegmentType
-	| 'literal'
+export type CalendarDateLocale = string
 
 export type CalendarDateSegmentStyle = 'numeric' | '2-digit'
 
+export type CalendarDateSegmentType = (typeof calendarDateSegmentTypes)[number]
+
 export type CalendarDateSegment = {
 	type: CalendarDateSegmentType
-	value: string
-	index: number
+	value: number
 }
 
-export type CalendarDateSegmentWithLiterals = {
-	type: CalendarDateSegmentTypeWithLiteral
+export type CalendarDateLiteral = {
+	type: 'literal'
 	value: string
-	index: number
 }
 
 export type CalendarDateMutation = {
 	[key in CalendarDateSegmentType]?: number
 }
 
+export type CalendarDateRange = Range<CalendarDate>
+
 export class CalendarDate {
 	date: Date
-	locale: string
 
-	constructor(locale?: string, date?: Date | null) {
-		this.date = date ?? new Date()
-		this.locale = locale ?? navigator.language
+	constructor(date?: CalendarDate | Date | null) {
+		this.date = date ? new Date(date.getTime()) : new Date()
 	}
 
-	static isSegment(
-		segment: Intl.DateTimeFormatPart
-	): segment is CalendarDateSegment {
-		return calendarDateSegmentTypes.includes(
-			segment.type as CalendarDateSegmentType
+	static isCalendarDate(value: unknown): value is CalendarDate {
+		return value instanceof CalendarDate
+	}
+
+	static isCalendarDateSegment(value: unknown): value is CalendarDateSegment {
+		return (
+			isRecord(value) &&
+			calendarDateSegmentTypes.includes(
+				value.type as CalendarDateSegmentType
+			)
 		)
 	}
 
-	static isLiteral(
-		segment: Intl.DateTimeFormatPart
-	): segment is CalendarDateSegmentWithLiterals {
-		return segment.type === 'literal'
+	static isCalendarDateLiteral(value: unknown): value is CalendarDateLiteral {
+		return isRecord(value) && value.type === 'literal'
 	}
 
-	set({ year, month, day }: CalendarDateMutation) {
-		const date = this.getDate()
+	set({ year, month, day, hour, minute }: CalendarDateMutation) {
+		const date = this.toDate()
 		const next = new Date()
 
 		next.setFullYear(year ?? date.getFullYear())
 		next.setMonth(month ? month - 1 : date.getMonth())
 		next.setDate(day ?? date.getDate())
+		next.setHours(hour ?? date.getHours())
+		next.setMinutes(minute ?? date.getMinutes())
 
-		return new CalendarDate(this.locale, next)
+		return new CalendarDate(next)
 	}
 
 	add(mutation: CalendarDateMutation) {
@@ -75,8 +83,14 @@ export class CalendarDate {
 		)
 	}
 
-	calc({ year = 0, month = 0, day = 0 }: CalendarDateMutation = {}) {
-		const date = this.getDate()
+	calc({
+		year = 0,
+		month = 0,
+		day = 0,
+		hour = 0,
+		minute = 0
+	}: CalendarDateMutation = {}) {
+		const date = this.toDate()
 		const dateOriginalDay = date.getDate()
 
 		date.setFullYear(date.getFullYear() + year)
@@ -87,12 +101,16 @@ export class CalendarDate {
 		}
 
 		date.setDate(date.getDate() + day)
+		date.setHours(date.getHours() + hour)
+		date.setMinutes(date.getMinutes() + minute)
+		date.setSeconds(0)
+		date.setMilliseconds(0)
 
-		return new CalendarDate(this.locale, date)
+		return new CalendarDate(date)
 	}
 
 	clone() {
-		return new CalendarDate(this.locale, this.getDate())
+		return new CalendarDate(this)
 	}
 
 	clamp(min?: CalendarDate, max?: CalendarDate) {
@@ -107,110 +125,87 @@ export class CalendarDate {
 		return this
 	}
 
-	format(options?: Intl.DateTimeFormatOptions) {
-		return this.getDate().toLocaleString(this.locale, options)
-	}
-
-	formatRelative(
-		target: CalendarDate,
-		segment: CalendarDateSegmentType,
-		options?: Intl.RelativeTimeFormatOptions
-	) {
-		const diff = this.getDiff(target)
-		const segmentDiff = diff[segment]
-
-		return new Intl.RelativeTimeFormat(this.locale, options).format(
-			segmentDiff,
-			segment
-		)
-	}
-
 	getYear() {
-		return this.getDate().getFullYear()
+		return this.toDate().getFullYear()
 	}
 
 	getMonth() {
 		// Normalize month value
-		return this.getDate().getMonth() + 1
+		return this.toDate().getMonth() + 1
 	}
 
 	getDay() {
-		return this.getDate().getDate()
+		return this.toDate().getDate()
 	}
 
 	getTime() {
-		return this.getDate().getTime()
+		return this.toDate().getTime()
 	}
 
-	getDiff(date: CalendarDate) {
-		const difference = date.getTime() - this.getTime()
-		const oneDay = 1000 * 60 * 60 * 24 // Number of milliseconds in a day
-		const oneYear = oneDay * 365.25 // Average number of days in a year
-		const oneMonth = oneDay * 30.436875 // Average number of days in a month
-
-		return {
-			year: Math.floor(difference / oneYear),
-			month: Math.floor((difference % oneYear) / oneMonth),
-			day: Math.floor(((difference % oneYear) % oneMonth) / oneDay)
-		}
-	}
-
-	getLocale() {
-		return this.locale
-	}
-
-	getSegments<L extends boolean = false>({
-		style = 'numeric',
-		literals
-	}: {
-		style?: CalendarDateSegmentStyle
+	getSegments<L extends boolean = false>(
+		locale: CalendarDateLocale,
 		literals?: L
-	} = {}) {
-		return new Intl.DateTimeFormat(this.locale, {
+	) {
+		return new Intl.DateTimeFormat(locale, {
 			year: 'numeric',
-			month: style,
-			day: style
+			month: 'numeric',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric'
 		})
-			.formatToParts(this.getDate())
-			.reduce<CalendarDateSegmentWithLiterals[]>((acc, part, index) => {
-				if (CalendarDate.isSegment(part)) {
-					acc.push({ ...part, index })
-				}
+			.formatToParts(this.toDate())
+			.reduce<(CalendarDateSegment | CalendarDateLiteral)[]>(
+				(acc, part) => {
+					if (CalendarDate.isCalendarDateSegment(part)) {
+						acc.push({ type: part.type, value: Number(part.value) })
+					}
 
-				if (literals === true && CalendarDate.isLiteral(part)) {
-					acc.push({ ...part, index })
-				}
+					if (
+						CalendarDate.isCalendarDateLiteral(part) &&
+						literals === true
+					) {
+						acc.push(part)
+					}
 
-				return acc
-			}, []) as L extends true
-			? CalendarDateSegmentWithLiterals[]
-			: CalendarDateSegment[]
+					return acc
+				},
+				[]
+			) as L extends false
+			? CalendarDateSegment[]
+			: (CalendarDateSegment | CalendarDateLiteral)[]
 	}
 
-	getSegment(
-		type: CalendarDateSegmentType,
-		style?: CalendarDateSegmentStyle
-	) {
+	getSegment(locale: CalendarDateLocale, type: CalendarDateSegmentType) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		return this.getSegments({ style }).find(
+		return this.getSegments(locale).find(
 			(segment) => segment.type === type
 		)!
 	}
 
-	getFirstDateOfWeek() {
-		return this.sub({ day: this.getWeekDay() - 1 })
+	getSegmentLength(
+		locale: CalendarDateLocale,
+		type: CalendarDateSegmentType,
+		style: CalendarDateSegmentStyle
+	) {
+		return new Intl.DateTimeFormat(locale, {
+			[type]: style
+		}).formatToParts(this.toDate())[0].value.length
+	}
+
+	getFirstDateOfWeek(locale: CalendarDateLocale) {
+		return this.getMidnight().sub({ day: this.getWeekDay(locale) - 1 })
 	}
 
 	getFirstDateOfMonth() {
-		return this.set({ day: 1 })
+		return this.getMidnight().set({ day: 1 })
 	}
 
-	getLastDateOfWeek() {
-		return this.getFirstDateOfWeek().add({ day: 6 })
+	getLastDateOfWeek(locale: CalendarDateLocale) {
+		return this.getFirstDateOfWeek(locale).add({ day: 6 })
 	}
 
 	getLastDateOfMonth() {
-		return this.set({ month: this.getMonth() + 1, day: 0 })
+		return this.getMidnight().set({ month: this.getMonth() + 1, day: 0 })
 	}
 
 	getDaysInMonth() {
@@ -236,34 +231,36 @@ export class CalendarDate {
 		)
 	}
 
-	getWeekDay() {
-		const firstDayOfWeek = (() => {
-			try {
-				// @ts-expect-error not in spec yet
-				// eslint-disable-next-line
-				return new Intl.Locale(this.locale).getWeekInfo()
-					.firstDay as number
-			} catch (error) {
-				return weekInfo[
-					new Intl.Locale(this.locale).maximize()
-						.region as keyof typeof weekInfo
-				].firstDay
-			}
-		})()
-
-		const dayOfWeek = this.getDate().getDay() || 7
-		const dayOfWeekIndex = dayOfWeek - firstDayOfWeek
+	getWeekDay(locale: CalendarDateLocale) {
+		const weekInfo = getCalendarWeekInfo(locale)
+		const dayOfWeek = this.toDate().getDay() || 7
+		const dayOfWeekIndex = dayOfWeek - weekInfo.firstDay
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
 		return dayOfWeekIndex + dayOfWeekOffset
 	}
 
-	getDate() {
+	getMidnight() {
+		return this.set({ hour: 0, minute: 0 })
+	}
+
+	toDate() {
 		return new Date(this.date)
 	}
 
+	toUTCString() {
+		return this.toDate().toUTCString()
+	}
+
+	toLocaleString(
+		locale: CalendarDateLocale,
+		options?: Intl.DateTimeFormatOptions
+	) {
+		return this.toDate().toLocaleString(locale, options)
+	}
+
 	isToday() {
-		const today = new CalendarDate(this.locale)
+		const today = new CalendarDate()
 
 		return (
 			this.getYear() === today.getYear() &&
@@ -272,52 +269,34 @@ export class CalendarDate {
 		)
 	}
 
-	isWeekend() {
-		const weekend = (() => {
-			try {
-				// @ts-expect-error not in spec yet
-				// eslint-disable-next-line
-				return new Intl.Locale(this.locale).getWeekInfo()
-					.weekend as number[]
-			} catch (error) {
-				return weekInfo[
-					new Intl.Locale(this.locale).maximize()
-						.region as keyof typeof weekInfo
-				].weekend
-			}
-		})()
+	isWeekend(locale: CalendarDateLocale) {
+		const weekInfo = getCalendarWeekInfo(locale)
+		const dayOfWeek = this.toDate().getDay() || 7
 
-		const dayOfWeek = this.getDate().getDay() || 7
-
-		return weekend.includes(dayOfWeek)
+		return weekInfo.weekend.includes(dayOfWeek)
 	}
 
-	isAfter(date: CalendarDate | Date) {
-		return this.getDate().getTime() > date.getTime()
+	isAfter(date: CalendarDate) {
+		return this.getTime() > date.getTime()
 	}
 
-	isBefore(date: CalendarDate | Date) {
-		return this.getDate().getTime() < date.getTime()
+	isBefore(date: CalendarDate) {
+		return this.getTime() < date.getTime()
 	}
 
-	isSameYear(input: CalendarDate | Date) {
-		const date =
-			input instanceof Date ? new CalendarDate(this.locale, input) : input
+	isBetween(min: CalendarDate, max: CalendarDate) {
+		return !this.isBefore(min) && !this.isAfter(max)
+	}
 
+	isSameYear(date: CalendarDate) {
 		return this.getYear() === date.getYear()
 	}
 
-	isSameMonth(input: CalendarDate | Date) {
-		const date =
-			input instanceof Date ? new CalendarDate(this.locale, input) : input
-
+	isSameMonth(date: CalendarDate) {
 		return this.isSameYear(date) && this.getMonth() === date.getMonth()
 	}
 
-	isSameDay(input: CalendarDate | Date) {
-		const date =
-			input instanceof Date ? new CalendarDate(this.locale, input) : input
-
+	isSameDay(date: CalendarDate) {
 		return (
 			this.isSameYear(date) &&
 			this.isSameMonth(date) &&
@@ -325,7 +304,3 @@ export class CalendarDate {
 		)
 	}
 }
-
-const d = new CalendarDate()
-
-const aaa = d.getSegments({ literals: true })

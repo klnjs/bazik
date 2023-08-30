@@ -5,6 +5,7 @@ import { CalendarDays } from './CalendarDays'
 import { CalendarDay } from './CalendarDay'
 import { CalendarTitle } from './CalendarTitle'
 import { CalendarButton } from './CalendarButton'
+import { CalendarWeekday } from './CalendarWeekday'
 import * as classes from './Calendar.stories.css'
 
 export default {
@@ -18,13 +19,20 @@ export const Basic = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.format()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
+					<CalendarDay date={date} className={classes.day} />
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</Calendar>
+)
+
+export const Range = () => (
+	<Calendar range className={classes.calendar}>
+		<CalendarTitle className={classes.title} />
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays>
+				{({ date }) => (
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -37,13 +45,7 @@ export const Disabled = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.format()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -54,7 +56,7 @@ export const Weekinfo = () => (
 	<Calendar className={classes.calendar}>
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.gridWithWeekInfo}>
-			<CalendarDays week={true} weekday={true}>
+			<CalendarDays weekday={true} weeknumber={true}>
 				{({ role, date }) => {
 					if (role === 'blank') {
 						return <span />
@@ -62,9 +64,10 @@ export const Weekinfo = () => (
 
 					if (role === 'weekday') {
 						return (
-							<span className={classes.cell}>
-								{date.format({ weekday: 'short' })}
-							</span>
+							<CalendarWeekday
+								date={date}
+								className={classes.cell}
+							/>
 						)
 					}
 
@@ -76,15 +79,7 @@ export const Weekinfo = () => (
 						)
 					}
 
-					return (
-						<CalendarDay
-							key={date.format()}
-							date={date}
-							className={classes.day}
-						>
-							{date.getDay()}
-						</CalendarDay>
-					)
+					return <CalendarDay date={date} className={classes.day} />
 				}}
 			</CalendarDays>
 		</CalendarGrid>
@@ -97,20 +92,11 @@ export const Navigation = () => (
 			<CalendarTitle className={classes.title} />
 
 			<div className={classes.nav}>
-				<CalendarButton action="year-1" className={classes.button}>
-					«
-				</CalendarButton>
 				<CalendarButton action="month-1" className={classes.button}>
 					‹
 				</CalendarButton>
-				<CalendarButton action="today" className={classes.button}>
-					•
-				</CalendarButton>
 				<CalendarButton action="month+1" className={classes.button}>
 					›
-				</CalendarButton>
-				<CalendarButton action="year+1" className={classes.button}>
-					»
 				</CalendarButton>
 			</div>
 		</div>
@@ -118,13 +104,7 @@ export const Navigation = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.format()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -135,16 +115,19 @@ export const Localization = () => (
 	<Calendar locale="en-US" className={classes.calendar}>
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
-			<CalendarDays>
-				{({ date }) => (
-					<CalendarDay
-						key={date.getTime()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
-				)}
+			<CalendarDays weekday={true}>
+				{({ role, date }) => {
+					if (role === 'weekday') {
+						return (
+							<CalendarWeekday
+								date={date}
+								className={classes.cell}
+							/>
+						)
+					}
+
+					return <CalendarDay date={date} className={classes.day} />
+				}}
 			</CalendarDays>
 		</CalendarGrid>
 	</Calendar>
@@ -171,13 +154,7 @@ export const MinAndMax = () => {
 			<CalendarGrid className={classes.grid}>
 				<CalendarDays>
 					{({ date }) => (
-						<CalendarDay
-							key={date.format()}
-							date={date}
-							className={classes.day}
-						>
-							{date.getDay()}
-						</CalendarDay>
+						<CalendarDay date={date} className={classes.day} />
 					)}
 				</CalendarDays>
 			</CalendarGrid>
@@ -192,12 +169,9 @@ export const OverflowVisible = () => (
 			<CalendarDays>
 				{({ date }) => (
 					<CalendarDay
-						key={date.format()}
 						date={date}
 						className={classes.dayWithOverflowVisible}
-					>
-						{date.getDay()}
-					</CalendarDay>
+					/>
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -210,13 +184,7 @@ export const WeekdayHeaders = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay
-						key={date.getTime()}
-						date={date}
-						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
+					<CalendarDay date={date} className={classes.day} />
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -228,15 +196,12 @@ export const WeekendDisabled = () => (
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
-				{({ date }) => (
+				{({ date, locale }) => (
 					<CalendarDay
-						key={date.format()}
 						date={date}
-						disabled={date.isWeekend()}
+						disabled={date.isWeekend(locale)}
 						className={classes.day}
-					>
-						{date.getDay()}
-					</CalendarDay>
+					/>
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -244,32 +209,28 @@ export const WeekendDisabled = () => (
 )
 
 export const Schedule = () => {
-	const events = [
-		{
-			date: new Date('2023-07-01'),
-			name: 'Party',
-			color: 'lime'
-		},
-		{
-			date: new Date('2023-07-04'),
-			name: 'Doctors',
-			color: 'aqua'
-		},
-		{
-			date: new Date('2023-07-12'),
-			name: 'Dentist',
-			color: 'aqua'
-		},
-		{
-			date: new Date('2023-07-22'),
-			name: 'Funeral',
-			color: 'coral'
-		},
-		{
-			date: new Date('2023-07-23'),
-			name: 'Birthday',
-			color: 'crimson'
+	const createEventInThisMonth = (
+		name: string,
+		color: string,
+		day: number
+	) => {
+		const today = new Date()
+
+		return {
+			name,
+			color,
+			date: new Date(today.getFullYear(), today.getMonth(), day)
 		}
+	}
+
+	const events = [
+		createEventInThisMonth('Party', 'lime', 1),
+		createEventInThisMonth('Doctors', 'aqua', 4),
+		createEventInThisMonth('Dentist', 'aqua', 12),
+		createEventInThisMonth('Meeting', 'olive', 15),
+		createEventInThisMonth('Car Inspection', 'purple', 22),
+		createEventInThisMonth('Funeral', 'coral', 22),
+		createEventInThisMonth('Birthday', 'crimson', 23)
 	] as const
 
 	return (
@@ -279,7 +240,6 @@ export const Schedule = () => {
 				<CalendarDays>
 					{({ date }) => (
 						<div
-							key={date.format()}
 							style={{
 								aspectRatio: '1 / 1',
 								padding: 4,
@@ -288,24 +248,28 @@ export const Schedule = () => {
 							}}
 						>
 							<div style={{ fontSize: 12 }}>{date.getDay()}</div>
-							<div>
-								{events
-									.filter((event) =>
-										date.isSameDay(event.date)
-									)
-									.map((event) => (
-										<div
-											style={{
-												background: event.color,
-												borderRadius: 4,
-												fontSize: 12,
-												padding: 2
-											}}
-										>
-											{event.name}
-										</div>
-									))}
-							</div>
+							{events
+								.filter(
+									(event) =>
+										date.toDate().getFullYear() ===
+											event.date.getFullYear() &&
+										date.toDate().getMonth() ===
+											event.date.getMonth() &&
+										date.toDate().getDate() ===
+											event.date.getDate()
+								)
+								.map((event) => (
+									<div
+										style={{
+											background: event.color,
+											borderRadius: 4,
+											fontSize: 12,
+											padding: 2
+										}}
+									>
+										{event.name}
+									</div>
+								))}
 						</div>
 					)}
 				</CalendarDays>

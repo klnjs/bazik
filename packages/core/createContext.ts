@@ -5,23 +5,21 @@ import {
 } from 'react'
 
 export type CreateContextOptions<T> = {
-	strict?: boolean
-	name?: string
-	nameOfHook?: string
-	nameOfProvider?: string
+	name: string
+	nameOfHook: string
+	nameOfProvider: string
 	defaultValue?: T
 }
 
-export type UseContextOptions = {
-	strict?: boolean
+export type UseContextOptions<S extends boolean> = {
+	strict?: S
 }
 
-export type CreateContextReturn<T> = [
-	Provider<T>,
-	(options?: UseContextOptions) => T
-]
+export type UseContextReturn<T, S extends boolean> = S extends true
+	? T
+	: T | undefined
 
-const createContextError = (
+export const createContextError = (
 	name: string,
 	nameOfHook: string,
 	nameOfProvider: string
@@ -34,22 +32,26 @@ const createContextError = (
 }
 
 export const createContext = <T extends object>({
-	strict: strictOption = true,
 	name = 'Context',
 	nameOfHook = 'useContext',
 	nameOfProvider = 'Provider',
 	defaultValue
 }: CreateContextOptions<T>) => {
-	const Context = createContextFromReact<T | undefined>(defaultValue)
+	const Context = createContextFromReact(defaultValue)
 
 	Context.displayName = name
 
-	const useContext = ({ strict = strictOption }: UseContextOptions = {}) => {
+	const useContext = <S extends boolean = true>({
+		strict: strictOption
+	}: UseContextOptions<S> = {}) => {
+		const strict = strictOption ?? true
 		const context = useContextFromReact(Context)
 
 		if (!context && strict) {
 			const error = createContextError(name, nameOfHook, nameOfProvider)
 
+			// This is a V8 engine specific API
+			// See: https://v8.dev/docs/stack-trace-api#stack-trace-collection-for-custom-exceptions
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			if (Error.captureStackTrace !== undefined) {
 				Error.captureStackTrace(error, useContext)
@@ -58,8 +60,8 @@ export const createContext = <T extends object>({
 			throw error
 		}
 
-		return context
+		return context as UseContextReturn<T, S>
 	}
 
-	return [Context.Provider, useContext] as CreateContextReturn<T>
+	return [Context.Provider, useContext] as [Provider<T>, typeof useContext]
 }

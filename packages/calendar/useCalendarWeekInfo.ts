@@ -1,4 +1,6 @@
-export const weekInfo = {
+import { useMemo } from 'react'
+
+export const calendarWeekInfo = {
 	'001': {
 		firstDay: 1,
 		minimalDays: 1,
@@ -1290,3 +1292,21 @@ export const weekInfo = {
 		weekend: [6, 7]
 	}
 }
+
+export const getCalendarWeekInfo = (localeArg: string) => {
+	const locale = new Intl.Locale(localeArg)
+	const localeSupportsWeekInfo = Object.hasOwn(locale, 'getWeekInfo')
+
+	if (localeSupportsWeekInfo) {
+		// @ts-expect-error not yet implemented in all browsers
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+		return locale.getWeekInfo() as (typeof calendarWeekInfo)['001']
+	}
+
+	return calendarWeekInfo[
+		locale.maximize().region as keyof typeof calendarWeekInfo
+	]
+}
+
+export const useCalendarWeekInfo = (localeArg: string) =>
+	useMemo(() => getCalendarWeekInfo(localeArg), [localeArg])

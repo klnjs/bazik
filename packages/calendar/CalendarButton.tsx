@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { freya, forwardRef, type CoreProps } from '../core'
+import { freya, forwardRef, toData, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
@@ -23,23 +23,29 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		forwardedRef
 	) => {
 		const {
+			min,
+			max,
 			locale,
 			disabled: disabledContext,
-			minDate,
-			maxDate,
-			focusedDate,
-			setFocusedDate
+			highlighted,
+			setHighlighted
 		} = useCalendarContext()
-		const { t } = useCalendarLocalisation(locale)
+		const { t, names } = useCalendarLocalisation(locale)
 
 		const [segment, modifier] = action.split(/(?=\+|-)/) as [
 			CalendarButtonSegment | 'today',
 			CalendarButtonModifier
 		]
 
-		const label = t(modifier === '-1' ? 'previous' : 'next', {
-			segment
-		})
+		const label = useMemo(() => {
+			if (segment === 'today') {
+				return names.of('today')
+			}
+
+			return t(modifier === '-1' ? 'previous' : 'next', {
+				segment
+			})
+		}, [segment, modifier, t, names])
 
 		const isDisabled = useMemo(() => {
 			if (disabledProp || disabledContext) {
@@ -52,38 +58,38 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 
 			const n = Number(modifier)
 			const m = modifier === '-1'
-			const l = m ? minDate : maxDate
+			const l = m ? min : max
 			const i = m ? 'isBefore' : 'isAfter'
 			const g = m ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
-			const a = focusedDate.calc({ [segment]: n })[g]()
+			const a = highlighted.calc({ [segment]: n })[g]()
 
 			return l && a[i](l)
 		}, [
+			min,
+			max,
 			segment,
 			modifier,
-			maxDate,
-			minDate,
-			focusedDate,
+			highlighted,
 			disabledProp,
 			disabledContext
 		])
 
 		const onClick = useCallback(() => {
-			setFocusedDate((prev) => {
+			setHighlighted((prev) => {
 				if (segment === 'today') {
-					return new CalendarDate(locale)
+					return new CalendarDate()
 				}
 
 				return prev.calc({ [segment]: Number(modifier) })
 			})
-		}, [locale, segment, modifier, setFocusedDate])
+		}, [segment, modifier, setHighlighted])
 
 		return (
 			<freya.button
 				ref={forwardedRef}
 				type="button"
 				disabled={isDisabled}
-				data-disabled={isDisabled ? '' : undefined}
+				data-disabled={toData(isDisabled)}
 				aria-label={label}
 				aria-disabled={isDisabled}
 				onClick={onClick}

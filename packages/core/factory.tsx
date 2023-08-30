@@ -22,15 +22,16 @@ export type AsChildProps = {
 	asChild?: boolean
 }
 
-export type AsChildForwardRefComponent<E extends ElementType> =
-	ForwardRefExoticComponent<AsChildComponentProps<E>>
-
 export type AsChildComponentProps<E extends ElementType> = ComponentProps<E> &
 	AsChildProps
 
-export type CoreProps<E extends ElementType, P = unknown> = P extends object
-	? Pretty<Assign<AsChildComponentProps<E>, P>>
-	: Pretty<AsChildComponentProps<E>>
+export type AsChildForwardRefComponent<E extends ElementType> =
+	ForwardRefExoticComponent<AsChildComponentProps<E>>
+
+export type CoreProps<
+	E extends ElementType,
+	P extends object = object
+> = Pretty<Assign<AsChildComponentProps<E>, P>>
 
 const withAsChild = (Component: ElementType) => {
 	const Comp = forwardRef<unknown, PropsWithChildren<AsChildProps>>(

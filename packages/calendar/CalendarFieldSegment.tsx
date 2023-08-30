@@ -5,20 +5,27 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
-import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
-import { useCalendarFieldContext } from './CalendarFieldContext'
-import { useCalendarLocalisation } from './useCalendarLocalisation'
+import {
+	freya,
+	forwardRef,
+	useMergeRefs,
+	toData,
+	isRTL,
+	type CoreProps
+} from '../core'
 import {
 	CalendarDate,
-	type CalendarDateSegmentType,
+	type CalendarDateSegment,
 	type CalendarDateSegmentStyle
 } from './CalendarDate'
+import { useCalendarFieldContext } from './CalendarFieldContext'
+import { useCalendarLocalisation } from './useCalendarLocalisation'
 
 export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
-		type: CalendarDateSegmentType
-		mode?: CalendarDateSegmentStyle
+		segment: CalendarDateSegment
+		variant?: CalendarDateSegmentStyle
 		disabled?: boolean
 		placeholder?: string
 	}
@@ -30,9 +37,9 @@ export const CalendarFieldSegment = forwardRef<
 >(
 	(
 		{
-			type,
-			mode = '2-digit',
 			style,
+			segment,
+			variant: variantProp,
 			disabled: disabledProp = false,
 			placeholder = '-',
 			...otherProps
@@ -40,41 +47,44 @@ export const CalendarFieldSegment = forwardRef<
 		forwardedRef
 	) => {
 		const {
+			min: minDate,
+			max: maxDate,
 			locale,
 			disabled: disabledContext,
 			labelId,
-			minDate,
-			maxDate,
 			autoFocus,
 			setAutoFocus,
-			selectedDate,
-			setSelectedDate,
-			focusedSegmentRef,
-			focusedSegment,
-			setFocusedSegment
+			selection,
+			setSelection,
+			highlightedSegment,
+			highlightedSegmentRef,
+			setHighlightedSegment
 		} = useCalendarFieldContext()
 		const { names } = useCalendarLocalisation(locale)
+		const { type } = segment
 
 		const isDisabled = disabledProp || disabledContext
-		const isFocused = focusedSegment === type
+		const isHighlighted = type === highlightedSegment
 		const isInvalid =
-			Boolean(maxDate && selectedDate && selectedDate.isAfter(maxDate)) ||
-			Boolean(minDate && selectedDate && selectedDate.isBefore(minDate))
+			Boolean(maxDate && selection && selection.isAfter(maxDate)) ||
+			Boolean(minDate && selection && selection.isBefore(minDate))
 
 		const ref = useRef<HTMLDivElement>(null)
 		const refCallback = useMergeRefs(
 			ref,
-			isFocused ? focusedSegmentRef : undefined,
+			isHighlighted ? highlightedSegmentRef : undefined,
 			forwardedRef
 		)
 
-		const value = selectedDate?.getSegment(type, mode).value ?? ''
-		const valueText = selectedDate?.format({
-			year: 'numeric',
-			month: 'long',
-			weekday: 'long',
-			day: 'numeric'
-		})
+		const now = selection?.getSegment(locale, type).value
+
+		const min = useMemo(() => {
+			if (type === 'hour' || type === 'minute') {
+				return 0
+			}
+
+			return 1
+		}, [type])
 
 		const max = useMemo(() => {
 			switch (type) {
@@ -83,31 +93,54 @@ export const CalendarFieldSegment = forwardRef<
 				case 'month':
 					return 12
 				case 'day':
-					return selectedDate?.getDaysInMonth() ?? 31
+					return selection?.getDaysInMonth() ?? 31
+				case 'hour':
+					return 23
+				case 'minute':
+					return 59
 				default:
 					throw new Error('Invalid segment type')
 			}
-		}, [type, selectedDate])
+		}, [type, selection])
+
+		const text = useMemo(
+			() =>
+				selection?.toLocaleString(locale, {
+					year: 'numeric',
+					month: 'long',
+					weekday: 'long',
+					day: 'numeric'
+				}),
+			[locale, selection]
+		)
+
+		const variant = useMemo(() => {
+			if (variantProp) {
+				return variantProp
+			}
+
+			return type === 'year' ? 'numeric' : '2-digit'
+		}, [type, variantProp])
 
 		const length = useMemo(
-			() => new CalendarDate(locale).getSegment(type, mode).value.length,
-			[type, mode, locale]
+			() => new CalendarDate().getSegmentLength(locale, type, variant),
+			[type, variant, locale]
 		)
 
-		const children = useMemo(
-			() => (!value ? value.padStart(length, placeholder) : value),
-			[value, length, placeholder]
-		)
+		const content = useMemo(() => {
+			const padding = now === undefined ? placeholder : '0'
+			const current = now === undefined ? '' : now.toString()
+
+			return current.padStart(length, padding)
+		}, [now, length, placeholder])
 
 		const changeSegment = useCallback(
 			(action: (prev: CalendarDate) => CalendarDate | null) => {
 				if (!isDisabled) {
-					setSelectedDate((prev) =>
-						action(prev ?? new CalendarDate(locale))
-					)
+					setSelection((prev) => action(prev ?? new CalendarDate()))
 				}
 			},
-			[locale, isDisabled, setSelectedDate]
+			[isDisabled, setSelection]
 		)
 
 		const changeFocusedSegment = useCallback(
@@ -123,8 +156,8 @@ export const CalendarFieldSegment = forwardRef<
 		)
 
 		const handleFocus = useCallback(() => {
-			setFocusedSegment(type)
-		}, [type, setFocusedSegment])
+			setHighlightedSegment(type)
+		}, [type, setHighlightedSegment])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -154,7 +187,7 @@ export const CalendarFieldSegment = forwardRef<
 
 				if (/[0-9]/.test(event.key)) {
 					const pressed = Number(event.key)
-					const intent = Number(`${value}${pressed}`)
+					const intent = Number(`${now}${pressed}`)
 					const next = max && intent <= max ? intent : pressed
 
 					changeSegment((prev) => prev.set({ [type]: next }))
@@ -164,11 +197,11 @@ export const CalendarFieldSegment = forwardRef<
 					}
 				}
 			},
-			[max, type, value, length, changeSegment, changeFocusedSegment]
+			[now, max, type, length, changeSegment, changeFocusedSegment]
 		)
 
 		useEffect(() => {
-			if (isFocused && autoFocus) {
+			if (isHighlighted && autoFocus) {
 				setAutoFocus(false)
 				ref.current?.focus({
 					// @ts-expect-error not yet implemented
@@ -176,7 +209,7 @@ export const CalendarFieldSegment = forwardRef<
 					focusVisible: true
 				})
 			}
-		}, [isFocused, autoFocus, setAutoFocus])
+		}, [isHighlighted, autoFocus, setAutoFocus])
 
 		return (
 			<freya.div
@@ -186,32 +219,32 @@ export const CalendarFieldSegment = forwardRef<
 				autoCorrect="off"
 				autoCapitalize="off"
 				style={{
-					width: `${length}ch`,
+					width: `${content.length}ch`,
 					caretColor: 'transparent',
 					...style
 				}}
 				spellCheck={false}
 				contentEditable={!isDisabled}
-				tabIndex={isDisabled ? undefined : isFocused ? 0 : -1}
+				tabIndex={isDisabled ? undefined : isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
-				data-length={length}
-				data-segment={type}
-				data-focused={isFocused ? '' : undefined}
-				data-disabled={isDisabled ? '' : undefined}
-				data-placeholder={!value ? '' : undefined}
+				data-length={toData(length)}
+				data-segment={toData(type)}
+				data-disabled={toData(isDisabled)}
+				data-placeholder={toData(now === undefined)}
+				data-highlighted={toData(isHighlighted)}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
-				aria-valuemin={1}
+				aria-valuemin={min}
 				aria-valuemax={max}
-				aria-valuenow={Number(value)}
-				aria-valuetext={valueText ?? 'Empty'}
+				aria-valuenow={now}
+				aria-valuetext={text ?? 'Empty'}
 				aria-invalid={isInvalid}
 				aria-disabled={isDisabled}
 				onFocus={handleFocus}
 				onKeyDown={handleKeyDown}
 				{...otherProps}
 			>
-				{children}
+				{content}
 			</freya.div>
 		)
 	}
@@ -221,7 +254,7 @@ const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
 	const direction = findDirection(element, action)
 
 	// @ts-expect-error element not allowed to be null
-	// eslint-disable-next-line no-cond-assign, no-param-reassign
+	// eslint-disable-next-line no-param-reassign
 	while ((element = element[`${direction}ElementSibling`]) !== null) {
 		const data = element.dataset
 
@@ -235,22 +268,5 @@ const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
 	}
 }
 
-const findDirection = (
-	element: HTMLElement,
-	direction: 'next' | 'previous'
-) => {
-	const dir = getComputedStyle(element).direction
-
-	if (dir === 'rtl') {
-		switch (direction) {
-			case 'next':
-				return 'previous'
-			case 'previous':
-				return 'next'
-			default:
-				throw new Error('Invalid action')
-		}
-	}
-
-	return direction
-}
+const findDirection = (element: HTMLElement, direction: 'next' | 'previous') =>
+	isRTL(element) ? (direction === 'next' ? 'previous' : 'next') : direction
