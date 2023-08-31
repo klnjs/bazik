@@ -1,9 +1,9 @@
 import type { Ref, ReactElement } from 'react'
 import { freya, forwardRef, type CoreProps } from '../core'
+import { DateTime } from './CalendarDateTime'
 import { CalendarProvider } from './CalendarContext'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
-import { CalendarDate } from './CalendarDateTime'
 
 export type CalendarProps<R extends boolean = false> = CoreProps<
 	'div',
@@ -39,7 +39,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			onChange: field
 				? (next: Date | null) => {
 						field.setSelection((prev) =>
-							new CalendarDate(prev).set({
+							new DateTime(prev).set({
 								year: next?.getFullYear(),
 								month: next ? next.getMonth() + 1 : undefined,
 								day: next?.getDate()

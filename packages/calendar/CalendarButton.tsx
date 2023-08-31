@@ -60,7 +60,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			const m = modifier === '-1'
 			const l = m ? min : max
 			const i = m ? 'isBefore' : 'isAfter'
-			const g = m ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
+			const g = m ? 'getEndOfMonth' : 'getStartOfMonth'
 			const a = highlighted.calc({ [segment]: n })[g]()
 
 			return l && a[i](l)

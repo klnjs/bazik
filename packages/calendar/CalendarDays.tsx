@@ -25,9 +25,9 @@ export const CalendarDays = ({
 	const month = highlighted.getMonth()
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
-		const ref = new DateTime().set({ year, month })
-		const end = ref.getLastDateOfMonth().getLastDateOfWeek(locale)
-		let date = ref.getFirstDateOfMonth().getFirstDateOfWeek(locale)
+		const ref = new DateTime().set({ year, month }).getMidnight()
+		const end = ref.getEndOfMonth().getEndOfWeek(locale)
+		let date = ref.getStartOfMonth().getStartOfWeek(locale)
 		let itrs = 0
 
 		if (weekday) {
@@ -48,7 +48,7 @@ export const CalendarDays = ({
 				date,
 				locale
 			})
-			date = date.add({ day: 1 })
+			date = date.getTommorow()
 			itrs = itrs + 1
 		}
 

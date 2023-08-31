@@ -5,6 +5,7 @@ import { CalendarDays } from './CalendarDays'
 import { CalendarDay } from './CalendarDay'
 import { CalendarTitle } from './CalendarTitle'
 import { CalendarButton } from './CalendarButton'
+import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
 import * as classes from './Calendar.stories.css'
 
@@ -73,9 +74,10 @@ export const Weekinfo = () => (
 
 					if (role === 'week') {
 						return (
-							<span className={classes.cell}>
-								{date.getWeek()}
-							</span>
+							<CalendarWeek
+								date={date}
+								className={classes.cell}
+							/>
 						)
 					}
 

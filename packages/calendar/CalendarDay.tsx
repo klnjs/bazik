@@ -177,11 +177,11 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'Home') {
-					setHighlightedAndFocus((prev) => prev.getFirstDateOfMonth())
+					setHighlightedAndFocus((prev) => prev.getStartOfMonth())
 				}
 
 				if (event.code === 'End') {
-					setHighlightedAndFocus((prev) => prev.getLastDateOfMonth())
+					setHighlightedAndFocus((prev) => prev.getEndOfMonth())
 				}
 			},
 			[handleSelect, setHighlightedAndFocus]

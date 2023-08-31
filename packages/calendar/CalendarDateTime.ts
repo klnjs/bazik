@@ -1,4 +1,4 @@
-import { isArrayValue, isRecord, type Range } from '../core'
+import { isSet, isRecord, isArrayValue, type Range } from '../core'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
 export const dateSegments = ['year', 'month', 'day'] as const
@@ -39,8 +39,14 @@ export type DateTimeRange = Range<DateTime>
 export class DateTime {
 	date: Date
 
-	constructor(date?: DateTime | Date | null) {
-		this.date = date ? new Date(date.getTime()) : new Date()
+	constructor(arg?: DateTime | Date | string | number | null) {
+		if (isSet(arg)) {
+			this.date = DateTime.isDateTime(arg)
+				? new Date(arg.getTime())
+				: new Date(arg)
+		} else {
+			this.date = new Date()
+		}
 	}
 
 	static isDateTime(value: unknown): value is DateTime {
@@ -142,6 +148,14 @@ export class DateTime {
 		return this.toDate().getDate()
 	}
 
+	getHour() {
+		return this.toDate().getHours()
+	}
+
+	getMinute() {
+		return this.toDate().getMinutes()
+	}
+
 	getTime() {
 		return this.toDate().getTime()
 	}
@@ -194,43 +208,50 @@ export class DateTime {
 		}).formatToParts(this.toDate())[0].value.length
 	}
 
-	getFirstDateOfWeek(locale: string) {
-		return this.getMidnight().sub({ day: this.getWeekDay(locale) - 1 })
+	getMidnight() {
+		return this.set({ hour: 0, minute: 0 })
 	}
 
-	getFirstDateOfMonth() {
-		return this.getMidnight().set({ day: 1 })
+	getTommorow() {
+		return this.add({ day: 1 })
 	}
 
-	getLastDateOfWeek(locale: string) {
-		return this.getFirstDateOfWeek(locale).add({ day: 6 })
+	getYesterday() {
+		return this.sub({ day: 1 })
 	}
 
-	getLastDateOfMonth() {
-		return this.getMidnight().set({ month: this.getMonth() + 1, day: 0 })
+	getStartOfWeek(locale: string) {
+		return this.sub({ day: this.getWeekDay(locale) - 1 })
+	}
+
+	getStartOfMonth() {
+		return this.set({ day: 1 })
+	}
+
+	getEndOfWeek(locale: string) {
+		return this.getDayOfWeek(locale, 6)
+	}
+
+	getEndOfMonth() {
+		return this.set({ month: this.getMonth() + 1, day: 0 })
+	}
+
+	getDayOfWeek(locale: string, day: number) {
+		return this.getStartOfWeek(locale).add({ day })
 	}
 
 	getDaysInMonth() {
-		return this.getLastDateOfMonth().getDay()
+		return this.getEndOfMonth().getDay()
 	}
 
-	getWeek() {
-		const date = new Date(this.getTime())
-		date.setHours(0, 0, 0, 0)
-		// Thursday in current week decides the year.
-		date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7))
-		// January 4 is always in week 1.
-		const week1 = new Date(date.getFullYear(), 0, 4)
-		// Adjust to Thursday in week 1 and count number of weeks from date to week1.
-		return (
-			1 +
-			Math.round(
-				((date.getTime() - week1.getTime()) / 86400000 -
-					3 +
-					((week1.getDay() + 6) % 7)) /
-					7
-			)
-		)
+	getWeekOfYear(locale: string) {
+		const date = this.getDayOfWeek(locale, 4).getMidnight()
+		const dateFirstWeek = date.set({ month: 1 })
+
+		const millisecondsDiff = date.getTime() - dateFirstWeek.getTime()
+		const millisecondsInWeek = 604800000
+
+		return Math.round(millisecondsDiff / millisecondsInWeek) + 1
 	}
 
 	getWeekDay(locale: string) {
@@ -240,10 +261,6 @@ export class DateTime {
 		const dayOfWeekOffset = dayOfWeekIndex < 0 ? 8 : 1
 
 		return dayOfWeekIndex + dayOfWeekOffset
-	}
-
-	getMidnight() {
-		return this.set({ hour: 0, minute: 0 })
 	}
 
 	toDate() {
