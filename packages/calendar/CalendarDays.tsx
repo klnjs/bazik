@@ -1,11 +1,11 @@
 import { useMemo, type ReactNode } from 'react'
+import type { Temporal } from 'temporal-polyfill'
 import { useCalendarContext } from './CalendarContext'
-import { DateTime } from './CalendarDateTime'
+import * as fns from './CalendarHelpers'
 
 export type CalendarDaysItem = {
 	role: 'week' | 'weekday' | 'date' | 'blank'
-	date: DateTime
-	locale: string
+	date: Temporal.PlainDate
 }
 
 export type CalendarDaysProps = {
@@ -20,40 +20,37 @@ export const CalendarDays = ({
 	children
 }: CalendarDaysProps) => {
 	const { locale, highlighted } = useCalendarContext()
+	const { year, month } = highlighted
 
-	const year = highlighted.getYear()
-	const month = highlighted.getMonth()
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
-		const ref = new DateTime().set({ year, month }).getMidnight()
-		const end = ref.getEndOfMonth().getEndOfWeek(locale)
-		let date = ref.getStartOfMonth().getStartOfWeek(locale)
+		const ref = fns.getToday().with({ year, month })
+
+		const end = fns.toEndOfWeek(fns.toEndOfMonth(ref), locale)
+
 		let itrs = 0
+		let date = fns.toStartOfWeek(fns.toStartOfMonth(ref), locale).subtract({
+			days: weekday ? 7 : 0
+		})
 
-		if (weekday) {
-			date = date.sub({ day: 7 })
-		}
-
-		while (!date.isAfter(end)) {
-			if (weeknumber && date.getWeekDay(locale) === 1) {
+		while (!fns.isAfter(date, end)) {
+			if (weeknumber && fns.isStartOfWeek(date, locale)) {
 				dates.push({
 					role: weekday && itrs === 0 ? 'blank' : 'week',
-					date,
-					locale
+					date
 				})
 			}
 
 			dates.push({
 				role: weekday && itrs < 7 ? 'weekday' : 'date',
-				date,
-				locale
+				date
 			})
-			date = date.getTommorow()
+			date = date.add({ days: 1 })
 			itrs = itrs + 1
 		}
 
 		return dates
-	}, [locale, year, month, weekday, weeknumber])
+	}, [year, month, locale, weekday, weeknumber])
 
 	return days.map(children)
 }

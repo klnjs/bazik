@@ -7,6 +7,7 @@ import { CalendarTitle } from './CalendarTitle'
 import { CalendarButton } from './CalendarButton'
 import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
+import { getToday } from './CalendarHelpers'
 import * as classes from './Calendar.stories.css'
 
 export default {
@@ -20,7 +21,11 @@ export const Basic = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay date={date} className={classes.day} />
+					<CalendarDay
+						key={date.toString()}
+						date={date}
+						className={classes.day}
+					/>
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -33,7 +38,11 @@ export const Range = () => (
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
 				{({ date }) => (
-					<CalendarDay date={date} className={classes.day} />
+					<CalendarDay
+						key={date.toString()}
+						date={date}
+						className={classes.day}
+					/>
 				)}
 			</CalendarDays>
 		</CalendarGrid>
@@ -88,6 +97,22 @@ export const Weekinfo = () => (
 	</Calendar>
 )
 
+export const Overflow = () => (
+	<Calendar className={classes.calendar}>
+		<CalendarTitle className={classes.title} />
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays>
+				{({ date }) => (
+					<CalendarDay
+						date={date}
+						className={classes.dayWithOverflowVisible}
+					/>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</Calendar>
+)
+
 export const Navigation = () => (
 	<Calendar className={classes.calendar}>
 		<div className={classes.header}>
@@ -113,6 +138,25 @@ export const Navigation = () => (
 	</Calendar>
 )
 
+export const Boundaries = () => {
+	const today = getToday()
+	const min = today.subtract({ months: 1 })
+	const max = today.add({ months: 1 })
+
+	return (
+		<Calendar min={min} max={max} className={classes.calendar}>
+			<CalendarTitle className={classes.title} />
+			<CalendarGrid className={classes.grid}>
+				<CalendarDays>
+					{({ date }) => (
+						<CalendarDay date={date} className={classes.day} />
+					)}
+				</CalendarDays>
+			</CalendarGrid>
+		</Calendar>
+	)
+}
+
 export const Localization = () => (
 	<Calendar locale="en-US" className={classes.calendar}>
 		<CalendarTitle className={classes.title} />
@@ -135,102 +179,23 @@ export const Localization = () => (
 	</Calendar>
 )
 
-export const MinAndMax = () => {
-	const today = new Date()
-
-	const min = new Date(
-		today.getFullYear(),
-		today.getMonth(),
-		today.getDate() - 3
-	)
-
-	const max = new Date(
-		today.getFullYear(),
-		today.getMonth() + 1,
-		today.getDate()
-	)
-
-	return (
-		<Calendar min={min} max={max} className={classes.calendar}>
-			<CalendarTitle className={classes.title} />
-			<CalendarGrid className={classes.grid}>
-				<CalendarDays>
-					{({ date }) => (
-						<CalendarDay date={date} className={classes.day} />
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</Calendar>
-	)
-}
-
-export const OverflowVisible = () => (
-	<Calendar className={classes.calendar}>
-		<CalendarTitle className={classes.title} />
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays>
-				{({ date }) => (
-					<CalendarDay
-						date={date}
-						className={classes.dayWithOverflowVisible}
-					/>
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</Calendar>
-)
-
-export const WeekdayHeaders = () => (
-	<Calendar className={classes.calendar}>
-		<CalendarTitle className={classes.title} />
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays>
-				{({ date }) => (
-					<CalendarDay date={date} className={classes.day} />
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</Calendar>
-)
-
-export const WeekendDisabled = () => (
-	<Calendar className={classes.calendar}>
-		<CalendarTitle className={classes.title} />
-		<CalendarGrid className={classes.grid}>
-			<CalendarDays>
-				{({ date, locale }) => (
-					<CalendarDay
-						date={date}
-						disabled={date.isWeekend(locale)}
-						className={classes.day}
-					/>
-				)}
-			</CalendarDays>
-		</CalendarGrid>
-	</Calendar>
-)
-
 export const Schedule = () => {
 	const createEventInThisMonth = (
 		name: string,
 		color: string,
 		day: number
-	) => {
-		const today = new Date()
-
-		return {
-			name,
-			color,
-			date: new Date(today.getFullYear(), today.getMonth(), day)
-		}
-	}
+	) => ({
+		name,
+		color,
+		date: getToday().with({ day })
+	})
 
 	const events = [
 		createEventInThisMonth('Party', 'lime', 1),
 		createEventInThisMonth('Doctors', 'aqua', 4),
 		createEventInThisMonth('Dentist', 'aqua', 12),
 		createEventInThisMonth('Meeting', 'olive', 15),
-		createEventInThisMonth('Car Inspection', 'purple', 22),
+		createEventInThisMonth('Service', 'purple', 22),
 		createEventInThisMonth('Funeral', 'coral', 22),
 		createEventInThisMonth('Birthday', 'crimson', 23)
 	] as const
@@ -249,17 +214,9 @@ export const Schedule = () => {
 								borderRadius: 4
 							}}
 						>
-							<div style={{ fontSize: 12 }}>{date.getDay()}</div>
+							<div style={{ fontSize: 12 }}>{date.day}</div>
 							{events
-								.filter(
-									(event) =>
-										date.toDate().getFullYear() ===
-											event.date.getFullYear() &&
-										date.toDate().getMonth() ===
-											event.date.getMonth() &&
-										date.toDate().getDate() ===
-											event.date.getDate()
-								)
+								.filter((event) => date.equals(event.date))
 								.map((event) => (
 									<div
 										style={{

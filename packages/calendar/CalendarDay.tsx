@@ -11,25 +11,36 @@ import {
 	useMergeRefs,
 	toData,
 	isRTL,
-	isSet as isSetCheck,
+	isSet,
 	isRange as isRangeCheck,
+	isFunction,
 	type CoreProps
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import type { DateTime } from './CalendarDateTime'
+import type { CalendarDate } from './CalendarDate'
+import * as fns from './CalendarHelpers'
 
 export type CalendarDayProps = CoreProps<
 	'button',
 	{
-		date: DateTime
+		date: CalendarDate
 		disabled?: boolean
+		disabledIfWeekend?: boolean
+		disabledIfOverflow?: boolean
 	}
 >
 
 export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 	(
-		{ date, disabled: disabledProp = false, children, ...otherProps },
+		{
+			date,
+			disabled: disabledProp = false,
+			disabledIfWeekend = false,
+			disabledIfOverflow = false,
+			children,
+			...otherProps
+		},
 		forwardedRef
 	) => {
 		const {
@@ -49,31 +60,28 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const { names } = useCalendarLocalisation(locale)
 
 		const isRange = range && isRangeCheck(selection)
-		const isSingle = !range && isSetCheck(selection)
-		const isToday = date.isToday()
-		const isWeekStart = date.getWeekDay(locale) === 1
-		const isWeekEnd = date.getWeekDay(locale) === 7
-		const isWeekend = date.isWeekend(locale)
-		const isOverflow = !date.isSameMonth(highlighted)
-		const isHighlighted = date.isSameDay(highlighted)
+		const isSingle = !range && isSet(selection)
+		const isToday = fns.isToday(date)
+		const isWeekEnd = fns.isEndOfWeek(date, locale)
+		const isWeekStart = fns.isStartOfWeek(date, locale)
+		const isWeekend = fns.isWeekend(date, locale)
+		const isOverflow = !fns.isEqualsMonth(date, highlighted)
+		const isHighlighted = fns.isEquals(date, highlighted)
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
-			Boolean(max && date.isAfter(max)) ||
-			Boolean(min && date.isBefore(min))
+			(disabledIfWeekend && isWeekend) ||
+			(disabledIfOverflow && isOverflow) ||
+			Boolean(max && fns.isAfter(date, max)) ||
+			Boolean(min && fns.isBefore(date, min))
 
-		const isRangeStart = isRange && date.isSameDay(selection[0])
-		const isRangeEnd = isRange && date.isSameDay(selection[1])
-		const isRangeIn =
-			!isRangeStart &&
-			!isRangeEnd &&
-			isRange &&
-			date.isBetween(selection[0], selection[1])
+		const isRangeEnd = isRange && fns.isEquals(date, selection[1])
+		const isRangeStart = isRange && fns.isEquals(date, selection[0])
+		const isRangeBetween =
+			isRange && fns.isBetween(date, selection[0], selection[1])
 
 		const isSelected =
-			isRangeStart ||
-			isRangeEnd ||
-			(isSingle && date.isSameDay(selection))
+			isRangeEnd || isRangeStart || (isSingle && date.equals(selection))
 
 		const ref = useRef<HTMLButtonElement>(null)
 		const refCallback = useMergeRefs(ref, forwardedRef)
@@ -98,13 +106,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const setHighlightedAndFocus = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {
 				setAutoFocus(true)
-				setHighlighted((prev) => {
-					if (typeof action === 'function') {
-						return action(prev).clamp(min, max)
-					}
-
-					return action.clamp(min, max)
-				})
+				setHighlighted((prev) =>
+					fns.toClamp(
+						isFunction(action) ? action(prev) : action,
+						min,
+						max
+					)
+				)
 			},
 			[min, max, setAutoFocus, setHighlighted]
 		)
@@ -145,43 +153,47 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					setHighlightedAndFocus((prev) => prev.sub({ day: 7 }))
+					setHighlightedAndFocus((prev) => prev.subtract({ days: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
 					setHighlightedAndFocus((prev) =>
-						prev.sub({
-							day: isRTL(event.target) ? 1 : -1
+						prev.subtract({
+							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'ArrowDown') {
-					setHighlightedAndFocus((prev) => prev.add({ day: 7 }))
+					setHighlightedAndFocus((prev) => prev.add({ days: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
 					setHighlightedAndFocus((prev) =>
 						prev.add({
-							day: isRTL(event.target) ? 1 : -1
+							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'PageUp') {
-					setHighlightedAndFocus((prev) => prev.sub({ month: 1 }))
+					setHighlightedAndFocus((prev) =>
+						prev.subtract({ months: 1 })
+					)
 				}
 
 				if (event.code === 'PageDown') {
-					setHighlightedAndFocus((prev) => prev.add({ month: 1 }))
+					setHighlightedAndFocus((prev) => prev.add({ months: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					setHighlightedAndFocus((prev) => prev.getStartOfMonth())
+					setHighlightedAndFocus((prev) => prev.with({ day: 1 }))
 				}
 
 				if (event.code === 'End') {
-					setHighlightedAndFocus((prev) => prev.getEndOfMonth())
+					setHighlightedAndFocus((prev) =>
+						prev.with({ day: prev.daysInMonth })
+					)
 				}
 			},
 			[handleSelect, setHighlightedAndFocus]
@@ -196,7 +208,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 					focusVisible: true
 				})
 			}
-		}, [isHighlighted, autoFocus, setAutoFocus])
+		}, [isHighlighted, highlighted, autoFocus, setAutoFocus])
 
 		return (
 			<freya.button
@@ -209,9 +221,9 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				data-overflow={toData(isOverflow)}
 				data-disabled={toData(isDisabled)}
 				data-selected={toData(isSelected)}
-				data-range-in={toData(isRangeIn)}
 				data-range-end={toData(isRangeEnd)}
 				data-range-start={toData(isRangeStart)}
+				data-range-between={toData(isRangeBetween)}
 				data-highlighted={toData(isHighlighted)}
 				aria-label={label}
 				aria-selected={isSelected}
@@ -222,7 +234,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				onPointerOver={handleOver}
 				{...otherProps}
 			>
-				{children ?? date.getDay()}
+				{children ?? date.day}
 			</freya.button>
 		)
 	}

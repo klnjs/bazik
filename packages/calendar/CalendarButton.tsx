@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import { freya, forwardRef, toData, type CoreProps } from '../core'
-import { DateTime } from './CalendarDateTime'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
+import { getToday, isAfter, isBefore } from './CalendarHelpers'
 
 type CalendarButtonSegment = 'year' | 'month'
 
@@ -52,18 +52,15 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				return true
 			}
 
-			if (segment === 'today') {
-				return false
-			}
+			const result =
+				segment === 'today'
+					? getToday()
+					: highlighted.add({ [`${segment}s`]: Number(modifier) })
 
-			const n = Number(modifier)
-			const m = modifier === '-1'
-			const l = m ? min : max
-			const i = m ? 'isBefore' : 'isAfter'
-			const g = m ? 'getEndOfMonth' : 'getStartOfMonth'
-			const a = highlighted.calc({ [segment]: n })[g]()
+			const resultIsBeforeMin = Boolean(min && isBefore(result, min))
+			const resultIsAfterMax = Boolean(max && isAfter(result, max))
 
-			return l && a[i](l)
+			return resultIsBeforeMin || resultIsAfterMax
 		}, [
 			min,
 			max,
@@ -77,10 +74,10 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const onClick = useCallback(() => {
 			setHighlighted((prev) => {
 				if (segment === 'today') {
-					return new DateTime()
+					return getToday()
 				}
 
-				return prev.calc({ [segment]: Number(modifier) })
+				return prev.add({ [`${segment}s`]: Number(modifier) })
 			})
 		}, [segment, modifier, setHighlighted])
 

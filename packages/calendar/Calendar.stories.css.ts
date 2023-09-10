@@ -111,7 +111,7 @@ export const day = style([
 				borderStartStartRadius: 0,
 				borderEndStartRadius: 0
 			},
-			'&[data-range-in]': {
+			'&[data-range-between]': {
 				background: '#89CCFF',
 				borderRadius: 0
 			},
@@ -136,14 +136,5 @@ export const dayWithOverflowVisible = style([
 				visibility: 'visible'
 			}
 		}
-	}
-])
-
-export const weekday = style([
-	cell,
-	{
-		display: 'inline-flex',
-		gap: 6,
-		flexDirection: 'column'
 	}
 ])

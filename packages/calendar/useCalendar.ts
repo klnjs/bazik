@@ -1,31 +1,39 @@
-import { useRef, useMemo, useState, useCallback } from 'react'
-import { useControllableState, isRange, type Assign, type Range } from '../core'
-import { DateTime, type DateTimeRange } from './CalendarDateTime'
-
-export type DateRange = Range<Date>
+import {
+	useRef,
+	useMemo,
+	useState,
+	useCallback,
+	type Dispatch,
+	type SetStateAction
+} from 'react'
+import { useControllableState, isRange, type Assign, isSet } from '../core'
+import { getToday, isAfter } from './CalendarHelpers'
+import type { CalendarDate, CalendarDateRange } from './CalendarDate'
 
 export type UseCalendarOptions<R extends boolean = false> = {
 	autoFocus?: boolean
-	min?: Date
-	max?: Date
+	min?: CalendarDate
+	max?: CalendarDate
 	locale?: string
 	disabled?: boolean
 	range?: R
-	value?: (R extends false ? Date : DateRange) | null
-	defaultValue?: (R extends false ? Date : DateRange) | null
-	onChange?: (value: (R extends false ? Date : DateRange) | null) => void
+	value?: (R extends false ? CalendarDate : CalendarDateRange) | null
+	defaultValue?: (R extends false ? CalendarDate : CalendarDateRange) | null
+	onChange?: (
+		value: (R extends false ? CalendarDate : CalendarDateRange) | null
+	) => void
 }
 
 export const useCalendar = <R extends boolean = false>({
 	autoFocus: autoFocusProp = false,
-	min: minProp,
-	max: maxProp,
+	min,
+	max,
 	range,
 	value: valueProp,
 	locale = navigator.language,
 	disabled = false,
 	defaultValue: defaultValueProp = null,
-	onChange: onChangeProp
+	onChange
 }: UseCalendarOptions<R>) => {
 	const autoFocusRef = useRef(autoFocusProp && !disabled)
 
@@ -33,33 +41,33 @@ export const useCalendar = <R extends boolean = false>({
 		autoFocusRef.current = autoFocus
 	}, [])
 
+	const [value, setValue] = useControllableState({
+		value: valueProp,
+		defaultValue: defaultValueProp,
+		onChange: onChange
+	}) as [
+		CalendarDate | CalendarDateRange | null,
+		Dispatch<SetStateAction<CalendarDate | CalendarDateRange | null>>
+	]
+
 	const [titleId, setTitleId] = useState<string>()
 
-	const [value, setValue] = useControllableState({
-		value: useValue(valueProp),
-		defaultValue: useValue(defaultValueProp),
-		onChange: (next) => {
-			if (onChangeProp) {
-				onChangeProp(unuseValue(next) as Date & DateRange & null)
-			}
+	const [highlighted, setHighlighted] = useState<CalendarDate>(() => {
+		if (isRange(valueProp)) {
+			return valueProp[1]
 		}
+
+		return valueProp ?? getToday()
 	})
 
-	const [highlighted, setHighlighted] = useState(
-		() => new DateTime(isRange(valueProp) ? valueProp[1] : valueProp)
-	)
-
-	const [transient, setTransient] = useState<DateTime>()
+	const [transient, setTransient] = useState<CalendarDate>()
 
 	const [selection, selectionIsTransient] = useMemo(() => {
-		if (transient) {
+		if (isSet(transient)) {
 			return [
 				// @ts-expect-error available in TS 5.2
-				// eslint-disable-next-line
-				[transient, highlighted].toSorted((a, b) =>
-					// eslint-disable-next-line
-					a.isAfter(b)
-				) as DateTimeRange,
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+				[transient, highlighted].toSorted(isAfter) as CalendarDateRange,
 				true
 			]
 		}
@@ -68,24 +76,27 @@ export const useCalendar = <R extends boolean = false>({
 	}, [value, transient, highlighted])
 
 	const setSelection = useCallback(
-		(date: DateTime) => {
-			if (!range) {
-				setValue(date)
-			} else if (transient !== undefined) {
-				// @ts-expect-error available in TS 5.2
-				// eslint-disable-next-line
-				setValue([transient, date].toSorted((a, b) => a.isAfter(b)))
-				setTransient(undefined)
+		(date: CalendarDate) => {
+			if (range) {
+				if (isSet(transient)) {
+					// @ts-expect-error available in TS 5.2
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
+					setValue([transient, date].toSorted())
+					setTransient(undefined)
+				} else {
+					setTransient(date)
+				}
 			} else {
-				setTransient(date)
+				setValue(date)
+				setTransient(undefined)
 			}
 		},
 		[range, transient, setValue]
 	)
 
 	const shared = {
-		min: useValue(minProp),
-		max: useValue(maxProp),
+		min,
+		max,
 		range: Boolean(range),
 		locale,
 		disabled,
@@ -105,7 +116,7 @@ export const useCalendar = <R extends boolean = false>({
 			typeof shared,
 			{
 				range: false
-				selection: DateTime | null
+				selection: CalendarDate | null
 			}
 		>
 	}
@@ -114,40 +125,7 @@ export const useCalendar = <R extends boolean = false>({
 		typeof shared,
 		{
 			range: true
-			selection: DateTimeRange | null
+			selection: CalendarDateRange | null
 		}
 	>
-}
-
-function useValue(value?: Date): DateTime | undefined
-function useValue(value?: DateRange): DateTimeRange | undefined
-function useValue(
-	value?: Date | DateRange | null
-): DateTime | DateTimeRange | null
-function useValue(value?: Date | DateRange | null) {
-	return useMemo(() => {
-		if (value instanceof Date) {
-			return new DateTime(value)
-		}
-
-		if (isRange(value)) {
-			return value.map((v) => new DateTime(v)) as DateTimeRange
-		}
-
-		return value
-	}, [value])
-}
-
-function unuseValue(
-	value?: DateTime | DateTimeRange | null
-): Date | DateRange | null {
-	if (value instanceof DateTime) {
-		return value.toDate()
-	}
-
-	if (isRange(value)) {
-		return value.map((v) => v.toDate()) as DateRange
-	}
-
-	return null
 }

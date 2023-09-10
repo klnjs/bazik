@@ -1,8 +1,8 @@
+import type { Temporal } from 'temporal-polyfill'
 import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import type { DateTime } from './CalendarDateTime'
 
-export type CalendarTitleProps = CoreProps<'abbr', { date: DateTime }>
+export type CalendarTitleProps = CoreProps<'abbr', { date: Temporal.PlainDate }>
 
 export const CalendarWeekday = forwardRef<'abbr', CalendarTitleProps>(
 	({ date, children, ...otherProps }, forwardedRef) => {
