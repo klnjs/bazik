@@ -1,11 +1,11 @@
 import type { Meta } from '@storybook/react'
-import { Calendar } from './Calendar'
+import { Calendar } from '../calendar/Calendar'
+import { CalendarDay } from '../calendar/CalendarDay'
+import { CalendarDays } from '../calendar/CalendarDays'
+import { CalendarGrid } from '../calendar/CalendarGrid'
+import { CalendarTitle } from '../calendar/CalendarTitle'
+import { CalendarButton } from '../calendar/CalendarButton'
 import { CalendarField } from './CalendarField'
-import { CalendarDay } from './CalendarDay'
-import { CalendarDays } from './CalendarDays'
-import { CalendarGrid } from './CalendarGrid'
-import { CalendarTitle } from './CalendarTitle'
-import { CalendarButton } from './CalendarButton'
 import { CalendarFieldLabel } from './CalendarFieldLabel'
 import { CalendarFieldInput } from './CalendarFieldInput'
 import { CalendarFieldAnchor } from './CalendarFieldAnchor'
@@ -17,7 +17,7 @@ import { CalendarFieldPopover } from './CalendarFieldPopover'
 import * as classes from './CalendarField.stories.css'
 
 export default {
-	title: 'CalendarField',
+	title: 'Calendar Field',
 	component: CalendarField
 } satisfies Meta<typeof CalendarField>
 
@@ -26,9 +26,9 @@ export const Basic = () => (
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
-				{(segment) => (
+				{({ type }) => (
 					<CalendarFieldSegment
-						segment={segment}
+						type={type}
 						className={classes.segment}
 					/>
 				)}
@@ -42,18 +42,16 @@ export const Literals = () => (
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments literals={true}>
-				{(segment) => {
-					if (segment.type === 'literal') {
+				{({ type, value }) => {
+					if (type === 'literal') {
 						return (
-							<CalendarFieldLiteral>
-								{segment.value}
-							</CalendarFieldLiteral>
+							<CalendarFieldLiteral>{value}</CalendarFieldLiteral>
 						)
 					}
 
 					return (
 						<CalendarFieldSegment
-							segment={segment}
+							type={type}
 							className={classes.segment}
 						/>
 					)
@@ -63,16 +61,14 @@ export const Literals = () => (
 	</CalendarField>
 )
 
-/*
 export const Disabled = () => (
 	<CalendarField disabled className={classes.field}>
 		<CalendarFieldLabel>Event Date</CalendarFieldLabel>
 		<CalendarFieldInput className={classes.input}>
 			<CalendarFieldSegments>
-				{(segment) => (
+				{({ type }) => (
 					<CalendarFieldSegment
-						key={segment.index}
-						segment={segment}
+						type={type}
 						className={classes.segment}
 					/>
 				)}
@@ -80,7 +76,6 @@ export const Disabled = () => (
 		</CalendarFieldInput>
 	</CalendarField>
 )
-*/
 
 export const Picker = () => (
 	<CalendarField className={classes.field}>
@@ -88,18 +83,18 @@ export const Picker = () => (
 		<CalendarFieldAnchor className={classes.anchor}>
 			<CalendarFieldInput className={classes.input}>
 				<CalendarFieldSegments literals={true}>
-					{(segment) => {
-						if (segment.type === 'literal') {
+					{({ type, value }) => {
+						if (type === 'literal') {
 							return (
 								<CalendarFieldLiteral>
-									{segment.value}
+									{value}
 								</CalendarFieldLiteral>
 							)
 						}
 
 						return (
 							<CalendarFieldSegment
-								segment={segment}
+								type={type}
 								className={classes.segment}
 							/>
 						)
@@ -134,9 +129,7 @@ export const Picker = () => (
 				<CalendarGrid className={classes.grid}>
 					<CalendarDays>
 						{({ date }) => (
-							<CalendarDay date={date} className={classes.day}>
-								{date.getDay()}
-							</CalendarDay>
+							<CalendarDay date={date} className={classes.day} />
 						)}
 					</CalendarDays>
 				</CalendarGrid>

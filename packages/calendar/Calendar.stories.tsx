@@ -7,8 +7,8 @@ import { CalendarTitle } from './CalendarTitle'
 import { CalendarButton } from './CalendarButton'
 import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
-import { getToday } from './CalendarHelpers'
 import * as classes from './Calendar.stories.css'
+import { getToday, toEndOfMonth, toStartOfMonth } from './CalendarDate'
 
 export default {
 	title: 'Calendar',
@@ -140,8 +140,8 @@ export const Navigation = () => (
 
 export const Boundaries = () => {
 	const today = getToday()
-	const min = today.subtract({ months: 1 })
-	const max = today.add({ months: 1 })
+	const min = toStartOfMonth(today).add({ days: 1 })
+	const max = toEndOfMonth(today).subtract({ days: 1 })
 
 	return (
 		<Calendar min={min} max={max} className={classes.calendar}>

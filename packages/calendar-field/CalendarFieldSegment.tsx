@@ -5,6 +5,8 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
+import type { Temporal } from 'temporal-polyfill'
+import { useCalendarLocalisation } from '../calendar/useCalendarLocalisation'
 import {
 	freya,
 	forwardRef,
@@ -13,20 +15,24 @@ import {
 	isRTL,
 	type CoreProps
 } from '../core'
-import {
-	DateTime,
-	type DateSegment,
-	type TimeSegment,
-	type SegmentStyle
-} from './CalendarDateTime'
 import { useCalendarFieldContext } from './CalendarFieldContext'
-import { useCalendarLocalisation } from './useCalendarLocalisation'
+import { getNow, isAfter, isBefore } from './CalendarFieldDateTime'
+
+export const calendarFieldSegmentTypes = [
+	'year',
+	'month',
+	'day',
+	'hour',
+	'minute'
+] as const
+
+export type CalendarFieldSegmentType =
+	(typeof calendarFieldSegmentTypes)[number]
 
 export type CalendarFieldSegmentProps = CoreProps<
 	'div',
 	{
-		segment: DateSegment | TimeSegment
-		variant?: SegmentStyle
+		type: CalendarFieldSegmentType
 		disabled?: boolean
 		placeholder?: string
 	}
@@ -38,9 +44,8 @@ export const CalendarFieldSegment = forwardRef<
 >(
 	(
 		{
+			type,
 			style,
-			segment,
-			variant: variantProp,
 			disabled: disabledProp = false,
 			placeholder = '-',
 			...otherProps
@@ -48,8 +53,8 @@ export const CalendarFieldSegment = forwardRef<
 		forwardedRef
 	) => {
 		const {
-			min: minDate,
-			max: maxDate,
+			min,
+			max,
 			locale,
 			disabled: disabledContext,
 			labelId,
@@ -62,13 +67,12 @@ export const CalendarFieldSegment = forwardRef<
 			setHighlightedSegment
 		} = useCalendarFieldContext()
 		const { names } = useCalendarLocalisation(locale)
-		const { type } = segment
 
 		const isDisabled = disabledProp || disabledContext
 		const isHighlighted = type === highlightedSegment
 		const isInvalid =
-			Boolean(maxDate && selection && selection.isAfter(maxDate)) ||
-			Boolean(minDate && selection && selection.isBefore(minDate))
+			Boolean(min && selection && isBefore(selection, min)) ||
+			Boolean(max && selection && isAfter(selection, max))
 
 		const ref = useRef<HTMLDivElement>(null)
 		const refCallback = useMergeRefs(
@@ -77,9 +81,9 @@ export const CalendarFieldSegment = forwardRef<
 			forwardedRef
 		)
 
-		const now = selection?.getSegment(locale, type).value
+		const now = selection?.[type]
 
-		const min = useMemo(() => {
+		const low = useMemo(() => {
 			if (type === 'hour' || type === 'minute') {
 				return 0
 			}
@@ -87,14 +91,14 @@ export const CalendarFieldSegment = forwardRef<
 			return 1
 		}, [type])
 
-		const max = useMemo(() => {
+		const high = useMemo(() => {
 			switch (type) {
 				case 'year':
 					return 9999
 				case 'month':
 					return 12
 				case 'day':
-					return selection?.getDaysInMonth() ?? 31
+					return selection?.daysInMonth ?? 31
 				case 'hour':
 					return 23
 				case 'minute':
@@ -115,18 +119,7 @@ export const CalendarFieldSegment = forwardRef<
 			[locale, selection]
 		)
 
-		const variant = useMemo(() => {
-			if (variantProp) {
-				return variantProp
-			}
-
-			return type === 'year' ? 'numeric' : '2-digit'
-		}, [type, variantProp])
-
-		const length = useMemo(
-			() => new DateTime().getSegmentLength(locale, type, variant),
-			[type, variant, locale]
-		)
+		const length = useMemo(() => Math.floor(Math.log10(high)) + 1, [high])
 
 		const content = useMemo(() => {
 			const padding = now === undefined ? placeholder : '0'
@@ -136,9 +129,13 @@ export const CalendarFieldSegment = forwardRef<
 		}, [now, length, placeholder])
 
 		const changeSegment = useCallback(
-			(action: (prev: DateTime) => DateTime | null) => {
+			(
+				action: (
+					prev: Temporal.PlainDateTime
+				) => Temporal.PlainDateTime | null
+			) => {
 				if (!isDisabled) {
-					setSelection((prev) => action(prev ?? new DateTime()))
+					setSelection((prev) => action(prev ?? getNow()))
 				}
 			},
 			[isDisabled, setSelection]
@@ -167,7 +164,9 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (event.code === 'ArrowUp') {
-					changeSegment((prev) => prev.add({ [type]: 1 }))
+					changeSegment((prev) =>
+						prev.add({ [typeToPlural(type)]: 1 })
+					)
 				}
 
 				if (event.code === 'ArrowRight') {
@@ -175,7 +174,9 @@ export const CalendarFieldSegment = forwardRef<
 				}
 
 				if (event.code === 'ArrowDown') {
-					changeSegment((prev) => prev.sub({ [type]: 1 }))
+					changeSegment((prev) =>
+						prev.subtract({ [typeToPlural(type)]: 1 })
+					)
 				}
 
 				if (event.code === 'ArrowLeft') {
@@ -189,16 +190,16 @@ export const CalendarFieldSegment = forwardRef<
 				if (/[0-9]/.test(event.key)) {
 					const pressed = Number(event.key)
 					const intent = Number(`${now}${pressed}`)
-					const next = max && intent <= max ? intent : pressed
+					const next = high && intent <= high ? intent : pressed
 
-					changeSegment((prev) => prev.set({ [type]: next }))
+					changeSegment((prev) => prev.with({ [type]: next }))
 
 					if (String(next).length === length) {
 						changeFocusedSegment('next')
 					}
 				}
 			},
-			[now, max, type, length, changeSegment, changeFocusedSegment]
+			[type, now, high, length, changeSegment, changeFocusedSegment]
 		)
 
 		useEffect(() => {
@@ -235,9 +236,9 @@ export const CalendarFieldSegment = forwardRef<
 				data-highlighted={toData(isHighlighted)}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
-				aria-valuemin={min}
-				aria-valuemax={max}
 				aria-valuenow={now}
+				aria-valuemin={low}
+				aria-valuemax={high}
 				aria-valuetext={text ?? 'Empty'}
 				aria-invalid={isInvalid}
 				aria-disabled={isDisabled}
@@ -252,7 +253,11 @@ export const CalendarFieldSegment = forwardRef<
 )
 
 const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
-	const direction = findDirection(element, action)
+	const direction = isRTL(element)
+		? action === 'next'
+			? 'previous'
+			: 'next'
+		: action
 
 	// @ts-expect-error element not allowed to be null
 	// eslint-disable-next-line no-param-reassign
@@ -269,5 +274,5 @@ const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
 	}
 }
 
-const findDirection = (element: HTMLElement, direction: 'next' | 'previous') =>
-	isRTL(element) ? (direction === 'next' ? 'previous' : 'next') : direction
+const typeToPlural = (type: CalendarFieldSegmentType): `${typeof type}s` =>
+	`${type}s`

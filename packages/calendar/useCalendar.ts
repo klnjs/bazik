@@ -7,8 +7,12 @@ import {
 	type SetStateAction
 } from 'react'
 import { useControllableState, isRange, type Assign, isSet } from '../core'
-import { getToday, isAfter } from './CalendarHelpers'
-import type { CalendarDate, CalendarDateRange } from './CalendarDate'
+import {
+	isAfter,
+	getToday,
+	type CalendarDate,
+	type CalendarDateRange
+} from './CalendarDate'
 
 export type UseCalendarOptions<R extends boolean = false> = {
 	autoFocus?: boolean
@@ -81,7 +85,7 @@ export const useCalendar = <R extends boolean = false>({
 				if (isSet(transient)) {
 					// @ts-expect-error available in TS 5.2
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
-					setValue([transient, date].toSorted())
+					setValue([transient, date].toSorted(isAfter))
 					setTransient(undefined)
 				} else {
 					setTransient(date)

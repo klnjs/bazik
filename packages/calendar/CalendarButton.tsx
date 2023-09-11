@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { freya, forwardRef, toData, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import { getToday, isAfter, isBefore } from './CalendarHelpers'
+import { isAfter, isBefore, getToday } from './CalendarDate'
 
 type CalendarButtonSegment = 'year' | 'month'
 

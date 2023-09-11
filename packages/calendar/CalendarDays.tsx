@@ -1,7 +1,15 @@
 import { useMemo, type ReactNode } from 'react'
 import type { Temporal } from 'temporal-polyfill'
 import { useCalendarContext } from './CalendarContext'
-import * as fns from './CalendarHelpers'
+import {
+	isAfter,
+	getToday,
+	toEndOfWeek,
+	toEndOfMonth,
+	toStartOfWeek,
+	isStartOfWeek,
+	toStartOfMonth
+} from './CalendarDate'
 
 export type CalendarDaysItem = {
 	role: 'week' | 'weekday' | 'date' | 'blank'
@@ -24,17 +32,17 @@ export const CalendarDays = ({
 
 	const days = useMemo(() => {
 		const dates: CalendarDaysItem[] = []
-		const ref = fns.getToday().with({ year, month })
+		const ref = getToday().with({ year, month })
 
-		const end = fns.toEndOfWeek(fns.toEndOfMonth(ref), locale)
+		const end = toEndOfWeek(toEndOfMonth(ref), locale)
 
 		let itrs = 0
-		let date = fns.toStartOfWeek(fns.toStartOfMonth(ref), locale).subtract({
+		let date = toStartOfWeek(toStartOfMonth(ref), locale).subtract({
 			days: weekday ? 7 : 0
 		})
 
-		while (!fns.isAfter(date, end)) {
-			if (weeknumber && fns.isStartOfWeek(date, locale)) {
+		while (!isAfter(date, end)) {
+			if (weeknumber && isStartOfWeek(date, locale)) {
 				dates.push({
 					role: weekday && itrs === 0 ? 'blank' : 'week',
 					date

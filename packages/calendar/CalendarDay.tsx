@@ -18,8 +18,19 @@ import {
 } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import type { CalendarDate } from './CalendarDate'
-import * as fns from './CalendarHelpers'
+import {
+	isAfter,
+	isBefore,
+	isBetween,
+	isEndOfWeek,
+	isEquals,
+	isEqualsToTheMonth,
+	isStartOfWeek,
+	isToday as isTodayFn,
+	isWeekend as isWeekendFn,
+	toClamp,
+	type CalendarDate
+} from './CalendarDate'
 
 export type CalendarDayProps = CoreProps<
 	'button',
@@ -61,24 +72,24 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 
 		const isRange = range && isRangeCheck(selection)
 		const isSingle = !range && isSet(selection)
-		const isToday = fns.isToday(date)
-		const isWeekEnd = fns.isEndOfWeek(date, locale)
-		const isWeekStart = fns.isStartOfWeek(date, locale)
-		const isWeekend = fns.isWeekend(date, locale)
-		const isOverflow = !fns.isEqualsMonth(date, highlighted)
-		const isHighlighted = fns.isEquals(date, highlighted)
+		const isToday = isTodayFn(date)
+		const isWeekEnd = isEndOfWeek(date, locale)
+		const isWeekStart = isStartOfWeek(date, locale)
+		const isWeekend = isWeekendFn(date, locale)
+		const isOverflow = !isEqualsToTheMonth(date, highlighted)
+		const isHighlighted = isEquals(date, highlighted)
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
 			(disabledIfWeekend && isWeekend) ||
 			(disabledIfOverflow && isOverflow) ||
-			Boolean(max && fns.isAfter(date, max)) ||
-			Boolean(min && fns.isBefore(date, min))
+			Boolean(max && isAfter(date, max)) ||
+			Boolean(min && isBefore(date, min))
 
-		const isRangeEnd = isRange && fns.isEquals(date, selection[1])
-		const isRangeStart = isRange && fns.isEquals(date, selection[0])
+		const isRangeEnd = isRange && isEquals(date, selection[1])
+		const isRangeStart = isRange && isEquals(date, selection[0])
 		const isRangeBetween =
-			isRange && fns.isBetween(date, selection[0], selection[1])
+			isRange && isBetween(date, selection[0], selection[1])
 
 		const isSelected =
 			isRangeEnd || isRangeStart || (isSingle && date.equals(selection))
@@ -107,7 +118,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			(action: Parameters<typeof setHighlighted>[0]) => {
 				setAutoFocus(true)
 				setHighlighted((prev) =>
-					fns.toClamp(
+					toClamp(
 						isFunction(action) ? action(prev) : action,
 						min,
 						max

@@ -18,8 +18,10 @@ export const isRecordProperty = (
 
 export const isArray = (value: unknown): value is any[] => Array.isArray(value)
 
-export const isArrayValue = (array: any[], value: unknown): boolean =>
-	array.includes(value)
+export const isArrayValue = (
+	array: any[] | readonly any[],
+	value: unknown
+): boolean => array.includes(value)
 
 export const isString = (value: unknown): value is string =>
 	typeof value === 'string'
