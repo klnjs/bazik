@@ -3,8 +3,7 @@ import {
 	useMemo,
 	useEffect,
 	useCallback,
-	type KeyboardEvent,
-	useLayoutEffect
+	type KeyboardEvent
 } from 'react'
 import {
 	freya,
@@ -214,7 +213,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			[handleSelect, setHighlightedClamp]
 		)
 
-		useLayoutEffect(() => {
+		useEffect(() => {
 			if (shouldGrabFocus) {
 				ref.current?.focus()
 			}
