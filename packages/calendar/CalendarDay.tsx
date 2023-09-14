@@ -3,7 +3,8 @@ import {
 	useMemo,
 	useEffect,
 	useCallback,
-	type KeyboardEvent
+	type KeyboardEvent,
+	useLayoutEffect
 } from 'react'
 import {
 	freya,
@@ -33,7 +34,7 @@ import {
 } from './CalendarDate'
 
 export type CalendarDayProps = CoreProps<
-	'button',
+	'div',
 	{
 		date: CalendarDate
 		disabled?: boolean
@@ -42,7 +43,7 @@ export type CalendarDayProps = CoreProps<
 	}
 >
 
-export const CalendarDay = forwardRef<'button', CalendarDayProps>(
+export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 	(
 		{
 			date,
@@ -54,19 +55,23 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		},
 		forwardedRef
 	) => {
+		const ref = useRef<HTMLDivElement>(null)
+		const refCallback = useMergeRefs(ref, forwardedRef)
+
 		const {
-			min,
-			max,
-			range,
-			locale,
-			disabled: disabledContext,
 			autoFocus,
-			setAutoFocus,
+			disabled: disabledContext,
+			focused,
+			highlighted,
+			locale,
+			max,
+			min,
+			range,
+			readOnly,
 			selection,
 			selectionIsTransient,
-			setSelection,
-			highlighted,
-			setHighlighted
+			setHighlighted,
+			setSelection
 		} = useCalendarContext()
 		const { names } = useCalendarLocalisation(locale)
 
@@ -91,11 +96,13 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 		const isRangeBetween =
 			isRange && isBetween(date, selection[0], selection[1])
 
+		const isTabbable = !isDisabled && isHighlighted
+		const isSelectable = !isDisabled && !readOnly
 		const isSelected =
 			isRangeEnd || isRangeStart || (isSingle && date.equals(selection))
 
-		const ref = useRef<HTMLButtonElement>(null)
-		const refCallback = useMergeRefs(ref, forwardedRef)
+		const shouldGrabFocus = focused && isHighlighted
+		const shouldAutoFocus = autoFocus && isHighlighted
 
 		const label = useMemo(() => {
 			const formatted = date.toLocaleString(locale, {
@@ -114,9 +121,8 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			return formatted
 		}, [locale, date, names, isToday])
 
-		const setHighlightedAndFocus = useCallback(
+		const setHighlightedClamp = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {
-				setAutoFocus(true)
 				setHighlighted((prev) =>
 					toClamp(
 						isFunction(action) ? action(prev) : action,
@@ -125,36 +131,36 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 					)
 				)
 			},
-			[min, max, setAutoFocus, setHighlighted]
+			[min, max, setHighlighted]
 		)
 
 		const handleOver = useCallback(() => {
-			if (!isDisabled && selectionIsTransient) {
-				setHighlightedAndFocus(date)
+			if (isSelectable && selectionIsTransient) {
+				setHighlighted(date)
 			}
-		}, [date, isDisabled, selectionIsTransient, setHighlightedAndFocus])
+		}, [date, isSelectable, selectionIsTransient, setHighlighted])
 
 		const handleBlur = useCallback(() => {
-			if (!isDisabled && isHighlighted && selectionIsTransient) {
+			if (isSelectable && isHighlighted && selectionIsTransient) {
 				setSelection(date)
 			}
 		}, [
 			date,
-			isDisabled,
+			isSelectable,
 			isHighlighted,
 			selectionIsTransient,
 			setSelection
 		])
 
 		const handleSelect = useCallback(() => {
-			if (!isDisabled) {
+			if (isSelectable) {
 				setSelection(date)
-				setHighlightedAndFocus(date)
+				setHighlighted(date)
 			}
-		}, [date, isDisabled, setSelection, setHighlightedAndFocus])
+		}, [date, isSelectable, setSelection, setHighlighted])
 
 		const handleKeyboard = useCallback(
-			(event: KeyboardEvent<HTMLButtonElement>) => {
+			(event: KeyboardEvent<HTMLDivElement>) => {
 				if (event.code !== 'Tab') {
 					event.preventDefault()
 				}
@@ -164,11 +170,11 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					setHighlightedAndFocus((prev) => prev.subtract({ days: 7 }))
+					setHighlightedClamp((prev) => prev.subtract({ days: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					setHighlightedAndFocus((prev) =>
+					setHighlightedClamp((prev) =>
 						prev.subtract({
 							days: isRTL(event.target) ? 1 : -1
 						})
@@ -176,11 +182,11 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowDown') {
-					setHighlightedAndFocus((prev) => prev.add({ days: 7 }))
+					setHighlightedClamp((prev) => prev.add({ days: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					setHighlightedAndFocus((prev) =>
+					setHighlightedClamp((prev) =>
 						prev.add({
 							days: isRTL(event.target) ? 1 : -1
 						})
@@ -188,43 +194,38 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'PageUp') {
-					setHighlightedAndFocus((prev) =>
-						prev.subtract({ months: 1 })
-					)
+					setHighlightedClamp((prev) => prev.subtract({ months: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					setHighlightedAndFocus((prev) => prev.add({ months: 1 }))
+					setHighlightedClamp((prev) => prev.add({ months: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					setHighlightedAndFocus((prev) => prev.with({ day: 1 }))
+					setHighlightedClamp((prev) => prev.with({ day: 1 }))
 				}
 
 				if (event.code === 'End') {
-					setHighlightedAndFocus((prev) =>
+					setHighlightedClamp((prev) =>
 						prev.with({ day: prev.daysInMonth })
 					)
 				}
 			},
-			[handleSelect, setHighlightedAndFocus]
+			[handleSelect, setHighlightedClamp]
 		)
 
-		useEffect(() => {
-			if (isHighlighted && autoFocus) {
-				setAutoFocus(false)
-				ref.current?.focus({
-					// @ts-expect-error not yet implemented
-					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
-					focusVisible: true
-				})
+		useLayoutEffect(() => {
+			if (shouldGrabFocus) {
+				ref.current?.focus()
 			}
-		}, [isHighlighted, highlighted, autoFocus, setAutoFocus])
+		}, [shouldGrabFocus])
 
 		return (
-			<freya.button
+			<freya.div
 				ref={refCallback}
-				tabIndex={isHighlighted ? 0 : -1}
+				role="button"
+				tabIndex={isTabbable ? 0 : -1}
+				autoFocus={shouldAutoFocus}
 				data-today={toData(isToday)}
 				data-weekend={toData(isWeekend)}
 				data-week-start={toData(isWeekStart)}
@@ -237,6 +238,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				data-range-between={toData(isRangeBetween)}
 				data-highlighted={toData(isHighlighted)}
 				aria-label={label}
+				aria-readonly={readOnly}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
 				onBlur={handleBlur}
@@ -246,7 +248,7 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				{...otherProps}
 			>
 				{children ?? date.day}
-			</freya.button>
+			</freya.div>
 		)
 	}
 )

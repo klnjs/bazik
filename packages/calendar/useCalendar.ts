@@ -16,34 +16,32 @@ import {
 
 export type UseCalendarOptions<R extends boolean = false> = {
 	autoFocus?: boolean
-	min?: CalendarDate
-	max?: CalendarDate
-	locale?: string
-	disabled?: boolean
-	range?: R
-	value?: (R extends false ? CalendarDate : CalendarDateRange) | null
 	defaultValue?: (R extends false ? CalendarDate : CalendarDateRange) | null
+	disabled?: boolean
+	locale?: string
+	max?: CalendarDate
+	min?: CalendarDate
+	range?: R
+	readOnly?: boolean
+	value?: (R extends false ? CalendarDate : CalendarDateRange) | null
 	onChange?: (
 		value: (R extends false ? CalendarDate : CalendarDateRange) | null
 	) => void
 }
 
 export const useCalendar = <R extends boolean = false>({
-	autoFocus: autoFocusProp = false,
-	min,
-	max,
-	range,
-	value: valueProp,
-	locale = navigator.language,
-	disabled = false,
+	autoFocus = false,
 	defaultValue: defaultValueProp = null,
+	disabled = false,
+	locale = navigator.language,
+	max,
+	min,
+	range,
+	readOnly = false,
+	value: valueProp,
 	onChange
 }: UseCalendarOptions<R>) => {
-	const autoFocusRef = useRef(autoFocusProp && !disabled)
-
-	const setAutoFocus = useCallback((autoFocus: boolean) => {
-		autoFocusRef.current = autoFocus
-	}, [])
+	const ref = useRef<HTMLDivElement>(null)
 
 	const [value, setValue] = useControllableState({
 		value: valueProp,
@@ -54,7 +52,7 @@ export const useCalendar = <R extends boolean = false>({
 		Dispatch<SetStateAction<CalendarDate | CalendarDateRange | null>>
 	]
 
-	const [titleId, setTitleId] = useState<string>()
+	const [focused, setFocused] = useState(false)
 
 	const [highlighted, setHighlighted] = useState<CalendarDate>(() => {
 		if (isRange(valueProp)) {
@@ -99,20 +97,21 @@ export const useCalendar = <R extends boolean = false>({
 	)
 
 	const shared = {
-		min,
-		max,
-		range: Boolean(range),
-		locale,
+		autoFocus,
 		disabled,
-		titleId,
-		setTitleId,
-		autoFocus: autoFocusRef.current,
-		setAutoFocus,
+		focused,
 		highlighted,
-		setHighlighted,
-		selectionIsTransient,
+		locale,
+		max,
+		min,
+		range: Boolean(range),
+		readOnly,
+		ref,
 		selection,
-		setSelection: setSelection
+		selectionIsTransient,
+		setFocused,
+		setHighlighted,
+		setSelection
 	}
 
 	if (!range) {

@@ -1,14 +1,21 @@
+import { useState } from 'react'
 import type { Meta } from '@storybook/react'
 import { Calendar } from './Calendar'
 import { CalendarGrid } from './CalendarGrid'
 import { CalendarDays } from './CalendarDays'
 import { CalendarDay } from './CalendarDay'
 import { CalendarTitle } from './CalendarTitle'
+import { CalendarHeader } from './CalendarHeader'
 import { CalendarButton } from './CalendarButton'
 import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
+import {
+	getToday,
+	toEndOfMonth,
+	toStartOfMonth,
+	type CalendarDate
+} from './CalendarDate'
 import * as classes from './Calendar.stories.css'
-import { getToday, toEndOfMonth, toStartOfMonth } from './CalendarDate'
 
 export default {
 	title: 'Calendar',
@@ -16,7 +23,7 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Basic = () => (
-	<Calendar className={classes.calendar}>
+	<Calendar autoFocus className={classes.calendar} aria-label="Event Date">
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
@@ -33,7 +40,7 @@ export const Basic = () => (
 )
 
 export const Range = () => (
-	<Calendar range className={classes.calendar}>
+	<Calendar range className={classes.calendar} aria-label="Event Date">
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
@@ -50,7 +57,7 @@ export const Range = () => (
 )
 
 export const Disabled = () => (
-	<Calendar disabled className={classes.calendar}>
+	<Calendar disabled className={classes.calendar} aria-label="Event Date">
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
@@ -63,7 +70,7 @@ export const Disabled = () => (
 )
 
 export const Weekinfo = () => (
-	<Calendar className={classes.calendar}>
+	<Calendar className={classes.calendar} aria-label="Event Date">
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.gridWithWeekInfo}>
 			<CalendarDays weekday={true} weeknumber={true}>
@@ -98,7 +105,7 @@ export const Weekinfo = () => (
 )
 
 export const Overflow = () => (
-	<Calendar className={classes.calendar}>
+	<Calendar className={classes.calendar} aria-label="Event Date">
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
@@ -113,20 +120,79 @@ export const Overflow = () => (
 	</Calendar>
 )
 
-export const Navigation = () => (
-	<Calendar className={classes.calendar}>
-		<div className={classes.header}>
-			<CalendarTitle className={classes.title} />
+export const Readonly = () => (
+	<Calendar readOnly className={classes.calendar} aria-label="Event Date">
+		<CalendarTitle className={classes.title} />
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays>
+				{({ date }) => (
+					<CalendarDay
+						key={date.toString()}
+						date={date}
+						className={classes.day}
+					/>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</Calendar>
+)
 
-			<div className={classes.nav}>
-				<CalendarButton action="month-1" className={classes.button}>
-					‹
-				</CalendarButton>
-				<CalendarButton action="month+1" className={classes.button}>
-					›
-				</CalendarButton>
-			</div>
-		</div>
+export const Autofocus = () => (
+	<Calendar autoFocus className={classes.calendar} aria-label="Event Date">
+		<CalendarTitle className={classes.title} />
+		<CalendarGrid className={classes.grid}>
+			<CalendarDays>
+				{({ date }) => (
+					<CalendarDay
+						key={date.toString()}
+						date={date}
+						className={classes.day}
+					/>
+				)}
+			</CalendarDays>
+		</CalendarGrid>
+	</Calendar>
+)
+
+export const Controlled = () => {
+	const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(() =>
+		getToday()
+	)
+
+	return (
+		<Calendar
+			value={selectedDate}
+			onChange={setSelectedDate}
+			className={classes.calendar}
+			aria-label="Event Date"
+		>
+			<CalendarTitle className={classes.title} />
+			<CalendarGrid className={classes.grid}>
+				<CalendarDays>
+					{({ date }) => (
+						<CalendarDay
+							key={date.toString()}
+							date={date}
+							className={classes.day}
+						/>
+					)}
+				</CalendarDays>
+			</CalendarGrid>
+		</Calendar>
+	)
+}
+
+export const Navigation = () => (
+	<Calendar className={classes.calendar} aria-label="Event Date">
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="month-1" className={classes.button}>
+				‹
+			</CalendarButton>
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="month+1" className={classes.button}>
+				›
+			</CalendarButton>
+		</CalendarHeader>
 
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>
@@ -144,7 +210,12 @@ export const Boundaries = () => {
 	const max = toEndOfMonth(today).subtract({ days: 1 })
 
 	return (
-		<Calendar min={min} max={max} className={classes.calendar}>
+		<Calendar
+			min={min}
+			max={max}
+			className={classes.calendar}
+			aria-label="Event Date"
+		>
 			<CalendarTitle className={classes.title} />
 			<CalendarGrid className={classes.grid}>
 				<CalendarDays>
@@ -158,7 +229,11 @@ export const Boundaries = () => {
 }
 
 export const Localization = () => (
-	<Calendar locale="en-US" className={classes.calendar}>
+	<Calendar
+		locale="en-US"
+		className={classes.calendar}
+		aria-label="Event Date"
+	>
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays weekday={true}>
@@ -201,7 +276,11 @@ export const Schedule = () => {
 	] as const
 
 	return (
-		<Calendar className={classes.calendar} style={{ width: 700 }}>
+		<Calendar
+			className={classes.calendar}
+			style={{ width: 700 }}
+			aria-label="Schedule"
+		>
 			<CalendarTitle className={classes.title} />
 			<CalendarGrid className={classes.grid} style={{ gap: 0 }}>
 				<CalendarDays>

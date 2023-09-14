@@ -1,6 +1,9 @@
 import { isNumber, isString } from './assertion'
 
-export const toData = (value: string | number | boolean | undefined) => {
+export function toData(value: string | number): string
+export function toData(value: boolean): '' | undefined
+export function toData(value: undefined): undefined
+export function toData(value: string | number | boolean | undefined) {
 	if (value === true) {
 		return ''
 	}

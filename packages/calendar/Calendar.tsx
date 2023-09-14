@@ -13,13 +13,14 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 	(
 		{
 			autoFocus,
-			min,
-			max,
-			range,
-			value,
-			locale,
-			disabled,
 			defaultValue,
+			disabled,
+			locale,
+			max,
+			min,
+			range,
+			readOnly,
+			value,
 			onChange,
 			...otherProps
 		},
@@ -50,22 +51,28 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 
 		const calendar = useCalendar({
 			autoFocus,
-			min,
-			max,
-			range,
-			value,
-			locale,
-			disabled,
 			defaultValue,
+			disabled,
+			locale,
+			max,
+			min,
+			range,
+			readOnly,
+			value,
 			onChange
 		})
+
+		const setFocused = (within: boolean) => () =>
+			calendar.setFocused(within)
 
 		return (
 			<CalendarProvider value={{ ...calendar }}>
 				<freya.div
 					ref={forwardedRef}
 					role="application"
-					aria-labelledby={calendar.titleId}
+					aria-readonly={readOnly}
+					onBlur={setFocused(false)}
+					onFocus={setFocused(true)}
 					{...otherProps}
 				/>
 			</CalendarProvider>

@@ -33,11 +33,6 @@ export const header = style({
 	height: 24
 })
 
-export const nav = style({
-	display: 'inline-flex',
-	gap: 4
-})
-
 export const button = style({
 	display: 'inline-flex',
 	width: 32,
