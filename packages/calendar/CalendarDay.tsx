@@ -58,9 +58,8 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const refCallback = useMergeRefs(ref, forwardedRef)
 
 		const {
-			autoFocus,
 			disabled: disabledContext,
-			focused,
+			focusWithin,
 			highlighted,
 			locale,
 			max,
@@ -100,8 +99,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isSelected =
 			isRangeEnd || isRangeStart || (isSingle && date.equals(selection))
 
-		const shouldGrabFocus = focused && isHighlighted
-		const shouldAutoFocus = autoFocus && isHighlighted
+		const shouldGrabFocus = focusWithin && isHighlighted
 
 		const label = useMemo(() => {
 			const formatted = date.toLocaleString(locale, {
@@ -160,6 +158,15 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const handleKeyboard = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
+				if (
+					event.shiftKey ||
+					event.ctrlKey ||
+					event.altKey ||
+					event.metaKey
+				) {
+					return
+				}
+
 				if (event.code !== 'Tab') {
 					event.preventDefault()
 				}
@@ -224,7 +231,6 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				ref={refCallback}
 				role="button"
 				tabIndex={isTabbable ? 0 : -1}
-				autoFocus={shouldAutoFocus}
 				data-today={toData(isToday)}
 				data-weekend={toData(isWeekend)}
 				data-week-start={toData(isWeekStart)}

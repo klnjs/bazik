@@ -1,5 +1,4 @@
 import {
-	useRef,
 	useMemo,
 	useState,
 	useCallback,
@@ -41,8 +40,6 @@ export const useCalendar = <R extends boolean = false>({
 	value: valueProp,
 	onChange
 }: UseCalendarOptions<R>) => {
-	const ref = useRef<HTMLDivElement>(null)
-
 	const [value, setValue] = useControllableState({
 		value: valueProp,
 		defaultValue: defaultValueProp,
@@ -52,7 +49,7 @@ export const useCalendar = <R extends boolean = false>({
 		Dispatch<SetStateAction<CalendarDate | CalendarDateRange | null>>
 	]
 
-	const [focused, setFocused] = useState(false)
+	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
 	const [highlighted, setHighlighted] = useState<CalendarDate>(() => {
 		if (isRange(valueProp)) {
@@ -97,19 +94,17 @@ export const useCalendar = <R extends boolean = false>({
 	)
 
 	const shared = {
-		autoFocus,
 		disabled,
-		focused,
+		focusWithin,
 		highlighted,
 		locale,
 		max,
 		min,
 		range: Boolean(range),
 		readOnly,
-		ref,
 		selection,
 		selectionIsTransient,
-		setFocused,
+		setFocusWithin,
 		setHighlighted,
 		setSelection
 	}

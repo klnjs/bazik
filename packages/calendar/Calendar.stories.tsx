@@ -23,7 +23,7 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Basic = () => (
-	<Calendar autoFocus className={classes.calendar} aria-label="Event Date">
+	<Calendar className={classes.calendar} aria-label="Event Date">
 		<CalendarTitle className={classes.title} />
 		<CalendarGrid className={classes.grid}>
 			<CalendarDays>

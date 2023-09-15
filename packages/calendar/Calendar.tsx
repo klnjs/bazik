@@ -1,9 +1,9 @@
 import type { Ref, ReactElement } from 'react'
 import { freya, forwardRef, type CoreProps } from '../core'
+import { useFocusWithin } from '../focus/useFocusWithin'
 import { CalendarProvider } from './CalendarContext'
 // import { useCalendarFieldContext } from './CalendarFieldContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
-
 export type CalendarProps<R extends boolean = false> = CoreProps<
 	'div',
 	UseCalendarOptions<R>
@@ -62,8 +62,10 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			onChange
 		})
 
-		const setFocused = (within: boolean) => () =>
-			calendar.setFocused(within)
+		const { onFocus, onBlur } = useFocusWithin({
+			onFocusEnter: () => calendar.setFocusWithin(true),
+			onFocusLeave: () => calendar.setFocusWithin(false)
+		})
 
 		return (
 			<CalendarProvider value={{ ...calendar }}>
@@ -71,8 +73,8 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 					ref={forwardedRef}
 					role="application"
 					aria-readonly={readOnly}
-					onBlur={setFocused(false)}
-					onFocus={setFocused(true)}
+					onBlur={onBlur}
+					onFocus={onFocus}
 					{...otherProps}
 				/>
 			</CalendarProvider>
