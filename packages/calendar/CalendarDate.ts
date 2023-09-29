@@ -1,44 +1,43 @@
 import { Temporal } from 'temporal-polyfill'
-import type { Range } from '../core'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
 export type CalendarDate = Temporal.PlainDate
 
-export type CalendarDateRange = Range<Temporal.PlainDate>
+export const getToday = (): Temporal.PlainDate => Temporal.Now.plainDateISO()
 
-export const getToday = (): CalendarDate => Temporal.Now.plainDateISO()
-
-export const getDayOfWeek = (date: CalendarDate, locale: string) =>
+export const getDayOfWeek = (date: Temporal.PlainDate, locale: string) =>
 	((date.dayOfWeek - getCalendarWeekInfo(locale).firstDay + 7) % 7) + 1
 
-export const getWeekOfYear = (date: CalendarDate, locale: string) =>
+export const getWeekOfYear = (date: Temporal.PlainDate, locale: string) =>
 	toDayOfWeek(date, locale, 4).weekOfYear
 
 export const toStartOfWeek = (
-	date: CalendarDate,
+	date: Temporal.PlainDate,
 	locale: string
-): CalendarDate => date.subtract({ days: getDayOfWeek(date, locale) - 1 })
+): Temporal.PlainDate => date.subtract({ days: getDayOfWeek(date, locale) - 1 })
 
-export const toStartOfMonth = (date: CalendarDate): CalendarDate =>
+export const toStartOfMonth = (date: Temporal.PlainDate): Temporal.PlainDate =>
 	date.with({ day: 1 })
 
-export const toEndOfWeek = (date: CalendarDate, locale: string): CalendarDate =>
-	toDayOfWeek(date, locale, 7)
+export const toEndOfWeek = (
+	date: Temporal.PlainDate,
+	locale: string
+): Temporal.PlainDate => toDayOfWeek(date, locale, 7)
 
-export const toEndOfMonth = (date: CalendarDate): CalendarDate =>
+export const toEndOfMonth = (date: Temporal.PlainDate): Temporal.PlainDate =>
 	date.with({ day: date.daysInMonth })
 
 export const toDayOfWeek = (
-	date: CalendarDate,
+	date: Temporal.PlainDate,
 	locale: string,
 	day: number
-): CalendarDate => toStartOfWeek(date, locale).add({ days: day - 1 })
+): Temporal.PlainDate => toStartOfWeek(date, locale).add({ days: day - 1 })
 
 export const toClamp = (
-	date: CalendarDate,
-	min?: CalendarDate,
-	max?: CalendarDate
-): CalendarDate => {
+	date: Temporal.PlainDate,
+	min?: Temporal.PlainDate,
+	max?: Temporal.PlainDate
+): Temporal.PlainDate => {
 	if (min && isBefore(date, min)) {
 		return min
 	}
@@ -50,34 +49,49 @@ export const toClamp = (
 	return date
 }
 
-export const isEquals = (date: CalendarDate, subject: CalendarDate) =>
-	Temporal.PlainDate.compare(date, subject) === 0
+export const compare = (
+	date: Temporal.PlainDate,
+	subject: Temporal.PlainDate
+) => Temporal.PlainDate.compare(date, subject)
 
-export const isEqualsToTheYear = (date: CalendarDate, subject: CalendarDate) =>
-	date.year === subject.year
+export const isAfter = (
+	date: Temporal.PlainDate,
+	subject: Temporal.PlainDate
+) => compare(date, subject) === 1
 
-export const isEqualsToTheMonth = (date: CalendarDate, subject: CalendarDate) =>
-	date.month === subject.month && isEqualsToTheYear(date, subject)
+export const isBefore = (
+	date: Temporal.PlainDate,
+	subject: Temporal.PlainDate
+) => compare(date, subject) === -1
 
-export const isAfter = (date: CalendarDate, subject: CalendarDate) =>
-	Temporal.PlainDate.compare(date, subject) === 1
+export const isEquals = (
+	date: Temporal.PlainDate,
+	subject: Temporal.PlainDate
+) => compare(date, subject) === 0
 
-export const isBefore = (date: CalendarDate, subject: CalendarDate) =>
-	Temporal.PlainDate.compare(date, subject) === -1
+export const isEqualsToTheYear = (
+	date: Temporal.PlainDate,
+	subject: Temporal.PlainDate
+) => date.year === subject.year
+
+export const isEqualsToTheMonth = (
+	date: Temporal.PlainDate,
+	subject: Temporal.PlainDate
+) => date.month === subject.month && isEqualsToTheYear(date, subject)
 
 export const isBetween = (
-	date: CalendarDate,
-	min: CalendarDate,
-	max: CalendarDate
+	date: Temporal.PlainDate,
+	min: Temporal.PlainDate,
+	max: Temporal.PlainDate
 ) => isAfter(date, min) && isBefore(date, max)
 
-export const isToday = (date: CalendarDate) => date.equals(getToday())
+export const isToday = (date: Temporal.PlainDate) => date.equals(getToday())
 
-export const isWeekend = (date: CalendarDate, locale: string) =>
+export const isWeekend = (date: Temporal.PlainDate, locale: string) =>
 	getCalendarWeekInfo(locale).weekend.includes(date.dayOfWeek)
 
-export const isStartOfWeek = (date: CalendarDate, locale: string) =>
+export const isStartOfWeek = (date: Temporal.PlainDate, locale: string) =>
 	getDayOfWeek(date, locale) === 1
 
-export const isEndOfWeek = (date: CalendarDate, locale: string) =>
+export const isEndOfWeek = (date: Temporal.PlainDate, locale: string) =>
 	getDayOfWeek(date, locale) === 7

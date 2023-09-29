@@ -7,10 +7,25 @@ export const calendar = style({
 	fontFamily: 'Arial'
 })
 
+export const calendarWide = style([
+	calendar,
+	{
+		flexDirection: 'row'
+	}
+])
+
+export const month = style({
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 8,
+	fontFamily: 'Arial'
+})
+
 export const title = style({
 	margin: 0,
 	padding: 0,
-	fontSize: 18
+	fontSize: 18,
+	marginInlineEnd: 'auto'
 })
 
 export const grid = style({
@@ -50,7 +65,7 @@ export const button = style({
 	}
 })
 
-export const cell = style({
+export const item = style({
 	width: 32,
 	height: 32,
 	appearance: 'none',
@@ -68,13 +83,11 @@ export const cell = style({
 })
 
 export const day = style([
-	cell,
+	item,
 	{
-		cursor: 'pointer',
-		border: 0,
-		outline: 0,
 		selectors: {
-			'&:hover:not([data-disabled], [data-selected])': {
+			'&:hover:not([data-selected])': {
+				cursor: 'pointer',
 				background: 'lightgrey'
 			},
 			'&[data-today]': {
@@ -95,8 +108,8 @@ export const day = style([
 				outlineOffset: -2
 			},
 			'&[data-disabled]': {
-				cursor: 'default',
-				opacity: 0.4
+				opacity: 0.4,
+				pointerEvents: 'none'
 			},
 			'&[data-range-start]': {
 				borderStartEndRadius: 0,
@@ -133,3 +146,20 @@ export const dayWithOverflowVisible = style([
 		}
 	}
 ])
+
+export const week = style([
+	item,
+	{
+		fontSize: 10,
+		fontWeight: 'bold'
+	}
+])
+
+export const weekday = style([
+	item,
+	{
+		fontWeight: 'bold'
+	}
+])
+
+export const blank = style([item, { visibility: 'hidden' }])

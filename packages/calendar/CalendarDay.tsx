@@ -12,11 +12,9 @@ import {
 	toData,
 	isRTL,
 	isSet,
-	isRange as isRangeCheck,
 	isFunction,
 	type CoreProps
 } from '../core'
-import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
 	isAfter,
@@ -31,6 +29,8 @@ import {
 	toClamp,
 	type CalendarDate
 } from './CalendarDate'
+import { useCalendarContext } from './CalendarContext'
+import { useCalendarMonthContext } from './CalendarMonthContext'
 
 export type CalendarDayProps = CoreProps<
 	'div',
@@ -64,22 +64,25 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			locale,
 			max,
 			min,
-			range,
 			readOnly,
+			select,
 			selection,
 			selectionIsTransient,
 			setHighlighted,
 			setSelection
 		} = useCalendarContext()
+		const { year, month } = useCalendarMonthContext()
 		const { names } = useCalendarLocalisation(locale)
 
-		const isRange = range && isRangeCheck(selection)
-		const isSingle = !range && isSet(selection)
+		const isRange = select === 'range' && isSet(selection)
+		const isSingle = select === 'single' && isSet(selection)
+		const isMultiple = select === 'multiple' && isSet(selection)
+
 		const isToday = isTodayFn(date)
 		const isWeekEnd = isEndOfWeek(date, locale)
 		const isWeekStart = isStartOfWeek(date, locale)
 		const isWeekend = isWeekendFn(date, locale)
-		const isOverflow = !isEqualsToTheMonth(date, highlighted)
+		const isOverflow = !isEqualsToTheMonth(date, date.with({ year, month }))
 		const isHighlighted = isEquals(date, highlighted)
 		const isDisabled =
 			disabledProp ||
@@ -97,7 +100,10 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isTabbable = !isDisabled && isHighlighted
 		const isSelectable = !isDisabled && !readOnly
 		const isSelected =
-			isRangeEnd || isRangeStart || (isSingle && date.equals(selection))
+			isRangeEnd ||
+			isRangeStart ||
+			(isSingle && date.equals(selection)) ||
+			(isMultiple && selection.some((s) => date.equals(s)))
 
 		const shouldGrabFocus = focusWithin && isHighlighted
 
