@@ -8,7 +8,7 @@ import {
 import { useControllableState, isSet, isArray } from '../core'
 import { compare, getToday, isEquals, type CalendarDate } from './CalendarDate'
 
-type Config<S, V> = {
+type CalendarOptions<S, V> = {
 	autoFocus?: boolean
 	disabled?: boolean
 	locale?: string
@@ -21,7 +21,19 @@ type Config<S, V> = {
 	onChange?: (value: V | null) => void
 }
 
-type Return<S, V> = {
+export type CalendarSelect = UseCalendarOptions['select']
+
+export type UseCalendarOptions =
+	| CalendarOptions<'single', CalendarDate>
+	| CalendarOptions<'multiple', CalendarDate[]>
+	| CalendarOptions<'range', [CalendarDate, CalendarDate]>
+
+export type UseCalendarResult =
+	| CalendarReturn<'single', CalendarDate>
+	| CalendarReturn<'multiple', CalendarDate[]>
+	| CalendarReturn<'range', [CalendarDate, CalendarDate]>
+
+type CalendarReturn<S, V> = {
 	disabled: boolean
 	focusWithin: boolean
 	highlighted: CalendarDate
@@ -37,70 +49,56 @@ type Return<S, V> = {
 	setSelection: (CalendarDate: CalendarDate) => void
 }
 
-export type UseCalendarOptions =
-	| Config<'single', CalendarDate>
-	| Config<'multiple', CalendarDate[]>
-	| Config<'range', [CalendarDate, CalendarDate]>
-
-export type UseCalendarReturn =
-	| Return<'single', CalendarDate>
-	| Return<'multiple', CalendarDate[]>
-	| Return<'range', [CalendarDate, CalendarDate]>
-
 export const useCalendar = ({
 	autoFocus = false,
-	defaultValue: defaultValueProp = null,
+	defaultValue = null,
 	disabled = false,
 	locale = navigator.language,
 	max,
 	min,
 	select,
 	readOnly = false,
-	value: valueProp,
-	onChange: onChangeProp
+	value,
+	onChange
 }: UseCalendarOptions) => {
-	const [value, setValue] = useControllableState({
-		value: valueProp,
-		defaultValue: defaultValueProp,
-		onChange: onChangeProp as (
-			value:
-				| CalendarDate
-				| CalendarDate[]
-				| [CalendarDate, CalendarDate]
-				| null
-		) => void
-	})
-
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
 	const [highlighted, setHighlighted] = useState(() => {
-		if (!valueProp) {
+		if (!value) {
 			return getToday()
 		}
 
 		switch (select) {
 			case 'range':
-				return valueProp[1]
+				return value[1]
 			case 'multiple':
-				return valueProp[0]
+				return value[0]
 			default:
-				return valueProp
+				return value
 		}
 	})
 
 	const [transient, setTransient] = useState<CalendarDate>()
 
-	const [selection, selectionIsTransient] = useMemo(() => {
+	const [selection, setSelectionRaw] = useControllableState({
+		value,
+		defaultValue,
+		onChange: onChange as (value: typeof defaultValue) => void
+	})
+
+	const selectionToDisplay = useMemo(() => {
 		if (select === 'range' && isSet(transient)) {
-			return [[transient, highlighted].toSorted(compare), true]
+			return [transient, highlighted].toSorted(compare)
 		}
 
-		return [value, false]
-	}, [select, value, transient, highlighted])
+		return selection
+	}, [select, transient, selection, highlighted])
+
+	const selectionIsTransient = isSet(transient)
 
 	const setSelection = useCallback(
 		(date: CalendarDate) => {
-			setValue((prev) => {
+			setSelectionRaw((prev) => {
 				switch (select) {
 					case 'multiple': {
 						if (isArray(prev)) {
@@ -136,7 +134,7 @@ export const useCalendar = ({
 				}
 			})
 		},
-		[select, transient, setValue]
+		[select, transient, setSelectionRaw]
 	)
 
 	return {
@@ -148,10 +146,10 @@ export const useCalendar = ({
 		min,
 		readOnly,
 		select,
-		selection,
+		selection: selectionToDisplay,
 		selectionIsTransient,
 		setFocusWithin,
 		setHighlighted,
 		setSelection
-	} as UseCalendarReturn
+	} as UseCalendarResult
 }

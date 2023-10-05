@@ -19,7 +19,6 @@ export default {
 export const Basic = () => (
 	<Calendar
 		select="single"
-		value={}
 		aria-label="Event Date"
 		className={classes.calendar}
 	>

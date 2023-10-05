@@ -1,29 +1,35 @@
-import type { FocusEvent } from 'react'
+import { useCallback, type FocusEvent } from 'react'
 
-export type UseFocusWithinOptions = {
-	onFocusEnter?: (event: FocusEvent) => void
-	onFocusLeave?: (event: FocusEvent) => void
+export type UseFocusWithinOptions<E extends FocusEvent> = {
+	onFocusEnter?: (event: E) => void
+	onFocusLeave?: (event: E) => void
+	onFocusChange?: (update: boolean) => void
 }
 
-export const useFocusWithin = ({
+export const useFocusWithin = <E extends FocusEvent>({
 	onFocusEnter,
-	onFocusLeave
-}: UseFocusWithinOptions = {}) => {
-	const onFocus = onFocusEnter
-		? (event: FocusEvent) => {
-				if (event.currentTarget.contains(event.target)) {
-					onFocusEnter(event)
-				}
-		  }
-		: undefined
+	onFocusLeave,
+	onFocusChange
+}: UseFocusWithinOptions<E> = {}) => {
+	const onFocus = useCallback(
+		(event: E) => {
+			if (event.currentTarget.contains(event.target)) {
+				onFocusEnter?.(event)
+				onFocusChange?.(true)
+			}
+		},
+		[onFocusEnter, onFocusChange]
+	)
 
-	const onBlur = onFocusLeave
-		? (event: FocusEvent) => {
-				if (!event.currentTarget.contains(event.relatedTarget)) {
-					onFocusLeave(event)
-				}
-		  }
-		: undefined
+	const onBlur = useCallback(
+		(event: E) => {
+			if (event.currentTarget.contains(event.target)) {
+				onFocusLeave?.(event)
+				onFocusChange?.(true)
+			}
+		},
+		[onFocusLeave, onFocusChange]
+	)
 
 	return { onFocus, onBlur }
 }
