@@ -2,38 +2,38 @@ import {
 	useMemo,
 	useState,
 	useCallback,
-	type Dispatch,
-	type SetStateAction
+	type SetStateAction,
+	type Dispatch
 } from 'react'
 import { useControllableState, isSet, isArray } from '../core'
-import { compare, getToday, isEquals, type CalendarDate } from './CalendarDate'
+import { compare, getToday, type CalendarDate } from './CalendarDate'
 
-type CalendarOptions<S, V> = {
+export type CalendarSelect = 'one' | 'many' | 'range'
+
+export type CalendarSelectValue<S extends CalendarSelect> =
+	| null
+	| (S extends 'range'
+			? [CalendarDate, CalendarDate]
+			: S extends 'many'
+			? CalendarDate[]
+			: CalendarDate)
+
+export type CalendarValue = CalendarSelectValue<CalendarSelect>
+
+export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
+	defaultValue?: CalendarSelectValue<S>
 	disabled?: boolean
 	locale?: string
 	max?: CalendarDate
 	min?: CalendarDate
 	readOnly?: boolean
-	select: S
-	value?: V | null
-	defaultValue?: V | null
-	onChange?: (value: V | null) => void
+	select?: S
+	value?: CalendarSelectValue<S>
+	onChange?: (value: CalendarSelectValue<S>) => void
 }
 
-export type CalendarSelect = UseCalendarOptions['select']
-
-export type UseCalendarOptions =
-	| CalendarOptions<'single', CalendarDate>
-	| CalendarOptions<'multiple', CalendarDate[]>
-	| CalendarOptions<'range', [CalendarDate, CalendarDate]>
-
-export type UseCalendarResult =
-	| CalendarReturn<'single', CalendarDate>
-	| CalendarReturn<'multiple', CalendarDate[]>
-	| CalendarReturn<'range', [CalendarDate, CalendarDate]>
-
-type CalendarReturn<S, V> = {
+export type UseCalendarReturn<S extends CalendarSelect> = {
 	disabled: boolean
 	focusWithin: boolean
 	highlighted: CalendarDate
@@ -41,100 +41,84 @@ type CalendarReturn<S, V> = {
 	max: CalendarDate | undefined
 	min: CalendarDate | undefined
 	readOnly: boolean
-	select: S
-	selection: V | null
-	selectionIsTransient: boolean
+	selection: CalendarSelectValue<S>
+	selectionIsTransient: S extends 'range' ? boolean : never
+	selectionMode: S
 	setFocusWithin: Dispatch<SetStateAction<boolean>>
 	setHighlighted: Dispatch<SetStateAction<CalendarDate>>
-	setSelection: (CalendarDate: CalendarDate) => void
+	setSelection: (date: CalendarDate) => void
 }
 
-export const useCalendar = ({
+export const useCalendar = <S extends CalendarSelect = 'one'>({
 	autoFocus = false,
 	defaultValue = null,
 	disabled = false,
 	locale = navigator.language,
 	max,
 	min,
-	select,
 	readOnly = false,
+	select: selectionMode,
 	value,
 	onChange
-}: UseCalendarOptions) => {
+}: UseCalendarOptions<S> = {}) => {
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
-	const [highlighted, setHighlighted] = useState(() => {
-		if (!value) {
-			return getToday()
-		}
-
-		switch (select) {
-			case 'range':
-				return value[1]
-			case 'multiple':
-				return value[0]
-			default:
-				return value
-		}
+	const [state, setState] = useControllableState<CalendarValue>({
+		value,
+		defaultValue,
+		onChange: onChange as (value: CalendarValue) => void
 	})
 
 	const [transient, setTransient] = useState<CalendarDate>()
 
-	const [selection, setSelectionRaw] = useControllableState({
-		value,
-		defaultValue,
-		onChange: onChange as (value: typeof defaultValue) => void
-	})
+	const [highlighted, setHighlighted] = useState<CalendarDate>(() =>
+		isArray(value) ? value[0] : value ?? getToday()
+	)
 
-	const selectionToDisplay = useMemo(() => {
-		if (select === 'range' && isSet(transient)) {
-			return [transient, highlighted].toSorted(compare)
-		}
-
-		return selection
-	}, [select, transient, selection, highlighted])
+	const selection = useMemo(
+		() =>
+			isSet(transient)
+				? [transient, highlighted].toSorted(compare)
+				: state,
+		[state, transient, highlighted]
+	)
 
 	const selectionIsTransient = isSet(transient)
 
 	const setSelection = useCallback(
 		(date: CalendarDate) => {
-			setSelectionRaw((prev) => {
-				switch (select) {
-					case 'multiple': {
-						if (isArray(prev)) {
-							const filtered = prev.filter(
-								(p) => !isEquals(p, date)
-							)
+			if (selectionMode === 'one') {
+				setState(date)
+			}
 
-							if (filtered.length === 0) {
-								return null
-							}
-
-							if (filtered.length < prev.length) {
-								return filtered
-							}
-
-							return [...prev, date]
-						}
-
-						return [date]
+			if (selectionMode === 'range') {
+				setTransient((prev) => {
+					if (isSet(prev)) {
+						setState([prev, date].toSorted(compare))
+						return undefined
 					}
-					case 'range': {
-						if (isSet(transient)) {
-							setTransient(undefined)
 
-							return [transient, date].toSorted(compare)
-						}
+					return date
+				})
+			}
 
-						setTransient(date)
-						return prev
+			if (selectionMode === 'many') {
+				setState((prev) => {
+					if (isArray(prev)) {
+						const filtered = prev.filter((p) => p.equals(date))
+
+						return filtered.length === 0
+							? null
+							: filtered.length < prev.length
+							? filtered
+							: [...prev, date]
 					}
-					default:
-						return date
-				}
-			})
+
+					return [date]
+				})
+			}
 		},
-		[select, transient, setSelectionRaw]
+		[selectionMode, setState]
 	)
 
 	return {
@@ -145,11 +129,14 @@ export const useCalendar = ({
 		max,
 		min,
 		readOnly,
-		select,
-		selection: selectionToDisplay,
+		selection,
 		selectionIsTransient,
-		setFocusWithin,
+		selectionMode,
+		setSelection,
 		setHighlighted,
-		setSelection
-	} as UseCalendarResult
+		setFocusWithin
+	} as
+		| UseCalendarReturn<'one'>
+		| UseCalendarReturn<'many'>
+		| UseCalendarReturn<'range'>
 }

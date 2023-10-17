@@ -1,15 +1,17 @@
 import type { ReactElement, Ref } from 'react'
-import { freya, forwardRef, type CoreProps, type Assign } from '../core'
+import { freya, forwardRef, type CoreProps } from '../core'
 import { useFocusWithin } from '../focus/useFocusWithin'
 import { CalendarProvider } from './CalendarContext'
-import type { CalendarDate } from './CalendarDate'
 import {
 	useCalendar,
 	type CalendarSelect,
 	type UseCalendarOptions
 } from './useCalendar'
 
-export type CalendarProps = CoreProps<'div', UseCalendarOptions>
+export type CalendarProps<S extends CalendarSelect = 'one'> = CoreProps<
+	'div',
+	UseCalendarOptions<S>
+>
 
 export const Calendar = forwardRef<'div', CalendarProps>(
 	(
@@ -21,7 +23,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			max,
 			min,
 			readOnly,
-			select = 'single',
+			select = 'one',
 			value,
 			onBlur: onFocusLeave,
 			onFocus: onFocusEnter,
@@ -41,7 +43,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			readOnly,
 			value,
 			onChange
-		} as UseCalendarOptions)
+		})
 
 		const focusProps = useFocusWithin({
 			onFocusEnter,
@@ -61,41 +63,8 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			</CalendarProvider>
 		)
 	}
-) as <S extends CalendarSelect = 'single'>(
-	props: Assign<
-		CalendarProps,
-		{
-			select?: S
-			value?:
-				| null
-				| (S extends 'single'
-						? CalendarDate
-						: S extends 'multiple'
-						? CalendarDate[]
-						: S extends 'range'
-						? [CalendarDate, CalendarDate]
-						: never)
-			defaultValue?:
-				| null
-				| (S extends 'single'
-						? CalendarDate
-						: S extends 'multiple'
-						? CalendarDate[]
-						: S extends 'range'
-						? [CalendarDate, CalendarDate]
-						: never)
-			onChange?: (
-				value:
-					| null
-					| (S extends 'single'
-							? CalendarDate
-							: S extends 'multiple'
-							? CalendarDate[]
-							: S extends 'range'
-							? [CalendarDate, CalendarDate]
-							: never)
-			) => void
-			ref?: Ref<HTMLDivElement>
-		}
-	>
+) as <S extends CalendarSelect = 'one'>(
+	props: CalendarProps<S> & {
+		ref?: Ref<HTMLDivElement>
+	}
 ) => ReactElement

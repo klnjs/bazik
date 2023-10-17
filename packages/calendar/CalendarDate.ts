@@ -33,7 +33,7 @@ export const toDayOfWeek = (
 	day: number
 ): Temporal.PlainDate => toStartOfWeek(date, locale).add({ days: day - 1 })
 
-export const toClamp = (
+export const clamp = (
 	date: Temporal.PlainDate,
 	min?: Temporal.PlainDate,
 	max?: Temporal.PlainDate

@@ -17,11 +17,7 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Basic = () => (
-	<Calendar
-		select="single"
-		aria-label="Event Date"
-		className={classes.calendar}
-	>
+	<Calendar aria-label="Event Date" className={classes.calendar}>
 		<CalendarMonth className={classes.month}>
 			<CalendarHeader className={classes.header}>
 				<CalendarTitle className={classes.title} />
@@ -48,7 +44,7 @@ export const Basic = () => (
 )
 
 export const Multiple = () => (
-	<Calendar select="multiple" aria-label="Span" className={classes.calendar}>
+	<Calendar select="many" aria-label="Span" className={classes.calendar}>
 		<CalendarMonth className={classes.month}>
 			<CalendarHeader className={classes.header}>
 				<CalendarTitle className={classes.title} />

@@ -17,6 +17,7 @@ import {
 } from '../core'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
+	clamp,
 	isAfter,
 	isBefore,
 	isBetween,
@@ -26,7 +27,6 @@ import {
 	isStartOfWeek,
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn,
-	toClamp,
 	type CalendarDate
 } from './CalendarDate'
 import { useCalendarContext } from './CalendarContext'
@@ -65,18 +65,18 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			max,
 			min,
 			readOnly,
-			select,
 			selection,
+			selectionMode,
 			selectionIsTransient,
-			setHighlighted,
-			setSelection
+			setSelection,
+			setHighlighted
 		} = useCalendarContext()
 		const { year, month } = useCalendarMonthContext()
 		const { names } = useCalendarLocalisation(locale)
 
-		const isRange = select === 'range' && isSet(selection)
-		const isSingle = select === 'single' && isSet(selection)
-		const isMultiple = select === 'multiple' && isSet(selection)
+		const isOne = selectionMode === 'one' && isSet(selection)
+		const isMany = selectionMode === 'many' && isSet(selection)
+		const isRange = selectionMode === 'range' && isSet(selection)
 
 		const isToday = isTodayFn(date)
 		const isWeekEnd = isEndOfWeek(date, locale)
@@ -100,12 +100,13 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isTabbable = !isDisabled && isHighlighted
 		const isSelectable = !isDisabled && !readOnly
 		const isSelected =
-			isRangeEnd ||
-			isRangeStart ||
-			(isSingle && date.equals(selection)) ||
-			(isMultiple && selection.some((s) => date.equals(s)))
+			(isOne && date.equals(selection)) ||
+			(isMany && selection.some((s) => date.equals(s))) ||
+			(isRange && (isRangeEnd || isRangeStart))
 
 		const shouldGrabFocus = focusWithin && isHighlighted
+		const shouldLightOnOver = selectionIsTransient && isSelectable
+		const shouldSelectOnBlur = shouldLightOnOver && isHighlighted
 
 		const label = useMemo(() => {
 			const formatted = date.toLocaleString(locale, {
@@ -116,44 +117,23 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			})
 
 			if (isToday) {
-				// Uncertain how this works in different locales, due to
-				// the concatenation of the two labels.
 				return `${names.of('today')}, ${formatted}`
 			}
 
 			return formatted
 		}, [locale, date, names, isToday])
 
-		const setHighlightedClamp = useCallback(
-			(action: Parameters<typeof setHighlighted>[0]) => {
-				setHighlighted((prev) =>
-					toClamp(
-						isFunction(action) ? action(prev) : action,
-						min,
-						max
-					)
-				)
-			},
-			[min, max, setHighlighted]
-		)
-
-		const handleOver = useCallback(() => {
-			if (isSelectable && selectionIsTransient) {
-				setHighlighted(date)
-			}
-		}, [date, isSelectable, selectionIsTransient, setHighlighted])
-
 		const handleBlur = useCallback(() => {
-			if (isSelectable && isHighlighted && selectionIsTransient) {
+			if (shouldSelectOnBlur) {
 				setSelection(date)
 			}
-		}, [
-			date,
-			isSelectable,
-			isHighlighted,
-			selectionIsTransient,
-			setSelection
-		])
+		}, [date, shouldSelectOnBlur, setSelection])
+
+		const handleOver = useCallback(() => {
+			if (shouldLightOnOver) {
+				setHighlighted(date)
+			}
+		}, [date, shouldLightOnOver, setHighlighted])
 
 		const handleSelect = useCallback(() => {
 			if (isSelectable) {
@@ -161,6 +141,15 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				setHighlighted(date)
 			}
 		}, [date, isSelectable, setSelection, setHighlighted])
+
+		const handleHighlight = useCallback(
+			(action: Parameters<typeof setHighlighted>[0]) => {
+				setHighlighted((prev) =>
+					clamp(isFunction(action) ? action(prev) : action, min, max)
+				)
+			},
+			[min, max, setHighlighted]
+		)
 
 		const handleKeyboard = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -182,11 +171,11 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					setHighlightedClamp((prev) => prev.subtract({ days: 7 }))
+					handleHighlight((prev) => prev.subtract({ days: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					setHighlightedClamp((prev) =>
+					handleHighlight((prev) =>
 						prev.subtract({
 							days: isRTL(event.target) ? 1 : -1
 						})
@@ -194,11 +183,11 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowDown') {
-					setHighlightedClamp((prev) => prev.add({ days: 7 }))
+					handleHighlight((prev) => prev.add({ days: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					setHighlightedClamp((prev) =>
+					handleHighlight((prev) =>
 						prev.add({
 							days: isRTL(event.target) ? 1 : -1
 						})
@@ -206,24 +195,24 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'PageUp') {
-					setHighlightedClamp((prev) => prev.subtract({ months: 1 }))
+					handleHighlight((prev) => prev.subtract({ months: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					setHighlightedClamp((prev) => prev.add({ months: 1 }))
+					handleHighlight((prev) => prev.add({ months: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					setHighlightedClamp((prev) => prev.with({ day: 1 }))
+					handleHighlight((prev) => prev.with({ day: 1 }))
 				}
 
 				if (event.code === 'End') {
-					setHighlightedClamp((prev) =>
+					handleHighlight((prev) =>
 						prev.with({ day: prev.daysInMonth })
 					)
 				}
 			},
-			[handleSelect, setHighlightedClamp]
+			[handleSelect, handleHighlight]
 		)
 
 		useEffect(() => {
