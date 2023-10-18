@@ -61,7 +61,7 @@ export const button = style({
 	alignItems: 'center',
 	justifyContent: 'center',
 	':hover': {
-		background: 'lightgrey'
+		background: '#E7E7E7'
 	}
 })
 
@@ -79,6 +79,7 @@ export const item = style({
 	padding: 0,
 	border: 0,
 	borderRadius: 4,
+	cursor: 'pointer',
 	background: 'none'
 })
 
@@ -86,9 +87,8 @@ export const day = style([
 	item,
 	{
 		selectors: {
-			'&:hover:not([data-selected])': {
-				cursor: 'pointer',
-				background: 'lightgrey'
+			'&:hover': {
+				background: '#E7E7E7'
 			},
 			'&[data-today]': {
 				fontWeight: 'bold'

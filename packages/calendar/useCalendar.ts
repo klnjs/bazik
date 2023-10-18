@@ -91,21 +91,10 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 				setState(date)
 			}
 
-			if (selectionMode === 'range') {
-				setTransient((prev) => {
-					if (isSet(prev)) {
-						setState([prev, date].toSorted(compare))
-						return undefined
-					}
-
-					return date
-				})
-			}
-
 			if (selectionMode === 'many') {
 				setState((prev) => {
 					if (isArray(prev)) {
-						const filtered = prev.filter((p) => p.equals(date))
+						const filtered = prev.filter((p) => !p.equals(date))
 
 						return filtered.length === 0
 							? null
@@ -115,6 +104,17 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 					}
 
 					return [date]
+				})
+			}
+
+			if (selectionMode === 'range') {
+				setTransient((prev) => {
+					if (isSet(prev)) {
+						setState([prev, date].toSorted(compare))
+						return undefined
+					}
+
+					return date
 				})
 			}
 		},
