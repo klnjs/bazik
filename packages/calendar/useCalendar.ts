@@ -77,10 +77,10 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 	const selection = useMemo(
 		() =>
-			isSet(transient)
+			selectionMode === 'range' && isSet(transient)
 				? [transient, highlighted].toSorted(compare)
 				: state,
-		[state, transient, highlighted]
+		[selectionMode, state, transient, highlighted]
 	)
 
 	const selectionIsTransient = isSet(transient)
