@@ -1,5 +1,5 @@
+import type { Temporal } from 'temporal-polyfill'
 import { forwardRef } from '../core'
-import type { CalendarDate } from './CalendarDate'
 import { CalendarDay } from './CalendarDay'
 import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
@@ -9,7 +9,7 @@ export type CalendarDaysItemRole = 'day' | 'week' | 'weekday' | 'blank'
 export type CalendarDaysItemProps = {
 	key: string
 	role: CalendarDaysItemRole
-	date: CalendarDate
+	date: Temporal.PlainDate
 }
 
 export const CalendarDaysItem = forwardRef<'div', CalendarDaysItemProps>(

@@ -1,16 +1,29 @@
+import { useMemo } from 'react'
+import { Temporal } from 'temporal-polyfill'
 import { freya, forwardRef, type CoreProps } from '../core'
-import { CalendarMonthProvider } from './CalendarMonthContext'
 import { useCalendarContext } from './CalendarContext'
+import { CalendarMonthProvider } from './CalendarMonthContext'
 
-export type CalendarMonthProps = CoreProps<'div', { offset?: number }>
+export type CalendarMonthProps = CoreProps<
+	'div',
+	{ year?: number; month?: number }
+>
 
 export const CalendarMonth = forwardRef<'div', CalendarMonthProps>(
-	({ offset = 0, ...otherProps }, forwardedRef) => {
+	({ year, month, ...otherProps }, forwardedRef) => {
 		const { highlighted } = useCalendarContext()
-		const { year, month } = highlighted.add({ months: offset })
+
+		const value = useMemo(
+			() =>
+				new Temporal.PlainYearMonth(
+					year ?? highlighted.year,
+					month ?? highlighted.month
+				),
+			[year, month, highlighted]
+		)
 
 		return (
-			<CalendarMonthProvider value={{ year, month }}>
+			<CalendarMonthProvider value={value}>
 				<freya.div ref={forwardedRef} {...otherProps} />
 			</CalendarMonthProvider>
 		)

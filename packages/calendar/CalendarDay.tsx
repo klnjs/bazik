@@ -5,6 +5,7 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
+import type { Temporal } from 'temporal-polyfill'
 import {
 	freya,
 	forwardRef,
@@ -12,12 +13,10 @@ import {
 	toData,
 	isRTL,
 	isSet,
-	isFunction,
 	type CoreProps
 } from '../core'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import {
-	clamp,
 	isAfter,
 	isBefore,
 	isBetween,
@@ -26,16 +25,15 @@ import {
 	isEqualsToTheMonth,
 	isStartOfWeek,
 	isToday as isTodayFn,
-	isWeekend as isWeekendFn,
-	type CalendarDate
-} from './CalendarDate'
+	isWeekend as isWeekendFn
+} from './useCalendarTemporal'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarMonthContext } from './CalendarMonthContext'
 
 export type CalendarDayProps = CoreProps<
 	'div',
 	{
-		date: CalendarDate
+		date: Temporal.PlainDate
 		disabled?: boolean
 		disabledIfWeekend?: boolean
 		disabledIfOverflow?: boolean
@@ -97,8 +95,9 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isRangeBetween =
 			isRange && isBetween(date, selection[0], selection[1])
 
-		const isTabbable = !isDisabled && isHighlighted
-		const isSelectable = !isDisabled && !readOnly
+		const isFocusable = !isDisabled
+		const isTabbable = isFocusable && isHighlighted
+		const isSelectable = isFocusable && !readOnly
 		const isSelected =
 			(isOne && date.equals(selection)) ||
 			(isMany && selection.some((s) => date.equals(s))) ||
@@ -144,11 +143,11 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const handleHighlight = useCallback(
 			(action: Parameters<typeof setHighlighted>[0]) => {
-				setHighlighted((prev) =>
-					clamp(isFunction(action) ? action(prev) : action, min, max)
-				)
+				if (isFocusable) {
+					setHighlighted(action)
+				}
 			},
-			[min, max, setHighlighted]
+			[isFocusable, setHighlighted]
 		)
 
 		const handleKeyboard = useCallback(

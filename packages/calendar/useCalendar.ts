@@ -1,22 +1,29 @@
 import {
+	useRef,
 	useMemo,
 	useState,
 	useCallback,
 	type SetStateAction,
 	type Dispatch
 } from 'react'
-import { useControllableState, isSet, isArray } from '../core'
-import { compare, getToday, type CalendarDate } from './CalendarDate'
+import type { Temporal } from 'temporal-polyfill'
+import { useControllableState, isSet, isArray, isFunction } from '../core'
+import {
+	clamp,
+	compare,
+	getToday,
+	isEqualsToTheMonth
+} from './useCalendarTemporal'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
 
 export type CalendarSelectValue<S extends CalendarSelect> =
 	| null
 	| (S extends 'range'
-			? [CalendarDate, CalendarDate]
+			? [Temporal.PlainDate, Temporal.PlainDate]
 			: S extends 'many'
-			? CalendarDate[]
-			: CalendarDate)
+			? Temporal.PlainDate[]
+			: Temporal.PlainDate)
 
 export type CalendarValue = CalendarSelectValue<CalendarSelect>
 
@@ -25,8 +32,9 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 	defaultValue?: CalendarSelectValue<S>
 	disabled?: boolean
 	locale?: string
-	max?: CalendarDate
-	min?: CalendarDate
+	max?: Temporal.PlainDate
+	min?: Temporal.PlainDate
+	months?: number
 	readOnly?: boolean
 	select?: S
 	value?: CalendarSelectValue<S>
@@ -36,17 +44,19 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 export type UseCalendarReturn<S extends CalendarSelect> = {
 	disabled: boolean
 	focusWithin: boolean
-	highlighted: CalendarDate
+	highlighted: Temporal.PlainDate
 	locale: string
-	max: CalendarDate | undefined
-	min: CalendarDate | undefined
+	months: Temporal.PlainYearMonth[]
+	max: Temporal.PlainDate | undefined
+	min: Temporal.PlainDate | undefined
 	readOnly: boolean
 	selection: CalendarSelectValue<S>
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
+	setMonths: Dispatch<SetStateAction<Temporal.PlainYearMonth[]>>
+	setSelection: (date: Temporal.PlainDate) => void
 	setFocusWithin: Dispatch<SetStateAction<boolean>>
-	setHighlighted: Dispatch<SetStateAction<CalendarDate>>
-	setSelection: (date: CalendarDate) => void
+	setHighlighted: Dispatch<SetStateAction<Temporal.PlainDate>>
 }
 
 export const useCalendar = <S extends CalendarSelect = 'one'>({
@@ -56,6 +66,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	locale = navigator.language,
 	max,
 	min,
+	months: monthsProp = 1,
 	readOnly = false,
 	select: selectionMode,
 	value,
@@ -63,36 +74,64 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 }: UseCalendarOptions<S> = {}) => {
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
-	const [state, setState] = useControllableState<CalendarValue>({
+	const [highlighted, setHighlighted] = useState<Temporal.PlainDate>(() =>
+		isArray(value) ? value[0] : value ?? getToday()
+	)
+
+	const [transient, setTransient] = useState<Temporal.PlainDate>()
+
+	const [months, setMonths] = useState<Temporal.PlainYearMonth[]>(() =>
+		Array.from({ length: monthsProp }, (_, index) =>
+			highlighted.toPlainYearMonth().add({ months: index })
+		)
+	)
+
+	const setHighlightedClamp = useCallback(
+		(action: SetStateAction<Temporal.PlainDate>) => {
+			const result = isFunction(action) ? action(highlighted) : action
+			const target = clamp(result, min, max)
+			const exists = months.some((month) => month.equals(target))
+
+			setHighlighted(target)
+			setMonths((prev) =>
+				prev.map((month) =>
+					month.add({
+						months: exists
+							? 0
+							: target.year * 12 +
+							  target.month -
+							  (highlighted.year * 12 + highlighted.month)
+					})
+				)
+			)
+		},
+		[min, max, months, highlighted]
+	)
+
+	const [selection, setSelection] = useControllableState<CalendarValue>({
 		value,
 		defaultValue,
 		onChange: onChange as (value: CalendarValue) => void
 	})
 
-	const [transient, setTransient] = useState<CalendarDate>()
-
-	const [highlighted, setHighlighted] = useState<CalendarDate>(() =>
-		isArray(value) ? value[0] : value ?? getToday()
-	)
-
-	const selection = useMemo(
+	const selectionToDisplay = useMemo(
 		() =>
 			selectionMode === 'range' && isSet(transient)
 				? [transient, highlighted].toSorted(compare)
-				: state,
-		[selectionMode, state, transient, highlighted]
+				: selection,
+		[selectionMode, selection, transient, highlighted]
 	)
 
 	const selectionIsTransient = isSet(transient)
 
-	const setSelection = useCallback(
-		(date: CalendarDate) => {
+	const setSelectionByMode = useCallback(
+		(date: Temporal.PlainDate) => {
 			if (selectionMode === 'one') {
-				setState(date)
+				setSelection(date)
 			}
 
 			if (selectionMode === 'many') {
-				setState((prev) => {
+				setSelection((prev) => {
 					if (isArray(prev)) {
 						const filtered = prev.filter((p) => !p.equals(date))
 
@@ -110,7 +149,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 			if (selectionMode === 'range') {
 				setTransient((prev) => {
 					if (isSet(prev)) {
-						setState([prev, date].toSorted(compare))
+						setSelection([prev, date].toSorted(compare))
 						return undefined
 					}
 
@@ -118,7 +157,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 				})
 			}
 		},
-		[selectionMode, setState]
+		[selectionMode, setSelection]
 	)
 
 	return {
@@ -128,15 +167,22 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		locale,
 		max,
 		min,
+		months,
 		readOnly,
-		selection,
+		selection: selectionToDisplay,
 		selectionIsTransient,
 		selectionMode,
-		setSelection,
-		setHighlighted,
+		setMonths,
+		setSelection: setSelectionByMode,
+		setHighlighted: setHighlightedClamp,
 		setFocusWithin
 	} as
 		| UseCalendarReturn<'one'>
 		| UseCalendarReturn<'many'>
 		| UseCalendarReturn<'range'>
 }
+
+const today = getToday()
+const todayNextMonth = today.add({ years: 1 })
+
+console.log(today.until(todayNextMonth, { largestUnit: 'months' }).months)

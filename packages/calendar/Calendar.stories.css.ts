@@ -62,6 +62,9 @@ export const button = style({
 	justifyContent: 'center',
 	':hover': {
 		background: '#E7E7E7'
+	},
+	':disabled': {
+		pointerEvents: 'none'
 	}
 })
 

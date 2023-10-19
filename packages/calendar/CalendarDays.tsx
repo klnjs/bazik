@@ -7,7 +7,7 @@ import {
 	toStartOfWeek,
 	isStartOfWeek,
 	toStartOfMonth
-} from './CalendarDate'
+} from './useCalendarTemporal'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarMonthContext } from './CalendarMonthContext'
 import type {

@@ -1,8 +1,6 @@
 import { Temporal } from 'temporal-polyfill'
 import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
-export type CalendarDate = Temporal.PlainDate
-
 export const getToday = (): Temporal.PlainDate => Temporal.Now.plainDateISO()
 
 export const getDayOfWeek = (date: Temporal.PlainDate, locale: string) =>

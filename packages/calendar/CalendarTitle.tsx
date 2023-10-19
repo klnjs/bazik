@@ -6,13 +6,13 @@ export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	({ id: idProp, children, ...otherProps }, forwardedRef) => {
-		const { locale, highlighted } = useCalendarContext()
-		const { year, month } = useCalendarMonthContext()
+		const { locale } = useCalendarContext()
+		const month = useCalendarMonthContext()
 
 		return (
 			<freya.h2 ref={forwardedRef} aria-live="polite" {...otherProps}>
 				{children ??
-					highlighted.with({ year, month }).toLocaleString(locale, {
+					month.toLocaleString(locale, {
 						year: 'numeric',
 						month: 'long'
 					})}
