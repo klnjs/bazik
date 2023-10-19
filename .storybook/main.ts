@@ -11,7 +11,7 @@ export default {
 	framework: {
 		name: '@storybook/react-vite',
 		options: {
-			strictMode: true
+			strictMode: false
 		}
 	},
 	addons: [

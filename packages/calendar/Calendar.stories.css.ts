@@ -4,7 +4,8 @@ export const calendar = style({
 	display: 'inline-flex',
 	flexDirection: 'column',
 	gap: 8,
-	fontFamily: 'Arial'
+	fontFamily: 'Arial',
+	position: 'relative'
 })
 
 export const calendarWide = style([
@@ -28,6 +29,13 @@ export const title = style({
 	marginInlineEnd: 'auto'
 })
 
+export const titleWide = style([
+	title,
+	{
+		marginInlineEnd: 0
+	}
+])
+
 export const grid = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(7, 1fr)',
@@ -44,9 +52,16 @@ export const header = style({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	gap: 8,
-	height: 24
+	gap: 4,
+	height: 32
 })
+
+export const headerWide = style([
+	header,
+	{
+		justifyContent: 'space-around'
+	}
+])
 
 export const button = style({
 	display: 'inline-flex',
@@ -57,7 +72,6 @@ export const button = style({
 	borderRadius: 4,
 	background: 'none',
 	lineHeight: 24,
-	paddingBlockEnd: 2,
 	alignItems: 'center',
 	justifyContent: 'center',
 	':hover': {
@@ -67,6 +81,24 @@ export const button = style({
 		pointerEvents: 'none'
 	}
 })
+
+export const buttonWidePrevious = style([
+	button,
+	{
+		position: 'absolute',
+		insetBlockStart: 0,
+		insetInlineStart: 0
+	}
+])
+
+export const buttonWideNext = style([
+	button,
+	{
+		position: 'absolute',
+		insetBlockStart: 0,
+		insetInlineEnd: 0
+	}
+])
 
 export const item = style({
 	width: 32,

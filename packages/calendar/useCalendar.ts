@@ -1,19 +1,13 @@
 import {
-	useRef,
 	useMemo,
 	useState,
 	useCallback,
-	type SetStateAction,
-	type Dispatch
+	type Dispatch,
+	type SetStateAction
 } from 'react'
 import type { Temporal } from 'temporal-polyfill'
 import { useControllableState, isSet, isArray, isFunction } from '../core'
-import {
-	clamp,
-	compare,
-	getToday,
-	isEqualsToTheMonth
-} from './useCalendarTemporal'
+import { clamp, compare, getToday } from './useCalendarTemporal'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
 
@@ -46,14 +40,14 @@ export type UseCalendarReturn<S extends CalendarSelect> = {
 	focusWithin: boolean
 	highlighted: Temporal.PlainDate
 	locale: string
-	months: Temporal.PlainYearMonth[]
+	months: Temporal.PlainDate[]
 	max: Temporal.PlainDate | undefined
 	min: Temporal.PlainDate | undefined
 	readOnly: boolean
 	selection: CalendarSelectValue<S>
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
-	setMonths: Dispatch<SetStateAction<Temporal.PlainYearMonth[]>>
+	setMonths: Dispatch<SetStateAction<Temporal.PlainDate[]>>
 	setSelection: (date: Temporal.PlainDate) => void
 	setFocusWithin: Dispatch<SetStateAction<boolean>>
 	setHighlighted: Dispatch<SetStateAction<Temporal.PlainDate>>
@@ -80,13 +74,13 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 	const [transient, setTransient] = useState<Temporal.PlainDate>()
 
-	const [months, setMonths] = useState<Temporal.PlainYearMonth[]>(() =>
+	const [months, setMonths] = useState<Temporal.PlainDate[]>(() =>
 		Array.from({ length: monthsProp }, (_, index) =>
-			highlighted.toPlainYearMonth().add({ months: index })
+			highlighted.with({ day: 1 }).add({ months: index })
 		)
 	)
 
-	const setHighlightedClamp = useCallback(
+	const setHighlightedAndClamp = useCallback(
 		(action: SetStateAction<Temporal.PlainDate>) => {
 			const result = isFunction(action) ? action(highlighted) : action
 			const target = clamp(result, min, max)
@@ -174,15 +168,10 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		selectionMode,
 		setMonths,
 		setSelection: setSelectionByMode,
-		setHighlighted: setHighlightedClamp,
+		setHighlighted: setHighlightedAndClamp,
 		setFocusWithin
 	} as
 		| UseCalendarReturn<'one'>
 		| UseCalendarReturn<'many'>
 		| UseCalendarReturn<'range'>
 }
-
-const today = getToday()
-const todayNextMonth = today.add({ years: 1 })
-
-console.log(today.until(todayNextMonth, { largestUnit: 'months' }).months)

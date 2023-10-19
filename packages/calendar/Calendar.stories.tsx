@@ -22,10 +22,18 @@ export const Basic = () => (
 		<CalendarMonth className={classes.month}>
 			<CalendarHeader className={classes.header}>
 				<CalendarTitle className={classes.title} />
-				<CalendarButton action="month-1" className={classes.button}>
+				<CalendarButton
+					action="previous"
+					segment="month"
+					className={classes.button}
+				>
 					‹
 				</CalendarButton>
-				<CalendarButton action="month+1" className={classes.button}>
+				<CalendarButton
+					action="next"
+					segment="month"
+					className={classes.button}
+				>
 					›
 				</CalendarButton>
 			</CalendarHeader>
@@ -49,10 +57,18 @@ export const Multiple = () => (
 		<CalendarMonth className={classes.month}>
 			<CalendarHeader className={classes.header}>
 				<CalendarTitle className={classes.title} />
-				<CalendarButton action="month-1" className={classes.button}>
+				<CalendarButton
+					action="previous"
+					segment="month"
+					className={classes.button}
+				>
 					‹
 				</CalendarButton>
-				<CalendarButton action="month+1" className={classes.button}>
+				<CalendarButton
+					action="next"
+					segment="month"
+					className={classes.button}
+				>
 					›
 				</CalendarButton>
 			</CalendarHeader>
@@ -76,10 +92,18 @@ export const Range = () => (
 		<CalendarMonth className={classes.month}>
 			<CalendarHeader className={classes.header}>
 				<CalendarTitle className={classes.title} />
-				<CalendarButton action="month-1" className={classes.button}>
+				<CalendarButton
+					action="previous"
+					segment="month"
+					className={classes.button}
+				>
 					‹
 				</CalendarButton>
-				<CalendarButton action="month+1" className={classes.button}>
+				<CalendarButton
+					action="next"
+					segment="month"
+					className={classes.button}
+				>
 					›
 				</CalendarButton>
 			</CalendarHeader>
@@ -100,8 +124,10 @@ export const Range = () => (
 
 export const Weekinfo = () => (
 	<Calendar aria-label="Event Date" className={classes.calendar}>
-		<CalendarMonth>
-			<CalendarTitle className={classes.title} />
+		<CalendarMonth className={classes.month}>
+			<CalendarHeader className={classes.header}>
+				<CalendarTitle className={classes.titleWide} />
+			</CalendarHeader>
 			<CalendarGrid className={classes.gridWithWeekInfo}>
 				<CalendarDays week={true} weekday={true}>
 					{({ key, date, role }) => (
@@ -120,8 +146,10 @@ export const Weekinfo = () => (
 
 export const Overflow = () => (
 	<Calendar aria-label="Event Date" className={classes.calendar}>
-		<CalendarMonth>
-			<CalendarTitle className={classes.title} />
+		<CalendarMonth className={classes.month}>
+			<CalendarHeader className={classes.header}>
+				<CalendarTitle className={classes.titleWide} />
+			</CalendarHeader>
 			<CalendarGrid className={classes.grid}>
 				<CalendarDays>
 					{({ key, date }) => (
@@ -149,13 +177,21 @@ export const Boundaries = () => {
 			aria-label="Event Date"
 			className={classes.calendar}
 		>
-			<CalendarMonth>
+			<CalendarMonth className={classes.month}>
 				<CalendarHeader className={classes.header}>
 					<CalendarTitle className={classes.title} />
-					<CalendarButton action="month-1" className={classes.button}>
+					<CalendarButton
+						action="previous"
+						segment="month"
+						className={classes.button}
+					>
 						‹
 					</CalendarButton>
-					<CalendarButton action="month+1" className={classes.button}>
+					<CalendarButton
+						action="next"
+						segment="month"
+						className={classes.button}
+					>
 						›
 					</CalendarButton>
 				</CalendarHeader>
@@ -182,7 +218,9 @@ export const Localization = () => (
 		className={classes.calendar}
 	>
 		<CalendarMonth className={classes.month}>
-			<CalendarTitle className={classes.title} />
+			<CalendarHeader className={classes.header}>
+				<CalendarTitle className={classes.titleWide} />
+			</CalendarHeader>
 			<CalendarGrid className={classes.grid}>
 				<CalendarDays weekday={true}>
 					{({ key, date, role }) => (
@@ -203,9 +241,24 @@ export const Wide = () => (
 	<Calendar
 		select="range"
 		months={3}
+		autoFocus
 		aria-label="Event Date"
 		className={classes.calendarWide}
 	>
+		<CalendarButton
+			action="previous"
+			segment="month"
+			className={classes.buttonWidePrevious}
+		>
+			‹
+		</CalendarButton>
+		<CalendarButton
+			action="next"
+			segment="month"
+			className={classes.buttonWideNext}
+		>
+			›
+		</CalendarButton>
 		<CalendarMonths>
 			{({ key: keyMonth, year, month }) => (
 				<CalendarMonth
@@ -214,7 +267,9 @@ export const Wide = () => (
 					month={month}
 					className={classes.month}
 				>
-					<CalendarTitle className={classes.title} />
+					<CalendarHeader className={classes.headerWide}>
+						<CalendarTitle className={classes.titleWide} />
+					</CalendarHeader>
 					<CalendarGrid className={classes.grid}>
 						<CalendarDays>
 							{({ key: keyDay, date }) => (
@@ -231,7 +286,6 @@ export const Wide = () => (
 		</CalendarMonths>
 	</Calendar>
 )
-
 export const Schedule = () => {
 	const createEventInThisMonth = (
 		name: string,
@@ -261,7 +315,6 @@ export const Schedule = () => {
 		>
 			<CalendarMonth style={{ gap: 0 }}>
 				<CalendarTitle className={classes.title} />
-
 				<CalendarGrid className={classes.grid}>
 					<CalendarDays>
 						{({ key, date }) => (
