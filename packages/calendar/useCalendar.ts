@@ -88,15 +88,16 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 			setHighlighted(target)
 			setMonths((prev) =>
-				prev.map((month) =>
-					month.add({
-						months: exists
-							? 0
-							: target.year * 12 +
-							  target.month -
-							  (highlighted.year * 12 + highlighted.month)
-					})
-				)
+				exists
+					? prev
+					: prev.map((month) =>
+							month.add({
+								months:
+									target.year * 12 +
+									target.month -
+									(highlighted.year * 12 + highlighted.month)
+							})
+					  )
 			)
 		},
 		[min, max, months, highlighted]

@@ -3,7 +3,7 @@ import { useCallback, type FocusEvent } from 'react'
 export type UseFocusWithinOptions<E extends FocusEvent> = {
 	onFocusEnter?: (event: E) => void
 	onFocusLeave?: (event: E) => void
-	onFocusChange?: (update: boolean) => void
+	onFocusChange?: (event: E, update: boolean) => void
 }
 
 export const useFocusWithin = <E extends FocusEvent>({
@@ -15,7 +15,7 @@ export const useFocusWithin = <E extends FocusEvent>({
 		(event: E) => {
 			if (event.currentTarget.contains(event.target)) {
 				onFocusEnter?.(event)
-				onFocusChange?.(true)
+				onFocusChange?.(event, true)
 			}
 		},
 		[onFocusEnter, onFocusChange]
@@ -25,7 +25,7 @@ export const useFocusWithin = <E extends FocusEvent>({
 		(event: E) => {
 			if (event.currentTarget.contains(event.target)) {
 				onFocusLeave?.(event)
-				onFocusChange?.(true)
+				onFocusChange?.(event, false)
 			}
 		},
 		[onFocusLeave, onFocusChange]

@@ -50,7 +50,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 		const focusProps = useFocusWithin({
 			onFocusEnter,
 			onFocusLeave,
-			onFocusChange: (update) => calendar.setFocusWithin(update)
+			onFocusChange: (_, update) => calendar.setFocusWithin(update)
 		})
 
 		return (
