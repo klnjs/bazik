@@ -7,7 +7,7 @@ import {
 	toStartOfWeek,
 	isStartOfWeek,
 	toStartOfMonth
-} from './useCalendarTemporal'
+} from './useCalendarDateUtils'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarMonthContext } from './CalendarMonthContext'
 import type {
@@ -32,16 +32,16 @@ export const CalendarDays = ({
 	const days = useMemo(() => {
 		const items: CalendarDaysItemProps[] = []
 		const ref = getToday().with({ year, month })
-		const end = toEndOfWeek(locale, toEndOfMonth(ref))
+		const end = toEndOfWeek(toEndOfMonth(ref), locale)
 
 		let role: CalendarDaysItemRole
 		let itrs = 0
-		let date = toStartOfWeek(locale, toStartOfMonth(ref)).subtract({
+		let date = toStartOfWeek(toStartOfMonth(ref), locale).subtract({
 			days: weekday ? 7 : 0
 		})
 
 		while (!isAfter(date, end)) {
-			if (week && isStartOfWeek(locale, date)) {
+			if (week && isStartOfWeek(date, locale)) {
 				role = weekday && itrs === 0 ? 'blank' : 'week'
 				items.push({
 					key: `${role}-${date.toString()}`,

@@ -7,7 +7,7 @@ import {
 } from 'react'
 import type { Temporal } from 'temporal-polyfill'
 import { useControllableState, isSet, isArray, isFunction } from '../core'
-import { clamp, compare, getToday } from './useCalendarTemporal'
+import { clamp, compare, getToday } from './useCalendarDateUtils'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
 

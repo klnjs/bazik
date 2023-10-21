@@ -25,7 +25,7 @@ import {
 	isStartOfWeek,
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn
-} from './useCalendarTemporal'
+} from './useCalendarDateUtils'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarMonthContext } from './CalendarMonthContext'
 
@@ -76,9 +76,9 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isRange = selectionMode === 'range' && isSet(selection)
 
 		const isToday = isTodayFn(date)
-		const isWeekend = isWeekendFn(locale, date)
-		const isWeekEnd = isEndOfWeek(locale, date)
-		const isWeekStart = isStartOfWeek(locale, date)
+		const isWeekend = isWeekendFn(date, locale)
+		const isWeekEnd = isEndOfWeek(date, locale)
+		const isWeekStart = isStartOfWeek(date, locale)
 		const isOverflow = !isSameMonth(date, date.with({ year, month }))
 		const isHighlighted = date.equals(highlighted)
 		const isDisabled =
@@ -119,7 +119,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			}
 
 			return formatted
-		}, [locale, date, names, isToday])
+		}, [date, locale, names, isToday])
 
 		const handleBlur = useCallback(() => {
 			if (shouldSelectOnBlur) {

@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { freya, forwardRef, toData, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import { isAfter, isBefore, getToday } from './useCalendarTemporal'
+import { isAfter, isBefore, getToday } from './useCalendarDateUtils'
 
 export type CalendarButtonProps = CoreProps<
 	'button',

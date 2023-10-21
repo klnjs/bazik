@@ -7,10 +7,10 @@ import { CalendarDaysItem } from './CalendarDaysItem'
 import { CalendarGrid } from './CalendarGrid'
 import { CalendarHeader } from './CalendarHeader'
 import { CalendarMonth } from './CalendarMonth'
-import { CalendarTitle } from './CalendarTitle'
-import { getToday, toEndOfMonth, toStartOfMonth } from './useCalendarTemporal'
-import * as classes from './Calendar.stories.css'
 import { CalendarMonths } from './CalendarMonths'
+import { CalendarTitle } from './CalendarTitle'
+import { getToday, toEndOfMonth, toStartOfMonth } from './useCalendarDateUtils'
+import * as classes from './Calendar.stories.css'
 
 export default {
 	title: 'Calendar',

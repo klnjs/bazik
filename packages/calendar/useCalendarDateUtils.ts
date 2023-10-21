@@ -3,21 +3,21 @@ import { getCalendarWeekInfo } from './useCalendarWeekInfo'
 
 export const getToday = (): Temporal.PlainDate => Temporal.Now.plainDateISO()
 
-export const getDayOfWeek = (locale: string, date: Temporal.PlainDate) =>
+export const getDayOfWeek = (date: Temporal.PlainDate, locale: string) =>
 	((date.dayOfWeek - getCalendarWeekInfo(locale).firstDay + 7) % 7) + 1
 
-export const getWeekOfYear = (locale: string, date: Temporal.PlainDate) =>
-	toDayOfWeek(locale, date, 4).weekOfYear
+export const getWeekOfYear = (date: Temporal.PlainDate, locale: string) =>
+	toDayOfWeek(date, 4, locale).weekOfYear
 
 export const toStartOfWeek = (
-	locale: string,
-	date: Temporal.PlainDate
-): Temporal.PlainDate => date.subtract({ days: getDayOfWeek(locale, date) - 1 })
+	date: Temporal.PlainDate,
+	locale: string
+): Temporal.PlainDate => date.subtract({ days: getDayOfWeek(date, locale) - 1 })
 
 export const toEndOfWeek = (
-	locale: string,
-	date: Temporal.PlainDate
-): Temporal.PlainDate => toDayOfWeek(locale, date, 7)
+	date: Temporal.PlainDate,
+	locale: string
+): Temporal.PlainDate => toDayOfWeek(date, 7, locale)
 
 export const toStartOfMonth = (date: Temporal.PlainDate): Temporal.PlainDate =>
 	date.with({ day: 1 })
@@ -26,10 +26,10 @@ export const toEndOfMonth = (date: Temporal.PlainDate): Temporal.PlainDate =>
 	date.with({ day: date.daysInMonth })
 
 export const toDayOfWeek = (
-	locale: string,
 	date: Temporal.PlainDate,
-	day: number
-): Temporal.PlainDate => toStartOfWeek(locale, date).add({ days: day - 1 })
+	day: number,
+	locale: string
+): Temporal.PlainDate => toStartOfWeek(date, locale).add({ days: day - 1 })
 
 export const clamp = (
 	date: Temporal.PlainDate,
@@ -71,11 +71,11 @@ export const isSameMonth = (
 
 export const isToday = (date: Temporal.PlainDate) => date.equals(getToday())
 
-export const isWeekend = (locale: string, date: Temporal.PlainDate) =>
+export const isWeekend = (date: Temporal.PlainDate, locale: string) =>
 	getCalendarWeekInfo(locale).weekend.includes(date.dayOfWeek)
 
-export const isStartOfWeek = (locale: string, date: Temporal.PlainDate) =>
-	getDayOfWeek(locale, date) === 1
+export const isStartOfWeek = (date: Temporal.PlainDate, locale: string) =>
+	getDayOfWeek(date, locale) === 1
 
-export const isEndOfWeek = (locale: string, date: Temporal.PlainDate) =>
-	getDayOfWeek(locale, date) === 7
+export const isEndOfWeek = (date: Temporal.PlainDate, locale: string) =>
+	getDayOfWeek(date, locale) === 7
