@@ -11,7 +11,7 @@ export const CalendarWeek = forwardRef<'div', CalendarWeekProps>(
 
 		return (
 			<freya.div ref={forwardedRef} {...otherProps}>
-				{children ?? getWeekOfYear(date, locale)}
+				{children ?? getWeekOfYear(locale, date)}
 			</freya.div>
 		)
 	}

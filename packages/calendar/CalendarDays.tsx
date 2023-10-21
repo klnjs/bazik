@@ -32,16 +32,16 @@ export const CalendarDays = ({
 	const days = useMemo(() => {
 		const items: CalendarDaysItemProps[] = []
 		const ref = getToday().with({ year, month })
-		const end = toEndOfWeek(toEndOfMonth(ref), locale)
+		const end = toEndOfWeek(locale, toEndOfMonth(ref))
 
 		let role: CalendarDaysItemRole
 		let itrs = 0
-		let date = toStartOfWeek(toStartOfMonth(ref), locale).subtract({
+		let date = toStartOfWeek(locale, toStartOfMonth(ref)).subtract({
 			days: weekday ? 7 : 0
 		})
 
 		while (!isAfter(date, end)) {
-			if (week && isStartOfWeek(date, locale)) {
+			if (week && isStartOfWeek(locale, date)) {
 				role = weekday && itrs === 0 ? 'blank' : 'week'
 				items.push({
 					key: `${role}-${date.toString()}`,

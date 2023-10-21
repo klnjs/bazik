@@ -21,8 +21,7 @@ import {
 	isBefore,
 	isBetween,
 	isEndOfWeek,
-	isEquals,
-	isEqualsToTheMonth,
+	isSameMonth,
 	isStartOfWeek,
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn
@@ -77,11 +76,11 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isRange = selectionMode === 'range' && isSet(selection)
 
 		const isToday = isTodayFn(date)
-		const isWeekEnd = isEndOfWeek(date, locale)
-		const isWeekStart = isStartOfWeek(date, locale)
-		const isWeekend = isWeekendFn(date, locale)
-		const isOverflow = !isEqualsToTheMonth(date, date.with({ year, month }))
-		const isHighlighted = isEquals(date, highlighted)
+		const isWeekend = isWeekendFn(locale, date)
+		const isWeekEnd = isEndOfWeek(locale, date)
+		const isWeekStart = isStartOfWeek(locale, date)
+		const isOverflow = !isSameMonth(date, date.with({ year, month }))
+		const isHighlighted = date.equals(highlighted)
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
@@ -90,8 +89,8 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			Boolean(max && isAfter(date, max)) ||
 			Boolean(min && isBefore(date, min))
 
-		const isRangeEnd = isRange && isEquals(date, selection[1])
-		const isRangeStart = isRange && isEquals(date, selection[0])
+		const isRangeEnd = isRange && date.equals(selection[1])
+		const isRangeStart = isRange && date.equals(selection[0])
 		const isRangeBetween =
 			isRange && isBetween(date, selection[0], selection[1])
 
