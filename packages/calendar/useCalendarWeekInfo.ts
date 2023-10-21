@@ -1308,5 +1308,5 @@ export const getCalendarWeekInfo = (localeArg: string) => {
 	]
 }
 
-export const useCalendarWeekInfo = (localeArg: string) =>
-	useMemo(() => getCalendarWeekInfo(localeArg), [localeArg])
+export const useCalendarWeekInfo = (locale: string) =>
+	useMemo(() => getCalendarWeekInfo(locale), [locale])

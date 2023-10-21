@@ -1,5 +1,6 @@
 export * from './assertion'
 export * from './chain'
+export * from './createContext'
 export * from './clsx'
 export * from './factory'
 export * from './forwardRef'

@@ -5,78 +5,106 @@ import {
 	useCallback,
 	type KeyboardEvent
 } from 'react'
+import type { Temporal } from 'temporal-polyfill'
 import {
 	freya,
 	forwardRef,
 	useMergeRefs,
 	toData,
 	isRTL,
-	isSet as isSetCheck,
-	isRange as isRangeCheck,
+	isSet,
 	type CoreProps
 } from '../core'
-import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-import type { CalendarDate } from './CalendarDate'
+import {
+	isAfter,
+	isBefore,
+	isBetween,
+	isEndOfWeek,
+	isSameMonth,
+	isStartOfWeek,
+	isToday as isTodayFn,
+	isWeekend as isWeekendFn
+} from './useCalendarDateUtils'
+import { useCalendarContext } from './CalendarContext'
+import { useCalendarMonthContext } from './CalendarMonthContext'
 
 export type CalendarDayProps = CoreProps<
-	'button',
+	'div',
 	{
-		date: CalendarDate
+		date: Temporal.PlainDate
 		disabled?: boolean
+		disabledIfWeekend?: boolean
+		disabledIfOverflow?: boolean
 	}
 >
 
-export const CalendarDay = forwardRef<'button', CalendarDayProps>(
+export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 	(
-		{ date, disabled: disabledProp = false, children, ...otherProps },
+		{
+			date,
+			disabled: disabledProp = false,
+			disabledIfWeekend = false,
+			disabledIfOverflow = false,
+			children,
+			...otherProps
+		},
 		forwardedRef
 	) => {
+		const ref = useRef<HTMLDivElement>(null)
+		const refCallback = useMergeRefs(ref, forwardedRef)
+
 		const {
-			min,
-			max,
-			range,
-			locale,
 			disabled: disabledContext,
-			autoFocus,
-			setAutoFocus,
+			focusWithin,
+			highlighted,
+			locale,
+			max,
+			min,
+			readOnly,
 			selection,
+			selectionMode,
 			selectionIsTransient,
 			setSelection,
-			highlighted,
 			setHighlighted
 		} = useCalendarContext()
+		const { year, month } = useCalendarMonthContext()
 		const { names } = useCalendarLocalisation(locale)
 
-		const isRange = range && isRangeCheck(selection)
-		const isSingle = !range && isSetCheck(selection)
-		const isToday = date.isToday()
-		const isWeekStart = date.getWeekDay(locale) === 1
-		const isWeekEnd = date.getWeekDay(locale) === 7
-		const isWeekend = date.isWeekend(locale)
-		const isOverflow = !date.isSameMonth(highlighted)
-		const isHighlighted = date.isSameDay(highlighted)
+		const isOne = selectionMode === 'one' && isSet(selection)
+		const isMany = selectionMode === 'many' && isSet(selection)
+		const isRange = selectionMode === 'range' && isSet(selection)
+
+		const isToday = isTodayFn(date)
+		const isWeekend = isWeekendFn(date, locale)
+		const isWeekEnd = isEndOfWeek(date, locale)
+		const isWeekStart = isStartOfWeek(date, locale)
+		const isOverflow = !isSameMonth(date, date.with({ year, month }))
+		const isHighlighted = date.equals(highlighted)
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
-			Boolean(max && date.isAfter(max)) ||
-			Boolean(min && date.isBefore(min))
+			(disabledIfWeekend && isWeekend) ||
+			(disabledIfOverflow && isOverflow) ||
+			Boolean(max && isAfter(date, max)) ||
+			Boolean(min && isBefore(date, min))
 
-		const isRangeStart = isRange && date.isSameDay(selection[0])
-		const isRangeEnd = isRange && date.isSameDay(selection[1])
-		const isRangeIn =
-			!isRangeStart &&
-			!isRangeEnd &&
-			isRange &&
-			date.isBetween(selection[0], selection[1])
+		const isRangeEnd = isRange && date.equals(selection[1])
+		const isRangeStart = isRange && date.equals(selection[0])
+		const isRangeBetween =
+			isRange && isBetween(date, selection[0], selection[1])
 
+		const isFocusable = !isDisabled
+		const isTabbable = isFocusable && isHighlighted
+		const isSelectable = isFocusable && !readOnly
 		const isSelected =
-			isRangeStart ||
-			isRangeEnd ||
-			(isSingle && date.isSameDay(selection))
+			(isOne && date.equals(selection)) ||
+			(isMany && selection.some((s) => date.equals(s))) ||
+			(isRange && (isRangeEnd || isRangeStart))
 
-		const ref = useRef<HTMLButtonElement>(null)
-		const refCallback = useMergeRefs(ref, forwardedRef)
+		const shouldGrabFocus = focusWithin && isHighlighted
+		const shouldLightOnOver = selectionIsTransient && isSelectable
+		const shouldSelectOnBlur = shouldLightOnOver && isHighlighted
 
 		const label = useMemo(() => {
 			const formatted = date.toLocaleString(locale, {
@@ -87,55 +115,51 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 			})
 
 			if (isToday) {
-				// Uncertain how this works in different locales, due to
-				// the concatenation of the two labels.
 				return `${names.of('today')}, ${formatted}`
 			}
 
 			return formatted
-		}, [locale, date, names, isToday])
-
-		const setHighlightedAndFocus = useCallback(
-			(action: Parameters<typeof setHighlighted>[0]) => {
-				setAutoFocus(true)
-				setHighlighted((prev) => {
-					if (typeof action === 'function') {
-						return action(prev).clamp(min, max)
-					}
-
-					return action.clamp(min, max)
-				})
-			},
-			[min, max, setAutoFocus, setHighlighted]
-		)
-
-		const handleOver = useCallback(() => {
-			if (!isDisabled && selectionIsTransient) {
-				setHighlightedAndFocus(date)
-			}
-		}, [date, isDisabled, selectionIsTransient, setHighlightedAndFocus])
+		}, [date, locale, names, isToday])
 
 		const handleBlur = useCallback(() => {
-			if (!isDisabled && isHighlighted && selectionIsTransient) {
+			if (shouldSelectOnBlur) {
 				setSelection(date)
 			}
-		}, [
-			date,
-			isDisabled,
-			isHighlighted,
-			selectionIsTransient,
-			setSelection
-		])
+		}, [date, shouldSelectOnBlur, setSelection])
+
+		const handleOver = useCallback(() => {
+			if (shouldLightOnOver) {
+				setHighlighted(date)
+			}
+		}, [date, shouldLightOnOver, setHighlighted])
 
 		const handleSelect = useCallback(() => {
-			if (!isDisabled) {
+			if (isSelectable) {
 				setSelection(date)
-				setHighlightedAndFocus(date)
+				setHighlighted(date)
 			}
-		}, [date, isDisabled, setSelection, setHighlightedAndFocus])
+		}, [date, isSelectable, setSelection, setHighlighted])
+
+		const handleHighlight = useCallback(
+			(action: Parameters<typeof setHighlighted>[0]) => {
+				if (isFocusable) {
+					setHighlighted(action)
+				}
+			},
+			[isFocusable, setHighlighted]
+		)
 
 		const handleKeyboard = useCallback(
-			(event: KeyboardEvent<HTMLButtonElement>) => {
+			(event: KeyboardEvent<HTMLDivElement>) => {
+				if (
+					event.shiftKey ||
+					event.ctrlKey ||
+					event.altKey ||
+					event.metaKey
+				) {
+					return
+				}
+
 				if (event.code !== 'Tab') {
 					event.preventDefault()
 				}
@@ -145,63 +169,61 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					setHighlightedAndFocus((prev) => prev.sub({ day: 7 }))
+					handleHighlight((prev) => prev.subtract({ days: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					setHighlightedAndFocus((prev) =>
-						prev.sub({
-							day: isRTL(event.target) ? 1 : -1
+					handleHighlight((prev) =>
+						prev.subtract({
+							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'ArrowDown') {
-					setHighlightedAndFocus((prev) => prev.add({ day: 7 }))
+					handleHighlight((prev) => prev.add({ days: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					setHighlightedAndFocus((prev) =>
+					handleHighlight((prev) =>
 						prev.add({
-							day: isRTL(event.target) ? 1 : -1
+							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'PageUp') {
-					setHighlightedAndFocus((prev) => prev.sub({ month: 1 }))
+					handleHighlight((prev) => prev.subtract({ months: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					setHighlightedAndFocus((prev) => prev.add({ month: 1 }))
+					handleHighlight((prev) => prev.add({ months: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					setHighlightedAndFocus((prev) => prev.getFirstDateOfMonth())
+					handleHighlight((prev) => prev.with({ day: 1 }))
 				}
 
 				if (event.code === 'End') {
-					setHighlightedAndFocus((prev) => prev.getLastDateOfMonth())
+					handleHighlight((prev) =>
+						prev.with({ day: prev.daysInMonth })
+					)
 				}
 			},
-			[handleSelect, setHighlightedAndFocus]
+			[handleSelect, handleHighlight]
 		)
 
 		useEffect(() => {
-			if (isHighlighted && autoFocus) {
-				setAutoFocus(false)
-				ref.current?.focus({
-					// @ts-expect-error not yet implemented
-					// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus
-					focusVisible: true
-				})
+			if (shouldGrabFocus) {
+				ref.current?.focus()
 			}
-		}, [isHighlighted, autoFocus, setAutoFocus])
+		}, [shouldGrabFocus])
 
 		return (
-			<freya.button
+			<freya.div
 				ref={refCallback}
-				tabIndex={isHighlighted ? 0 : -1}
+				role="button"
+				tabIndex={isTabbable ? 0 : -1}
 				data-today={toData(isToday)}
 				data-weekend={toData(isWeekend)}
 				data-week-start={toData(isWeekStart)}
@@ -209,11 +231,12 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				data-overflow={toData(isOverflow)}
 				data-disabled={toData(isDisabled)}
 				data-selected={toData(isSelected)}
-				data-range-in={toData(isRangeIn)}
 				data-range-end={toData(isRangeEnd)}
 				data-range-start={toData(isRangeStart)}
+				data-range-between={toData(isRangeBetween)}
 				data-highlighted={toData(isHighlighted)}
 				aria-label={label}
+				aria-readonly={readOnly}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
 				onBlur={handleBlur}
@@ -222,8 +245,8 @@ export const CalendarDay = forwardRef<'button', CalendarDayProps>(
 				onPointerOver={handleOver}
 				{...otherProps}
 			>
-				{children ?? date.getDay()}
-			</freya.button>
+				{children ?? date.day}
+			</freya.div>
 		)
 	}
 )

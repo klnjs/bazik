@@ -1,64 +1,72 @@
-import type { Ref, ReactElement } from 'react'
+import type { ReactElement, Ref } from 'react'
 import { freya, forwardRef, type CoreProps } from '../core'
+import { useFocusWithin } from '../focus/useFocusWithin'
 import { CalendarProvider } from './CalendarContext'
-import { useCalendarFieldContext } from './CalendarFieldContext'
-import { useCalendar, type UseCalendarOptions } from './useCalendar'
-import { CalendarDate } from './CalendarDate'
+import {
+	useCalendar,
+	type CalendarSelect,
+	type UseCalendarOptions
+} from './useCalendar'
 
-export type CalendarProps<R extends boolean = false> = CoreProps<
+export type CalendarProps<S extends CalendarSelect = 'one'> = CoreProps<
 	'div',
-	UseCalendarOptions<R>
+	UseCalendarOptions<S>
 >
 
 export const Calendar = forwardRef<'div', CalendarProps>(
 	(
 		{
 			autoFocus,
-			min,
-			max,
-			range,
-			value,
-			locale,
-			disabled,
 			defaultValue,
+			disabled,
+			locale,
+			max,
+			min,
+			months,
+			readOnly,
+			select = 'one',
+			value,
+			onBlur: onFocusLeave,
+			onFocus: onFocusEnter,
 			onChange,
 			...otherProps
 		},
 		forwardedRef
 	) => {
-		const field = useCalendarFieldContext({ strict: false })
 		const calendar = useCalendar({
-			autoFocus: field ? true : autoFocus,
-			min: field?.min?.toDate() ?? min,
-			max: field?.max?.toDate() ?? max,
-			range: field ? false : range,
-			value: field ? field.selection?.toDate() ?? null : value,
-			locale: field?.locale ?? locale,
-			disabled: field?.disabled ?? disabled,
-			defaultValue: field ? undefined : defaultValue,
-			onChange: field
-				? (next: Date | null) => {
-						field.setSelection(
-							new CalendarDate(next).set({
-								hour: next?.getHours(),
-								minute: next?.getMinutes()
-							})
-						)
-				  }
-				: onChange
+			autoFocus,
+			defaultValue,
+			disabled,
+			locale,
+			max,
+			min,
+			months,
+			select,
+			readOnly,
+			value,
+			onChange
+		})
+
+		const focusProps = useFocusWithin({
+			onFocusEnter,
+			onFocusLeave,
+			onFocusChange: (_, update) => calendar.setFocusWithin(update)
 		})
 
 		return (
-			<CalendarProvider value={{ ...calendar }}>
+			<CalendarProvider value={calendar}>
 				<freya.div
 					ref={forwardedRef}
 					role="application"
-					aria-labelledby={calendar.titleId}
+					aria-readonly={readOnly}
+					{...focusProps}
 					{...otherProps}
 				/>
 			</CalendarProvider>
 		)
 	}
-) as <M extends boolean = false>(
-	props: CalendarProps<M> & { ref?: Ref<HTMLDivElement> }
+) as <S extends CalendarSelect = 'one'>(
+	props: CalendarProps<S> & {
+		ref?: Ref<HTMLDivElement>
+	}
 ) => ReactElement

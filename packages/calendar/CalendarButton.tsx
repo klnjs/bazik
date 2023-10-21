@@ -1,30 +1,29 @@
 import { useCallback, useMemo } from 'react'
 import { freya, forwardRef, toData, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate, type CalendarDateSegmentType } from './CalendarDate'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
-
-type CalendarButtonSegment = Extract<CalendarDateSegmentType, 'year' | 'month'>
-
-type CalendarButtonModifier = '-1' | '+1'
-
-type CalendarButtonAction =
-	| 'today'
-	| `${CalendarButtonSegment}${CalendarButtonModifier}`
+import { isAfter, isBefore, getToday } from './useCalendarDateUtils'
 
 export type CalendarButtonProps = CoreProps<
 	'button',
-	{ action: CalendarButtonAction }
+	| { action: 'today'; segment?: never }
+	| { action: 'next' | 'previous'; segment?: 'year' | 'month' }
 >
 
 export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 	(
-		{ action, disabled: disabledProp = false, ...otherProps },
+		{
+			action,
+			segment = 'month',
+			disabled: disabledProp = false,
+			...otherProps
+		},
 		forwardedRef
 	) => {
 		const {
 			min,
 			max,
+			months,
 			locale,
 			disabled: disabledContext,
 			highlighted,
@@ -32,57 +31,42 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		} = useCalendarContext()
 		const { t, names } = useCalendarLocalisation(locale)
 
-		const [segment, modifier] = action.split(/(?=\+|-)/) as [
-			CalendarButtonSegment | 'today',
-			CalendarButtonModifier
-		]
+		const label = useMemo(
+			() =>
+				action === 'today'
+					? names.of('today')
+					: t(action, {
+							segment
+					  }),
+			[action, segment, t, names]
+		)
 
-		const label = useMemo(() => {
-			if (segment === 'today') {
-				return names.of('today')
-			}
+		const direction = action === 'next' ? 1 : -1
 
-			return t(modifier === '-1' ? 'previous' : 'next', {
-				segment
-			})
-		}, [segment, modifier, t, names])
+		const result = useMemo(
+			() =>
+				action === 'today'
+					? getToday()
+					: highlighted.add({
+							[`${segment}s`]:
+								(segment === 'month' ? months.length : 1) *
+								direction
+					  }),
+			[action, segment, direction, months, highlighted]
+		)
 
-		const isDisabled = useMemo(() => {
-			if (disabledProp || disabledContext) {
-				return true
-			}
+		const isDisabled = useMemo(
+			() =>
+				disabledProp ||
+				disabledContext ||
+				Boolean(max && isAfter(result, max)) ||
+				Boolean(min && isBefore(result, min)),
+			[min, max, result, disabledProp, disabledContext]
+		)
 
-			if (segment === 'today') {
-				return false
-			}
-
-			const n = Number(modifier)
-			const m = modifier === '-1'
-			const l = m ? min : max
-			const i = m ? 'isBefore' : 'isAfter'
-			const g = m ? 'getLastDateOfMonth' : 'getFirstDateOfMonth'
-			const a = highlighted.calc({ [segment]: n })[g]()
-
-			return l && a[i](l)
-		}, [
-			min,
-			max,
-			segment,
-			modifier,
-			highlighted,
-			disabledProp,
-			disabledContext
-		])
-
-		const onClick = useCallback(() => {
-			setHighlighted((prev) => {
-				if (segment === 'today') {
-					return new CalendarDate()
-				}
-
-				return prev.calc({ [segment]: Number(modifier) })
-			})
-		}, [segment, modifier, setHighlighted])
+		const handleClick = useCallback(() => {
+			setHighlighted(result)
+		}, [result, setHighlighted])
 
 		return (
 			<freya.button
@@ -92,7 +76,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				data-disabled={toData(isDisabled)}
 				aria-label={label}
 				aria-disabled={isDisabled}
-				onClick={onClick}
+				onClick={handleClick}
 				{...otherProps}
 			/>
 		)

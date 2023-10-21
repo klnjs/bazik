@@ -4,14 +4,37 @@ export const calendar = style({
 	display: 'inline-flex',
 	flexDirection: 'column',
 	gap: 8,
+	fontFamily: 'Arial',
+	position: 'relative'
+})
+
+export const calendarWide = style([
+	calendar,
+	{
+		flexDirection: 'row'
+	}
+])
+
+export const month = style({
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 8,
 	fontFamily: 'Arial'
 })
 
 export const title = style({
 	margin: 0,
 	padding: 0,
-	fontSize: 18
+	fontSize: 18,
+	marginInlineEnd: 'auto'
 })
+
+export const titleWide = style([
+	title,
+	{
+		marginInlineEnd: 0
+	}
+])
 
 export const grid = style({
 	display: 'grid',
@@ -29,14 +52,16 @@ export const header = style({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	gap: 8,
-	height: 24
+	gap: 4,
+	height: 32
 })
 
-export const nav = style({
-	display: 'inline-flex',
-	gap: 4
-})
+export const headerWide = style([
+	header,
+	{
+		justifyContent: 'space-around'
+	}
+])
 
 export const button = style({
 	display: 'inline-flex',
@@ -47,15 +72,35 @@ export const button = style({
 	borderRadius: 4,
 	background: 'none',
 	lineHeight: 24,
-	paddingBlockEnd: 2,
 	alignItems: 'center',
 	justifyContent: 'center',
 	':hover': {
-		background: 'lightgrey'
+		background: '#E7E7E7'
+	},
+	':disabled': {
+		pointerEvents: 'none'
 	}
 })
 
-export const cell = style({
+export const buttonWidePrevious = style([
+	button,
+	{
+		position: 'absolute',
+		insetBlockStart: 0,
+		insetInlineStart: 0
+	}
+])
+
+export const buttonWideNext = style([
+	button,
+	{
+		position: 'absolute',
+		insetBlockStart: 0,
+		insetInlineEnd: 0
+	}
+])
+
+export const item = style({
 	width: 32,
 	height: 32,
 	appearance: 'none',
@@ -69,18 +114,16 @@ export const cell = style({
 	padding: 0,
 	border: 0,
 	borderRadius: 4,
+	cursor: 'pointer',
 	background: 'none'
 })
 
 export const day = style([
-	cell,
+	item,
 	{
-		cursor: 'pointer',
-		border: 0,
-		outline: 0,
 		selectors: {
-			'&:hover:not([data-disabled], [data-selected])': {
-				background: 'lightgrey'
+			'&:hover': {
+				background: '#E7E7E7'
 			},
 			'&[data-today]': {
 				fontWeight: 'bold'
@@ -100,8 +143,8 @@ export const day = style([
 				outlineOffset: -2
 			},
 			'&[data-disabled]': {
-				cursor: 'default',
-				opacity: 0.4
+				opacity: 0.4,
+				pointerEvents: 'none'
 			},
 			'&[data-range-start]': {
 				borderStartEndRadius: 0,
@@ -111,7 +154,7 @@ export const day = style([
 				borderStartStartRadius: 0,
 				borderEndStartRadius: 0
 			},
-			'&[data-range-in]': {
+			'&[data-range-between]': {
 				background: '#89CCFF',
 				borderRadius: 0
 			},
@@ -139,11 +182,19 @@ export const dayWithOverflowVisible = style([
 	}
 ])
 
-export const weekday = style([
-	cell,
+export const week = style([
+	item,
 	{
-		display: 'inline-flex',
-		gap: 6,
-		flexDirection: 'column'
+		fontSize: 10,
+		fontWeight: 'bold'
 	}
 ])
+
+export const weekday = style([
+	item,
+	{
+		fontWeight: 'bold'
+	}
+])
+
+export const blank = style([item, { visibility: 'hidden' }])

@@ -1,59 +1,68 @@
 import { useMemo, type ReactNode } from 'react'
+import {
+	isAfter,
+	getToday,
+	toEndOfWeek,
+	toEndOfMonth,
+	toStartOfWeek,
+	isStartOfWeek,
+	toStartOfMonth
+} from './useCalendarDateUtils'
 import { useCalendarContext } from './CalendarContext'
-import { CalendarDate, type CalendarDateLocale } from './CalendarDate'
-
-export type CalendarDaysItem = {
-	role: 'week' | 'weekday' | 'date' | 'blank'
-	date: CalendarDate
-	locale: CalendarDateLocale
-}
+import { useCalendarMonthContext } from './CalendarMonthContext'
+import type {
+	CalendarDaysItemProps,
+	CalendarDaysItemRole
+} from './CalendarDaysItem'
 
 export type CalendarDaysProps = {
+	week?: boolean
 	weekday?: boolean
-	weeknumber?: boolean
-	children: (item: CalendarDaysItem, index: number) => ReactNode
+	children: (item: CalendarDaysItemProps, index: number) => ReactNode
 }
 
 export const CalendarDays = ({
+	week,
 	weekday,
-	weeknumber,
 	children
 }: CalendarDaysProps) => {
-	const { locale, highlighted } = useCalendarContext()
+	const { locale } = useCalendarContext()
+	const { year, month } = useCalendarMonthContext()
 
-	const year = highlighted.getYear()
-	const month = highlighted.getMonth()
 	const days = useMemo(() => {
-		const dates: CalendarDaysItem[] = []
-		const ref = new CalendarDate().set({ year, month })
-		const end = ref.getLastDateOfMonth().getLastDateOfWeek(locale)
-		let date = ref.getFirstDateOfMonth().getFirstDateOfWeek(locale)
+		const items: CalendarDaysItemProps[] = []
+		const ref = getToday().with({ year, month })
+		const end = toEndOfWeek(toEndOfMonth(ref), locale)
+
+		let role: CalendarDaysItemRole
 		let itrs = 0
+		let date = toStartOfWeek(toStartOfMonth(ref), locale).subtract({
+			days: weekday ? 7 : 0
+		})
 
-		if (weekday) {
-			date = date.sub({ day: 7 })
-		}
-
-		while (!date.isAfter(end)) {
-			if (weeknumber && date.getWeekDay(locale) === 1) {
-				dates.push({
-					role: weekday && itrs === 0 ? 'blank' : 'week',
-					date,
-					locale
+		while (!isAfter(date, end)) {
+			if (week && isStartOfWeek(date, locale)) {
+				role = weekday && itrs === 0 ? 'blank' : 'week'
+				items.push({
+					key: `${role}-${date.toString()}`,
+					role,
+					date
 				})
 			}
 
-			dates.push({
-				role: weekday && itrs < 7 ? 'weekday' : 'date',
-				date,
-				locale
+			role = weekday && itrs < 7 ? 'weekday' : 'day'
+			items.push({
+				key: `${role}-${date.toString()}`,
+				role,
+				date
 			})
-			date = date.add({ day: 1 })
+
+			date = date.add({ days: 1 })
 			itrs = itrs + 1
 		}
 
-		return dates
-	}, [locale, year, month, weekday, weeknumber])
+		return items
+	}, [locale, year, month, week, weekday])
 
 	return days.map(children)
 }

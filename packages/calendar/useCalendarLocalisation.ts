@@ -22,11 +22,8 @@ export const useCalendarLocalisation = (locale: string) => {
 			key: CalendarLocalisationKey,
 			interpolation: Record<string, string> = {}
 		) => {
-			const lang: CalendarLocalisationLocale = isRecordProperty(
-				calendarLocalisation,
-				locale
-			)
-				? locale
+			const lang = isRecordProperty(calendarLocalisation, locale)
+				? (locale as CalendarLocalisationLocale)
 				: 'en'
 
 			return Object.entries(interpolation).reduce<string>(
