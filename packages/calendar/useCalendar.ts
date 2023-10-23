@@ -40,14 +40,14 @@ export type UseCalendarReturn<S extends CalendarSelect> = {
 	focusWithin: boolean
 	highlighted: Temporal.PlainDate
 	locale: string
-	months: Temporal.PlainDate[]
+	months: Temporal.PlainYearMonth[]
 	max: Temporal.PlainDate | undefined
 	min: Temporal.PlainDate | undefined
 	readOnly: boolean
 	selection: CalendarSelectValue<S>
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
-	setMonths: Dispatch<SetStateAction<Temporal.PlainDate[]>>
+	setMonths: Dispatch<SetStateAction<Temporal.PlainYearMonth[]>>
 	setSelection: (date: Temporal.PlainDate) => void
 	setFocusWithin: Dispatch<SetStateAction<boolean>>
 	setHighlighted: Dispatch<SetStateAction<Temporal.PlainDate>>
@@ -74,9 +74,9 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 	const [transient, setTransient] = useState<Temporal.PlainDate>()
 
-	const [months, setMonths] = useState<Temporal.PlainDate[]>(() =>
+	const [months, setMonths] = useState<Temporal.PlainYearMonth[]>(() =>
 		Array.from({ length: monthsProp }, (_, index) =>
-			highlighted.with({ day: 1 }).add({ months: index })
+			highlighted.toPlainYearMonth().add({ months: index })
 		)
 	)
 
