@@ -1,9 +1,9 @@
-import { useCallback, type FocusEvent } from 'react'
+import { useCallback, type FocusEvent, useRef } from 'react'
 
 export type UseFocusWithinOptions<E extends FocusEvent> = {
 	onFocusEnter?: (event: E) => void
 	onFocusLeave?: (event: E) => void
-	onFocusChange?: (event: E, update: boolean) => void
+	onFocusChange?: (isFocusWithin: boolean) => void
 }
 
 export const useFocusWithin = <E extends FocusEvent>({
@@ -11,11 +11,14 @@ export const useFocusWithin = <E extends FocusEvent>({
 	onFocusLeave,
 	onFocusChange
 }: UseFocusWithinOptions<E> = {}) => {
+	const state = useRef(false)
+
 	const onFocus = useCallback(
 		(event: E) => {
-			if (event.currentTarget.contains(event.target)) {
+			if (!state.current && document.activeElement === event.target) {
 				onFocusEnter?.(event)
-				onFocusChange?.(event, true)
+				onFocusChange?.(true)
+				state.current = true
 			}
 		},
 		[onFocusEnter, onFocusChange]
@@ -23,9 +26,13 @@ export const useFocusWithin = <E extends FocusEvent>({
 
 	const onBlur = useCallback(
 		(event: E) => {
-			if (event.currentTarget.contains(event.target)) {
+			if (
+				state.current &&
+				!event.currentTarget.contains(event.relatedTarget)
+			) {
 				onFocusLeave?.(event)
-				onFocusChange?.(event, false)
+				onFocusChange?.(false)
+				state.current = false
 			}
 		},
 		[onFocusLeave, onFocusChange]
@@ -33,6 +40,3 @@ export const useFocusWithin = <E extends FocusEvent>({
 
 	return { onFocus, onBlur }
 }
-
-export const isFocusWithin = (element: Element | EventTarget) =>
-	(element as Element).contains(document.activeElement)
