@@ -1,8 +1,8 @@
 import {
 	useRef,
 	useMemo,
-	useEffect,
 	useCallback,
+	useLayoutEffect,
 	type KeyboardEvent
 } from 'react'
 import type { Temporal } from 'temporal-polyfill'
@@ -102,9 +102,14 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			(isMany && selection.some((s) => date.equals(s))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
-		const shouldGrabFocus = focusWithin && isHighlighted
-		const shouldLightOnOver = selectionIsTransient && isSelectable
-		const shouldSelectOnBlur = shouldLightOnOver && isHighlighted
+		const shouldHighlightOnOver = isSelectable && selectionIsTransient
+		const shouldSelectOnBlur = isHighlighted && shouldHighlightOnOver
+		const shouldGrabFocus =
+			isHighlighted &&
+			focusWithin &&
+			document.activeElement !== ref.current &&
+			document.activeElement instanceof HTMLElement &&
+			document.activeElement.dataset.day === 'true'
 
 		const label = useMemo(() => {
 			const formatted = date.toLocaleString(locale, {
@@ -128,10 +133,10 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		}, [date, shouldSelectOnBlur, setSelection])
 
 		const handleOver = useCallback(() => {
-			if (shouldLightOnOver) {
+			if (shouldHighlightOnOver) {
 				setHighlighted(date)
 			}
-		}, [date, shouldLightOnOver, setHighlighted])
+		}, [date, shouldHighlightOnOver, setHighlighted])
 
 		const handleSelect = useCallback(() => {
 			if (isSelectable) {
@@ -213,7 +218,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			[handleSelect, handleHighlight]
 		)
 
-		useEffect(() => {
+		useLayoutEffect(() => {
 			if (shouldGrabFocus) {
 				ref.current?.focus()
 			}

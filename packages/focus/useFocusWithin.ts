@@ -1,9 +1,9 @@
-import { useCallback, type FocusEvent, useRef } from 'react'
+import { useRef, useCallback, type FocusEvent } from 'react'
 
 export type UseFocusWithinOptions<E extends FocusEvent> = {
 	onFocusEnter?: (event: E) => void
 	onFocusLeave?: (event: E) => void
-	onFocusChange?: (isFocusWithin: boolean) => void
+	onFocusChange?: (event: E, isFocusWithin: boolean) => void
 }
 
 export const useFocusWithin = <E extends FocusEvent>({
@@ -17,7 +17,7 @@ export const useFocusWithin = <E extends FocusEvent>({
 		(event: E) => {
 			if (!state.current && document.activeElement === event.target) {
 				onFocusEnter?.(event)
-				onFocusChange?.(true)
+				onFocusChange?.(event, true)
 				state.current = true
 			}
 		},
@@ -31,7 +31,7 @@ export const useFocusWithin = <E extends FocusEvent>({
 				!event.currentTarget.contains(event.relatedTarget)
 			) {
 				onFocusLeave?.(event)
-				onFocusChange?.(false)
+				onFocusChange?.(event, false)
 				state.current = false
 			}
 		},
