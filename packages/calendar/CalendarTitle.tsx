@@ -1,21 +1,20 @@
+import { Intl } from 'temporal-polyfill'
 import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { useCalendarMonthContext } from './CalendarMonthContext'
 
 export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	({ id: idProp, children, ...otherProps }, forwardedRef) => {
-		const { locale } = useCalendarContext()
-		const month = useCalendarMonthContext()
+		const { locale, visibleRange } = useCalendarContext()
 
 		return (
 			<freya.h2 ref={forwardedRef} aria-live="polite" {...otherProps}>
 				{children ??
-					month.toLocaleString(locale, {
+					new Intl.DateTimeFormat(locale, {
 						year: 'numeric',
 						month: 'long'
-					})}
+					}).formatRange(...visibleRange)}
 			</freya.h2>
 		)
 	}

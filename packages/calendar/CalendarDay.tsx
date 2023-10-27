@@ -27,7 +27,7 @@ import {
 	isWeekend as isWeekendFn
 } from './useCalendarDateUtils'
 import { useCalendarContext } from './CalendarContext'
-import { useCalendarMonthContext } from './CalendarMonthContext'
+import { useCalendarGridContext } from './CalendarGridContext'
 
 export type CalendarDayProps = CoreProps<
 	'div',
@@ -62,18 +62,18 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			max,
 			min,
 			readOnly,
-			selection,
 			selectionMode,
+			selectionToDisplay,
 			selectionIsTransient,
 			setSelection,
 			setHighlighted
 		} = useCalendarContext()
-		const { year, month } = useCalendarMonthContext()
+		const { year, month } = useCalendarGridContext()
 		const { names } = useCalendarLocalisation(locale)
 
-		const isOne = selectionMode === 'one' && isSet(selection)
-		const isMany = selectionMode === 'many' && isSet(selection)
-		const isRange = selectionMode === 'range' && isSet(selection)
+		const isOne = selectionMode === 'one' && isSet(selectionToDisplay)
+		const isMany = selectionMode === 'many' && isSet(selectionToDisplay)
+		const isRange = selectionMode === 'range' && isSet(selectionToDisplay)
 
 		const isToday = isTodayFn(date)
 		const isWeekend = isWeekendFn(date, locale)
@@ -89,21 +89,21 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			Boolean(max && isAfter(date, max)) ||
 			Boolean(min && isBefore(date, min))
 
-		const isRangeEnd = isRange && date.equals(selection[1])
-		const isRangeStart = isRange && date.equals(selection[0])
+		const isRangeEnd = isRange && date.equals(selectionToDisplay[1])
+		const isRangeStart = isRange && date.equals(selectionToDisplay[0])
 		const isRangeBetween =
-			isRange && isBetween(date, selection[0], selection[1])
+			isRange &&
+			isBetween(date, selectionToDisplay[0], selectionToDisplay[1])
 
 		const isFocusable = !isDisabled
 		const isTabbable = isFocusable && isHighlighted
 		const isSelectable = isFocusable && !readOnly
 		const isSelected =
-			(isOne && date.equals(selection)) ||
-			(isMany && selection.some((s) => date.equals(s))) ||
+			(isOne && date.equals(selectionToDisplay)) ||
+			(isMany && selectionToDisplay.some((s) => date.equals(s))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
 		const shouldHighlightOnOver = isSelectable && selectionIsTransient
-		const shouldSelectOnBlur = isHighlighted && shouldHighlightOnOver
 		const shouldGrabFocus =
 			isHighlighted &&
 			focusWithin &&
@@ -125,12 +125,6 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 			return formatted
 		}, [date, locale, names, isToday])
-
-		const handleBlur = useCallback(() => {
-			if (shouldSelectOnBlur) {
-				setSelection(date)
-			}
-		}, [date, shouldSelectOnBlur, setSelection])
 
 		const handleOver = useCallback(() => {
 			if (shouldHighlightOnOver) {
@@ -245,7 +239,6 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				aria-readonly={readOnly}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
-				onBlur={handleBlur}
 				onClick={handleSelect}
 				onKeyDown={handleKeyboard}
 				onPointerOver={handleOver}

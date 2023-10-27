@@ -1,14 +1,11 @@
 import type { Meta } from '@storybook/react'
 import { Calendar } from './Calendar'
-import { CalendarButton } from './CalendarButton'
 import { CalendarDay } from './CalendarDay'
-import { CalendarDays } from './CalendarDays'
-import { CalendarDaysItem } from './CalendarDaysItem'
+import { CalendarCell } from './CalendarCell'
 import { CalendarGrid } from './CalendarGrid'
-import { CalendarHeader } from './CalendarHeader'
-import { CalendarMonth } from './CalendarMonth'
-import { CalendarMonths } from './CalendarMonths'
 import { CalendarTitle } from './CalendarTitle'
+import { CalendarHeader } from './CalendarHeader'
+import { CalendarButton } from './CalendarButton'
 import { getToday, toEndOfMonth, toStartOfMonth } from './useCalendarDateUtils'
 import * as classes from './Calendar.stories.css'
 
@@ -18,150 +15,90 @@ export default {
 } satisfies Meta<typeof Calendar>
 
 export const Basic = () => (
-	<Calendar aria-label="Event Date" className={classes.calendar}>
-		<CalendarMonth className={classes.month}>
-			<CalendarHeader className={classes.header}>
-				<CalendarTitle className={classes.title} />
-				<CalendarButton
-					action="previous"
-					segment="month"
-					className={classes.button}
-				>
-					‹
-				</CalendarButton>
-				<CalendarButton
-					action="next"
-					segment="month"
-					className={classes.button}
-				>
-					›
-				</CalendarButton>
-			</CalendarHeader>
-			<CalendarGrid className={classes.grid}>
-				<CalendarDays>
-					{({ key, date }) => (
-						<CalendarDay
-							key={key}
-							date={date}
-							className={classes.day}
-						/>
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</CalendarMonth>
+	<Calendar select="one" aria-label="Event" className={classes.calendar}>
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<CalendarGrid className={classes.grid}>
+			{({ key, date }) => (
+				<CalendarDay key={key} date={date} className={classes.day} />
+			)}
+		</CalendarGrid>
 	</Calendar>
 )
 
 export const Multiple = () => (
-	<Calendar select="many" aria-label="Span" className={classes.calendar}>
-		<CalendarMonth className={classes.month}>
-			<CalendarHeader className={classes.header}>
-				<CalendarTitle className={classes.title} />
-				<CalendarButton
-					action="previous"
-					segment="month"
-					className={classes.button}
-				>
-					‹
-				</CalendarButton>
-				<CalendarButton
-					action="next"
-					segment="month"
-					className={classes.button}
-				>
-					›
-				</CalendarButton>
-			</CalendarHeader>
-			<CalendarGrid className={classes.grid}>
-				<CalendarDays>
-					{({ key, date }) => (
-						<CalendarDay
-							key={key}
-							date={date}
-							className={classes.day}
-						/>
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</CalendarMonth>
+	<Calendar select="many" aria-label="Event" className={classes.calendar}>
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<CalendarGrid className={classes.grid}>
+			{({ key, date }) => (
+				<CalendarDay key={key} date={date} className={classes.day} />
+			)}
+		</CalendarGrid>
 	</Calendar>
 )
 
 export const Range = () => (
-	<Calendar select="range" aria-label="Span" className={classes.calendar}>
-		<CalendarMonth className={classes.month}>
-			<CalendarHeader className={classes.header}>
-				<CalendarTitle className={classes.title} />
-				<CalendarButton
-					action="previous"
-					segment="month"
-					className={classes.button}
-				>
-					‹
-				</CalendarButton>
-				<CalendarButton
-					action="next"
-					segment="month"
-					className={classes.button}
-				>
-					›
-				</CalendarButton>
-			</CalendarHeader>
-			<CalendarGrid className={classes.grid}>
-				<CalendarDays>
-					{({ key, date }) => (
-						<CalendarDay
-							key={key}
-							date={date}
-							className={classes.day}
-						/>
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</CalendarMonth>
+	<Calendar select="range" aria-label="Event" className={classes.calendar}>
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<CalendarGrid className={classes.grid}>
+			{({ key, date }) => (
+				<CalendarDay key={key} date={date} className={classes.day} />
+			)}
+		</CalendarGrid>
 	</Calendar>
 )
 
 export const Weekinfo = () => (
-	<Calendar aria-label="Event Date" className={classes.calendar}>
-		<CalendarMonth className={classes.month}>
-			<CalendarHeader className={classes.header}>
-				<CalendarTitle className={classes.titleWide} />
-			</CalendarHeader>
-			<CalendarGrid className={classes.gridWithWeekInfo}>
-				<CalendarDays week={true} weekday={true}>
-					{({ key, date, role }) => (
-						<CalendarDaysItem
-							key={key}
-							role={role}
-							date={date}
-							className={classes[role]}
-						/>
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</CalendarMonth>
+	<Calendar aria-label="Event" className={classes.calendar}>
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<CalendarGrid
+			weeks={true}
+			weekdays={true}
+			className={classes.gridWithWeekInfo}
+		>
+			{({ key, date, role }) => (
+				<CalendarCell
+					key={key}
+					role={role}
+					date={date}
+					className={classes[role]}
+				/>
+			)}
+		</CalendarGrid>
 	</Calendar>
 )
 
 export const Overflow = () => (
-	<Calendar aria-label="Event Date" className={classes.calendar}>
-		<CalendarMonth className={classes.month}>
-			<CalendarHeader className={classes.header}>
-				<CalendarTitle className={classes.titleWide} />
-			</CalendarHeader>
-			<CalendarGrid className={classes.grid}>
-				<CalendarDays>
-					{({ key, date }) => (
-						<CalendarDay
-							key={key}
-							date={date}
-							className={classes.dayWithOverflowVisible}
-						/>
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</CalendarMonth>
+	<Calendar aria-label="Event" className={classes.calendar}>
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<CalendarGrid className={classes.grid}>
+			{({ key, date }) => (
+				<CalendarDay
+					key={key}
+					date={date}
+					className={classes.dayWithOverflowVisible}
+				/>
+			)}
+		</CalendarGrid>
 	</Calendar>
 )
 
@@ -174,66 +111,44 @@ export const Boundaries = () => {
 		<Calendar
 			min={min}
 			max={max}
-			aria-label="Event Date"
+			aria-label="Event"
 			className={classes.calendar}
 		>
-			<CalendarMonth className={classes.month}>
-				<CalendarHeader className={classes.header}>
-					<CalendarTitle className={classes.title} />
-					<CalendarButton
-						action="previous"
-						segment="month"
-						className={classes.button}
-					>
-						‹
-					</CalendarButton>
-					<CalendarButton
-						action="next"
-						segment="month"
-						className={classes.button}
-					>
-						›
-					</CalendarButton>
-				</CalendarHeader>
-				<CalendarGrid className={classes.grid}>
-					<CalendarDays>
-						{({ key, date }) => (
-							<CalendarDay
-								key={key}
-								date={date}
-								className={classes.day}
-							/>
-						)}
-					</CalendarDays>
-				</CalendarGrid>
-			</CalendarMonth>
+			<CalendarHeader className={classes.header}>
+				<CalendarButton action="previous" className={classes.button} />
+				<CalendarTitle className={classes.title} />
+				<CalendarButton action="next" className={classes.button} />
+			</CalendarHeader>
+			<CalendarGrid className={classes.grid}>
+				{({ key, date }) => (
+					<CalendarDay
+						key={key}
+						date={date}
+						className={classes.day}
+					/>
+				)}
+			</CalendarGrid>
 		</Calendar>
 	)
 }
 
 export const Localization = () => (
-	<Calendar
-		locale="en-US"
-		aria-label="Event Date"
-		className={classes.calendar}
-	>
-		<CalendarMonth className={classes.month}>
-			<CalendarHeader className={classes.header}>
-				<CalendarTitle className={classes.titleWide} />
-			</CalendarHeader>
-			<CalendarGrid className={classes.grid}>
-				<CalendarDays weekday={true}>
-					{({ key, date, role }) => (
-						<CalendarDaysItem
-							key={key}
-							role={role}
-							date={date}
-							className={classes[role]}
-						/>
-					)}
-				</CalendarDays>
-			</CalendarGrid>
-		</CalendarMonth>
+	<Calendar locale="en-US" aria-label="Event" className={classes.calendar}>
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<CalendarGrid weekdays={true} className={classes.grid}>
+			{({ key, date, role }) => (
+				<CalendarCell
+					key={key}
+					role={role}
+					date={date}
+					className={classes[role]}
+				/>
+			)}
+		</CalendarGrid>
 	</Calendar>
 )
 
@@ -242,50 +157,34 @@ export const Wide = () => (
 		select="range"
 		months={3}
 		autoFocus
-		aria-label="Event Date"
-		className={classes.calendarWide}
+		aria-label="Event"
+		className={classes.calendar}
 	>
-		<CalendarButton
-			action="previous"
-			segment="month"
-			className={classes.buttonWidePrevious}
-		>
-			‹
-		</CalendarButton>
-		<CalendarButton
-			action="next"
-			segment="month"
-			className={classes.buttonWideNext}
-		>
-			›
-		</CalendarButton>
-		<CalendarMonths>
-			{({ key: keyMonth, year, month }) => (
-				<CalendarMonth
-					key={keyMonth}
-					year={year}
-					month={month}
-					className={classes.month}
+		<CalendarHeader className={classes.header}>
+			<CalendarButton action="previous" className={classes.button} />
+			<CalendarTitle className={classes.title} />
+			<CalendarButton action="next" className={classes.button} />
+		</CalendarHeader>
+		<div className={classes.wide}>
+			{[0, 1, 2].map((monthOffset) => (
+				<CalendarGrid
+					key={monthOffset}
+					monthOffset={monthOffset}
+					className={classes.grid}
 				>
-					<CalendarHeader className={classes.headerWide}>
-						<CalendarTitle className={classes.titleWide} />
-					</CalendarHeader>
-					<CalendarGrid className={classes.grid}>
-						<CalendarDays>
-							{({ key: keyDay, date }) => (
-								<CalendarDay
-									key={keyDay}
-									date={date}
-									className={classes.day}
-								/>
-							)}
-						</CalendarDays>
-					</CalendarGrid>
-				</CalendarMonth>
-			)}
-		</CalendarMonths>
+					{({ key, date }) => (
+						<CalendarDay
+							key={key}
+							date={date}
+							className={classes.day}
+						/>
+					)}
+				</CalendarGrid>
+			))}
+		</div>
 	</Calendar>
 )
+
 export const Schedule = () => {
 	const createEventInThisMonth = (
 		name: string,
@@ -313,40 +212,40 @@ export const Schedule = () => {
 			style={{ width: 700 }}
 			aria-label="Schedule"
 		>
-			<CalendarMonth style={{ gap: 0 }}>
+			<CalendarHeader className={classes.header}>
+				<CalendarButton action="previous" className={classes.button} />
 				<CalendarTitle className={classes.title} />
-				<CalendarGrid className={classes.grid}>
-					<CalendarDays>
-						{({ key, date }) => (
-							<div
-								key={key}
-								style={{
-									aspectRatio: '1 / 1',
-									padding: 4,
-									border: '1px solid grey',
-									borderRadius: 4
-								}}
-							>
-								<div style={{ fontSize: 12 }}>{date.day}</div>
-								{events
-									.filter((event) => date.equals(event.date))
-									.map((event) => (
-										<div
-											style={{
-												background: event.color,
-												borderRadius: 4,
-												fontSize: 12,
-												padding: 2
-											}}
-										>
-											{event.name}
-										</div>
-									))}
-							</div>
-						)}
-					</CalendarDays>
-				</CalendarGrid>
-			</CalendarMonth>
+				<CalendarButton action="next" className={classes.button} />
+			</CalendarHeader>
+			<CalendarGrid className={classes.grid}>
+				{({ key, date }) => (
+					<div
+						key={key}
+						style={{
+							aspectRatio: '1 / 1',
+							padding: 4,
+							border: '1px solid grey',
+							borderRadius: 4
+						}}
+					>
+						<div style={{ fontSize: 12 }}>{date.day}</div>
+						{events
+							.filter((event) => date.equals(event.date))
+							.map((event) => (
+								<div
+									style={{
+										background: event.color,
+										borderRadius: 4,
+										fontSize: 12,
+										padding: 2
+									}}
+								>
+									{event.name}
+								</div>
+							))}
+					</div>
+				)}
+			</CalendarGrid>
 		</Calendar>
 	)
 }

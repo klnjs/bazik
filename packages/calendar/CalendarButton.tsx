@@ -16,6 +16,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			action,
 			segment = 'month',
 			disabled: disabledProp = false,
+			children,
 			...otherProps
 		},
 		forwardedRef
@@ -23,10 +24,10 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 		const {
 			min,
 			max,
-			months,
 			locale,
 			disabled: disabledContext,
 			highlighted,
+			visibleMonths,
 			setHighlighted
 		} = useCalendarContext()
 		const { t, names } = useCalendarLocalisation(locale)
@@ -41,7 +42,16 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			[action, segment, t, names]
 		)
 
-		const direction = action === 'next' ? 1 : -1
+		const content = useMemo(() => {
+			switch (action) {
+				case 'next':
+					return segment === 'month' ? '›' : '»'
+				case 'previous':
+					return segment === 'month' ? '‹' : '«'
+				default:
+					return '•'
+			}
+		}, [action, segment])
 
 		const result = useMemo(
 			() =>
@@ -49,10 +59,10 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 					? getToday()
 					: highlighted.add({
 							[`${segment}s`]:
-								(segment === 'month' ? months.length : 1) *
-								direction
+								(segment === 'month' ? visibleMonths : 1) *
+								(action === 'next' ? 1 : -1)
 					  }),
-			[action, segment, direction, months, highlighted]
+			[action, segment, highlighted, visibleMonths]
 		)
 
 		const isDisabled = useMemo(
@@ -78,7 +88,9 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 				aria-disabled={isDisabled}
 				onClick={handleClick}
 				{...otherProps}
-			/>
+			>
+				{children ?? content}
+			</freya.button>
 		)
 	}
 )
