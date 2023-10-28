@@ -57,16 +57,16 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const {
 			disabled: disabledContext,
 			focusWithin,
+			highlight,
 			highlighted,
 			locale,
 			max,
 			min,
 			readOnly,
-			selectionMode,
-			selectionToDisplay,
+			select,
 			selectionIsTransient,
-			setSelection,
-			setHighlighted
+			selectionMode,
+			selectionToDisplay
 		} = useCalendarContext()
 		const { year, month } = useCalendarGridContext()
 		const { names } = useCalendarLocalisation(locale)
@@ -128,25 +128,16 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const handleOver = useCallback(() => {
 			if (shouldHighlightOnOver) {
-				setHighlighted(date)
+				highlight(date)
 			}
-		}, [date, shouldHighlightOnOver, setHighlighted])
+		}, [date, shouldHighlightOnOver, highlight])
 
-		const handleSelect = useCallback(() => {
+		const handleClick = useCallback(() => {
 			if (isSelectable) {
-				setSelection(date)
-				setHighlighted(date)
+				select(date)
+				highlight(date)
 			}
-		}, [date, isSelectable, setSelection, setHighlighted])
-
-		const handleHighlight = useCallback(
-			(action: Parameters<typeof setHighlighted>[0]) => {
-				if (isFocusable) {
-					setHighlighted(action)
-				}
-			},
-			[isFocusable, setHighlighted]
-		)
+		}, [date, isSelectable, select, highlight])
 
 		const handleKeyboard = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -164,52 +155,51 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'Enter' || event.code === 'Space') {
-					handleSelect()
+					select(date)
+					highlight(date)
 				}
 
 				if (event.code === 'ArrowUp') {
-					handleHighlight((prev) => prev.subtract({ days: 7 }))
+					highlight(date.subtract({ days: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					handleHighlight((prev) =>
-						prev.subtract({
+					highlight(
+						date.subtract({
 							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'ArrowDown') {
-					handleHighlight((prev) => prev.add({ days: 7 }))
+					highlight(date.add({ days: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					handleHighlight((prev) =>
-						prev.add({
+					highlight(
+						date.add({
 							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'PageUp') {
-					handleHighlight((prev) => prev.subtract({ months: 1 }))
+					highlight(date.subtract({ months: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					handleHighlight((prev) => prev.add({ months: 1 }))
+					highlight(date.add({ months: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					handleHighlight((prev) => prev.with({ day: 1 }))
+					highlight(date.with({ day: 1 }))
 				}
 
 				if (event.code === 'End') {
-					handleHighlight((prev) =>
-						prev.with({ day: prev.daysInMonth })
-					)
+					highlight(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[handleSelect, handleHighlight]
+			[date, select, highlight]
 		)
 
 		useLayoutEffect(() => {
@@ -239,7 +229,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				aria-readonly={readOnly}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
-				onClick={handleSelect}
+				onClick={handleClick}
 				onKeyDown={handleKeyboard}
 				onPointerOver={handleOver}
 				{...otherProps}

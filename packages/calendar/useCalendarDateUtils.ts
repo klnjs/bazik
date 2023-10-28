@@ -59,6 +59,12 @@ export const isBetween = (
 	max: Temporal.PlainDate
 ) => isAfter(date, min) && isBefore(date, max)
 
+export const isBetweenInclusive = (
+	date: Temporal.PlainDate,
+	min: Temporal.PlainDate,
+	max: Temporal.PlainDate
+) => date.equals(min) || date.equals(max) || isBetween(date, min, max)
+
 export const isSameYear = (
 	date: Temporal.PlainDate,
 	subject: Temporal.PlainDate

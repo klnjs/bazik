@@ -3,12 +3,14 @@ import { isRecordProperty } from '../core'
 
 export const calendarLocalisation = {
 	en: {
-		next: 'Next {{segment}}',
-		previous: 'Previous {{segment}}'
+		set: 'Jump to {{date}}',
+		add: 'Next {{segment}}',
+		sub: 'Previous {{segment}}'
 	},
 	da: {
-		next: 'Næste {{segment}}',
-		previous: 'Forrige {{segment}}'
+		set: 'Jump to {{date}}',
+		add: 'Næste {{segment}}',
+		sub: 'Forrige {{segment}}'
 	}
 } as const
 
