@@ -4,10 +4,11 @@ import { freya, forwardRef, toData, type CoreProps, isSet } from '../core'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import { isAfter, isBefore } from './useCalendarDateUtils'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarShiftProps = CoreProps<
 	'button',
-	| { action: 'set'; years?: never; months?: never; date: Temporal.PlainDate }
+	| { action: 'set'; years?: never; months?: never; date: PlainDate }
 	| { action: 'add' | 'sub'; years: number; months?: never; date?: never }
 	| { action: 'add' | 'sub'; years?: never; months?: number; date?: never }
 >

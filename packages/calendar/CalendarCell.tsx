@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
-import type { Temporal } from 'temporal-polyfill'
 import { forwardRef } from '../core'
 import { CalendarDay } from './CalendarDay'
 import { CalendarBlank } from './CalendarBlank'
 import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarCellRole = 'day' | 'week' | 'weekday' | 'blank'
 
 export type CalendarCellProps = {
 	key: string
 	role: CalendarCellRole
-	date: Temporal.PlainDate
+	date: PlainDate
 }
 
 export const CalendarCell = forwardRef<'div', CalendarCellProps>(

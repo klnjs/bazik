@@ -5,7 +5,6 @@ import {
 	useLayoutEffect,
 	type KeyboardEvent
 } from 'react'
-import type { Temporal } from 'temporal-polyfill'
 import {
 	freya,
 	forwardRef,
@@ -28,11 +27,12 @@ import {
 } from './useCalendarDateUtils'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarGridContext } from './CalendarGridContext'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarDayProps = CoreProps<
 	'div',
 	{
-		date: Temporal.PlainDate
+		date: PlainDate
 		disabled?: boolean
 		disabledIfWeekend?: boolean
 		disabledIfOverflow?: boolean
