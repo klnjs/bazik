@@ -82,6 +82,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	const [visibleRange, setVisibleRange] = useState<PlainDateRange>(() =>
 		range(highlighted, highlighted.add({ months: months - 1 }))
 	)
+
 	const visibleRangeShift = (
 		duration: Temporal.Duration | Temporal.DurationLike
 	) => {
