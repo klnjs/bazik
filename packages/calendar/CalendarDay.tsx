@@ -5,7 +5,6 @@ import {
 	useLayoutEffect,
 	type KeyboardEvent
 } from 'react'
-import type { Temporal } from 'temporal-polyfill'
 import {
 	freya,
 	forwardRef,
@@ -27,12 +26,13 @@ import {
 	isWeekend as isWeekendFn
 } from './useCalendarDateUtils'
 import { useCalendarContext } from './CalendarContext'
-import { useCalendarMonthContext } from './CalendarMonthContext'
+import { useCalendarGridContext } from './CalendarGridContext'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarDayProps = CoreProps<
 	'div',
 	{
-		date: Temporal.PlainDate
+		date: PlainDate
 		disabled?: boolean
 		disabledIfWeekend?: boolean
 		disabledIfOverflow?: boolean
@@ -57,23 +57,23 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const {
 			disabled: disabledContext,
 			focusWithin,
+			highlight,
 			highlighted,
 			locale,
 			max,
 			min,
 			readOnly,
-			selection,
-			selectionMode,
+			select,
 			selectionIsTransient,
-			setSelection,
-			setHighlighted
+			selectionMode,
+			selectionToDisplay
 		} = useCalendarContext()
-		const { year, month } = useCalendarMonthContext()
+		const { year, month } = useCalendarGridContext()
 		const { names } = useCalendarLocalisation(locale)
 
-		const isOne = selectionMode === 'one' && isSet(selection)
-		const isMany = selectionMode === 'many' && isSet(selection)
-		const isRange = selectionMode === 'range' && isSet(selection)
+		const isOne = selectionMode === 'one' && isSet(selectionToDisplay)
+		const isMany = selectionMode === 'many' && isSet(selectionToDisplay)
+		const isRange = selectionMode === 'range' && isSet(selectionToDisplay)
 
 		const isToday = isTodayFn(date)
 		const isWeekend = isWeekendFn(date, locale)
@@ -89,21 +89,21 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			Boolean(max && isAfter(date, max)) ||
 			Boolean(min && isBefore(date, min))
 
-		const isRangeEnd = isRange && date.equals(selection[1])
-		const isRangeStart = isRange && date.equals(selection[0])
+		const isRangeEnd = isRange && date.equals(selectionToDisplay[1])
+		const isRangeStart = isRange && date.equals(selectionToDisplay[0])
 		const isRangeBetween =
-			isRange && isBetween(date, selection[0], selection[1])
+			isRange &&
+			isBetween(date, selectionToDisplay[0], selectionToDisplay[1])
 
 		const isFocusable = !isDisabled
 		const isTabbable = isFocusable && isHighlighted
 		const isSelectable = isFocusable && !readOnly
 		const isSelected =
-			(isOne && date.equals(selection)) ||
-			(isMany && selection.some((s) => date.equals(s))) ||
+			(isOne && date.equals(selectionToDisplay)) ||
+			(isMany && selectionToDisplay.some((s) => date.equals(s))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
 		const shouldHighlightOnOver = isSelectable && selectionIsTransient
-		const shouldSelectOnBlur = isHighlighted && shouldHighlightOnOver
 		const shouldGrabFocus =
 			isHighlighted &&
 			focusWithin &&
@@ -126,33 +126,18 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			return formatted
 		}, [date, locale, names, isToday])
 
-		const handleBlur = useCallback(() => {
-			if (shouldSelectOnBlur) {
-				setSelection(date)
-			}
-		}, [date, shouldSelectOnBlur, setSelection])
-
 		const handleOver = useCallback(() => {
 			if (shouldHighlightOnOver) {
-				setHighlighted(date)
+				highlight(date)
 			}
-		}, [date, shouldHighlightOnOver, setHighlighted])
+		}, [date, shouldHighlightOnOver, highlight])
 
-		const handleSelect = useCallback(() => {
+		const handleClick = useCallback(() => {
 			if (isSelectable) {
-				setSelection(date)
-				setHighlighted(date)
+				select(date)
+				highlight(date)
 			}
-		}, [date, isSelectable, setSelection, setHighlighted])
-
-		const handleHighlight = useCallback(
-			(action: Parameters<typeof setHighlighted>[0]) => {
-				if (isFocusable) {
-					setHighlighted(action)
-				}
-			},
-			[isFocusable, setHighlighted]
-		)
+		}, [date, isSelectable, select, highlight])
 
 		const handleKeyboard = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -170,52 +155,51 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'Enter' || event.code === 'Space') {
-					handleSelect()
+					select(date)
+					highlight(date)
 				}
 
 				if (event.code === 'ArrowUp') {
-					handleHighlight((prev) => prev.subtract({ days: 7 }))
+					highlight(date.subtract({ days: 7 }))
 				}
 
 				if (event.code === 'ArrowRight') {
-					handleHighlight((prev) =>
-						prev.subtract({
+					highlight(
+						date.subtract({
 							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'ArrowDown') {
-					handleHighlight((prev) => prev.add({ days: 7 }))
+					highlight(date.add({ days: 7 }))
 				}
 
 				if (event.key === 'ArrowLeft') {
-					handleHighlight((prev) =>
-						prev.add({
+					highlight(
+						date.add({
 							days: isRTL(event.target) ? 1 : -1
 						})
 					)
 				}
 
 				if (event.code === 'PageUp') {
-					handleHighlight((prev) => prev.subtract({ months: 1 }))
+					highlight(date.subtract({ months: 1 }))
 				}
 
 				if (event.code === 'PageDown') {
-					handleHighlight((prev) => prev.add({ months: 1 }))
+					highlight(date.add({ months: 1 }))
 				}
 
 				if (event.code === 'Home') {
-					handleHighlight((prev) => prev.with({ day: 1 }))
+					highlight(date.with({ day: 1 }))
 				}
 
 				if (event.code === 'End') {
-					handleHighlight((prev) =>
-						prev.with({ day: prev.daysInMonth })
-					)
+					highlight(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[handleSelect, handleHighlight]
+			[date, select, highlight]
 		)
 
 		useLayoutEffect(() => {
@@ -245,8 +229,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				aria-readonly={readOnly}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
-				onBlur={handleBlur}
-				onClick={handleSelect}
+				onClick={handleClick}
 				onKeyDown={handleKeyboard}
 				onPointerOver={handleOver}
 				{...otherProps}

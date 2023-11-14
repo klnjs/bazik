@@ -50,8 +50,13 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 		const focusProps = useFocusWithin({
 			onFocusEnter,
 			onFocusLeave,
-			onFocusChange: (_, isFocusWithin) =>
-				calendar.setFocusWithin(isFocusWithin)
+			onFocusChange: (_, isFocusWithin) => {
+				calendar.focusWithinUpdate(isFocusWithin)
+
+				if (!isFocusWithin && calendar.selectionIsTransient) {
+					calendar.select(calendar.highlighted)
+				}
+			}
 		})
 
 		return (

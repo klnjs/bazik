@@ -8,33 +8,18 @@ export const calendar = style({
 	position: 'relative'
 })
 
-export const calendarWide = style([
-	calendar,
-	{
-		flexDirection: 'row'
-	}
-])
-
-export const month = style({
+export const wide = style({
 	display: 'flex',
-	flexDirection: 'column',
-	gap: 8,
-	fontFamily: 'Arial'
+	flexDirection: 'row',
+	alignItems: 'start',
+	gap: 8
 })
 
 export const title = style({
 	margin: 0,
 	padding: 0,
-	fontSize: 18,
-	marginInlineEnd: 'auto'
+	fontSize: 18
 })
-
-export const titleWide = style([
-	title,
-	{
-		marginInlineEnd: 0
-	}
-])
 
 export const grid = style({
 	display: 'grid',
@@ -56,13 +41,6 @@ export const header = style({
 	height: 32
 })
 
-export const headerWide = style([
-	header,
-	{
-		justifyContent: 'space-around'
-	}
-])
-
 export const button = style({
 	display: 'inline-flex',
 	width: 32,
@@ -82,28 +60,9 @@ export const button = style({
 	}
 })
 
-export const buttonWidePrevious = style([
-	button,
-	{
-		position: 'absolute',
-		insetBlockStart: 0,
-		insetInlineStart: 0
-	}
-])
-
-export const buttonWideNext = style([
-	button,
-	{
-		position: 'absolute',
-		insetBlockStart: 0,
-		insetInlineEnd: 0
-	}
-])
-
-export const item = style({
+export const cell = style({
 	width: 32,
 	height: 32,
-	appearance: 'none',
 	aspectRatio: '1 / 1',
 	display: 'flex',
 	fontFamily: 'inherit',
@@ -114,13 +73,13 @@ export const item = style({
 	padding: 0,
 	border: 0,
 	borderRadius: 4,
-	cursor: 'pointer',
 	background: 'none'
 })
 
 export const day = style([
-	item,
+	cell,
 	{
+		cursor: 'pointer',
 		selectors: {
 			'&:hover': {
 				background: '#E7E7E7'
@@ -183,7 +142,7 @@ export const dayWithOverflowVisible = style([
 ])
 
 export const week = style([
-	item,
+	cell,
 	{
 		fontSize: 10,
 		fontWeight: 'bold'
@@ -191,10 +150,10 @@ export const week = style([
 ])
 
 export const weekday = style([
-	item,
+	cell,
 	{
 		fontWeight: 'bold'
 	}
 ])
 
-export const blank = style([item, { visibility: 'hidden' }])
+export const blank = style([cell, { visibility: 'hidden' }])
