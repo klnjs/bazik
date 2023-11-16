@@ -60,8 +60,6 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		}
 	)
 
-	console.log('render')
-
 	const selection = useCalendarSelection({
 		behaviour: selectProp,
 		highlighted,
