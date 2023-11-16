@@ -1,9 +1,9 @@
 import { freya, forwardRef, type CoreProps } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { getWeekOfYear } from './useCalendarDateUtils'
-import type { PlainDate } from './CalendarTypes'
+import { getWeekOfYear } from './calendar-functions'
+import type { Date } from './calendar-types'
 
-export type CalendarWeekProps = CoreProps<'div', { date: PlainDate }>
+export type CalendarWeekProps = CoreProps<'div', { date: Date }>
 
 export const CalendarWeek = forwardRef<'div', CalendarWeekProps>(
 	({ date, children, ...otherProps }, forwardedRef) => {

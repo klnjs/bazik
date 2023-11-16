@@ -5,7 +5,7 @@ import { useCalendarContext } from './CalendarContext'
 export type CalendarTitleProps = CoreProps<'h2'>
 
 export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
-	({ id: idProp, children, ...otherProps }, forwardedRef) => {
+	({ children, ...otherProps }, forwardedRef) => {
 		const { locale, visibleRange } = useCalendarContext()
 
 		return (

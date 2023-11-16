@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { isProperty } from '../core'
 
 export const calendarWeekInfo = {
 	'001': {
@@ -1293,12 +1293,11 @@ export const calendarWeekInfo = {
 	}
 }
 
-export const getCalendarWeekInfo = (localeArg: string) => {
-	const locale = new Intl.Locale(localeArg)
-	const localeSupportsWeekInfo = Object.hasOwn(locale, 'getWeekInfo')
+export const getCalendarWeekInfo = (tag: string) => {
+	const locale = new Intl.Locale(tag)
 
-	if (localeSupportsWeekInfo) {
-		// @ts-expect-error not yet implemented in all browsers
+	if (isProperty(locale, 'getWeekInfo')) {
+		// @ts-expect-error getWeekInfo not in typescript yet
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 		return locale.getWeekInfo() as (typeof calendarWeekInfo)['001']
 	}
@@ -1308,5 +1307,14 @@ export const getCalendarWeekInfo = (localeArg: string) => {
 	]
 }
 
-export const useCalendarWeekInfo = (locale: string) =>
-	useMemo(() => getCalendarWeekInfo(locale), [locale])
+export const getCalendarSystem = (tag: string) => {
+	const locale = new Intl.Locale(tag)
+
+	if (isProperty(locale, 'getCalendars')) {
+		// @ts-expect-error getCalendars not in typescript yet
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+		return (locale.getCalendars() as string[])[0]
+	}
+
+	return new Intl.DateTimeFormat(tag).resolvedOptions().calendar
+}

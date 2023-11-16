@@ -27,7 +27,7 @@ export const grid = style({
 	rowGap: 2
 })
 
-export const gridWithWeekInfo = style({
+export const gridWithWeeks = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(8, 1fr)',
 	rowGap: 2

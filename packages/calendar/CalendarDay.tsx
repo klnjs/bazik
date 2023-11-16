@@ -14,25 +14,26 @@ import {
 	isSet,
 	type CoreProps
 } from '../core'
-import { useCalendarLocalisation } from './useCalendarLocalisation'
+import { useCalendarDayNames } from './useCalendarLocalisation'
 import {
 	isAfter,
 	isBefore,
 	isBetween,
 	isEndOfWeek,
+	isSameDay,
 	isSameMonth,
 	isStartOfWeek,
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn
-} from './useCalendarDateUtils'
+} from './calendar-functions'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarGridContext } from './CalendarGridContext'
-import type { PlainDate } from './CalendarTypes'
+import type { Date } from './calendar-types'
 
 export type CalendarDayProps = CoreProps<
 	'div',
 	{
-		date: PlainDate
+		date: Date
 		disabled?: boolean
 		disabledIfWeekend?: boolean
 		disabledIfOverflow?: boolean
@@ -66,21 +67,21 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			select,
 			selectionIsTransient,
 			selectionMode,
-			selectionToDisplay
+			selectionVisible
 		} = useCalendarContext()
-		const { year, month } = useCalendarGridContext()
-		const { names } = useCalendarLocalisation(locale)
+		const { month } = useCalendarGridContext()
+		const { names: dayNames } = useCalendarDayNames(locale)
 
-		const isOne = selectionMode === 'one' && isSet(selectionToDisplay)
-		const isMany = selectionMode === 'many' && isSet(selectionToDisplay)
-		const isRange = selectionMode === 'range' && isSet(selectionToDisplay)
+		const isOne = selectionMode === 'one' && isSet(selectionVisible)
+		const isMany = selectionMode === 'many' && isSet(selectionVisible)
+		const isRange = selectionMode === 'range' && isSet(selectionVisible)
 
 		const isToday = isTodayFn(date)
 		const isWeekend = isWeekendFn(date, locale)
 		const isWeekEnd = isEndOfWeek(date, locale)
 		const isWeekStart = isStartOfWeek(date, locale)
-		const isOverflow = !isSameMonth(date, date.with({ year, month }))
-		const isHighlighted = date.equals(highlighted)
+		const isOverflow = !isSameMonth(date, month.toPlainDate({ day: 1 }))
+		const isHighlighted = isSameDay(date, highlighted)
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
@@ -89,18 +90,17 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			Boolean(max && isAfter(date, max)) ||
 			Boolean(min && isBefore(date, min))
 
-		const isRangeEnd = isRange && date.equals(selectionToDisplay[1])
-		const isRangeStart = isRange && date.equals(selectionToDisplay[0])
+		const isRangeStart = isRange && isSameDay(date, selectionVisible[0])
+		const isRangeEnd = isRange && isSameDay(date, selectionVisible[1])
 		const isRangeBetween =
-			isRange &&
-			isBetween(date, selectionToDisplay[0], selectionToDisplay[1])
+			isRange && isBetween(date, selectionVisible[0], selectionVisible[1])
 
 		const isFocusable = !isDisabled
 		const isTabbable = isFocusable && isHighlighted
 		const isSelectable = isFocusable && !readOnly
 		const isSelected =
-			(isOne && date.equals(selectionToDisplay)) ||
-			(isMany && selectionToDisplay.some((s) => date.equals(s))) ||
+			(isOne && isSameDay(date, selectionVisible)) ||
+			(isMany && selectionVisible.some((d) => isSameDay(date, d))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
 		const shouldHighlightOnOver = isSelectable && selectionIsTransient
@@ -120,11 +120,11 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			})
 
 			if (isToday) {
-				return `${names.of('today')}, ${formatted}`
+				return `${dayNames.of('today')}, ${formatted}`
 			}
 
 			return formatted
-		}, [date, locale, names, isToday])
+		}, [date, locale, dayNames, isToday])
 
 		const handleOver = useCallback(() => {
 			if (shouldHighlightOnOver) {
@@ -160,7 +160,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowUp') {
-					highlight(date.subtract({ days: 7 }))
+					highlight(date.subtract({ weeks: 1 }))
 				}
 
 				if (event.code === 'ArrowRight') {
@@ -172,7 +172,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				}
 
 				if (event.code === 'ArrowDown') {
-					highlight(date.add({ days: 7 }))
+					highlight(date.add({ weeks: 1 }))
 				}
 
 				if (event.key === 'ArrowLeft') {

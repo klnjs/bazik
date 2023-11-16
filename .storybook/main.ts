@@ -1,6 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite'
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin'
-import prettierConfig from '@klnjs/prettier-config'
 import { mergeConfig } from 'vite'
 
 export default {
@@ -20,7 +19,6 @@ export default {
 			options: {
 				loaderOptions: {
 					parser: 'typescript',
-					prettierConfig,
 					injectStoryParameters: false
 				}
 			}
@@ -33,7 +31,9 @@ export default {
 			shouldRemoveUndefinedFromOptional: true,
 			shouldExtractLiteralValuesFromEnum: true,
 			propFilter: (prop) =>
-				prop.parent ? !/node_modules/.test(prop.parent.fileName) : true
+				prop.parent
+					? !prop.parent.fileName.includes('node_modules')
+					: true
 		}
 	},
 	viteFinal: async (config) =>
