@@ -129,8 +129,7 @@ export const day = style([
 	}
 ])
 
-export const dayWithOverflowVisible = style([
-	day,
+export const overflow = style([
 	{
 		selectors: {
 			'&[data-overflow]': {

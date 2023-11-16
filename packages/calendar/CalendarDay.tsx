@@ -14,7 +14,9 @@ import {
 	isSet,
 	type CoreProps
 } from '../core'
+import { useCalendarContext } from './CalendarContext'
 import { useCalendarDayNames } from './useCalendarLocalisation'
+import { useCalendarGridContext } from './CalendarGridContext'
 import {
 	isAfter,
 	isBefore,
@@ -26,8 +28,6 @@ import {
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn
 } from './calendar-functions'
-import { useCalendarContext } from './CalendarContext'
-import { useCalendarGridContext } from './CalendarGridContext'
 import type { Date } from './calendar-types'
 
 export type CalendarDayProps = CoreProps<
@@ -57,13 +57,13 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const {
 			disabled: disabledContext,
-			focusWithin,
+			focusWithin: isFocusWithin,
 			highlight,
 			highlighted,
 			locale,
 			max,
 			min,
-			readOnly,
+			readOnly: isReadOnly,
 			select,
 			selectionIsTransient,
 			selectionMode,
@@ -96,17 +96,17 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			isRange && isBetween(date, selectionVisible[0], selectionVisible[1])
 
 		const isFocusable = !isDisabled
+		const isSelectable = isFocusable && !isReadOnly
 		const isTabbable = isFocusable && isHighlighted
-		const isSelectable = isFocusable && !readOnly
 		const isSelected =
 			(isOne && isSameDay(date, selectionVisible)) ||
 			(isMany && selectionVisible.some((d) => isSameDay(date, d))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
-		const shouldHighlightOnOver = isSelectable && selectionIsTransient
-		const shouldGrabFocus =
+		const shouldHighlight = isSelectable && selectionIsTransient
+		const shouldFocus =
+			isFocusWithin &&
 			isHighlighted &&
-			focusWithin &&
 			document.activeElement !== ref.current &&
 			document.activeElement instanceof HTMLElement &&
 			document.activeElement.dataset.day === 'true'
@@ -127,10 +127,10 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		}, [date, locale, dayNames, isToday])
 
 		const handleOver = useCallback(() => {
-			if (shouldHighlightOnOver) {
+			if (shouldHighlight) {
 				highlight(date)
 			}
-		}, [date, shouldHighlightOnOver, highlight])
+		}, [date, shouldHighlight, highlight])
 
 		const handleClick = useCallback(() => {
 			if (isSelectable) {
@@ -141,6 +141,10 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		const handleKeyboard = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
+				if (event.code !== 'Tab') {
+					event.preventDefault()
+				}
+
 				if (
 					event.shiftKey ||
 					event.ctrlKey ||
@@ -150,63 +154,37 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 					return
 				}
 
-				if (event.code !== 'Tab') {
-					event.preventDefault()
-				}
-
-				if (event.code === 'Enter' || event.code === 'Space') {
+				if (
+					(event.code === 'Enter' || event.code === 'Space') &&
+					isSelectable
+				) {
 					select(date)
-					highlight(date)
-				}
-
-				if (event.code === 'ArrowUp') {
-					highlight(date.subtract({ weeks: 1 }))
-				}
-
-				if (event.code === 'ArrowRight') {
-					highlight(
-						date.subtract({
-							days: isRTL(event.target) ? 1 : -1
-						})
-					)
-				}
-
-				if (event.code === 'ArrowDown') {
+				} else if (event.code === 'ArrowUp') {
+					highlight(date.add({ weeks: -1 }))
+				} else if (event.code === 'ArrowRight') {
+					highlight(date.add({ days: isRTL(event.target) ? -1 : 1 }))
+				} else if (event.code === 'ArrowDown') {
 					highlight(date.add({ weeks: 1 }))
-				}
-
-				if (event.key === 'ArrowLeft') {
-					highlight(
-						date.add({
-							days: isRTL(event.target) ? 1 : -1
-						})
-					)
-				}
-
-				if (event.code === 'PageUp') {
-					highlight(date.subtract({ months: 1 }))
-				}
-
-				if (event.code === 'PageDown') {
+				} else if (event.key === 'ArrowLeft') {
+					highlight(date.add({ days: isRTL(event.target) ? 1 : -1 }))
+				} else if (event.code === 'PageUp') {
 					highlight(date.add({ months: 1 }))
-				}
-
-				if (event.code === 'Home') {
+				} else if (event.code === 'PageDown') {
+					highlight(date.add({ months: 1 }))
+				} else if (event.code === 'Home') {
 					highlight(date.with({ day: 1 }))
-				}
-
-				if (event.code === 'End') {
+				} else if (event.code === 'End') {
 					highlight(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[date, select, highlight]
+			[date, isSelectable, select, highlight]
 		)
 
 		useLayoutEffect(() => {
-			if (shouldGrabFocus) {
+			if (shouldFocus) {
 				ref.current?.focus()
 			}
-		}, [shouldGrabFocus])
+		}, [shouldFocus])
 
 		return (
 			<freya.div
@@ -226,7 +204,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				data-range-start={toData(isRangeStart)}
 				data-range-between={toData(isRangeBetween)}
 				aria-label={label}
-				aria-readonly={readOnly}
+				aria-readonly={isReadOnly}
 				aria-selected={isSelected}
 				aria-disabled={isDisabled}
 				onClick={handleClick}
