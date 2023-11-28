@@ -9,9 +9,8 @@ export const calendar = style({
 })
 
 export const wide = style({
-	display: 'flex',
-	flexDirection: 'row',
-	alignItems: 'start',
+	display: 'grid',
+	gridAutoFlow: 'row',
 	gap: 8
 })
 

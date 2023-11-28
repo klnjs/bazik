@@ -4,25 +4,29 @@ import { toEndOfMonth, toStartOfMonth } from './calendar-functions'
 import type { Date, DateRange, DurationLike } from './calendar-types'
 
 export type UseCalendarVisibleOptions = {
-	highlighted: Date
 	months: number
 	calendar: string
+	highlighted: Date
 }
 
 export const createVisibleRange = ({
-	highlighted,
 	months,
-	calendar
+	calendar,
+	highlighted
 }: UseCalendarVisibleOptions): DateRange => [
 	toStartOfMonth(highlighted.withCalendar(calendar)),
 	toEndOfMonth(highlighted.withCalendar(calendar).add({ months: months - 1 }))
 ]
 
-export const useCalendarVisible = (options: UseCalendarVisibleOptions) => {
+export const useCalendarVisible = ({
+	months,
+	calendar,
+	highlighted
+}: UseCalendarVisibleOptions) => {
 	const isFirstRender = useIsFirstRender()
 
 	const [visibleRange, setVisibleRange] = useState(() =>
-		createVisibleRange(options)
+		createVisibleRange({ months, calendar, highlighted })
 	)
 
 	const addVisibleRange = useCallback((duration: DurationLike) => {
@@ -34,14 +38,16 @@ export const useCalendarVisible = (options: UseCalendarVisibleOptions) => {
 
 	useLayoutEffect(() => {
 		if (!isFirstRender) {
-			setVisibleRange(createVisibleRange(options))
+			setVisibleRange(
+				createVisibleRange({ months, calendar, highlighted })
+			)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [options.calendar, options.months])
+	}, [months, calendar])
 
 	return {
 		visibleRange,
-		visibleMonths: options.months,
+		visibleMonths: months,
 		setVisibleRange,
 		addVisibleRange
 	}

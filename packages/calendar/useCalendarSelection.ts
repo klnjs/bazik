@@ -1,5 +1,12 @@
-import { useMemo, useState, useCallback } from 'react'
-import { useControllableState, isSet, isArray } from '../core'
+import {
+	useMemo,
+	useState,
+	useCallback,
+	useLayoutEffect,
+	type SetStateAction
+} from 'react'
+import { useStateControllable, isSet, isArray } from '../core'
+import { useIsFirstRender } from '../core/useIsFirstRender'
 import { compare } from './calendar-functions'
 import type { Date, DateRange } from './calendar-types'
 
@@ -32,29 +39,35 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	value,
 	onChange
 }: UseCalendarSelectionOptions<S>) => {
+	const isFirstRender = useIsFirstRender()
+
 	const [transient, setTransient] = useState<Date>()
 
-	const [selection, setSelection] = useControllableState<
+	const [selection, setSelection] = useStateControllable<
 		CalendarSelectValue<CalendarSelect>
 	>({
 		value,
 		defaultValue,
 		onChange: onChange as (
-			value: CalendarSelectValue<CalendarSelect>
+			value: SetStateAction<CalendarSelectValue<CalendarSelect>>
 		) => void
 	})
 
-	const selectionMode = behaviour ?? 'one'
-
-	const selectionVisible = useMemo(
-		() =>
-			selectionMode === 'range' && isSet(transient)
-				? [transient, highlighted].toSorted(compare)
-				: selection,
-		[selectionMode, selection, transient, highlighted]
+	const [selectionMode, setSelectionMode] = useState<CalendarSelect>(
+		() => behaviour ?? 'one'
 	)
 
-	const selectionIsTransient = isSet(transient)
+	const [selectionVisible, selectionIsTransient] = useMemo(() => {
+		const isRange = selectionMode === 'range'
+		const isTransient = isSet(transient)
+
+		return [
+			isRange && isTransient
+				? [transient, highlighted].toSorted(compare)
+				: selection,
+			isTransient
+		]
+	}, [selectionMode, selection, transient, highlighted])
 
 	const select = useCallback(
 		(date: Date) => {
@@ -70,8 +83,8 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 						return filtered.length === 0
 							? null
 							: filtered.length < prev.length
-							? filtered
-							: [...prev, date]
+							  ? filtered
+							  : [...prev, date]
 					}
 
 					return [date]
@@ -91,6 +104,14 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		},
 		[selectionMode, setSelection]
 	)
+
+	useLayoutEffect(() => {
+		if (!isFirstRender) {
+			setSelectionMode(behaviour ?? 'one')
+			setSelection(null)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [behaviour, setSelection])
 
 	return {
 		select,
