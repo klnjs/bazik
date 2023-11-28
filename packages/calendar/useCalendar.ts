@@ -1,36 +1,27 @@
-import { useMemo, useState, useCallback } from 'react'
-import type { Temporal } from 'temporal-polyfill'
-import { useControllableState, isSet, isArray } from '../core'
-import type { PlainDate, PlainDateArray, PlainDateRange } from './CalendarTypes'
-import {
-	range,
-	clamp,
-	compare,
-	getToday,
-	isBetweenInclusive,
-	toEndOfMonth,
-	toStartOfMonth
-} from './useCalendarDateUtils'
+import { useState, useCallback } from 'react'
+import { useCalendarHighlighted } from './useCalendarHighlighted'
+import { useCalendarSelection } from './useCalendarSelection'
+import { useCalendarSystem } from './useCalendarSystem'
+import { useCalendarVisible } from './useCalendarVisible'
+import { clamp, isBetween, isSameDay } from './calendar-functions'
+import type { Date, DateRange, DurationLike } from './calendar-types'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
 
 export type CalendarSelectValue<S extends CalendarSelect> =
 	| null
-	| (S extends 'range'
-			? PlainDateRange
-			: S extends 'many'
-			? PlainDateArray
-			: PlainDate)
+	| (S extends 'range' ? DateRange : S extends 'many' ? Date[] : Date)
 
 export type CalendarValue = CalendarSelectValue<CalendarSelect>
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
+	calendar?: string
 	defaultValue?: CalendarSelectValue<S>
 	disabled?: boolean
 	locale?: string
-	max?: PlainDate
-	min?: PlainDate
+	max?: Date
+	min?: Date
 	months?: number
 	readOnly?: boolean
 	select?: S
@@ -38,28 +29,9 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 	onChange?: (value: CalendarSelectValue<S>) => void
 }
 
-export type UseCalendarReturn<S extends CalendarSelect> = {
-	disabled: boolean
-	focusWithin: boolean
-	focusWithinUpdate: (isFocusWithin: boolean) => void
-	highlight: (date: PlainDate) => void
-	highlighted: PlainDate
-	locale: string
-	max: PlainDate | undefined
-	min: PlainDate | undefined
-	readOnly: boolean
-	select: (date: PlainDate) => void
-	selection: CalendarSelectValue<S>
-	selectionIsTransient: S extends 'range' ? boolean : never
-	selectionMode: S
-	selectionToDisplay: CalendarSelectValue<S>
-	visibleMonths: number
-	visibleRange: PlainDateRange
-	visibleRangeShift: (duration: Temporal.DurationLike) => void
-}
-
 export const useCalendar = <S extends CalendarSelect = 'one'>({
 	autoFocus = false,
+	calendar: calendarProp,
 	defaultValue = null,
 	disabled = false,
 	locale = navigator.language,
@@ -67,106 +39,67 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	min,
 	months = 1,
 	readOnly = false,
-	select: selectionMode,
+	select: selectProp,
 	value,
 	onChange
 }: UseCalendarOptions<S> = {}) => {
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
-	const [highlighted, setHighlighted] = useState<PlainDate>(() =>
-		isArray(value) ? value[0] : value ?? getToday()
-	)
+	const { calendar } = useCalendarSystem({ locale, calendar: calendarProp })
 
-	const [transient, setTransient] = useState<PlainDate>()
-
-	const [visibleRange, setVisibleRange] = useState<PlainDateRange>(() =>
-		range(highlighted, highlighted.add({ months: months - 1 }))
-	)
-
-	const visibleRangeShift = (
-		duration: Temporal.Duration | Temporal.DurationLike
-	) => {
-		setHighlighted((prev) => prev.add(duration))
-		setVisibleRange((prev) =>
-			range(...(prev.map((p) => p.add(duration)) as PlainDateRange))
-		)
-	}
-
-	const highlight = useCallback(
-		(date: PlainDate) => {
-			const result = clamp(date, min, max)
-			const visible = isBetweenInclusive(result, ...visibleRange)
-			const delta =
-				result.year * 12 +
-				result.month -
-				(highlighted.year * 12 + highlighted.month)
-
-			setHighlighted(result)
-			setVisibleRange((prev) =>
-				visible
-					? prev
-					: [
-							toStartOfMonth(prev[0].add({ months: delta })),
-							toEndOfMonth(prev[1].add({ months: delta }))
-					  ]
-			)
-		},
-		[min, max, highlighted, visibleRange]
-	)
-
-	const [selection, setSelection] = useControllableState<CalendarValue>({
+	const { highlighted, setHighlighted } = useCalendarHighlighted({
 		value,
-		defaultValue,
-		onChange: onChange as (value: CalendarValue) => void
+		calendar
 	})
 
-	const selectionToDisplay = useMemo(
-		() =>
-			selectionMode === 'range' && isSet(transient)
-				? [transient, highlighted].toSorted(compare)
-				: selection,
-		[selectionMode, selection, transient, highlighted]
+	const { visibleRange, visibleMonths, addVisibleRange } = useCalendarVisible(
+		{
+			highlighted,
+			months,
+			calendar
+		}
 	)
 
-	const selectionIsTransient = isSet(transient)
+	const selection = useCalendarSelection({
+		behaviour: selectProp,
+		highlighted,
+		defaultValue,
+		value,
+		onChange
+	})
 
-	const select = useCallback(
-		(date: PlainDate) => {
-			if (selectionMode === 'one') {
-				setSelection(date)
-			}
+	const visibleRangeShift = useCallback(
+		(duration: DurationLike) => {
+			setHighlighted((prev) => prev.add(duration))
+			addVisibleRange(duration)
+		},
+		[setHighlighted, addVisibleRange]
+	)
 
-			if (selectionMode === 'many') {
-				setSelection((prev) => {
-					if (isArray(prev)) {
-						const filtered = prev.filter((p) => !p.equals(date))
+	const highlight = useCallback(
+		(date: Date) => {
+			const result = clamp(date, { min, max })
+			const visible =
+				isSameDay(result, visibleRange[0]) ||
+				isSameDay(result, visibleRange[1]) ||
+				isBetween(result, ...visibleRange)
 
-						return filtered.length === 0
-							? null
-							: filtered.length < prev.length
-							? filtered
-							: [...prev, date]
-					}
+			setHighlighted(result)
 
-					return [date]
-				})
-			}
-
-			if (selectionMode === 'range') {
-				setTransient((prev) => {
-					if (isSet(prev)) {
-						setSelection([prev, date].toSorted(compare))
-						return undefined
-					}
-
-					return date
+			if (!visible) {
+				addVisibleRange({
+					months:
+						result.year * 12 +
+						result.month -
+						(highlighted.year * 12 + highlighted.month)
 				})
 			}
 		},
-		[selectionMode, setSelection]
+		[min, max, highlighted, visibleRange, addVisibleRange, setHighlighted]
 	)
 
 	return {
+		calendar,
 		disabled,
 		focusWithin,
 		focusWithinUpdate: setFocusWithin,
@@ -176,16 +109,9 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		max,
 		min,
 		readOnly,
-		select,
-		selection,
-		selectionIsTransient,
-		selectionMode,
-		selectionToDisplay,
-		visibleMonths: months,
+		visibleMonths,
 		visibleRange,
-		visibleRangeShift
-	} as
-		| UseCalendarReturn<'one'>
-		| UseCalendarReturn<'many'>
-		| UseCalendarReturn<'range'>
+		visibleRangeShift,
+		...selection
+	}
 }

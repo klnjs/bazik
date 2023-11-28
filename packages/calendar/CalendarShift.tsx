@@ -2,13 +2,16 @@ import { useCallback, useMemo } from 'react'
 import { Temporal } from 'temporal-polyfill'
 import { freya, forwardRef, toData, type CoreProps, isSet } from '../core'
 import { useCalendarContext } from './CalendarContext'
-import { useCalendarLocalisation } from './useCalendarLocalisation'
-import { isAfter, isBefore } from './useCalendarDateUtils'
-import type { PlainDate } from './CalendarTypes'
+import {
+	useCalendarDateFieldNames,
+	useCalendarLocalisation
+} from './useCalendarLocalisation'
+import { isAfter, isBefore } from './calendar-functions'
+import type { Date } from './calendar-types'
 
 export type CalendarShiftProps = CoreProps<
 	'button',
-	| { action: 'set'; years?: never; months?: never; date: PlainDate }
+	| { action: 'set'; years?: never; months?: never; date: Date }
 	| { action: 'add' | 'sub'; years: number; months?: never; date?: never }
 	| { action: 'add' | 'sub'; years?: never; months?: number; date?: never }
 >
@@ -36,7 +39,8 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 			visibleMonths,
 			visibleRangeShift
 		} = useCalendarContext()
-		const { t, names } = useCalendarLocalisation(locale)
+		const { t } = useCalendarLocalisation(locale)
+		const { names: dateFieldNames } = useCalendarDateFieldNames(locale)
 
 		const duration = useMemo(() => {
 			const initial = Temporal.Duration.from({
@@ -60,9 +64,10 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 			}
 
 			return t(action, {
-				segment: names.of(isSet(years) ? 'year' : 'month') ?? ''
+				segment:
+					dateFieldNames.of(isSet(years) ? 'year' : 'month') ?? ''
 			})
-		}, [action, date, years, t, names, locale])
+		}, [action, date, years, t, locale, dateFieldNames])
 
 		const content = useMemo(() => {
 			switch (action) {

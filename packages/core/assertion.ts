@@ -9,7 +9,7 @@ export const isFunction = (value: unknown): value is (...args: any[]) => any =>
 export const isRecord = (value: unknown): value is Record<PropertyKey, any> =>
 	isSet(value) && !isArray(value) && typeof value === 'object'
 
-export const isRecordProperty = (
+export const isProperty = (
 	record: Record<PropertyKey, any>,
 	property: PropertyKey
 ): property is keyof typeof record => property in record
@@ -18,6 +18,9 @@ export const isArray = (value: unknown): value is any[] => Array.isArray(value)
 
 export const isString = (value: unknown): value is string =>
 	typeof value === 'string'
+
+export const isBoolean = (value: unknown): value is boolean =>
+	typeof value === 'boolean'
 
 export const isNumber = (value: unknown): value is number =>
 	Number.isFinite(value)

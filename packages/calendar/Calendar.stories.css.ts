@@ -9,9 +9,8 @@ export const calendar = style({
 })
 
 export const wide = style({
-	display: 'flex',
-	flexDirection: 'row',
-	alignItems: 'start',
+	display: 'grid',
+	gridAutoFlow: 'row',
 	gap: 8
 })
 
@@ -27,7 +26,7 @@ export const grid = style({
 	rowGap: 2
 })
 
-export const gridWithWeekInfo = style({
+export const gridWithWeeks = style({
 	display: 'grid',
 	gridTemplateColumns: 'repeat(8, 1fr)',
 	rowGap: 2
@@ -129,8 +128,7 @@ export const day = style([
 	}
 ])
 
-export const dayWithOverflowVisible = style([
-	day,
+export const overflow = style([
 	{
 		selectors: {
 			'&[data-overflow]': {

@@ -17,6 +17,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 	(
 		{
 			autoFocus,
+			calendar: calendarProp,
 			defaultValue,
 			disabled,
 			locale,
@@ -35,6 +36,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 	) => {
 		const calendar = useCalendar({
 			autoFocus,
+			calendar: calendarProp,
 			defaultValue,
 			disabled,
 			locale,

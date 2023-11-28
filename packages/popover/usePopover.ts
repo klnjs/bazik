@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type SetStateAction } from 'react'
 import {
 	offset as offsetMiddleware,
 	autoUpdate,
@@ -9,7 +9,7 @@ import {
 	useInteractions,
 	type Placement
 } from '@floating-ui/react'
-import { useControllableState } from '../core'
+import { useStateControllable } from '../core'
 
 export type UsePopoverOptions = {
 	open?: boolean
@@ -24,10 +24,10 @@ export const usePopover = ({
 	defaultOpen,
 	onOpenChange
 }: UsePopoverOptions) => {
-	const [open, setOpen] = useControllableState({
+	const [open, setOpen] = useStateControllable({
 		value: openProp,
 		defaultValue: defaultOpen,
-		onChange: onOpenChange
+		onChange: onOpenChange as (value: SetStateAction<boolean>) => void
 	})
 
 	const [offset, setOffset] = useState<number>()

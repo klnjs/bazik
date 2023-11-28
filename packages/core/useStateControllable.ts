@@ -6,40 +6,35 @@ import {
 	type Dispatch,
 	type SetStateAction
 } from 'react'
+import { useCallbackRef } from './useCallbackRef'
 
-export type UseControllableStateOptions<T> = {
+export type UseStateControllableOptions<T> = {
 	value?: T
 	defaultValue?: T | (() => T)
-	onChange?: (value: T) => void
+	onChange?: (value: SetStateAction<T>) => void
 }
 
-export const useControllableState = <T>({
+export const useStateControllable = <T>({
 	value: valueProp,
 	defaultValue,
 	onChange
-}: UseControllableStateOptions<T>) => {
-	const [uncontrolledState, setUncontrolledState] = useState(defaultValue)
-
+}: UseStateControllableOptions<T>) => {
 	const isControlled = valueProp !== undefined
 	const isControlledRef = useRef(isControlled)
+	const onChangeRef = useCallbackRef(onChange)
 
-	const value = isControlled ? valueProp : uncontrolledState
+	const [valueState, setValueState] = useState(defaultValue as T)
+	const value = isControlled ? (valueProp as T) : valueState
 
 	const setValue = useCallback(
-		(newValue: SetStateAction<T>) => {
-			const nextSetter = newValue as (prevState?: T) => T
-			const nextValue =
-				typeof newValue === 'function' ? nextSetter(value) : newValue
-
+		(action: SetStateAction<T>) => {
 			if (!isControlled) {
-				setUncontrolledState(nextValue)
+				setValueState(action)
 			}
 
-			if (onChange) {
-				onChange(nextValue)
-			}
+			onChangeRef(action)
 		},
-		[value, isControlled, onChange]
+		[isControlled, onChangeRef]
 	)
 
 	useEffect(() => {

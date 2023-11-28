@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react'
-import { Intl as TemporalIntl, Temporal } from 'temporal-polyfill'
+import { Temporal, Intl } from 'temporal-polyfill'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import type { CalendarFieldSegmentType } from './CalendarFieldSegment'
 
@@ -23,7 +23,7 @@ export const CalendarFieldSegments = <L extends boolean = false>({
 
 	const segments = useMemo(() => {
 		const now = Temporal.Now.plainDateTimeISO()
-		const form = new TemporalIntl.DateTimeFormat(locale, {
+		const form = new Intl.DateTimeFormat(locale, {
 			second: undefined
 		})
 		const parts = form.formatToParts(now)

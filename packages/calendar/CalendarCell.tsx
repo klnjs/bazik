@@ -4,14 +4,14 @@ import { CalendarDay } from './CalendarDay'
 import { CalendarBlank } from './CalendarBlank'
 import { CalendarWeek } from './CalendarWeek'
 import { CalendarWeekday } from './CalendarWeekday'
-import type { PlainDate } from './CalendarTypes'
+import type { Date } from './calendar-types'
 
 export type CalendarCellRole = 'day' | 'week' | 'weekday' | 'blank'
 
 export type CalendarCellProps = {
 	key: string
 	role: CalendarCellRole
-	date: PlainDate
+	date: Date
 }
 
 export const CalendarCell = forwardRef<'div', CalendarCellProps>(

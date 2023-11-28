@@ -21,11 +21,19 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 		forwardedRef
 	) => {
 		const { locale, visibleRange } = useCalendarContext()
-		const { year, month } = visibleRange[0].add({ months: monthOffset })
-		const cells = useCalendarGrid({ year, month, weeks, weekdays, locale })
+		const month = visibleRange[0]
+			.add({ months: monthOffset })
+			.toPlainYearMonth()
+
+		const cells = useCalendarGrid({
+			month,
+			locale,
+			weeks,
+			weekdays
+		})
 
 		return (
-			<CalendarGridProvider value={{ year, month, weeks, weekdays }}>
+			<CalendarGridProvider value={{ month, weeks, weekdays }}>
 				<freya.div ref={forwardedRef} {...otherProps}>
 					{cells.map(children)}
 				</freya.div>

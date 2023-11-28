@@ -1,25 +1,23 @@
 import { useMemo } from 'react'
 import {
 	isAfter,
-	getToday,
 	toEndOfWeek,
 	toEndOfMonth,
 	toStartOfWeek,
 	isStartOfWeek,
 	toStartOfMonth
-} from './useCalendarDateUtils'
+} from './calendar-functions'
 import type { CalendarCellProps, CalendarCellRole } from './CalendarCell'
+import type { YearMonth } from './calendar-types'
 
 export type UseCalendarGridOptions = {
-	year: number
-	month: number
+	month: YearMonth
 	locale: string
 	weeks?: boolean
 	weekdays?: boolean
 }
 
 export const useCalendarGrid = ({
-	year,
 	month,
 	locale,
 	weeks,
@@ -27,7 +25,7 @@ export const useCalendarGrid = ({
 }: UseCalendarGridOptions) =>
 	useMemo(() => {
 		const items: CalendarCellProps[] = []
-		const ref = getToday().with({ year, month })
+		const ref = month.toPlainDate({ day: 1 })
 		const end = toEndOfWeek(toEndOfMonth(ref), locale)
 
 		let role: CalendarCellRole
@@ -42,7 +40,7 @@ export const useCalendarGrid = ({
 				items.push({
 					key: `${role}-${date.toString()}`,
 					role,
-					date
+					date: date
 				})
 			}
 
@@ -50,12 +48,12 @@ export const useCalendarGrid = ({
 			items.push({
 				key: `${role}-${date.toString()}`,
 				role,
-				date
+				date: date
 			})
 
-			date = date.add({ days: 1 })
 			itrs = itrs + 1
+			date = date.add({ days: 1 })
 		}
 
 		return items
-	}, [locale, year, month, weeks, weekdays])
+	}, [month, locale, weeks, weekdays])

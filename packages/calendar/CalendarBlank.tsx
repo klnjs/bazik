@@ -1,7 +1,7 @@
 import { freya, forwardRef, type CoreProps } from '../core'
-import type { PlainDate } from './CalendarTypes'
+import type { Date } from './calendar-types'
 
-export type CalendarBlankProps = CoreProps<'div', { date: PlainDate }>
+export type CalendarBlankProps = CoreProps<'div', { date: Date }>
 
 export const CalendarBlank = forwardRef<'div', CalendarBlankProps>(
 	({ date, children, ...otherProps }, forwardedRef) => (
