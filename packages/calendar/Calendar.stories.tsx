@@ -175,7 +175,7 @@ export const Localisation = () => {
 		calendars[0]
 	)
 
-	const locales = ['en-US', 'ar', 'ja'] as const
+	const locales = ['en-US', 'en-GB', 'ja'] as const
 	const localeToReadable = (locale: string) =>
 		new Intl.DisplayNames('en', { type: 'language' })
 			.of(locale)
