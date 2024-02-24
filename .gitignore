@@ -20,11 +20,11 @@
 !.node-version
 !.npmrc
 !.prettierignore
-!.prettierrc.cjs
 !eslint.config.js
 !LICENSE
 !CHANGELOG.md
 !package.json
+!prettier.config.js
 !pnpm-lock.yaml
 !README.md
 !renovate.json

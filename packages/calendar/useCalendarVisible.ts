@@ -31,8 +31,8 @@ export const useCalendarVisible = ({
 
 	const addVisibleRange = useCallback((duration: DurationLike) => {
 		setVisibleRange((prev) => [
-			prev[0].add(duration),
-			prev[1].add(duration)
+			toStartOfMonth(prev[0].add(duration)),
+			toEndOfMonth(prev[1].add(duration))
 		])
 	}, [])
 

@@ -15,6 +15,8 @@ export const getWeekInfo = (tag: string): WeekInfo => {
 		return locale.getWeekInfo() as WeekInfo
 	}
 
+	// 001 is the "UN M.49" code for "the world"
+	// See: https://unstats.un.org/unsd/methodology/m49/
 	const { region = '001' } = locale.maximize()
 
 	return {

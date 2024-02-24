@@ -144,11 +144,7 @@ export const Selection = () => {
 				<CalendarHeader className={classes.header}>
 					<CalendarShift action="sub" className={classes.button} />
 					<CalendarTitle className={classes.title} />
-					<CalendarShift
-						action="add"
-						months={2}
-						className={classes.button}
-					/>
+					<CalendarShift action="add" className={classes.button} />
 				</CalendarHeader>
 				<CalendarGrid className={classes.grid}>
 					{({ key, date }) => (

@@ -4,8 +4,8 @@ import url from 'url'
 import mdi from '@mdi/js'
 import prettier from 'prettier'
 
-const __filename = url.fileURLToPath(import.meta.url)
-const __dirname = p.dirname(__filename)
+const pathToThisFile = url.fileURLToPath(import.meta.url)
+const pathToThisFileDir = p.dirname(pathToThisFile)
 
 const template = ({ title, viewBox, path }) => `
 	import { createIcon } from '../createIcon'
@@ -20,8 +20,8 @@ const template = ({ title, viewBox, path }) => `
 const generate = async () => {
 	try {
 		const icons = Object.entries(mdi)
-		const config = await prettier.resolveConfig(__filename)
-		const output = p.resolve(__dirname, '..', 'packages', 'icon', 'icons')
+		const config = await prettier.resolveConfig(pathToThisFile)
+		const output = p.resolve(pathToThisFileDir, '..', 'icons')
 		const exports = []
 
 		for (const icon of icons) {

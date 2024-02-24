@@ -10,10 +10,9 @@
 !packages/**/*
 
 # Except these files
-!.babelrc
-!.prettierrc.cjs
 !eslint.config.js
 !package.json
+!prettier.config.js
 !renovate.json
 !tsconfig.json
 
