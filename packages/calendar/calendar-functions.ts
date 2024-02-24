@@ -1,12 +1,12 @@
 import { Temporal } from 'temporal-polyfill'
-import { getCalendarWeekInfo } from './calendar-info'
+import { getWeekInfo } from '../calendar-info'
 import type { Date } from './calendar-types'
 
 export const getToday = (calendar = 'iso8601') =>
 	Temporal.Now.plainDate(calendar)
 
 export const getDayOfWeek = (date: Date, locale: string) =>
-	((date.dayOfWeek - getCalendarWeekInfo(locale).firstDay + 7) % 7) + 1
+	((date.dayOfWeek - getWeekInfo(locale).firstDay + 7) % 7) + 1
 
 export const getWeekOfYear = (date: Date, locale: string) =>
 	toDayOfWeek(date, 4, locale).weekOfYear
@@ -67,7 +67,7 @@ export const isSameDay = (date: Date, subject: Date) =>
 export const isToday = (date: Date) => isSameDay(date, getToday())
 
 export const isWeekend = (date: Date, locale: string) =>
-	getCalendarWeekInfo(locale).weekend.includes(date.dayOfWeek)
+	getWeekInfo(locale).weekend.includes(date.dayOfWeek)
 
 export const isStartOfWeek = (date: Date, locale: string) =>
 	getDayOfWeek(date, locale) === 1

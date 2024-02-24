@@ -1,7 +1,5 @@
 export * from './calendar-functions'
-export * from './calendar-info'
 export * from './calendar-types'
-export * from './Calendar'
 export * from './Calendar'
 export * from './CalendarBlank'
 export * from './CalendarCell'

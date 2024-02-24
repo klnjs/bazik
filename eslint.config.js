@@ -1,12 +1,10 @@
-import eslintConfig from '@klnjs/eslint-config'
-import eslintConfigReact from '@klnjs/eslint-config-react'
-import eslintConfigTypescript from '@klnjs/eslint-config-typescript'
+import { core, react, typescript } from '@klnjs/eslint-config'
 import globals from 'globals'
 
 export default [
-	eslintConfig,
-	eslintConfigReact,
-	eslintConfigTypescript,
+	core,
+	react,
+	typescript,
 	{
 		files: ['**/*.stories.tsx'],
 		rules: {
@@ -19,6 +17,9 @@ export default [
 			globals: {
 				...globals.node
 			}
+		},
+		rules: {
+			'no-console': 'off'
 		}
 	}
 ]
