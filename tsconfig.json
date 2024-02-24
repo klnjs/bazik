@@ -1,20 +1,7 @@
 {
+	"extends": "@klnjs/typescript-config/esnext",
 	"compilerOptions": {
-		"lib": ["esnext", "dom", "dom.iterable"],
-		"strict": true,
-		"noEmit": true,
-		"target": "esnext",
-		"module": "esnext",
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"incremental": true,
-		"isolatedModules": true,
-		"esModuleInterop": true,
-		"verbatimModuleSyntax": true,
-		"jsx": "react-jsx",
-		"allowSyntheticDefaultImports": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true
+		"noPropertyAccessFromIndexSignature": false
 	},
 	"include": [".storybook/**/*", "packages/**/*"],
 	"exclude": ["node_modules"]

@@ -28,6 +28,9 @@ devDependencies:
   '@klnjs/prettier-config':
     specifier: 2.0.0-rc.3
     version: 2.0.0-rc.3(prettier@3.2.5)
+  '@klnjs/typescript-config':
+    specifier: 2.0.0-rc.3
+    version: 2.0.0-rc.3
   '@mdi/js':
     specifier: 7.4.47
     version: 7.4.47
@@ -1983,6 +1986,10 @@ packages:
       prettier: ^3.0.0
     dependencies:
       prettier: 3.2.5
+    dev: true
+
+  /@klnjs/typescript-config@2.0.0-rc.3:
+    resolution: {integrity: sha512-iWudGH7/V38WAJeVf8q6ZKQkv1fSC0ITfy3tI2CRIkMCzx0XYxL3TDpptKfV9O0F7WC6HEP+E/ihFrR/SgB3YA==}
     dev: true
 
   /@mdi/js@7.4.47:
