@@ -1,8 +1,10 @@
 {
 	"extends": "@klnjs/typescript-config/esnext",
 	"compilerOptions": {
+		"composite": false,
+		"declaration": false,
 		"noPropertyAccessFromIndexSignature": false
 	},
-	"include": [".storybook/**/*", "packages/**/*"],
+	"include": [".storybook/**/*", "packages/**/*", "scripts"],
 	"exclude": ["node_modules"]
 }
