@@ -8,7 +8,7 @@ const pathToThisFile = url.fileURLToPath(import.meta.url)
 const pathToThisFileDir = p.dirname(pathToThisFile)
 
 const template = ({ title, viewBox, path }) => `
-	import { createIcon } from '../icon'
+	import { createIcon } from '../../icon'
 
 	export default createIcon({
 		title: '${title}',
@@ -42,7 +42,7 @@ const writeIconsToDisk = async (icons, { root, exports, prettierConfig }) => {
 const writeIndexToDisk = async (icons, { root }) => {
 	const target = p.resolve(root, 'index.ts')
 	const source = icons
-		.map((name) => `export { default as ${name} } from './${name}'`)
+		.map((name) => `export { default as ${name} } from './src/${name}'`)
 		.join('\n')
 
 	await fs.writeFile(target, source, 'utf8')
@@ -51,6 +51,7 @@ const writeIndexToDisk = async (icons, { root }) => {
 const generate = async () => {
 	try {
 		const root = p.resolve(pathToThisFileDir, '..', 'packages', 'icons')
+		const rootIcons = p.resolve(root, 'src')
 		const icons = Object.entries(mdi)
 		const exports = []
 		const prettierConfig = {
@@ -58,10 +59,11 @@ const generate = async () => {
 			...(await prettier.resolveConfig(pathToThisFile))
 		}
 
-		await fs.rm(root, { recursive: true, force: true })
-		await fs.mkdir(root)
+		await fs.rm(rootIcons, { recursive: true, force: true })
+		await fs.mkdir(rootIcons, { recursive: true })
+
 		await writeIconsToDisk(icons, {
-			root,
+			root: rootIcons,
 			exports,
 			prettierConfig
 		})
