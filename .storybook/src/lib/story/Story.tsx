@@ -75,12 +75,21 @@ export const Story = ({
 
 			<div
 				style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
 					flex: 1,
 					flexShrink: 0,
-					overflow: 'hidden'
+					overflow: 'auto'
 				}}
 			>
-				{children}
+				<div
+					style={{
+						padding: 16
+					}}
+				>
+					{children}
+				</div>
 			</div>
 		</div>
 	</div>
