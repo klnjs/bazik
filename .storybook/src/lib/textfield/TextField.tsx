@@ -31,7 +31,7 @@ export const TextField = ({
 				style={{
 					background: 0,
 					border: 0,
-					color: 'teal',
+					color: '#adf0dd',
 					padding: 0,
 					width: 'fit-content',
 					cursor: 'pointer',
@@ -47,9 +47,7 @@ export const TextField = ({
 			value={value}
 			placeholder={placeholder}
 			style={{
-				borderWidth: 1,
-				borderColor: 'black',
-				borderStyle: 'solid',
+				border: '1px solid #363a3f',
 				borderRadius: 4,
 				height: 28,
 				outline: 0,

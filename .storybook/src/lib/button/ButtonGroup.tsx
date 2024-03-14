@@ -20,15 +20,15 @@ export const ButtonGroup = <T extends string>({
 				key={option}
 				style={{
 					borderWidth: 1,
-					borderColor: value === option ? '#0060df' : 'black',
+					borderColor: value === option ? 'inherit' : '#363a3f',
 					borderStyle: 'solid',
 					borderRadius: 4,
 					height: 28,
 					minWidth: 120,
 					paddingInline: 16,
 					cursor: 'pointer',
-					color: value === option ? 'white' : 'black',
-					background: value === option ? '#0060df' : 'white'
+					color: 'inherit',
+					background: value === option ? '#363a3f' : 'inherit'
 				}}
 				onClick={() => onChange(option)}
 			>

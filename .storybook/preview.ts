@@ -2,7 +2,7 @@ import type { Preview } from '@storybook/react'
 
 export default {
 	parameters: {
-		layout: 'centered',
+		layout: 'fullscreen',
 		options: {
 			storySort: {
 				method: 'alphabetical'

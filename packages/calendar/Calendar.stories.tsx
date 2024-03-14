@@ -2,12 +2,7 @@ import { useState, type SetStateAction, type Dispatch } from 'react'
 import { Temporal } from 'temporal-polyfill'
 import type { Meta } from '@storybook/react'
 import clsx from 'clsx'
-import {
-	Story,
-	ButtonGroup,
-	Switch,
-	TextField
-} from '../../.storybook/components'
+import { Story, ButtonGroup, Switch, TextField } from '../../.storybook/src/lib'
 import { Calendar } from './Calendar'
 import { CalendarDay } from './CalendarDay'
 import { CalendarCell } from './CalendarCell'
