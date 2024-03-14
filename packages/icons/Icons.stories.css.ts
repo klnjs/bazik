@@ -3,7 +3,7 @@ import { vars } from '../../.storybook/src/style/theme.css'
 import { sprinkles } from '../../.storybook/src/style/sprinkles.css'
 
 export const grid = style([
-	sprinkles({ gap: 'medium', padding: 'large' }),
+	sprinkles({ gap: 'medium' }),
 	{
 		display: 'grid',
 		gridTemplateColumns: 'repeat(auto-fill, 36px)',
@@ -18,7 +18,6 @@ export const grid = style([
 ])
 
 export const icon = style({
-	fill: 'currentColor',
 	width: '100%',
 	height: '100%'
 })

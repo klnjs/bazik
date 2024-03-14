@@ -6,7 +6,6 @@ export const icon = style([
 		color: 'teal11'
 	}),
 	{
-		fill: 'currentColor',
 		width: 200,
 		height: 200
 	}

@@ -22,7 +22,13 @@ export const createIcon = ({
 	viewBox: string
 }) => {
 	const Component = forwardRef<'svg', IconProps>((props, forwardedRef) => (
-		<Icon ref={forwardedRef} viewBox={viewBox} {...props}>
+		<Icon
+			ref={forwardedRef}
+			fill="currentColor"
+			stroke="none"
+			viewBox={viewBox}
+			{...props}
+		>
 			{title ? <IconTitle>{title}</IconTitle> : null}
 			{description ? (
 				<IconDescription>{description}</IconDescription>
