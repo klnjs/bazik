@@ -13,29 +13,7 @@ export default {
 			strictMode: false
 		}
 	},
-	addons: [
-		{
-			name: '@storybook/addon-storysource',
-			options: {
-				loaderOptions: {
-					parser: 'typescript',
-					injectStoryParameters: false
-				}
-			}
-		}
-	],
-	typescript: {
-		check: false,
-		reactDocgen: 'react-docgen-typescript',
-		reactDocgenTypescriptOptions: {
-			shouldRemoveUndefinedFromOptional: true,
-			shouldExtractLiteralValuesFromEnum: true,
-			propFilter: (prop) =>
-				prop.parent
-					? !prop.parent.fileName.includes('node_modules')
-					: true
-		}
-	},
+	addons: ['@storybook/addon-storysource', '@storybook/addon-a11y'],
 	viteFinal: async (config) =>
 		mergeConfig(config, {
 			plugins: [vanillaExtractPlugin()]

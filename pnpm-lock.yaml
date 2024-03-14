@@ -34,6 +34,9 @@ devDependencies:
   '@mdi/js':
     specifier: 7.4.47
     version: 7.4.47
+  '@storybook/addon-a11y':
+    specifier: 8.0.0
+    version: 8.0.0
   '@storybook/addon-storysource':
     specifier: 8.0.0
     version: 8.0.0
@@ -1955,6 +1958,19 @@ packages:
     dev: true
     optional: true
 
+  /@storybook/addon-a11y@8.0.0:
+    resolution: {integrity: sha512-lxvXOMYqeM6DOUvNP3e18GzPDVhcOZtLnjkJ8XQbRk2xx2qHodAEiFhiKBhfStsn6/rg0zWLRpZ1NJxjnZ0l/Q==}
+    dependencies:
+      '@storybook/addon-highlight': 8.0.0
+      axe-core: 4.8.4
+    dev: true
+
+  /@storybook/addon-highlight@8.0.0:
+    resolution: {integrity: sha512-bSba9UTcPJBFUy5peIU8XPlKK/7lT054977oLGgVYup2u88km6pWaMNSGMWhb3xXdseTgrj96k/b+md4X+WrMg==}
+    dependencies:
+      '@storybook/global': 5.0.0
+    dev: true
+
   /@storybook/addon-storysource@8.0.0:
     resolution: {integrity: sha512-gt6LvNxs1UXDFlUnPkuyjKB4nE5YBvIZILn0QGo/Kr7gGLMAFT8C6N5l2LLgLdIoW96XbVQv+i4m9w/5GwEuZg==}
     dependencies:
@@ -3132,6 +3148,11 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       possible-typed-array-names: 1.0.0
+    dev: true
+
+  /axe-core@4.8.4:
+    resolution: {integrity: sha512-CZLSKisu/bhJ2awW4kJndluz2HLZYIHh5Uy1+ZwDRkJi69811xgIXXfdU9HSLX0Th+ILrHj8qfL/5wzamsFtQg==}
+    engines: {node: '>=4'}
     dev: true
 
   /babel-core@7.0.0-bridge.0(@babel/core@7.24.0):

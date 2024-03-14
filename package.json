@@ -7,7 +7,7 @@
 		"publish": "pnpm -r publish",
 		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
 		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
-		"storybook": "storybook dev -p 6006",
+		"storybook": "storybook dev -p 6006 --no-open",
 		"typescript": "tsc --noEmit",
 		"icons:generate": "node ./scripts/createIcons.js"
 	},
@@ -23,6 +23,7 @@
 		"@klnjs/prettier-config": "2.0.0-rc.3",
 		"@klnjs/typescript-config": "2.0.0-rc.3",
 		"@mdi/js": "7.4.47",
+		"@storybook/addon-a11y": "8.0.0",
 		"@storybook/addon-storysource": "8.0.0",
 		"@storybook/react": "8.0.0",
 		"@storybook/react-vite": "8.0.0",
