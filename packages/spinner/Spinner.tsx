@@ -5,17 +5,11 @@ import { useSpinner, type UseSpinnerOptions } from './useSpinner'
 export type SpinnerProps = CoreProps<'svg', UseSpinnerOptions>
 
 export const Spinner = forwardRef<'svg', SpinnerProps>(
-	(
-		{ arc, cap, angle, radius, duration, thickness, ...otherProps },
-		forwardedRef
-	) => {
+	({ width, size, speed, ...otherProps }, forwardedRef) => {
 		const spinner = useSpinner({
-			arc,
-			cap,
-			angle,
-			radius,
-			duration,
-			thickness
+			size,
+			width,
+			speed
 		})
 
 		return (

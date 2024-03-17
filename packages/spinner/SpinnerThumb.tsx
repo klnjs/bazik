@@ -1,20 +1,25 @@
 import { freya, forwardRef, type CoreProps } from '../core'
 import { useSpinnerContext } from './SpinnerContext'
 
-export type SpinnerThumbProps = CoreProps<'circle'>
+export type SpinnerThumbProps = CoreProps<
+	'circle',
+	{
+		arc?: number
+		angle?: number
+		cap?: 'butt' | 'round' | 'square'
+	}
+>
 
 export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
-	(props, forwardedRef) => {
-		const {
-			arc,
-			cap,
-			radius,
-			rotate,
-			center,
-			duration,
-			circumference,
-			thickness
-		} = useSpinnerContext()
+	(
+		{ arc: arcProp = 0, angle = 0, cap = 'round', ...otherProps },
+		forwardedRef
+	) => {
+		const { width, radius, center, speed, circumference } =
+			useSpinnerContext()
+
+		const arc = (circumference * arcProp) / 100
+		const rotate = -90 + angle
 
 		return (
 			<freya.circle
@@ -25,14 +30,14 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 				transform={`rotate(${rotate} ${center} ${center})`}
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={thickness}
+				strokeWidth={width}
 				strokeLinecap={cap}
 				strokeDasharray={`${arc},${circumference}`}
-				{...props}
+				{...otherProps}
 			>
 				<animateTransform
 					attributeName="transform"
-					dur={`${duration}s`}
+					dur={`${speed}s`}
 					type="rotate"
 					values={`${rotate} ${center} ${center};${rotate + 360} ${center} ${center}`}
 					repeatCount="indefinite"

@@ -5,7 +5,7 @@ export type SpinnerTrackProps = CoreProps<'circle'>
 
 export const SpinnerTrack = forwardRef<'circle', SpinnerTrackProps>(
 	(props, forwardedRef) => {
-		const { radius, center, thickness } = useSpinnerContext()
+		const { radius, center, width } = useSpinnerContext()
 
 		return (
 			<freya.circle
@@ -15,7 +15,7 @@ export const SpinnerTrack = forwardRef<'circle', SpinnerTrackProps>(
 				cy={center}
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={thickness}
+				strokeWidth={width}
 				{...props}
 			/>
 		)
