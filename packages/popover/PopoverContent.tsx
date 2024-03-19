@@ -1,41 +1,37 @@
-import { useLayoutEffect } from 'react'
-import {
-	FloatingPortal,
-	FloatingFocusManager,
-	type Placement
-} from '@floating-ui/react'
-import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
+import { useMemo } from 'react'
+import { FloatingPortal, FloatingFocusManager } from '@floating-ui/react'
+import { freya, forwardRef, useMergeRefs, isSet, type CoreProps } from '../core'
 import { usePopoverContext } from './PopoverContext'
 
-export type PopoverContentProps = CoreProps<
-	'div',
-	{
-		offset?: number
-		placement?: Placement
-	}
->
+export type PopoverContentProps = CoreProps<'div'>
 
 export const PopoverContent = forwardRef<'div', PopoverContentProps>(
-	({ style, offset, placement, ...otherProps }, forwardedRef) => {
+	({ style, ...otherProps }, forwardedRef) => {
 		const {
 			refs,
-			modal,
+			modal = false,
+			status,
+			dismiss,
+			mounted,
+			placement,
 			context,
-			setOffset,
-			setPlacement,
+			labelId,
+			descriptionId,
 			getFloatingProps
 		} = usePopoverContext()
+
 		const ref = useMergeRefs(refs.setFloating, forwardedRef)
+		const closeOnFocusOut = dismiss?.onFocusOut
+		const closeOnPressHidden = dismiss?.onPressHidden
+		const visuallyHiddenDismiss = useMemo(() => {
+			if (isSet(closeOnPressHidden)) {
+				return closeOnPressHidden
+			}
 
-		useLayoutEffect(() => {
-			setOffset(offset)
-		}, [offset, setOffset])
+			return modal
+		}, [modal, closeOnPressHidden])
 
-		useLayoutEffect(() => {
-			setPlacement(placement)
-		}, [placement, setPlacement])
-
-		if (!context.open) {
+		if (!mounted) {
 			return null
 		}
 
@@ -45,12 +41,16 @@ export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 					modal={modal}
 					guards={!modal}
 					context={context}
+					closeOnFocusOut={closeOnFocusOut}
+					visuallyHiddenDismiss={visuallyHiddenDismiss}
 				>
 					<freya.div
 						ref={ref}
 						style={{ ...context.floatingStyles, ...style }}
-						// aria-labelledby={context.labelId}
-						// aria-describedby={context.descriptionId}
+						aria-labelledby={labelId}
+						aria-describedby={descriptionId}
+						data-status={status}
+						data-placement={placement}
 						{...getFloatingProps(otherProps)}
 					/>
 				</FloatingFocusManager>
