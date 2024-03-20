@@ -3,13 +3,13 @@ import { useMemo } from 'react'
 export type UseSpinnerOptions = {
 	size?: number
 	width?: number
-	speed?: number
+	duration?: number
 }
 
 export const useSpinner = ({
 	size = 24,
 	width = 4,
-	speed = 1
+	duration = 1
 }: UseSpinnerOptions = {}) =>
 	useMemo(() => {
 		const radius = size / 2 - width / 2
@@ -19,10 +19,10 @@ export const useSpinner = ({
 
 		return {
 			width,
-			speed,
 			center,
 			radius,
+			duration,
 			diameter,
 			circumference
 		}
-	}, [size, width, speed])
+	}, [size, width, duration])

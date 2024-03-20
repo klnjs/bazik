@@ -15,7 +15,7 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 		{ arc: arcProp = 0, angle = 0, cap = 'round', ...otherProps },
 		forwardedRef
 	) => {
-		const { width, radius, center, speed, circumference } =
+		const { width, radius, center, duration, circumference } =
 			useSpinnerContext()
 
 		const arc = (circumference * arcProp) / 100
@@ -37,7 +37,7 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 			>
 				<animateTransform
 					attributeName="transform"
-					dur={`${speed}s`}
+					dur={`${duration}s`}
 					type="rotate"
 					values={`${rotate} ${center} ${center};${rotate + 360} ${center} ${center}`}
 					repeatCount="indefinite"
