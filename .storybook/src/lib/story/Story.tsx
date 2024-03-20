@@ -1,5 +1,4 @@
 import { cloneElement, type ReactNode, type ReactElement } from 'react'
-import { theme } from '../../style/theme.css'
 
 export type StoryProps = {
 	controls?: ReactElement[]
@@ -11,6 +10,7 @@ export type StoryProps = {
 }
 
 export const Story = ({
+	id,
 	controls,
 	children,
 	layout = 'center',
@@ -19,7 +19,6 @@ export const Story = ({
 	direction = 'row'
 }: StoryProps) => (
 	<div
-		className={theme}
 		style={{
 			color: 'white',
 			display: 'flex',
