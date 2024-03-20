@@ -7,7 +7,13 @@ import { IconPath } from './IconPath'
 export type IconProps = CoreProps<'svg'>
 
 export const Icon = forwardRef<'svg', IconProps>((props, forwardedRef) => (
-	<svg ref={forwardedRef} aria-hidden={true} {...props} />
+	<svg
+		ref={forwardedRef}
+		fill="currentColor"
+		stroke="none"
+		aria-hidden={true}
+		{...props}
+	/>
 ))
 
 export const createIcon = ({
@@ -22,13 +28,7 @@ export const createIcon = ({
 	viewBox: string
 }) => {
 	const Component = forwardRef<'svg', IconProps>((props, forwardedRef) => (
-		<Icon
-			ref={forwardedRef}
-			fill="currentColor"
-			stroke="none"
-			viewBox={viewBox}
-			{...props}
-		>
+		<Icon ref={forwardedRef} viewBox={viewBox} {...props}>
 			{title ? <IconTitle>{title}</IconTitle> : null}
 			{description ? (
 				<IconDescription>{description}</IconDescription>
