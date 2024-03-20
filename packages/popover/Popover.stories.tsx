@@ -1,53 +1,160 @@
+import { useState } from 'react'
 import type { Meta } from '@storybook/react'
-import { Popover as PopoverRoot } from './Popover'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
+import { Select, Story, Switch, TextField } from '../../.storybook/src/lib'
+import { Popover } from './Popover'
 import { PopoverAnchor } from './PopoverAnchor'
 import { PopoverTrigger } from './PopoverTrigger'
 import { PopoverContent } from './PopoverContent'
+import type { PopoverPlacement } from './PopoverTypes'
 import * as classes from './Popover.stories.css'
 
 export default {
 	title: 'Popover',
-	component: PopoverRoot,
-	parameters: {
-		layout: 'centered'
-	}
-} satisfies Meta<typeof PopoverRoot>
+	component: Popover
+} satisfies Meta<typeof Popover>
 
-export const Popover = () => (
-	<PopoverRoot>
-		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-		<PopoverContent className={classes.popover}>
-			I am a popover
-		</PopoverContent>
-	</PopoverRoot>
-)
+export const Behaviour = () => {
+	const [open, setOpen] = useState(false)
+	const [modal, setModal] = useState(false)
 
-export const PopoverWithOffset = () => (
-	<PopoverRoot>
-		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-		<PopoverContent offset={10} className={classes.popover}>
-			I am a popover
-		</PopoverContent>
-	</PopoverRoot>
-)
+	return (
+		<Story
+			controls={[
+				<Switch label="modal" checked={modal} onChange={setModal} />
+			]}
+		>
+			<Popover open={open} modal={modal} onOpenChange={setOpen}>
+				<PopoverTrigger className={classes.trigger}>
+					{open ? 'Close' : 'Open'}
+				</PopoverTrigger>
+				<PopoverContent className={classes.popover}>
+					Popover
+				</PopoverContent>
+			</Popover>
+		</Story>
+	)
+}
 
-export const PopoverWithPlacement = () => (
-	<PopoverRoot>
-		<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-		<PopoverContent placement="bottom-start" className={classes.popover}>
-			I am a popover
-		</PopoverContent>
-	</PopoverRoot>
-)
+export const Placement = () => {
+	const [offset, setOffset] = useState('2')
+	const [placement, setPlacement] = useState<PopoverPlacement>('top')
 
-export const PopoverWithAnchor = () => (
-	<PopoverRoot>
-		<div className={classes.layout}>
-			<PopoverTrigger className={classes.trigger}>Open</PopoverTrigger>
-			<PopoverAnchor className={classes.anchor}>Anchor</PopoverAnchor>
-		</div>
-		<PopoverContent className={classes.popover}>
-			I am a popover
-		</PopoverContent>
-	</PopoverRoot>
-)
+	const placements: PopoverPlacement[] = [
+		'top',
+		'top-start',
+		'top-end',
+		'right',
+		'right-start',
+		'right-end',
+		'bottom',
+		'bottom-start',
+		'bottom-end',
+		'left',
+		'left-start',
+		'left-end'
+	]
+
+	const placementOptions = placements.map((value) => ({ value }))
+
+	return (
+		<Story
+			controls={[
+				<Select
+					label="Placement"
+					value={placement}
+					options={placementOptions}
+					onChange={setPlacement}
+				/>,
+				<TextField label="Offset" value={offset} onChange={setOffset} />
+			]}
+		>
+			<Popover open placement={placement} offset={Number(offset)}>
+				<PopoverAnchor className={classes.anchor}>Anchor</PopoverAnchor>
+				<PopoverContent className={classes.popover}>
+					Popover
+				</PopoverContent>
+			</Popover>
+		</Story>
+	)
+}
+
+export const Dismissing = () => {
+	const [open, setOpen] = useState(false)
+	const [onFocusOut, setOnFocusOut] = useState(true)
+	const [onEscapeKey, setOnEscapeKey] = useState(true)
+	const [onPressOutside, setOnPressOutside] = useState(true)
+	const [onAncestorScroll, setOnAncestorScroll] = useState(false)
+
+	return (
+		<Story
+			controls={[
+				<Switch
+					label="onFocusOut"
+					checked={onFocusOut}
+					onChange={setOnFocusOut}
+				/>,
+				<Switch
+					label="onEscapeKey"
+					checked={onEscapeKey}
+					onChange={setOnEscapeKey}
+				/>,
+				<Switch
+					label="onPressOutside"
+					checked={onPressOutside}
+					onChange={setOnPressOutside}
+				/>,
+				<Switch
+					label="onAncestorScroll"
+					checked={onAncestorScroll}
+					onChange={setOnAncestorScroll}
+				/>
+			]}
+		>
+			<Popover
+				open={open}
+				dismiss={{
+					onFocusOut,
+					onEscapeKey,
+					onPressOutside,
+					onAncestorScroll
+				}}
+				onOpenChange={setOpen}
+			>
+				<PopoverTrigger className={classes.trigger}>
+					{open ? 'Close' : 'Open'}
+				</PopoverTrigger>
+				<PopoverContent className={classes.popover}>
+					Popover
+				</PopoverContent>
+			</Popover>
+		</Story>
+	)
+}
+
+export const Transitions = () => {
+	const [enter, setEnter] = useState('1000')
+	const [leave, setLeave] = useState('1000')
+
+	return (
+		<Story
+			controls={[
+				<TextField label="Enter" value={enter} onChange={setEnter} />,
+				<TextField label="Leave" value={leave} onChange={setLeave} />
+			]}
+		>
+			<Popover duration={{ enter: Number(enter), leave: Number(leave) }}>
+				<PopoverTrigger className={classes.anchor}>Open</PopoverTrigger>
+				<PopoverContent
+					className={classes.popoverWithTransition}
+					style={assignInlineVars({
+						[classes.popoverEnterDuration]: `${enter}ms`,
+						[classes.popoverLeaveDuration]: `${leave}ms`
+					})}
+				>
+					I am a popover
+				</PopoverContent>
+			</Popover>
+		</Story>
+	)
+}
