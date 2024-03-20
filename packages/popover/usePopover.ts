@@ -6,8 +6,7 @@ import {
 	useClick,
 	useDismiss,
 	useFloating,
-	useInteractions,
-	useTransitionStatus
+	useInteractions
 } from '@floating-ui/react'
 import { useStateControllable } from '../core'
 import type {
@@ -15,8 +14,10 @@ import type {
 	PopoverDuration,
 	PopoverPlacement
 } from './PopoverTypes'
+import { usePopoverStatus } from './usePopoverStatus'
 
 export type UsePopoverOptions = {
+	root?: string
 	open?: boolean
 	modal?: boolean
 	offset?: number
@@ -28,6 +29,7 @@ export type UsePopoverOptions = {
 }
 
 export const usePopover = ({
+	root,
 	open: openProp,
 	modal,
 	offset,
@@ -55,6 +57,8 @@ export const usePopover = ({
 		middleware: [offsetMiddleware(offset)]
 	})
 
+	const { mounted, status } = usePopoverStatus(context, duration)
+
 	const { getFloatingProps, getReferenceProps } = useInteractions([
 		useRole(context),
 		useClick(context),
@@ -65,11 +69,8 @@ export const usePopover = ({
 		})
 	])
 
-	const { isMounted: mounted, status } = useTransitionStatus(context, {
-		duration
-	})
-
 	return {
+		root,
 		refs,
 		modal,
 		status,

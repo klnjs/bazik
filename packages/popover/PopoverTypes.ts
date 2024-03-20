@@ -1,11 +1,22 @@
-import type { Placement, UseTransitionStatusProps } from '@floating-ui/react'
+import type { Placement } from '@floating-ui/react'
 
 export type PopoverPlacement = Placement
-export type PopoverDuration = UseTransitionStatusProps['duration']
+
+export type PopoverDuration =
+	| number
+	| Partial<{
+			enter: number
+			leave: number
+	  }>
+
+export type PopoverStatus = {
+	mounted: boolean
+	status: 'mount' | 'enter' | 'leave'
+}
+
 export type PopoverDismiss = Partial<{
-	onEscapeKey: boolean
 	onFocusOut: boolean
-	onPressHidden: boolean | string
+	onEscapeKey: boolean
 	onPressOutside: boolean | ((event: MouseEvent) => boolean)
 	onAncestorScroll: boolean
 }>

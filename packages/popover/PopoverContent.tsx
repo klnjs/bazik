@@ -1,6 +1,5 @@
-import { useMemo } from 'react'
 import { FloatingPortal, FloatingFocusManager } from '@floating-ui/react'
-import { freya, forwardRef, useMergeRefs, isSet, type CoreProps } from '../core'
+import { freya, forwardRef, useMergeRefs, type CoreProps } from '../core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverContentProps = CoreProps<'div'>
@@ -8,6 +7,7 @@ export type PopoverContentProps = CoreProps<'div'>
 export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 	({ style, ...otherProps }, forwardedRef) => {
 		const {
+			root,
 			refs,
 			modal = false,
 			status,
@@ -22,27 +22,19 @@ export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 
 		const ref = useMergeRefs(refs.setFloating, forwardedRef)
 		const closeOnFocusOut = dismiss?.onFocusOut
-		const closeOnPressHidden = dismiss?.onPressHidden
-		const visuallyHiddenDismiss = useMemo(() => {
-			if (isSet(closeOnPressHidden)) {
-				return closeOnPressHidden
-			}
-
-			return modal
-		}, [modal, closeOnPressHidden])
 
 		if (!mounted) {
 			return null
 		}
 
 		return (
-			<FloatingPortal>
+			<FloatingPortal id={root}>
 				<FloatingFocusManager
 					modal={modal}
 					guards={!modal}
 					context={context}
 					closeOnFocusOut={closeOnFocusOut}
-					visuallyHiddenDismiss={visuallyHiddenDismiss}
+					visuallyHiddenDismiss={modal}
 				>
 					<freya.div
 						ref={ref}
