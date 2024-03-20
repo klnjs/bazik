@@ -1,6 +1,6 @@
 import { useMemo, useState, type MouseEvent } from 'react'
-import { useDebounce } from '../core/useDebounce'
 import { Story, TextField } from '../../.storybook/src/lib'
+import { useDebounce } from '../core/useDebounce'
 import * as icons from './index'
 import * as classes from './Icons.stories.css'
 
@@ -19,20 +19,23 @@ export const Collection = () => {
 		await navigator.clipboard.writeText(source)
 	}
 
-	const iconsQueryResult = useMemo(
-		() =>
-			Object.entries(icons).filter(([name]) =>
+	const iconsQueryResult = useMemo(() => {
+		if (queryDebounced) {
+			return Object.entries(icons).filter(([name]) =>
 				name
 					.toLocaleLowerCase()
 					.includes(queryDebounced.toLocaleLowerCase())
-			),
-		[queryDebounced]
-	)
+			)
+		}
+
+		return Object.entries(icons).slice(0, 20)
+	}, [queryDebounced])
 
 	return (
 		<Story
 			width={640}
 			height={385}
+			center={false}
 			direction="column"
 			controls={[
 				<TextField

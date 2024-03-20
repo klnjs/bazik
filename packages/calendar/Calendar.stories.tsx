@@ -10,7 +10,6 @@ import { CalendarGrid } from './CalendarGrid'
 import { CalendarTitle } from './CalendarTitle'
 import { CalendarHeader } from './CalendarHeader'
 import { CalendarShift } from './CalendarShift'
-import { getToday } from './calendar-functions'
 import * as classes from './Calendar.stories.css'
 
 export default {
@@ -226,6 +225,7 @@ export const Wide = () => {
 
 	return (
 		<Story
+			direction="column"
 			controls={[
 				<TextField
 					type="number"
@@ -270,70 +270,5 @@ export const Wide = () => {
 				</div>
 			</Calendar>
 		</Story>
-	)
-}
-
-export const Schedule = () => {
-	const createEventInThisMonth = (
-		name: string,
-		color: string,
-		day: number
-	) => ({
-		name,
-		color,
-		date: getToday().with({ day })
-	})
-
-	const events = [
-		createEventInThisMonth('Party', 'lime', 1),
-		createEventInThisMonth('Doctors', 'aqua', 4),
-		createEventInThisMonth('Dentist', 'aqua', 12),
-		createEventInThisMonth('Meeting', 'olive', 15),
-		createEventInThisMonth('Service', 'purple', 22),
-		createEventInThisMonth('Funeral', 'coral', 22),
-		createEventInThisMonth('Birthday', 'crimson', 23)
-	] as const
-
-	return (
-		<Calendar
-			className={classes.calendar}
-			style={{ width: 700 }}
-			aria-label="Schedule"
-		>
-			<CalendarHeader className={classes.header}>
-				<CalendarShift action="sub" className={classes.button} />
-				<CalendarTitle className={classes.title} />
-				<CalendarShift action="add" className={classes.button} />
-			</CalendarHeader>
-			<CalendarGrid className={classes.grid}>
-				{({ key, date }) => (
-					<div
-						key={key}
-						style={{
-							aspectRatio: '1 / 1',
-							padding: 4,
-							border: '1px solid grey',
-							borderRadius: 4
-						}}
-					>
-						<div style={{ fontSize: 12 }}>{date.day}</div>
-						{events
-							.filter((event) => date.equals(event.date))
-							.map((event) => (
-								<div
-									style={{
-										background: event.color,
-										borderRadius: 4,
-										fontSize: 12,
-										padding: 2
-									}}
-								>
-									{event.name}
-								</div>
-							))}
-					</div>
-				)}
-			</CalendarGrid>
-		</Calendar>
 	)
 }

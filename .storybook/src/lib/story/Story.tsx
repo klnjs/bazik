@@ -3,27 +3,26 @@ import { cloneElement, type ReactNode, type ReactElement } from 'react'
 export type StoryProps = {
 	controls?: ReactElement[]
 	children: ReactNode
-	layout?: 'auto' | 'center'
 	width?: number
 	height?: number
+	center?: boolean
 	direction?: 'row' | 'column'
 }
 
 export const Story = ({
-	id,
 	controls,
 	children,
-	layout = 'center',
 	width,
 	height,
+	center = true,
 	direction = 'row'
 }: StoryProps) => (
 	<div
 		style={{
 			color: 'white',
 			display: 'flex',
-			alignItems: layout === 'center' ? 'center' : undefined,
-			justifyContent: layout === 'center' ? 'center' : undefined,
+			alignItems: 'center',
+			justifyContent: 'center',
 			width: '100vw',
 			height: '100vh',
 			background: '#101618'
@@ -75,20 +74,14 @@ export const Story = ({
 			<div
 				style={{
 					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					flex: 1,
+					alignItems: center ? 'center' : undefined,
+					justifyContent: center ? 'center' : undefined,
+					padding: 16,
 					flexShrink: 0,
 					overflow: 'auto'
 				}}
 			>
-				<div
-					style={{
-						padding: 16
-					}}
-				>
-					{children}
-				</div>
+				{children}
 			</div>
 		</div>
 	</div>
