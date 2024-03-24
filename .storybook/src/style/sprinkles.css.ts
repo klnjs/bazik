@@ -22,22 +22,22 @@ const flexProps = defineProperties({
 		},
 		justifyContent: {
 			stretch: {
-				alignItems: 'stretch'
+				justifyContent: 'stretch'
 			},
 			start: {
-				alignItems: 'flex-start'
+				justifyContent: 'flex-start'
 			},
 			center: {
-				alignItems: 'center'
+				justifyContent: 'center'
 			},
 			end: {
-				alignItems: 'flex-end'
+				justifyContent: 'flex-end'
 			},
 			'space-around': {
-				alignItems: 'space-around'
+				justifyContent: 'space-around'
 			},
 			'space-between': {
-				alignItems: 'space-between'
+				justifyContent: 'space-between'
 			}
 		}
 	},
