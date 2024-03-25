@@ -22,6 +22,8 @@ export const usePinField = ({
 }: UsePinFieldOptions = {}) => {
 	const inputRef = useRef<HTMLInputElement>()
 
+	const [inputId, setInputId] = useState<string>()
+
 	const [focusWithin, setFocusWithin] = useState(false)
 
 	const [pin = '', setPin] = useStateControllable({
@@ -35,10 +37,12 @@ export const usePinField = ({
 		length,
 		secret,
 		type,
+		inputId,
 		inputRef,
 		disabled,
 		focusWithin,
 		setPin,
+		setInputId,
 		setFocusWithin
 	}
 }

@@ -1,16 +1,38 @@
 import {
 	useCallback,
+	useLayoutEffect,
 	type ChangeEvent,
 	type KeyboardEvent,
-	type ClipboardEvent
+	type ClipboardEvent,
+	type CSSProperties
 } from 'react'
-import { freya, chain, forwardRef, useMergeRefs, type CoreProps } from '../core'
+import {
+	freya,
+	chain,
+	forwardRef,
+	useId,
+	useMergeRefs,
+	type CoreProps
+} from '../core'
 import { usePinFieldContext } from './PinFieldContext'
 
 export type PinFieldInputProps = CoreProps<'input'>
 
 export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
-	({ onBlur, onFocus, onChange, onKeyDown, ...otherProps }, forwardedRef) => {
+	(
+		{
+			id: idProp,
+			hidden = true,
+			autoComplete: autoCompleteProp,
+			style: styleProp,
+			onBlur,
+			onFocus,
+			onChange,
+			onKeyDown,
+			...otherProps
+		},
+		forwardedRef
+	) => {
 		const {
 			pin,
 			type,
@@ -18,12 +40,22 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 			disabled,
 			inputRef,
 			setPin,
+			setInputId,
 			setFocusWithin
 		} = usePinFieldContext()
 
+		const id = useId(idProp)
 		const refCallback = useMergeRefs(inputRef, forwardedRef)
 
 		const pattern = PinFieldInputPatterns[type]
+		const style: CSSProperties | undefined = hidden
+			? {
+					position: 'absolute',
+					pointerEvents: 'none',
+					opacity: 0,
+					...styleProp
+				}
+			: styleProp
 
 		const handleBlur = chain(onBlur, () => setFocusWithin(false))
 
@@ -71,11 +103,21 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 			}
 		}
 
+		useLayoutEffect(() => {
+			setInputId(id)
+
+			return () => {
+				setInputId(undefined)
+			}
+		}, [id, setInputId])
+
 		return (
 			<freya.input
+				id={id}
 				ref={refCallback}
 				type="text"
 				value={pin}
+				style={style}
 				pattern={pattern.source}
 				disabled={disabled}
 				inputMode={type !== 'numeric' ? 'text' : type}
@@ -85,11 +127,6 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 				onPaste={handlePaste}
 				onChange={handleChange}
 				onKeyDown={handleKeyDown}
-				style={{
-					position: 'absolute',
-					pointerEvents: 'none',
-					opacity: 0
-				}}
 				{...otherProps}
 			/>
 		)

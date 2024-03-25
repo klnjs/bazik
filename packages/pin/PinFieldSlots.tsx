@@ -16,7 +16,7 @@ export const PinFieldSlots = ({ children }: PinFieldSlotsProps) => {
 	const slots: PinFieldSlotsItem[] = useMemo(
 		() =>
 			Array.from({ length }, (_x, slot) => ({
-				slot,
+				slot: slot + 1,
 				value: pin[slot] ?? ''
 			})),
 		[pin, length]

@@ -23,13 +23,14 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 			focusWithin: isFocusWithin
 		} = usePinFieldContext()
 
-		const isEnd = slot === length - 1
-		const isStart = slot === 0
-		const isActive = slot === Math.min(length - 1, pin.length)
+		const isEnd = slot === length
+		const isStart = slot === 1
+		const isActive = slot === Math.min(length, pin.length + 1)
 		const isDisabled = disabled
 		const isHighlighted = isFocusWithin && isActive
+		const isCaret = isHighlighted && pin.length < length
 
-		const value = pin[slot] ?? ''
+		const value = pin[slot - 1] ?? ''
 		const content = useMemo(() => {
 			if (!value) {
 				return placeholder
@@ -52,6 +53,7 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 				ref={forwardedRef}
 				data-end={toData(isEnd)}
 				data-start={toData(isStart)}
+				data-caret={toData(isCaret)}
 				data-disabled={toData(isDisabled)}
 				data-highlighted={toData(isHighlighted)}
 				onPointerDown={handlePointerDown}
