@@ -81,7 +81,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isWeekEnd = isEndOfWeek(date, locale)
 		const isWeekStart = isStartOfWeek(date, locale)
 		const isOverflow = !isSameMonth(date, month.toPlainDate({ day: 1 }))
-		const isHighlighted = isSameDay(date, highlighted)
+		const isHighlighted = isFocusWithin && isSameDay(date, highlighted)
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
