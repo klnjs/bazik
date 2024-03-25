@@ -2,9 +2,9 @@ import { useLayoutEffect } from 'react'
 import { useId, forwardRef, type CoreProps } from '../core'
 import { usePopoverContext } from './PopoverContext'
 
-export type PopoverDescriptionProps = CoreProps<'h2'>
+export type PopoverHeadingProps = CoreProps<'h2'>
 
-export const PopoverHeading = forwardRef<'h2', PopoverDescriptionProps>(
+export const PopoverHeading = forwardRef<'h2', PopoverHeadingProps>(
 	({ id: idProp, ...otherProps }, forwardedRef) => {
 		const id = useId(idProp)
 		const { setLabelId } = usePopoverContext()
