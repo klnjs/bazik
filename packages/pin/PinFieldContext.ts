@@ -1,4 +1,4 @@
-import { createContext } from '../core/createContext'
+import { createContext } from '../core'
 import type { usePinField } from './usePinField'
 
 export type UsePinFieldContext = ReturnType<typeof usePinField>

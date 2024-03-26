@@ -1,5 +1,5 @@
 import { useState, useCallback, useLayoutEffect } from 'react'
-import { useIsFirstRender } from '../core/useIsFirstRender'
+import { useFirstRender } from '../core'
 import { toEndOfMonth, toStartOfMonth } from './calendar-functions'
 import type { Date, DateRange, DurationLike } from './calendar-types'
 
@@ -23,7 +23,7 @@ export const useCalendarVisible = ({
 	calendar,
 	highlighted
 }: UseCalendarVisibleOptions) => {
-	const isFirstRender = useIsFirstRender()
+	const isFirstRender = useFirstRender()
 
 	const [visibleRange, setVisibleRange] = useState(() =>
 		createVisibleRange({ months, calendar, highlighted })

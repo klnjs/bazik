@@ -1,4 +1,4 @@
-import { createContext } from '../core/createContext'
+import { createContext } from '../core'
 import type { useCalendarField } from './useCalendarField'
 
 export type UseCalendarFieldContext = ReturnType<typeof useCalendarField>

@@ -1,4 +1,4 @@
-import { createContext } from '../core/createContext'
+import { createContext } from '../core'
 import type { usePopover } from './usePopover'
 
 export type UsePopoverContext = ReturnType<typeof usePopover>

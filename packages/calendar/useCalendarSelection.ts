@@ -6,7 +6,7 @@ import {
 	type SetStateAction
 } from 'react'
 import { useStateControllable, isSet, isArray } from '../core'
-import { useIsFirstRender } from '../core/useIsFirstRender'
+import { useFirstRender } from '../core'
 import { compare } from './calendar-functions'
 import type { Date, DateRange } from './calendar-types'
 
@@ -39,7 +39,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	value,
 	onChange
 }: UseCalendarSelectionOptions<S>) => {
-	const isFirstRender = useIsFirstRender()
+	const isFirstRender = useFirstRender()
 
 	const [transient, setTransient] = useState<Date>()
 
@@ -83,8 +83,8 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 						return filtered.length === 0
 							? null
 							: filtered.length < prev.length
-							  ? filtered
-							  : [...prev, date]
+								? filtered
+								: [...prev, date]
 					}
 
 					return [date]

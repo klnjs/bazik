@@ -6,7 +6,7 @@ import {
 	type Dispatch,
 	type SetStateAction
 } from 'react'
-import { useCallbackRef } from './useCallbackRef'
+import { useCallbackSaved } from './useCallbackSaved'
 
 export type UseStateControllableOptions<T> = {
 	value?: T
@@ -21,7 +21,7 @@ export const useStateControllable = <T>({
 }: UseStateControllableOptions<T>) => {
 	const isControlled = valueProp !== undefined
 	const isControlledRef = useRef(isControlled)
-	const onChangeRef = useCallbackRef(onChange)
+	const onChangeRef = useCallbackSaved(onChange)
 
 	const [valueState, setValueState] = useState(defaultValue as T)
 	const value = isControlled ? (valueProp as T) : valueState

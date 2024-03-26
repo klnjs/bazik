@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 
-export const useIsFirstRender = () => {
+export const useFirstRender = () => {
 	const isFirst = useRef(true)
 
 	if (isFirst.current) {

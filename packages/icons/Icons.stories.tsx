@@ -1,6 +1,6 @@
 import { useMemo, useState, type MouseEvent } from 'react'
 import { Story, TextField } from '../../.storybook/src/lib'
-import { useDebounce } from '../core/useDebounce'
+import { useDebounceValue } from '../core'
 import * as icons from './index'
 import * as classes from './Icons.stories.css'
 
@@ -10,7 +10,7 @@ export default {
 
 export const Collection = () => {
 	const [query, setQuery] = useState('')
-	const queryDebounced = useDebounce(query, 200)
+	const queryDebounced = useDebounceValue(query, 200)
 
 	const handleClick = async (event: MouseEvent<HTMLButtonElement>) => {
 		const button = event.target as HTMLButtonElement
