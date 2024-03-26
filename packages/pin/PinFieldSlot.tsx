@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
-import { chain, forwardRef, toData, type CoreProps, isBoolean } from '../core'
+import { chain, forwardRef, toData, type CoreProps } from '../core'
 import { usePinFieldContext } from './PinFieldContext'
+import { usePinFieldConceal } from './usePinFieldConceal'
 
 export type PinFieldSlotProps = CoreProps<
 	'div',
@@ -12,34 +12,33 @@ export type PinFieldSlotProps = CoreProps<
 >
 
 export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
-	({ slot, placeholder, onPointerDown, ...otherProps }, forwardedRef) => {
+	(
+		{ slot, placeholder = '', onPointerDown, ...otherProps },
+		forwardedRef
+	) => {
 		const {
 			pin,
-			secret,
 			length,
+			conceal: { delay, symbol },
 			inputRef,
 			disabled = false,
 			focusWithin: isFocusWithin
 		} = usePinFieldContext()
 
 		const value = pin[slot - 1] ?? ''
-		const content = useMemo(() => {
-			if (!value) {
-				return placeholder
-			}
-
-			if (secret) {
-				return isBoolean(secret) ? '·' : secret
-			}
-
-			return value
-		}, [value, secret, placeholder])
+		const content = usePinFieldConceal({
+			delay,
+			value,
+			symbol,
+			placeholder
+		})
 
 		const isEnd = slot === length
 		const isStart = slot === 1
 		const isActive = slot === Math.min(length, pin.length + 1)
 		const isDisabled = disabled
-		const isPlaceholder = value === ''
+		const isConcealed = content === symbol
+		const isPlaceholder = content === placeholder && placeholder !== ''
 		const isHighlighted = isFocusWithin && isActive
 		const isCaret = isHighlighted && pin.length < length
 
@@ -55,6 +54,7 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 				data-start={toData(isStart)}
 				data-caret={toData(isCaret)}
 				data-disabled={toData(isDisabled)}
+				data-concealed={toData(isConcealed)}
 				data-placeholder={toData(isPlaceholder)}
 				data-highlighted={toData(isHighlighted)}
 				onPointerDown={handlePointerDown}

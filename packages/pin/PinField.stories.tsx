@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Meta } from '@storybook/react'
-import { Story, TextField, ButtonGroup, Switch } from '../../.storybook/src/lib'
+import { Story, TextField, ButtonGroup } from '../../.storybook/src/lib'
 import { PinField } from './PinField'
 import { PinFieldLabel } from './PinFieldLabel'
 import { PinFieldInput } from './PinFieldInput'
@@ -10,17 +10,15 @@ import { PinFieldSlot } from './PinFieldSlot'
 import * as classes from './PinField.stories.css'
 
 export default {
-	title: 'PinField',
+	title: 'Pin',
 	component: PinField
 } satisfies Meta<typeof PinField>
 
-export const Pin = () => {
+export const Structure = () => {
 	const types = ['alphanumeric', 'alphabetic', 'numeric'] as const
 
 	const [type, setType] = useState<(typeof types)[number]>(types[0])
-	const [secret, setSecret] = useState('')
 	const [length, setLength] = useState('4')
-	const [disabled, setDisabled] = useState(false)
 
 	return (
 		<Story
@@ -31,34 +29,21 @@ export const Pin = () => {
 					options={types}
 					onChange={setType}
 				/>,
-				<TextField
-					label="Length"
-					value={length}
-					onChange={setLength}
-				/>,
-				<TextField
-					label="Secret"
-					value={secret}
-					onChange={setSecret}
-				/>,
-				<Switch
-					label="Disabled"
-					checked={disabled}
-					onChange={setDisabled}
-				/>
+				<TextField label="Length" value={length} onChange={setLength} />
 			]}
 		>
 			<PinField
 				type={type}
 				length={Number(length)}
-				secret={secret}
 				className={classes.pin}
 			>
+				<PinFieldInput autoComplete="one-time-code" />
 				<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
 				<PinFieldGroup className={classes.group}>
 					<PinFieldSlots>
 						{({ slot }) => (
 							<PinFieldSlot
+								key={slot}
 								slot={slot}
 								className={classes.slot}
 							/>
@@ -70,25 +55,35 @@ export const Pin = () => {
 	)
 }
 
-export const Layout = () => (
-	<Story>
-		<PinField length={6} className={classes.pin}>
-			<PinFieldInput autoComplete="one-time-code" />
-			<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
-			<PinFieldGroup className={classes.group}>
-				<PinFieldSlots>
-					{({ slot }) => (
-						<>
+export const Concealing = () => {
+	const [delay, setDelay] = useState('250')
+	const [symbol, setSymbol] = useState('·')
+
+	return (
+		<Story
+			controls={[
+				<TextField label="Delay" value={delay} onChange={setDelay} />,
+				<TextField label="Symbol" value={symbol} onChange={setSymbol} />
+			]}
+		>
+			<PinField
+				conceal={{ symbol, delay: Number(delay) }}
+				className={classes.pin}
+			>
+				<PinFieldInput autoComplete="one-time-code" />
+				<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
+				<PinFieldGroup className={classes.group}>
+					<PinFieldSlots>
+						{({ slot }) => (
 							<PinFieldSlot
+								key={slot}
 								slot={slot}
 								className={classes.slot}
 							/>
-
-							{slot === 3 && <div className={classes.dash} />}
-						</>
-					)}
-				</PinFieldSlots>
-			</PinFieldGroup>
-		</PinField>
-	</Story>
-)
+						)}
+					</PinFieldSlots>
+				</PinFieldGroup>
+			</PinField>
+		</Story>
+	)
+}

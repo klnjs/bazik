@@ -10,7 +10,7 @@ export const PinField = forwardRef<'div', PinFieldProps>(
 			defaultValue,
 			disabled,
 			length,
-			secret,
+			conceal,
 			type,
 			value,
 			onChange,
@@ -22,7 +22,7 @@ export const PinField = forwardRef<'div', PinFieldProps>(
 			defaultValue,
 			disabled,
 			length,
-			secret,
+			conceal,
 			type,
 			value,
 			onChange

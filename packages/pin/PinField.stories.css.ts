@@ -26,6 +26,7 @@ export const label = style({
 
 export const slot = style([
 	sprinkles({
+		color: 'teal11',
 		display: 'flex',
 		placeItems: 'center',
 		borderRadius: 'medium'
@@ -34,9 +35,16 @@ export const slot = style([
 		position: 'relative',
 		height: 56,
 		width: 56,
+		lineHeight: '56px',
 		cursor: 'text',
 		border: '1px solid rgb(54, 58, 63)',
 		selectors: {
+			'&[data-placeholder]': {
+				color: 'grey'
+			},
+			'&[data-concealed]': {
+				fontSize: 64
+			},
 			'&[data-highlighted]': {
 				outlineOffset: -1,
 				outlineStyle: 'solid',
@@ -55,9 +63,3 @@ export const slot = style([
 		}
 	}
 ])
-
-export const dash = style({
-	width: 20,
-	height: 4,
-	background: 'rgb(54, 58, 63)'
-})

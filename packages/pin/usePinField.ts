@@ -1,11 +1,12 @@
-import { useState, type SetStateAction, useRef } from 'react'
-import { useStateControllable } from '../core'
+import { useState, type SetStateAction, useRef, useMemo } from 'react'
+import { useStateControllable, isRecord } from '../core'
+import type { PinFieldConceal } from './PinFieldTypes'
 
 export type UsePinFieldOptions = {
+	conceal?: PinFieldConceal
 	defaultValue?: string
 	disabled?: boolean
 	length?: number
-	secret?: boolean | string
 	type?: 'alphabetic' | 'alphanumeric' | 'numeric'
 	value?: string
 	onChange?: (value: string) => void
@@ -15,7 +16,7 @@ export const usePinField = ({
 	defaultValue,
 	disabled = false,
 	length = 4,
-	secret,
+	conceal: concealProp = false,
 	type = 'alphanumeric',
 	value,
 	onChange
@@ -32,15 +33,27 @@ export const usePinField = ({
 		onChange: onChange as (value: SetStateAction<string>) => void
 	})
 
+	const conceal = useMemo(
+		() => ({
+			delay: isRecord(concealProp) ? concealProp.delay ?? 0 : 0,
+			symbol: isRecord(concealProp)
+				? concealProp.symbol
+				: concealProp
+					? '·'
+					: null
+		}),
+		[concealProp]
+	)
+
 	return {
-		pin,
-		length,
-		secret,
-		type,
-		inputId,
-		inputRef,
+		conceal,
 		disabled,
 		focusWithin,
+		inputId,
+		inputRef,
+		length,
+		pin,
+		type,
 		setPin,
 		setInputId,
 		setFocusWithin
