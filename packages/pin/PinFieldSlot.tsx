@@ -1,4 +1,4 @@
-import { useMemo, type KeyboardEvent } from 'react'
+import { useMemo } from 'react'
 import { chain, forwardRef, toData, type CoreProps, isBoolean } from '../core'
 import { usePinFieldContext } from './PinFieldContext'
 
@@ -8,7 +8,6 @@ export type PinFieldSlotProps = CoreProps<
 		slot: number
 		disabled?: boolean
 		placeholder?: string
-		onKeyDown?: (event: KeyboardEvent) => void
 	}
 >
 
@@ -23,13 +22,6 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 			focusWithin: isFocusWithin
 		} = usePinFieldContext()
 
-		const isEnd = slot === length
-		const isStart = slot === 1
-		const isActive = slot === Math.min(length, pin.length + 1)
-		const isDisabled = disabled
-		const isHighlighted = isFocusWithin && isActive
-		const isCaret = isHighlighted && pin.length < length
-
 		const value = pin[slot - 1] ?? ''
 		const content = useMemo(() => {
 			if (!value) {
@@ -43,6 +35,14 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 			return value
 		}, [value, secret, placeholder])
 
+		const isEnd = slot === length
+		const isStart = slot === 1
+		const isActive = slot === Math.min(length, pin.length + 1)
+		const isDisabled = disabled
+		const isPlaceholder = value === ''
+		const isHighlighted = isFocusWithin && isActive
+		const isCaret = isHighlighted && pin.length < length
+
 		const handlePointerDown = chain(onPointerDown, (event) => {
 			event.preventDefault()
 			inputRef.current?.focus()
@@ -55,6 +55,7 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 				data-start={toData(isStart)}
 				data-caret={toData(isCaret)}
 				data-disabled={toData(isDisabled)}
+				data-placeholder={toData(isPlaceholder)}
 				data-highlighted={toData(isHighlighted)}
 				onPointerDown={handlePointerDown}
 				{...otherProps}
