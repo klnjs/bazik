@@ -12,10 +12,7 @@ export type PinFieldSlotProps = CoreProps<
 >
 
 export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
-	(
-		{ slot, placeholder = '', onPointerDown, ...otherProps },
-		forwardedRef
-	) => {
+	({ slot, placeholder, onPointerDown, ...otherProps }, forwardedRef) => {
 		const {
 			pin,
 			length,
