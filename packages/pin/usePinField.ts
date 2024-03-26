@@ -13,10 +13,10 @@ export type UsePinFieldOptions = {
 }
 
 export const usePinField = ({
+	conceal: concealProp = false,
 	defaultValue,
 	disabled = false,
 	length = 4,
-	conceal: concealProp = false,
 	type = 'alphanumeric',
 	value,
 	onChange

@@ -42,7 +42,7 @@ export const usePinFieldConceal = ({
 
 		return undefined
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [value, symbol, placeholder, delay])
+	}, [delay, value, symbol, placeholder])
 
 	return display
 }
