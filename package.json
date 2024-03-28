@@ -4,7 +4,6 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"publish": "pnpm -r publish",
 		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
 		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
 		"storybook": "storybook dev -p 6006 --no-open",
