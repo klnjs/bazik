@@ -37,7 +37,7 @@ export const Structure = () => {
 				length={Number(length)}
 				className={classes.pin}
 			>
-				<PinFieldInput autoComplete="one-time-code" />
+				<PinFieldInput />
 				<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
 				<PinFieldGroup className={classes.group}>
 					<PinFieldSlots>
@@ -70,7 +70,7 @@ export const Concealing = () => {
 				conceal={{ symbol, delay: Number(delay) }}
 				className={classes.pin}
 			>
-				<PinFieldInput autoComplete="one-time-code" />
+				<PinFieldInput />
 				<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
 				<PinFieldGroup className={classes.group}>
 					<PinFieldSlots>

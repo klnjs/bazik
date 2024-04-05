@@ -23,7 +23,7 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 		{
 			id: idProp,
 			hidden = true,
-			autoComplete: autoCompleteProp,
+			autoComplete = 'one-time-code',
 			style: styleProp,
 			onBlur,
 			onFocus,
@@ -122,6 +122,7 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 				disabled={disabled}
 				inputMode={type !== 'numeric' ? 'text' : type}
 				maxLength={length}
+				autoComplete={autoComplete}
 				onBlur={handleBlur}
 				onFocus={handleFocus}
 				onPaste={handlePaste}
