@@ -1,0 +1,74 @@
+.browser {
+	border: 3px solid var(--ifm-color-emphasis-200);
+	border-radius: var(--ifm-global-radius);
+	box-shadow: var(--ifm-global-shadow-lw);
+	margin-bottom: var(--ifm-leading);
+}
+
+.browser-header {
+	align-items: center;
+	background: var(--ifm-color-emphasis-200);
+	display: flex;
+	padding: 0.5rem 1rem;
+}
+
+.browser-row::after {
+	content: '';
+	display: table;
+	clear: both;
+}
+
+.browser-buttons {
+	white-space: nowrap;
+}
+
+.browser-right {
+	align-self: center;
+	width: 10%;
+}
+
+.browser-address {
+	flex: 1 0;
+	margin: 0 1rem 0 0.5rem;
+	border-radius: 12.5px;
+	background-color: var(--ifm-background-color);
+	color: var(--ifm-color-gray-800);
+	padding: 5px 15px;
+	font:
+		400 13px Arial,
+		sans-serif;
+	user-select: none;
+}
+
+.browser-dot {
+	margin-right: 6px;
+	margin-top: 4px;
+	height: 12px;
+	width: 12px;
+	background-color: #bbb;
+	border-radius: 50%;
+	display: inline-block;
+}
+
+.browser-menu {
+	margin-left: auto;
+}
+
+.browser-bar {
+	width: 17px;
+	height: 3px;
+	background-color: #aaa;
+	margin: 3px 0;
+	display: block;
+}
+
+.browser-body {
+	background-color: var(--ifm-background-color);
+	border-bottom-left-radius: inherit;
+	border-bottom-right-radius: inherit;
+	padding: 1rem;
+}
+
+.browser-body > *:last-child {
+	margin-bottom: 0;
+}

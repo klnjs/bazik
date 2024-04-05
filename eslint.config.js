@@ -12,7 +12,7 @@ export default [
 		}
 	},
 	{
-		files: ['**/scripts/*.js'],
+		files: ['**/scripts/*.js', 'babel.config.js'],
 		languageOptions: {
 			globals: {
 				...globals.node

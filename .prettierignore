@@ -4,6 +4,8 @@
 # Except these folders
 !.storybook/
 !.storybook/**/*
+!docs/
+!docs/**/*
 !scripts/
 !scripts/**/*
 !packages/

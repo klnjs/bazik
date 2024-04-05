@@ -2,6 +2,8 @@
 *
 
 # Except these folders
+!docs/
+!docs/**/*
 !scripts/
 !scripts/**/*
 !packages/

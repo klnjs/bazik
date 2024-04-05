@@ -1,0 +1,30 @@
+import { Browser } from '@site/src/components/Browser'
+import { Feature, Features } from '@site/src/components/Features'
+import {
+	PinField,
+	PinFieldInput,
+	PinFieldLabel,
+	PinFieldGroup,
+	PinFieldSlots,
+	PinFieldSlot
+} from '../../packages/pin'
+
+# Pin Field
+
+An input field for handling pin codes or otp.
+
+<Browser>
+	<PinField>
+		<PinFieldInput />
+		<PinFieldLabel>Pincode</PinFieldLabel>
+		<PinFieldGroup>
+			<PinFieldSlots>{({ slot }) => <PinFieldSlot />}</PinFieldSlots>
+		</PinFieldGroup>
+	</PinField>
+</Browser>
+
+<Features>
+	<Feature>Can be controlled or uncontrolled.</Feature>
+	<Feature>Concealing the input while typing.</Feature>
+	<Feature>Auto complete one time codes from email / sms.</Feature>
+</Features>
