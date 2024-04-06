@@ -1,42 +1,19 @@
 {
-	"name": "@klnjs/freya",
-	"version": "0.0.1-rc.1",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
-		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
-		"storybook": "storybook dev -p 6006 --no-open",
-		"typescript": "tsc --noEmit",
-		"icons:generate": "node ./scripts/createIcons.js"
-	},
-	"dependencies": {
-		"@floating-ui/react": "0.26.9",
-		"clsx": "2.1.0",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"temporal-polyfill": "0.2.3"
-	},
-	"devDependencies": {
-		"@klnjs/eslint-config": "2.0.0-rc.3",
-		"@klnjs/prettier-config": "2.0.0-rc.3",
-		"@klnjs/typescript-config": "2.0.0-rc.3",
-		"@mdi/js": "7.4.47",
-		"@storybook/addon-a11y": "8.0.0",
-		"@storybook/addon-storysource": "8.0.0",
-		"@storybook/react": "8.0.0",
-		"@storybook/react-vite": "8.0.0",
-		"@types/react": "18.2.64",
-		"@types/react-dom": "18.2.21",
-		"@vanilla-extract/css": "1.14.1",
-		"@vanilla-extract/dynamic": "2.1.0",
-		"@vanilla-extract/sprinkles": "1.6.1",
-		"@vanilla-extract/vite-plugin": "4.0.6",
-		"eslint": "8.57.0",
-		"globals": "14.0.0",
-		"prettier": "3.2.5",
-		"storybook": "8.0.0",
-		"typescript": "5.4.2",
-		"vite": "5.1.5"
-	}
+  "name": "@klnjs/freya",
+  "version": "0.0.1-rc.1",
+  "type": "module",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+		"tools/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "eslint": "turbo eslint",
+    "prettier": "turbo prettier",
+    "typescript": "turbo typescript"
+  },
+  "devDependencies": {
+    "turbo": "1.13.2"
+  }
 }

@@ -1,4 +1,4 @@
-import { createIcon } from '../../icon'
+import { createIcon } from '@klnjs/icon'
 
 export default createIcon({
 	title: 'BorderVertical',

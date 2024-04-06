@@ -1,0 +1,17 @@
+# Ignore everything
+*
+
+# Except these folders
+!src/
+!src/**/*
+!scripts/
+!scripts/**/*
+
+# Except these files
+!.gitignore
+!eslint.config.js
+!index.ts
+!package.json
+!prettier.config.js
+!tsconfig.json
+!vite.config.js
