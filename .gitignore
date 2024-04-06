@@ -6,14 +6,15 @@
 !.github/**/*
 !.storybook/
 !.storybook/**/*
+!temp/
+!temp/**/*
+!react/
+!react/**/*
 !tools/
 !tools/**/*
-!turbo/
-!turbo/**/*
-!scripts/
-!scripts/**/*
-!packages/
-!packages/**/*
+!utils/
+!utils/**/*
+
 
 # Except these files!.gitignore
 !.node-version

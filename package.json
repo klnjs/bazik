@@ -4,8 +4,9 @@
   "type": "module",
   "private": true,
   "workspaces": [
-    "packages/*",
-		"tools/*"
+    "react/*",
+		"tools/*",
+		"utils/*"
   ],
   "scripts": {
     "build": "turbo build",

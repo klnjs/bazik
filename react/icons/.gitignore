@@ -4,6 +4,8 @@
 # Except these folders
 !src/
 !src/**/*
+!scripts/
+!scripts/**/*
 
 # Except these files
 !.gitignore
@@ -12,5 +14,3 @@
 !package.json
 !prettier.config.js
 !tsconfig.json
-
-
