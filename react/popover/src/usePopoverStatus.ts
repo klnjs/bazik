@@ -1,4 +1,4 @@
-import { isNumber } from '@klnjs/core'
+import { isNumber } from '@klnjs/assertion'
 import { useTransitionStatus, type FloatingContext } from '@floating-ui/react'
 import type { PopoverDuration, PopoverStatus } from './PopoverTypes'
 

@@ -21,9 +21,10 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@klnjs/core": "workspace:*"
+		"@klnjs/assertion": "workspace:*"
 	},
 	"devDependencies": {
+		"@klnjs/builder": "workspace:*",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",

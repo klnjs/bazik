@@ -1,5 +1,6 @@
 import { useState, type SetStateAction, useRef, useMemo } from 'react'
-import { useStateControllable, isRecord } from '@klnjs/core'
+import { useStateControllable } from '@klnjs/core'
+import { isRecord } from '@klnjs/assertion'
 import type { PinFieldConceal } from './PinFieldTypes'
 
 export type UsePinFieldOptions = {

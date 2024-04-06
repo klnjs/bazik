@@ -1,4 +1,4 @@
-import { isProperty } from '@klnjs/core'
+import { isProperty } from '@klnjs/assertion'
 
 export type WeekInfo = {
 	firstDay: number

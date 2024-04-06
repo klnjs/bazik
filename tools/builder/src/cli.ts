@@ -9,7 +9,7 @@ const externals = [
 	'dependencies',
 	'devDependencies',
 	'peerDependencies'
-].flatMap((section) => Object.keys(manifest[section]))
+].flatMap((section) => Object.keys(manifest[section] ?? {}))
 
 await rm(dist, { recursive: true, force: true })
 await mkdir(dist, { recursive: true })

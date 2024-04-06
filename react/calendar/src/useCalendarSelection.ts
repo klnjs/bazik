@@ -5,8 +5,8 @@ import {
 	useLayoutEffect,
 	type SetStateAction
 } from 'react'
-import { useStateControllable, isSet, isArray } from '@klnjs/core'
-import { useFirstRender } from '@klnjs/core'
+import { useStateControllable, useFirstRender } from '@klnjs/core'
+import { isSet, isArray } from '@klnjs/assertion'
 import { compare } from './calendar-functions'
 import type { Date, DateRange } from './calendar-types'
 

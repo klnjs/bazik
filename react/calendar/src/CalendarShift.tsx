@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { Temporal } from 'temporal-polyfill'
-import { poly, forwardRef, toData, type CoreProps, isSet } from '@klnjs/core'
+import { poly, forwardRef, toData, type CoreProps } from '@klnjs/core'
+import { isSet } from '@klnjs/assertion'
 import { useCalendarContext } from './CalendarContext'
 import {
 	useCalendarDateFieldNames,

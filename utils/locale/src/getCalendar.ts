@@ -1,4 +1,4 @@
-import { isProperty } from '@klnjs/core'
+import { isProperty } from '@klnjs/assertion'
 
 export const getCalendar = (tag: string) => {
 	const locale = new Intl.Locale(tag)

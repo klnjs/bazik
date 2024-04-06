@@ -6,14 +6,13 @@ import {
 	type KeyboardEvent
 } from 'react'
 import {
-	freya,
+	poly,
 	forwardRef,
 	useMergeRefs,
 	toData,
-	isRTL,
-	isSet,
 	type CoreProps
 } from '@klnjs/core'
+import { isRTL, isSet } from '@klnjs/assertion'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarDayNames } from './useCalendarLocalisation'
 import { useCalendarGridContext } from './CalendarGridContext'

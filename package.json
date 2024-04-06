@@ -9,6 +9,7 @@
 		"utils/*"
   ],
   "scripts": {
+		"dev": "turbo dev",
     "build": "turbo build",
     "eslint": "turbo eslint",
     "prettier": "turbo prettier",

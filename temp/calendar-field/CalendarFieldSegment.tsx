@@ -8,13 +8,15 @@ import {
 import type { Temporal } from 'temporal-polyfill'
 import { useCalendarLocalisation } from '../calendar/useCalendarLocalisation'
 import {
-	freya,
+	poly,
 	forwardRef,
 	useMergeRefs,
 	toData,
-	isRTL,
 	type CoreProps
-} from '../core'
+} from '@klnjs/core'
+import {
+	isRTL
+} from '@klnjs/assertion'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { getNow, isAfter, isBefore } from './CalendarFieldDateTime'
 

@@ -22,7 +22,9 @@
 	},
 	"dependencies": {
 		"@klnjs/core": "workspace:*",
-		"@klnjs/locale": "workspace:*"
+		"@klnjs/locale": "workspace:*",
+		"@klnjs/assertion": "workspace:*",
+		"temporal-polyfill": "0.2.4"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",

@@ -1,5 +1,5 @@
 {
-	"name": "@klnjs/popover",
+	"name": "@klnjs/assertion",
 	"type": "module",
 	"files": [
 		"src",
@@ -20,23 +20,13 @@
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
 	},
-	"dependencies": {
-		"@klnjs/core": "workspace:*",
-		"@klnjs/assertion": "workspace:*"
-	},
 	"devDependencies": {
-		"@floating-ui/react": "0.26.9",
+		"@klnjs/builder": "workspace:*",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",
-		"@types/react": "18.2.64",
-		"@types/react-dom": "18.2.21",
 		"eslint": "8.57.0",
 		"prettier": "3.2.5",
 		"typescript": "5.4.2"
-	},
-	"peerDependencies": {
-		"react": "18.2.0",
-		"react-dom": "18.2.0"
 	}
 }

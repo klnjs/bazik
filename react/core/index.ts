@@ -1,4 +1,3 @@
-export * from './src/assertion'
 export * from './src/chain'
 export * from './src/clsx'
 export * from './src/createContext'

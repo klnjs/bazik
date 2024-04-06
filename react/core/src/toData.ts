@@ -1,4 +1,4 @@
-import { isNumber, isString } from './assertion'
+import { isNumber, isString } from '@klnjs/assertion'
 
 export function toData(value: string | number | boolean | undefined) {
 	if (value === true) {

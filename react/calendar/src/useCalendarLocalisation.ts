@@ -1,5 +1,5 @@
 import { useMemo, useCallback } from 'react'
-import { isProperty } from '@klnjs/core'
+import { isProperty } from '@klnjs/assertion'
 
 export const calendarLocalisation = {
 	en: {
