@@ -1,12 +1,11 @@
 {
   "name": "@klnjs/freya",
-  "version": "0.0.1-rc.1",
+  "version": "0.0.1",
   "type": "module",
   "private": true,
   "workspaces": [
-    "react/*",
-		"tools/*",
-		"utils/*"
+		"apps/*",
+    "packages/*"
   ],
   "scripts": {
 		"dev": "turbo dev",
