@@ -1,6 +1,14 @@
 {
 	"name": "@klnjs/assertion",
 	"type": "module",
+	"author": "Rune Klein (@rnkln)",
+	"version": "0.0.1",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/klnjs/freya.git",
+		"directory": "packages/utils/assertion"
+	},
 	"files": [
 		"src",
 		"dist"

@@ -1,8 +1,13 @@
 {
   "name": "@klnjs/freya",
-  "version": "0.0.1",
   "type": "module",
-  "private": true,
+  "author": "Rune Klein (@rnkln)",
+  "version": "0.0.1",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/klnjs/freya.git"
+	},
 	"packageManager": "bun@1.1.2",
   "workspaces": [
 		"apps/*",
