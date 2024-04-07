@@ -6,29 +6,18 @@
 !.github/**/*
 !.storybook/
 !.storybook/**/*
-!scripts/
-!scripts/**/*
+!apps/
+!apps/**/*
 !packages/
 !packages/**/*
 
-# Except these files
-!.babelrc
-!.browserslistrc
-!.editorconfig
-!.eslintignore
-!.gitignore
+# Except these files!.gitignore
 !.node-version
 !.npmrc
-!.prettierignore
 !bun.lockb
-!eslint.config.js
 !LICENSE
 !CHANGELOG.md
 !package.json
-!prettier.config.js
 !README.md
 !renovate.json
-!tsconfig.json
-
-# Reignore these folders
-node_modules/
+!turbo.json

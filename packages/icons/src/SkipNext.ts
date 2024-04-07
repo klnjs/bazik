@@ -1,7 +1,0 @@
-import { createIcon } from '../../icon'
-
-export default createIcon({
-	title: 'SkipNext',
-	path: 'M16,18H18V6H16M6,18L14.5,12L6,6V18Z',
-	viewBox: '0 0 24 24'
-})
