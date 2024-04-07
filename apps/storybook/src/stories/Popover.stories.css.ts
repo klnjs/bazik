@@ -1,6 +1,6 @@
 import { createVar, style } from '@vanilla-extract/css'
-import { vars } from '../src/style/theme.css'
-import { sprinkles } from '../src/style/sprinkles.css'
+import { vars } from '../style/theme.css'
+import { sprinkles } from '../style/sprinkles.css'
 
 export const anchor = style([
 	sprinkles({

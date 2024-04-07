@@ -11,12 +11,11 @@ import {
 	CalendarShift
 } from '@klnjs/calendar'
 import clsx from 'clsx'
-import { Story, ButtonGroup, Switch, TextField } from '../components'
 import * as classes from './Calendar.stories.css'
+import { Story, ButtonGroup, Switch, TextField } from '../components'
 
 export default {
-	title: 'Calendar',
-	component: Calendar
+	title: 'Calendar'
 } satisfies Meta<typeof Calendar>
 
 export const Display = () => {

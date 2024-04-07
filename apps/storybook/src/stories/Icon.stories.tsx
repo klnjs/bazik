@@ -1,14 +1,10 @@
 import type { Meta } from '@storybook/react'
-import { Story } from '../src/lib'
-import { Icon } from '../../packages/icon/src/Icon'
-import { IconTitle } from '../../packages/icon/src/IconTitle'
-import { IconDescription } from '../../packages/icon/src/IconDescription'
-import { IconPath } from '../../packages/icon/src/IconPath'
+import { Icon, IconTitle, IconDescription, IconPath } from '@klnjs/icon'
 import * as classes from './Icon.stories.css'
+import { Story } from '../components'
 
 export default {
-	title: 'Icon',
-	component: Icon
+	title: 'Icon'
 } satisfies Meta<typeof Icon>
 
 export const Abacus = () => (

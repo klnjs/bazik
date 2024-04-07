@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { sprinkles } from '../src/style/sprinkles.css'
+import { sprinkles } from '../style/sprinkles.css'
 
 export const icon = style([
 	sprinkles({

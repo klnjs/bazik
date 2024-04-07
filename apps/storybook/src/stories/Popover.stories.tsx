@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import type { Meta } from '@storybook/react'
 import { assignInlineVars } from '@vanilla-extract/dynamic'
-import { Select, Story, Switch, TextField } from '../src/lib'
-import { Popover } from '../../packages/popover/src/Popover'
-import { PopoverAnchor } from '../../packages/popover/src/PopoverAnchor'
-import { PopoverTrigger } from '../../packages/popover/src/PopoverTrigger'
-import { PopoverContent } from '../../packages/popover/src/PopoverContent'
-import type { PopoverPlacement } from '../../packages/popover/src/PopoverTypes'
+import {
+	Popover,
+	PopoverAnchor,
+	PopoverTrigger,
+	PopoverContent,
+	type PopoverPlacement
+} from '@klnjs/popover'
 import * as classes from './Popover.stories.css'
+import { Select, Story, Switch, TextField } from '../components'
 
 export default {
-	title: 'Popover',
-	component: Popover
+	title: 'Popover'
 } satisfies Meta<typeof Popover>
 
 export const Behaviour = () => {

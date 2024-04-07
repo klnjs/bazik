@@ -1,14 +1,11 @@
 import { useState } from 'react'
 import type { Meta } from '@storybook/react'
-import { Story, TextField } from '../src/lib'
-import { Spinner } from '../../packages/spinner/src/Spinner'
-import { SpinnerThumb } from '../../packages/spinner/src/SpinnerThumb'
-import { SpinnerTrack } from '../../packages/spinner/src/SpinnerTrack'
+import { Spinner, SpinnerThumb, SpinnerTrack } from '@klnjs/spinner'
 import * as classes from './Spinner.stories.css'
+import { Story, TextField } from '../components'
 
 export default {
-	title: 'Spinner',
-	component: Spinner
+	title: 'Spinner'
 } satisfies Meta<typeof Spinner>
 
 export const Display = () => {

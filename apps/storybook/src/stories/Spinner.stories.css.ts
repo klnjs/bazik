@@ -1,4 +1,4 @@
-import { sprinkles } from '../src/style/sprinkles.css'
+import { sprinkles } from '../style/sprinkles.css'
 
 export const spinner = sprinkles({ display: 'block' })
 

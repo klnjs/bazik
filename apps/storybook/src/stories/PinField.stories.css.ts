@@ -1,6 +1,6 @@
 import { style, keyframes } from '@vanilla-extract/css'
-import { sprinkles } from '../src/style/sprinkles.css'
-import { vars } from '../src/style/theme.css'
+import { sprinkles } from '../style/sprinkles.css'
+import { vars } from '../style/theme.css'
 
 const blink = keyframes({
 	'0%,100%': { opacity: '1' },

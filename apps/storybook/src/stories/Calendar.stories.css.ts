@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css'
+import { vars } from '../style/theme.css'
 
 export const calendar = style({
 	display: 'inline-flex',
@@ -44,6 +45,7 @@ export const button = style({
 	display: 'inline-flex',
 	width: 32,
 	height: 32,
+	color: 'inherit',
 	cursor: 'pointer',
 	border: 'none',
 	borderRadius: 4,
@@ -51,11 +53,14 @@ export const button = style({
 	lineHeight: 24,
 	alignItems: 'center',
 	justifyContent: 'center',
-	':hover': {
-		background: '#E7E7E7'
-	},
-	':disabled': {
-		pointerEvents: 'none'
+	selectors: {
+		'&:hover': {
+			backgroundColor: vars.colors.teal5
+		},
+		'&[data-disabled]': {
+			opacity: 0.4,
+			pointerEvents: 'none'
+		}
 	}
 })
 
@@ -81,7 +86,7 @@ export const day = style([
 		cursor: 'pointer',
 		selectors: {
 			'&:hover': {
-				background: '#E7E7E7'
+				backgroundColor: vars.colors.teal5
 			},
 			'&[data-today]': {
 				fontWeight: 'bold'

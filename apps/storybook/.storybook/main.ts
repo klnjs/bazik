@@ -4,7 +4,7 @@ import { join, dirname } from 'path'
 import { mergeConfig } from 'vite'
 
 export default {
-	stories: ['./src/stories/**/*.stories.tsx'],
+	stories: ['../src/stories/**/*.stories.tsx'],
 	core: {
 		disableTelemetry: true
 	},

@@ -10,7 +10,6 @@
 		"typescript": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@types/bun": "1.0.12",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",

@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "type": "module",
   "private": true,
+	"packageManager": "bun@1.1.2",
   "workspaces": [
 		"apps/*",
-    "packages/*"
+    "packages/react/*",
+		"packages/tools/*",
+		"packages/utils/*"
   ],
   "scripts": {
 		"dev": "turbo dev",
@@ -15,6 +18,7 @@
     "typescript": "turbo typescript"
   },
   "devDependencies": {
+		"@types/bun": "1.0.12",
     "turbo": "1.13.2"
   }
 }

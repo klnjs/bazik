@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import type { Meta } from '@storybook/react'
-import { Story, TextField, ButtonGroup } from '../src/lib'
-import { PinField } from '../../packages/pin/src/PinField'
-import { PinFieldLabel } from '../../packages/pin/src/PinFieldLabel'
-import { PinFieldInput } from '../../packages/pin/src/PinFieldInput'
-import { PinFieldGroup } from '../../packages/pin/src/PinFieldGroup'
-import { PinFieldSlots } from '../../packages/pin/src/PinFieldSlots'
-import { PinFieldSlot } from '../../packages/pin/src/PinFieldSlot'
+import {
+	PinField,
+	PinFieldLabel,
+	PinFieldInput,
+	PinFieldGroup,
+	PinFieldSlots,
+	PinFieldSlot
+} from '@klnjs/pin'
 import * as classes from './PinField.stories.css'
+import { Story, TextField, ButtonGroup } from '../components'
 
 export default {
-	title: 'Pin',
-	component: PinField
+	title: 'Pin'
 } satisfies Meta<typeof PinField>
 
 export const Structure = () => {

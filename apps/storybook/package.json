@@ -10,24 +10,28 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
 		"@klnjs/calendar": "workspace:*",
-		"@klnjs/pin": "workspace:*"
+		"@klnjs/icon": "workspace:*",
+		"@klnjs/pin": "workspace:*",
+		"@klnjs/popover": "workspace:*",
+		"@klnjs/spinner": "workspace:*",
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",
+		"@storybook/addon-a11y": "8.0.6",
 		"@storybook/react": "8.0.6",
 		"@storybook/react-vite": "8.0.6",
 		"@types/react": "18.2.74",
 		"@types/react-dom": "18.2.23",
 		"@vanilla-extract/css": "1.14.2",
+		"@vanilla-extract/dynamic": "2.1.0",
 		"@vanilla-extract/sprinkles": "1.6.1",
 		"@vanilla-extract/vite-plugin": "4.0.6",
 		"eslint": "8.57.0",
-		"eslint-plugin-storybook": "^0.8.0",
 		"prettier": "3.2.5",
 		"storybook": "8.0.6",
 		"typescript": "5.4.3",
