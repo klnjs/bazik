@@ -1,48 +1,40 @@
 import { useState, useEffect } from 'react'
-import { useFirstRender } from '@klnjs/core'
 
 export type UsePinFieldConcealOptions = {
 	delay: number
 	value?: string
 	symbol: string | null
+	direction?: 'forwards' | 'backwards'
 	placeholder?: string
 }
 
 export const usePinFieldConceal = ({
 	delay = 0,
+	direction = 'forwards',
 	value,
 	symbol,
 	placeholder = ''
 }: UsePinFieldConcealOptions) => {
-	const isFirstRender = useFirstRender()
-	const [display, setDisplay] = useState<string>(() => {
-		if (!value) {
-			return placeholder
-		}
+	const [display, setDisplay] = useState<string>()
 
-		return symbol ?? value
-	})
-
+	// @ts-expect-error ts(7030): Not all code paths return a value.
 	useEffect(() => {
-		if (!isFirstRender) {
-			if (!value) {
-				setDisplay(placeholder)
-			} else {
-				setDisplay(value)
+		if (!value) {
+			setDisplay(placeholder)
+		} else if (direction === 'backwards' || delay === 0) {
+			setDisplay(symbol ?? value)
+		} else {
+			setDisplay(value)
 
-				if (symbol) {
-					const timeout = setTimeout(() => setDisplay(symbol), delay)
+			if (symbol) {
+				const timeout = setTimeout(() => setDisplay(symbol), delay)
 
-					return () => {
-						clearTimeout(timeout)
-					}
+				return () => {
+					clearTimeout(timeout)
 				}
 			}
 		}
-
-		return undefined
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [delay, value, symbol, placeholder])
+	}, [delay, direction, value, symbol, placeholder])
 
 	return display
 }
