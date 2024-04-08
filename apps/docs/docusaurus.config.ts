@@ -32,7 +32,7 @@ export default {
 	plugins: [
 		[
 			'@docusaurus/plugin-content-docs',
-			{ path: 'docs', sidebarPath: './sidebars.ts' }
+			{ path: 'src/docs', sidebarPath: './sidebars.ts' }
 		],
 		['@docusaurus/plugin-content-pages', { path: 'src/pages' }]
 	],

@@ -68,6 +68,7 @@ export const Concealing = () => {
 			]}
 		>
 			<PinField
+				length={4}
 				conceal={{ symbol, delay: Number(delay) }}
 				className={classes.pin}
 			>
