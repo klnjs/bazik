@@ -1,14 +1,17 @@
 import { Showcase } from '@site/src/lib/showcase'
-import Feature from '@site/src/lib/features/Feature.mdx'
-import Features from '@site/src/lib/features/Features.mdx'
-import Reference from '@site/src/lib/reference/Reference.mdx'
-import Installation from '@site/src/lib/installation/Installation.mdx'
+import { Features, Feature } from '@site/src/lib/features'
+import { Installation } from '@site/src/lib/installation'
+import { Reference } from '@site/src/lib/reference'
 
 # Pin
 
 Pin provides an easy to use input for entering pin codes.
 
+## Showcase
+
 <Showcase name="pin" />
+
+## Features
 
 <Features>
 	<Feature>Can be controlled or uncontrolled.</Feature>
@@ -16,26 +19,106 @@ Pin provides an easy to use input for entering pin codes.
 	<Feature>Auto complete one time codes from email / sms.</Feature>
 </Features>
 
+## Installation
+
 <Installation name="pin" />
 
 ## Reference
 
 ### Pin (Root Component)
 
+Contains all the parts of an accordion.
+
 <Reference
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{
 			name: 'conceal',
-			type: 'boolean | { symbol: string; delay?: number }'
+			type: 'boolean | PinConceal',
+			typeAdvanced: 'boolean | { symbol: string; delay?: number }',
+			defaultValue: 'false'
 		},
 		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
 		{ name: 'length', type: 'number', defaultValue: '4' },
 		{
 			name: 'type',
-			type: 'alphabetic | alphanumeric | numeric',
+			type: 'enum',
+			typeAdvanced: 'alphabetic | alphanumeric | numeric',
 			defaultValue: 'alphanumeric'
 		},
 		{ name: 'value', type: 'string' }
 	]}
+/>
+
+### PinInput
+
+Used to render a hidden input that handles interactions with the pin.
+
+<Reference
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+/>
+
+### PinLabel
+
+Used to render the label of the pin. It won't be focusable using arrow keys.
+
+<Reference
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+	attrs={[{ name: 'data-disabled', description: 'Present when disabled.' }]}
+/>
+
+### PinGroup
+
+Used to group multiple items. use in conjunction with PinLabel to ensure good accessibility.
+
+<Reference
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+/>
+
+### PinSlots
+
+Utility component that renders slot of the pin using a render function as child.
+
+<Reference
+	props={[
+		{
+			name: 'children',
+			type: 'function',
+			typeAdvanced:
+				'(type: { slot: number, value: string }, index: number ) => ReactNode',
+			defaultValue: 'false'
+		}
+	]}
+/>
+
+### PinSlot
+
+Used to render individual slot of the pin.
+
+<Reference
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+	attrs={[
+
+    	{ name: 'data-caret', description: 'has caret.' },
+    			{
+    		name: 'data-placeholder',
+    		description: 'has placeholder.'
+    	},
+    		    	{
+    		name: 'data-disabled',
+    		description: 'disabled.'
+    	},
+    	{
+    		name: 'data-concealed',
+    		description: 'concealed.'
+    	},
+    		{
+    		name: 'data-highlighted',
+    		description: 'focused.'
+    	},
+    	{ name: 'data-end', description: 'is last slot.' },
+
+    	{ name: 'data-start', description: 'is first slot.' }
+    ]}
+
 />

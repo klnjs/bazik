@@ -2,7 +2,7 @@ import CodeBlock, { Props as CodeBlockProps } from '@theme/CodeBlock'
 import clsx from 'clsx'
 import classes from './Snippet.module.css'
 
-export type ShowcaseProps = {
+export type SnippetProps = {
 	children: string
 	className?: string
 	language?: CodeBlockProps['language']
@@ -16,7 +16,7 @@ export const Snippet = ({
 	language,
 	identation = 2,
 	showLineNumbers = true
-}: ShowcaseProps) => {
+}: SnippetProps) => {
 	const indent = new Array(identation).fill(' ').join('')
 
 	return (

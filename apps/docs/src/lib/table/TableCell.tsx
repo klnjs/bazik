@@ -10,11 +10,12 @@ export type TableCellProps<T extends TableCellType> = ComponentProps<T> & {
 
 export const TableCell = <T extends TableCellType = 'td'>({
 	as,
+	className: classNameProp,
 	children,
 	...otherProps
 }: TableCellProps<T>) => {
 	const Component = as ?? 'td'
-	const className = clsx(classes.cell, {
+	const className = clsx(classes.cell, classNameProp, {
 		[classes.td]: as === 'td' || as === undefined,
 		[classes.th]: as === 'th'
 	})

@@ -1,0 +1,15 @@
+.trigger {
+	margin-inline-start: 8px;
+}
+
+.content {
+	padding: 16px;
+	border: 1px solid var(--ifm-color-emphasis-300);
+	border-radius: var(--ifm-global-radius);
+	background: var(--kln-code-background-color);
+	color: var(--kln-code-color);
+}
+
+.prop {
+	width: 32%;
+}

@@ -1,9 +1,12 @@
-import { Highlight } from '../highlight'
 import { Table, TableCell, TableRow } from '../table'
+import { Highlight } from '../highlight'
+import { ReferenceInfo } from './ReferenceInfo'
+import classes from './Reference.module.css'
 
 export type ReferenceProp = {
 	name: string
 	type: string
+	typeAdvanced?: string
 	defaultValue: string
 }
 
@@ -35,15 +38,24 @@ export const Reference = ({
 					</TableRow>
 				</thead>
 				<tbody>
-					{props.map(({ name, type, defaultValue = '-' }) => (
-						<TableRow>
-							<TableCell>
-								<Highlight>{name}</Highlight>
-							</TableCell>
-							<TableCell>{type}</TableCell>
-							<TableCell>{defaultValue}</TableCell>
-						</TableRow>
-					))}
+					{props.map(
+						({ name, type, typeAdvanced, defaultValue = '-' }) => (
+							<TableRow>
+								<TableCell className={classes.prop}>
+									<Highlight>{name}</Highlight>
+								</TableCell>
+								<TableCell className={classes.type}>
+									{type}
+									{typeAdvanced && (
+										<ReferenceInfo>
+											{typeAdvanced}
+										</ReferenceInfo>
+									)}
+								</TableCell>
+								<TableCell>{defaultValue}</TableCell>
+							</TableRow>
+						)
+					)}
 				</tbody>
 			</Table>
 		)}
@@ -53,13 +65,13 @@ export const Reference = ({
 				<thead>
 					<TableRow>
 						<TableCell as="th">Data attribute</TableCell>
-						<TableCell as="th">Condition</TableCell>
+						<TableCell as="th">Present when</TableCell>
 					</TableRow>
 				</thead>
 				<tbody>
 					{attrs.map(({ name, description }) => (
 						<TableRow>
-							<TableCell>
+							<TableCell className={classes.prop}>
 								<Highlight>{name}</Highlight>
 							</TableCell>
 							<TableCell>{description}</TableCell>

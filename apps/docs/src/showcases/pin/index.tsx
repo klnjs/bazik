@@ -10,7 +10,7 @@ import classes from './index.module.css'
 
 export default () => {
 	return (
-		<Pin conceal={{ symbol: '·', delay: 250 }} className={classes.pin}>
+		<Pin className={classes.pin}>
 			<PinInput />
 			<PinLabel className={classes.label}>Pincode</PinLabel>
 			<PinGroup className={classes.group}>
