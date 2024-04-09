@@ -6,7 +6,7 @@
 	list-style: none;
 }
 
-.features-list {
+.list {
 	display: flex;
 	flex-direction: column;
 	margin: 0;
@@ -14,18 +14,18 @@
 	padding: 0;
 }
 
-.features-feature {
+.feature {
 	display: flex;
 	gap: 8px;
 	align-items: center;
 }
 
-.features-feature-icon {
+.icon {
 	width: 24px;
 	height: 24px;
 	color: var(--ifm-color-primary);
 }
 
-.features-feature-description {
+.description {
 	margin: 0 !important;
 }

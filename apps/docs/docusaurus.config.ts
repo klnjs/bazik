@@ -32,7 +32,11 @@ export default {
 	plugins: [
 		[
 			'@docusaurus/plugin-content-docs',
-			{ path: 'src/docs', sidebarPath: './sidebars.ts' }
+			{
+				path: 'src/docs',
+				sidebarPath: './sidebars.ts',
+				sidebarCollapsible: false
+			}
 		],
 		['@docusaurus/plugin-content-pages', { path: 'src/pages' }]
 	],
@@ -40,7 +44,6 @@ export default {
 	themeConfig: {
 		image: 'img/docusaurus-social-card.jpg',
 		navbar: {
-			hideOnScroll: true,
 			title: 'My Site',
 			logo: {
 				alt: 'My Site Logo',
@@ -49,12 +52,12 @@ export default {
 			items: [
 				{
 					type: 'doc',
-					docId: 'intro',
+					docId: 'overview/introduction',
 					label: 'Docs',
 					position: 'right'
 				},
 				{
-					href: 'https://github.com/facebook/docusaurus',
+					href: 'https://github.com/klnjs/freya',
 					position: 'right',
 					className: 'navbar__github-link',
 					'aria-label': 'GitHub repository'
@@ -67,7 +70,8 @@ export default {
 		},
 		prism: {
 			theme: prismThemes.github,
-			darkTheme: prismThemes.dracula
+			darkTheme: prismThemes.dracula,
+			additionalLanguages: ['bash']
 		},
 		colorMode: {
 			defaultMode: 'dark',

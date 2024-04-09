@@ -10,7 +10,7 @@
 
 .pin {
 	display: flex;
-	gap: medium;
+	gap: 16px;
 	align-items: center;
 	flex-direction: column;
 }

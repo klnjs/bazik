@@ -5,10 +5,10 @@ import {
 	usePreviousValue,
 	type CoreProps
 } from '@klnjs/core'
-import { usePinFieldContext } from './PinFieldContext'
-import { usePinFieldConceal } from './usePinFieldConceal'
+import { usePinContext } from './PinContext'
+import { usePinConceal } from './usePinConceal'
 
-export type PinFieldSlotProps = CoreProps<
+export type PinSlotProps = CoreProps<
 	'div',
 	{
 		slot: number
@@ -17,7 +17,7 @@ export type PinFieldSlotProps = CoreProps<
 	}
 >
 
-export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
+export const PinSlot = forwardRef<'div', PinSlotProps>(
 	({ slot, placeholder, onPointerDown, ...otherProps }, forwardedRef) => {
 		const {
 			pin,
@@ -26,12 +26,12 @@ export const PinFieldSlot = forwardRef<'div', PinFieldSlotProps>(
 			inputRef,
 			disabled = false,
 			focusWithin: isFocusWithin
-		} = usePinFieldContext()
+		} = usePinContext()
 
 		const prev = usePreviousValue(pin.length)
 		const value = pin[slot - 1] ?? ''
 		const forward = prev === null || prev < pin.length
-		const content = usePinFieldConceal({
+		const content = usePinConceal({
 			delay: slot < pin.length ? 0 : delay,
 			value,
 			symbol,

@@ -1,12 +1,12 @@
 import { poly, forwardRef, useId, type CoreProps } from '@klnjs/core'
-import { usePinFieldContext } from './PinFieldContext'
+import { usePinContext } from './PinContext'
 
-export type PinFieldLabelProps = CoreProps<'label'>
+export type PinLabelProps = CoreProps<'label'>
 
-export const PinFieldLabel = forwardRef<'label', PinFieldLabelProps>(
+export const PinLabel = forwardRef<'label', PinLabelProps>(
 	({ id: idProp, ...otherProps }, forwardedRef) => {
 		const id = useId(idProp)
-		const { inputId } = usePinFieldContext()
+		const { inputId } = usePinContext()
 
 		return (
 			<poly.label

@@ -1,0 +1,24 @@
+import { Showcase } from '@site/src/lib/showcase'
+import Feature from '@site/src/lib/features/Feature.mdx'
+import Features from '@site/src/lib/features/Features.mdx'
+import Reference from '@site/src/lib/reference/Reference.mdx'
+import Installation from '@site/src/lib/installation/Installation.mdx'
+
+# Pin
+
+Pin provides an easy to use input for entering pin codes.
+
+<Showcase name="pin" />
+
+<Features>
+	<Feature>Can be controlled or uncontrolled.</Feature>
+	<Feature>Concealing the input while typing.</Feature>
+	<Feature>Auto complete one time codes from email / sms.</Feature>
+</Features>
+
+<Installation name="pin" />
+
+<Reference
+	title="Pin"
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: '' }]}
+/>

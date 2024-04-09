@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import type { Meta } from '@storybook/react'
 import {
-	PinField,
-	PinFieldLabel,
-	PinFieldInput,
-	PinFieldGroup,
-	PinFieldSlots,
-	PinFieldSlot
+	Pin,
+	PinLabel,
+	PinInput,
+	PinGroup,
+	PinSlots,
+	PinSlot
 } from '@klnjs/pin'
-import * as classes from './PinField.stories.css'
+import * as classes from './Pin.stories.css'
 import { Story, TextField, ButtonGroup } from '../components'
 
 export default {
 	title: 'Pin'
-} satisfies Meta<typeof PinField>
+} satisfies Meta<typeof Pin>
 
 export const Structure = () => {
 	const types = ['alphanumeric', 'alphabetic', 'numeric'] as const
@@ -33,25 +33,21 @@ export const Structure = () => {
 				<TextField label="Length" value={length} onChange={setLength} />
 			]}
 		>
-			<PinField
-				type={type}
-				length={Number(length)}
-				className={classes.pin}
-			>
-				<PinFieldInput />
-				<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
-				<PinFieldGroup className={classes.group}>
-					<PinFieldSlots>
+			<Pin type={type} length={Number(length)} className={classes.pin}>
+				<PinInput />
+				<PinLabel className={classes.label}>Pincode</PinLabel>
+				<PinGroup className={classes.group}>
+					<PinSlots>
 						{({ slot }) => (
-							<PinFieldSlot
+							<PinSlot
 								key={slot}
 								slot={slot}
 								className={classes.slot}
 							/>
 						)}
-					</PinFieldSlots>
-				</PinFieldGroup>
-			</PinField>
+					</PinSlots>
+				</PinGroup>
+			</Pin>
 		</Story>
 	)
 }
@@ -67,25 +63,25 @@ export const Concealing = () => {
 				<TextField label="Symbol" value={symbol} onChange={setSymbol} />
 			]}
 		>
-			<PinField
+			<Pin
 				length={4}
 				conceal={{ symbol, delay: Number(delay) }}
 				className={classes.pin}
 			>
-				<PinFieldInput />
-				<PinFieldLabel className={classes.label}>Pincode</PinFieldLabel>
-				<PinFieldGroup className={classes.group}>
-					<PinFieldSlots>
+				<PinInput />
+				<PinLabel className={classes.label}>Pincode</PinLabel>
+				<PinGroup className={classes.group}>
+					<PinSlots>
 						{({ slot }) => (
-							<PinFieldSlot
+							<PinSlot
 								key={slot}
 								slot={slot}
 								className={classes.slot}
 							/>
 						)}
-					</PinFieldSlots>
-				</PinFieldGroup>
-			</PinField>
+					</PinSlots>
+				</PinGroup>
+			</Pin>
 		</Story>
 	)
 }
