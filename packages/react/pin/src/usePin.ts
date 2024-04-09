@@ -1,10 +1,10 @@
 import { useState, type SetStateAction, useRef, useMemo } from 'react'
 import { useStateControllable } from '@klnjs/core'
 import { isRecord } from '@klnjs/assertion'
-import type { PinFieldConceal } from './PinFieldTypes'
+import type { PinConceal } from './PinTypes'
 
-export type UsePinFieldOptions = {
-	conceal?: PinFieldConceal
+export type UsePinOptions = {
+	conceal?: PinConceal
 	defaultValue?: string
 	disabled?: boolean
 	length?: number
@@ -13,7 +13,7 @@ export type UsePinFieldOptions = {
 	onChange?: (value: string) => void
 }
 
-export const usePinField = ({
+export const usePin = ({
 	conceal: concealProp = false,
 	defaultValue,
 	disabled = false,
@@ -21,7 +21,7 @@ export const usePinField = ({
 	type = 'alphanumeric',
 	value,
 	onChange
-}: UsePinFieldOptions = {}) => {
+}: UsePinOptions = {}) => {
 	const inputRef = useRef<HTMLInputElement>()
 
 	const [inputId, setInputId] = useState<string>()
