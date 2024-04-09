@@ -1,12 +1,19 @@
 {
 	"name": "@klnjs/storybook",
-	"version": "0.0.1",
 	"type": "module",
+	"author": "Rune Klein (@rnkln)",
+	"version": "0.0.1",
 	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/klnjs/freya.git",
+		"directory": "apps/storybook"
+	},
 	"scripts": {
-		"dev": "storybook dev -p 6006",
-		"eslint": "eslint ./packages --max-warnings 0 --cache --cache-location=./.eslintcache",
-		"prettier": "prettier ./packages --check --cache --cache-location=./.prettiercache",
+		"dev": "storybook dev -p 6006 --no-open",
+		"build": "storybook build --output-dir ./dist",
+		"eslint": "eslint . --max-warnings 0",
+		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
