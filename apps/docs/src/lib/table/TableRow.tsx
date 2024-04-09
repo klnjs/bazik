@@ -1,7 +1,10 @@
 import { ComponentProps } from 'react'
+import classes from './table.module.css'
 
 export type TableRowProps = ComponentProps<'tr'>
 
 export const TableRow = ({ children, ...otherProps }: TableRowProps) => (
-	<tr {...otherProps}>{children}</tr>
+	<tr className={classes.row} {...otherProps}>
+		{children}
+	</tr>
 )

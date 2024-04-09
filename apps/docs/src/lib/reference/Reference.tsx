@@ -1,36 +1,72 @@
+import { Highlight } from '../highlight'
 import { Table, TableCell, TableRow } from '../table'
 
-export type ReferencePropsProps = {
+export type ReferenceProp = {
 	name: string
 	type: string
 	defaultValue: string
 }
 
-export type ReferenceProps = {
-	title: string
-	props: ReferencePropsProps[]
+export type ReferenceAttr = {
+	name: string
+	description: string
 }
 
-export const Reference = ({ title, props, ...otherProps }: ReferenceProps) => (
+export type ReferenceProps = {
+	title: string
+	props?: ReferenceProp[]
+	attrs?: ReferenceAttr[]
+}
+
+export const Reference = ({
+	title,
+	props,
+	attrs,
+	...otherProps
+}: ReferenceProps) => (
 	<div {...otherProps}>
-		<h2>{title}</h2>
-		<Table>
-			<thead>
-				<TableRow>
-					<TableCell as="th">Prop</TableCell>
-					<TableCell as="th">Type</TableCell>
-					<TableCell as="th">Default</TableCell>
-				</TableRow>
-			</thead>
-			<tbody>
-				{props.map(({ name, type, defaultValue }) => (
+		{props && (
+			<Table>
+				<thead>
 					<TableRow>
-						<TableCell>{name}</TableCell>
-						<TableCell>{type}</TableCell>
-						<TableCell>{defaultValue}</TableCell>
+						<TableCell as="th">Prop</TableCell>
+						<TableCell as="th">Type</TableCell>
+						<TableCell as="th">Default</TableCell>
 					</TableRow>
-				))}
-			</tbody>
-		</Table>
+				</thead>
+				<tbody>
+					{props.map(({ name, type, defaultValue = '-' }) => (
+						<TableRow>
+							<TableCell>
+								<Highlight>{name}</Highlight>
+							</TableCell>
+							<TableCell>{type}</TableCell>
+							<TableCell>{defaultValue}</TableCell>
+						</TableRow>
+					))}
+				</tbody>
+			</Table>
+		)}
+
+		{attrs && (
+			<Table>
+				<thead>
+					<TableRow>
+						<TableCell as="th">Data attribute</TableCell>
+						<TableCell as="th">Condition</TableCell>
+					</TableRow>
+				</thead>
+				<tbody>
+					{attrs.map(({ name, description }) => (
+						<TableRow>
+							<TableCell>
+								<Highlight>{name}</Highlight>
+							</TableCell>
+							<TableCell>{description}</TableCell>
+						</TableRow>
+					))}
+				</tbody>
+			</Table>
+		)}
 	</div>
 )

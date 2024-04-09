@@ -18,7 +18,24 @@ Pin provides an easy to use input for entering pin codes.
 
 <Installation name="pin" />
 
+## Reference
+
+### Pin (Root Component)
+
 <Reference
-	title="Pin"
-	props={[{ name: 'asChild', type: 'boolean', defaultValue: '' }]}
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'conceal',
+			type: 'boolean | { symbol: string; delay?: number }'
+		},
+		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
+		{ name: 'length', type: 'number', defaultValue: '4' },
+		{
+			name: 'type',
+			type: 'alphabetic | alphanumeric | numeric',
+			defaultValue: 'alphanumeric'
+		},
+		{ name: 'value', type: 'string' }
+	]}
 />

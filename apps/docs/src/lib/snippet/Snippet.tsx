@@ -1,4 +1,6 @@
 import CodeBlock, { Props as CodeBlockProps } from '@theme/CodeBlock'
+import clsx from 'clsx'
+import classes from './Snippet.module.css'
 
 export type ShowcaseProps = {
 	children: string
@@ -10,20 +12,18 @@ export type ShowcaseProps = {
 
 export const Snippet = ({
 	children,
-	language,
 	className,
+	language,
 	identation = 2,
 	showLineNumbers = true
 }: ShowcaseProps) => {
 	const indent = new Array(identation).fill(' ').join('')
 
 	return (
-		<CodeBlock
-			language={language}
-			showLineNumbers={showLineNumbers}
-			className={className}
-		>
-			{children.replace(/\t/g, indent)}
-		</CodeBlock>
+		<div className={clsx(className, classes.snippet)}>
+			<CodeBlock language={language} showLineNumbers={showLineNumbers}>
+				{children.replace(/\t/g, indent)}
+			</CodeBlock>
+		</div>
 	)
 }

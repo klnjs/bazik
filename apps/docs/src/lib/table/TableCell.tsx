@@ -1,4 +1,6 @@
 import { ComponentProps } from 'react'
+import clsx from 'clsx'
+import classes from './table.module.css'
 
 export type TableCellType = 'td' | 'th'
 
@@ -12,6 +14,14 @@ export const TableCell = <T extends TableCellType = 'td'>({
 	...otherProps
 }: TableCellProps<T>) => {
 	const Component = as ?? 'td'
+	const className = clsx(classes.cell, {
+		[classes.td]: as === 'td' || as === undefined,
+		[classes.th]: as === 'th'
+	})
 
-	return <Component {...otherProps}>{children}</Component>
+	return (
+		<Component className={className} {...otherProps}>
+			{children}
+		</Component>
+	)
 }

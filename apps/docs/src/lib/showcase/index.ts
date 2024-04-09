@@ -1,1 +1,1 @@
-export * from './Showcase.tsx'
+export * from './Showcase'

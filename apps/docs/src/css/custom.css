@@ -1,26 +1,37 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
-/* You can override the default Infima variables here. */
 :root {
+	--ifm-font-family-base: 'Open Sans';
+	--ifm-font-size-base: 85%;
 	--ifm-global-spacing: 2rem;
-	--ifm-color-primary: #2e8555;
-	--ifm-color-primary-dark: #29784c;
-	--ifm-color-primary-darker: #277148;
-	--ifm-color-primary-darkest: #205d3b;
-	--ifm-color-primary-light: #33925d;
-	--ifm-color-primary-lighter: #359962;
-	--ifm-color-primary-lightest: #3cad6e;
-	--ifm-code-font-size: 95%;
-	--docusaurus-highlighted-code-line-bg: rgba(31, 5, 5, 0.1);
+}
+
+:root[data-theme='light'] {
+	--ifm-color-primary: #d73a49;
+	--ifm-color-primary-dark: #cc2939;
+	--ifm-color-primary-darker: #c12736;
+	--ifm-color-primary-darkest: #9f202c;
+	--ifm-color-primary-light: #dc515e;
+	--ifm-color-primary-lighter: #de5c68;
+	--ifm-color-primary-lightest: #e57e88;
+	--kln-code-color: #393a34;
+	--kln-code-background-color: #f6f8fa;
+}
+
+:root[data-theme='dark'] {
+	--ifm-color-primary: #50fa7b;
+	--ifm-color-primary-dark: #30f963;
+	--ifm-color-primary-darker: #20f957;
+	--ifm-color-primary-darkest: #06e13e;
+	--ifm-color-primary-light: #70fb93;
+	--ifm-color-primary-lighter: #80fb9f;
+	--ifm-color-primary-lightest: #b0fdc4;
+	--kln-code-color: #f8f8f2;
+	--kln-code-background-color: #282a36;
 }
 
 .menu__list .menu__list .menu__link {
 	color: var(--ifm-font-color-base);
-	font-size: 13px;
 	font-weight: normal;
 	padding: 8px 12px;
 	border-inline-start: 4px solid transparent;
@@ -51,16 +62,4 @@
 
 .navbar__github-link:hover::before {
 	background-color: var(--ifm-navbar-link-hover-color);
-}
-
-.markdown > h1 {
-	--ifm-h1-font-size: 1.8rem !important;
-}
-
-.markdown > h2 {
-	--ifm-h2-font-size: 1.4rem;
-}
-
-.markdown > h3 {
-	--ifm-h3-font-size: 1.2rem;
 }
