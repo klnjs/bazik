@@ -4,8 +4,6 @@
 # Except these folders
 !.github/
 !.github/**/*
-!.storybook/
-!.storybook/**/*
 !apps/
 !apps/**/*
 !packages/
