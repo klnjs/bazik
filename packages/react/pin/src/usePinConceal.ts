@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export type UsePinFieldConcealOptions = {
+export type UsePinConcealOptions = {
 	delay: number
 	value?: string
 	symbol: string | null
@@ -8,13 +8,13 @@ export type UsePinFieldConcealOptions = {
 	placeholder?: string
 }
 
-export const usePinFieldConceal = ({
+export const usePinConceal = ({
 	delay = 0,
 	direction = 'forwards',
 	value,
 	symbol,
 	placeholder = ''
-}: UsePinFieldConcealOptions) => {
+}: UsePinConcealOptions) => {
 	const [display, setDisplay] = useState<string>()
 
 	// @ts-expect-error ts(7030): Not all code paths return a value.

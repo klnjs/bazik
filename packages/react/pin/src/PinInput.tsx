@@ -14,11 +14,11 @@ import {
 	useMergeRefs,
 	type CoreProps
 } from '@klnjs/core'
-import { usePinFieldContext } from './PinFieldContext'
+import { usePinContext } from './PinContext'
 
-export type PinFieldInputProps = CoreProps<'input'>
+export type PinInputProps = CoreProps<'input'>
 
-export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
+export const PinInput = forwardRef<'input', PinInputProps>(
 	(
 		{
 			id: idProp,
@@ -42,12 +42,12 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 			setPin,
 			setInputId,
 			setFocusWithin
-		} = usePinFieldContext()
+		} = usePinContext()
 
 		const id = useId(idProp)
 		const refCallback = useMergeRefs(inputRef, forwardedRef)
 
-		const pattern = PinFieldInputPatterns[type]
+		const pattern = PinInputPatterns[type]
 		const style: CSSProperties | undefined = hidden
 			? {
 					position: 'absolute',
@@ -134,7 +134,7 @@ export const PinFieldInput = forwardRef<'input', PinFieldInputProps>(
 	}
 )
 
-export const PinFieldInputPatterns = {
+export const PinInputPatterns = {
 	alphabetic: /^[a-zA-Z]*$/,
 	alphanumeric: /^[a-zA-Z0-9]*$/,
 	numeric: /^[0-9]*$/
