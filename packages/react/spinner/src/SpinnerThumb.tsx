@@ -6,13 +6,14 @@ export type SpinnerThumbProps = CoreProps<
 	{
 		arc?: number
 		angle?: number
+		easing?: string
 		cap?: 'butt' | 'round' | 'square'
 	}
 >
 
 export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 	(
-		{ arc: arcProp = 0, angle = 0, cap = 'round', ...otherProps },
+		{ arc: arcProp = 0, angle = 0, easing, cap = 'round', ...otherProps },
 		forwardedRef
 	) => {
 		const { width, radius, center, duration, circumference } =
@@ -38,6 +39,8 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 				<animateTransform
 					attributeName="transform"
 					dur={`${duration}s`}
+					calcMode="spline"
+					keySplines={easing}
 					type="rotate"
 					values={`${rotate} ${center} ${center};${rotate + 360} ${center} ${center}`}
 					repeatCount="indefinite"

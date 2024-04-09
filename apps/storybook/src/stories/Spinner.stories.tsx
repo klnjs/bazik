@@ -34,7 +34,11 @@ export const Display = () => {
 				className={classes.spinner}
 			>
 				<SpinnerTrack className={classes.track} />
-				<SpinnerThumb arc={Number(arc)} className={classes.thumb} />
+				<SpinnerThumb
+					arc={Number(arc)}
+					easing="0.8 0 0.2 1"
+					className={classes.thumb}
+				/>
 			</Spinner>
 		</Story>
 	)
