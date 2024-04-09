@@ -3,7 +3,7 @@
   "type": "module",
   "author": "Rune Klein (@rnkln)",
   "version": "0.0.1",
-	"license": "MIT",
+	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/freya.git"
