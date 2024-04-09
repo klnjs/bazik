@@ -1,0 +1,21 @@
+# Ignore everything
+*
+
+# Except these folders
+!docs/
+!docs/**/*
+!src/
+!src/**/*
+!static/
+!static/**/*
+
+# Except these files
+!.gitignore
+!babel.config.js
+!docusaurus.config.ts
+!eslint.config.mjs
+!index.ts
+!package.json
+!prettier.config.mjs
+!sidebars.ts
+!tsconfig.json
