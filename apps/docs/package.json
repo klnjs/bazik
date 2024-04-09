@@ -1,0 +1,38 @@
+{
+	"name": "@klnjs/docs",
+	"author": "Rune Klein (@rnkln)",
+	"version": "0.0.1",
+	"private": true,
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/klnjs/freya.git",
+		"directory": "apps/docs"
+	},
+	"scripts": {
+		"dev": "docusaurus start -p 3006 --no-open",
+		"build": "docusaurus build --out-dir ./dist",
+		"eslint": "eslint . --max-warnings 0",
+		"prettier": "prettier . --check",
+		"typescript": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@docusaurus/core": "3.2.1",
+		"@docusaurus/plugin-content-docs": "3.2.1",
+		"@docusaurus/plugin-content-pages": "3.2.1",
+		"@docusaurus/theme-classic": "3.2.1",
+		"@klnjs/pin": "workspace:*",
+		"@klnjs/popover": "workspace:*",
+		"@mdx-js/react": "3.0.1",
+		"clsx": "2.1.0",
+		"prism-react-renderer": "2.3.1",
+		"raw-loader": "4.0.2",
+		"react": "18.2.0",
+		"react-dom": "18.2.0"
+	},
+	"devDependencies": {
+		"@docusaurus/module-type-aliases": "3.2.1",
+		"@docusaurus/tsconfig": "3.2.1",
+		"@docusaurus/types": "3.2.1",
+		"typescript": "5.4.4"
+	}
+}

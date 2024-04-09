@@ -1,0 +1,25 @@
+.table {
+	text-align: start;
+	display: table;
+	width: 100%;
+	border: 1px solid var(--ifm-color-emphasis-300);
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: var(--ifm-global-radius);
+	overflow: hidden;
+}
+
+.cell {
+	border: 0;
+	background: var(--kln-code-background-color);
+	color: var(--kln-code-color);
+}
+
+.th {
+	text-align: start;
+	background: var(--ifm-background-surface-color);
+}
+
+.td {
+	border-block-start: 1px solid var(--ifm-color-emphasis-300);
+}
