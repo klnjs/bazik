@@ -6,7 +6,7 @@ import {
 	PinSlots,
 	PinSlot
 } from '@klnjs/pin'
-import classes from './index.module.css'
+import classes from './pin.module.css'
 
 export default () => {
 	return (

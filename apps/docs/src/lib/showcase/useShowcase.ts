@@ -23,12 +23,14 @@ export const useShowcase = (name: string) => {
 	useEffect(() => {
 		const fetchSources = async () => {
 			if (data === undefined) {
-				const jsx = await import(`@site/src/showcases/${name}/index`)
+				const jsx = await import(
+					`@site/src/docs/02-components/${name}/${name}`
+				)
 				const src = await import(
-					`!!raw-loader!@site/src/showcases/${name}/index`
+					`!!raw-loader!@site/src/docs/02-components/${name}/${name}`
 				)
 				const css = await import(
-					`!!raw-loader!@site/src/showcases/${name}/index.module.css`
+					`!!raw-loader!@site/src/docs/02-components/${name}/${name}.module.css`
 				)
 
 				setData({
