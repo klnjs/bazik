@@ -22,6 +22,7 @@
 		"@docusaurus/theme-classic": "3.2.1",
 		"@klnjs/pin": "workspace:*",
 		"@klnjs/popover": "workspace:*",
+		"@klnjs/spinner": "workspace:*",
 		"@mdx-js/react": "3.0.1",
 		"clsx": "2.1.0",
 		"prism-react-renderer": "2.3.1",

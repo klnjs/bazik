@@ -1,0 +1,11 @@
+.spinner {
+	display: block;
+}
+
+.thumb {
+	color: var(--ifm-color-primary);
+}
+
+.track {
+	color: var(--ifm-background-surface-color);
+}

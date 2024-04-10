@@ -1,0 +1,69 @@
+import { Showcase } from '@site/src/lib/showcase'
+import { Features, Feature } from '@site/src/lib/features'
+import { Installation } from '@site/src/lib/installation'
+import { Reference } from '@site/src/lib/reference'
+
+# Spinner
+
+Customisable spinner used to illustrate that ongoing work / progress.
+
+## Showcase
+
+<Showcase name="spinner" />
+
+## Features
+
+<Features>
+	<Feature>Configurable dimensions and duration.</Feature>
+	<Feature>Custom easing function.</Feature>
+</Features>
+
+## Installation
+
+<Installation name="spinner" />
+
+## Reference
+
+### Spinner (Root Component)
+
+Contains all the parts of an spinner.
+
+<Reference
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'size',
+			type: 'number',
+			defaultValue: '24'
+		},
+		{ name: 'width', type: 'number', defaultValue: '4' }
+	]}
+/>
+
+### SpinnerTrack
+
+Used to render a spinner track.
+
+<Reference
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+/>
+
+### SpinnerThumb
+
+Used to render the spinning thumb inside the track.
+
+<Reference
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'arc', type: 'number', defaultValue: '25' },
+		{ name: 'angle', type: 'number', defaultValue: '0' },
+		{ name: 'easing', type: 'string' },
+		{ name: 'duration', type: 'number', defaultValue: '1' },
+		{
+			name: 'cap',
+			type: 'enum',
+			typeAdvanced: 'butt | round | square',
+			defaultValue: 'round'
+		}
+	]}
+/>
