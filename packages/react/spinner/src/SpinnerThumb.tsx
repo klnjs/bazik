@@ -7,17 +7,24 @@ export type SpinnerThumbProps = CoreProps<
 		arc?: number
 		angle?: number
 		easing?: string
+		duration?: number
 		cap?: 'butt' | 'round' | 'square'
 	}
 >
 
 export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 	(
-		{ arc: arcProp = 0, angle = 0, easing, cap = 'round', ...otherProps },
+		{
+			arc: arcProp = 25,
+			angle = 0,
+			easing,
+			duration = 1,
+			cap = 'round',
+			...otherProps
+		},
 		forwardedRef
 	) => {
-		const { width, radius, center, duration, circumference } =
-			useSpinnerContext()
+		const { width, radius, center, circumference } = useSpinnerContext()
 
 		const arc = (circumference * arcProp) / 100
 		const rotate = -90 + angle
