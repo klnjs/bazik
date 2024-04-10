@@ -19,7 +19,6 @@ export const Spinner = forwardRef<'svg', SpinnerProps>(
 					viewBox={`0 0 ${spinner.diameter} ${spinner.diameter}`}
 					width={spinner.diameter}
 					height={spinner.diameter}
-					fill="currentColor"
 					{...otherProps}
 				/>
 			</SpinnerProvider>
