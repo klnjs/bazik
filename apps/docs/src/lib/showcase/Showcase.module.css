@@ -32,9 +32,5 @@
 	padding-block: 100px;
 	align-items: center;
 	justify-content: center;
-	background: linear-gradient(
-		rgb(65, 88, 208) 0%,
-		rgb(200, 80, 192) 46%,
-		rgb(255, 204, 112) 100%
-	);
+	background: #85cff9;
 }
