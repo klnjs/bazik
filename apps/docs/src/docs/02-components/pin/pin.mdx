@@ -5,7 +5,7 @@ import { Reference } from '@site/src/lib/reference'
 
 # Pin
 
-Pin provides an easy to use input for entering pin codes.
+Pin provides an input for handling pin codes / one time codes.
 
 ## Showcase
 
@@ -14,7 +14,7 @@ Pin provides an easy to use input for entering pin codes.
 ## Features
 
 <Features>
-	<Feature>Can be controlled or uncontrolled.</Feature>
+	<Feature>Controlled or uncontrolled</Feature>
 	<Feature>Concealing the input while typing.</Feature>
 	<Feature>Auto complete one time codes from email / sms.</Feature>
 </Features>
@@ -96,9 +96,12 @@ Utility component that renders slot of the pin using a render function as child.
 Used to render individual slot of the pin.
 
 <Reference
-	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
+		{ name: 'placeholder', type: 'string', defaultValue: '-' }
+	]}
 	attrs={[
-
     	{ name: 'data-caret', description: 'has caret.' },
     			{
     		name: 'data-placeholder',
