@@ -1,5 +1,4 @@
 import {
-	useCallback,
 	useLayoutEffect,
 	type ChangeEvent,
 	type KeyboardEvent,
@@ -15,6 +14,7 @@ import {
 	type CoreProps
 } from '@klnjs/core'
 import { usePinContext } from './PinContext'
+import { usePinPattern } from './usePinPattern'
 
 export type PinInputProps = CoreProps<'input'>
 
@@ -27,6 +27,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 			style: styleProp,
 			onBlur,
 			onFocus,
+			onPaste,
 			onChange,
 			onKeyDown,
 			...otherProps
@@ -47,7 +48,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 		const id = useId(idProp)
 		const refCallback = useMergeRefs(inputRef, forwardedRef)
 
-		const pattern = PinInputPatterns[type]
+		const pattern = usePinPattern(type)
 		const style: CSSProperties | undefined = hidden
 			? {
 					position: 'absolute',
@@ -57,51 +58,38 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 				}
 			: styleProp
 
-		const handleBlur = chain(onBlur, () => setFocusWithin(false))
+		const handleBlur = chain(() => setFocusWithin(false), onBlur)
 
-		const handleFocus = chain(onFocus, () => setFocusWithin(true))
+		const handleFocus = chain(() => setFocusWithin(true), onFocus)
 
-		const handlePaste = useCallback(
-			(event: ClipboardEvent) => {
-				const input = event.clipboardData.getData('text/plain')
-				const sanitized = [...input]
-					.filter((char) => pattern.test(char))
-					.slice(0, length)
-					.join('')
+		const handlePaste = chain((event: ClipboardEvent) => {
+			const input = event.clipboardData.getData('text/plain')
+			const sanitized = [...input]
+				.filter((char) => pattern.test(char))
+				.slice(0, length)
+				.join('')
 
-				setPin(sanitized)
-			},
-			[length, pattern, setPin]
-		)
+			setPin(sanitized)
+		}, onPaste)
 
-		const handleChange = useCallback(
-			(event: ChangeEvent<HTMLInputElement>) => {
-				const { value } = event.target
+		const handleChange = chain((event: ChangeEvent<HTMLInputElement>) => {
+			if (pattern.test(event.target.value)) {
+				setPin(event.target.value)
+			}
+		}, onChange)
 
-				if (pattern.test(value)) {
-					setPin(value)
-
-					if (onChange) {
-						onChange(event)
-					}
+		const handleKeyDown = chain(
+			(event: KeyboardEvent<HTMLInputElement>) => {
+				if (
+					event.code === 'End' ||
+					event.code === 'Home' ||
+					event.code.startsWith('Arrow')
+				) {
+					event.preventDefault()
 				}
 			},
-			[pattern, setPin, onChange]
+			onKeyDown
 		)
-
-		const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-			if (
-				event.code === 'End' ||
-				event.code === 'Home' ||
-				event.code.startsWith('Arrow')
-			) {
-				event.preventDefault()
-			}
-
-			if (onKeyDown) {
-				onKeyDown(event)
-			}
-		}
 
 		useLayoutEffect(() => {
 			setInputId(id)
@@ -133,9 +121,3 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 		)
 	}
 )
-
-export const PinInputPatterns = {
-	alphabetic: /^[a-zA-Z]*$/,
-	alphanumeric: /^[a-zA-Z0-9]*$/,
-	numeric: /^[0-9]*$/
-}

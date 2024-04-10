@@ -1,14 +1,14 @@
 import { useRef, useMemo, useState, type SetStateAction } from 'react'
 import { useStateControllable, usePreviousValue } from '@klnjs/core'
 import { isRecord } from '@klnjs/assertion'
-import type { PinConceal, PinDirection } from './PinTypes'
+import type { PinType, PinConceal, PinDirection } from './PinTypes'
 
 export type UsePinOptions = {
 	conceal?: PinConceal
 	defaultValue?: string
 	disabled?: boolean
 	length?: number
-	type?: 'alphabetic' | 'alphanumeric' | 'numeric'
+	type?: PinType
 	value?: string
 	onChange?: (value: string) => void
 }
