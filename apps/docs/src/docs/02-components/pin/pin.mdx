@@ -34,8 +34,8 @@ Contains all the parts of an pin.
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{
 			name: 'conceal',
-			type: 'boolean | PinConceal',
-			typeAdvanced: 'boolean | { symbol: string; delay?: number }',
+			type: 'PinConceal',
+			typeAdvanced: 'string | { symbol: string; delay: number }',
 			defaultValue: 'false'
 		},
 		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
@@ -98,30 +98,15 @@ Used to render individual slot of the pin.
 <Reference
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
-		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
 		{ name: 'placeholder', type: 'string', defaultValue: '-' }
 	]}
 	attrs={[
-    	{ name: 'data-caret', description: 'has caret.' },
-    			{
-    		name: 'data-placeholder',
-    		description: 'has placeholder.'
-    	},
-    		    	{
-    		name: 'data-disabled',
-    		description: 'disabled.'
-    	},
-    	{
-    		name: 'data-concealed',
-    		description: 'concealed.'
-    	},
-    		{
-    		name: 'data-highlighted',
-    		description: 'focused.'
-    	},
-    	{ name: 'data-end', description: 'is last slot.' },
-
-    	{ name: 'data-start', description: 'is first slot.' }
-    ]}
-
+		{ name: 'data-caret', description: 'has caret.' },
+		{ name: 'data-placeholder', description: 'has placeholder.' },
+		{ name: 'data-focused', description: 'focused.' },
+		{ name: 'data-disabled', description: 'disabled.' },
+		{ name: 'data-concealed', description: 'concealed.' },
+		{ name: 'data-end', description: 'is last slot.' },
+		{ name: 'data-start', description: 'is first slot.' }
+	]}
 />

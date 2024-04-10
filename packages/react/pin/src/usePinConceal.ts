@@ -1,40 +1,47 @@
 import { useState, useEffect } from 'react'
+import type { PinDirection } from './PinTypes'
 
 export type UsePinConcealOptions = {
 	delay: number
-	value?: string
-	symbol: string | null
-	direction?: 'forwards' | 'backwards'
+	direction: PinDirection
+	enabled?: boolean
 	placeholder?: string
+	symbol: string
+	value?: string
 }
 
 export const usePinConceal = ({
-	delay = 0,
-	direction = 'forwards',
-	value,
+	delay,
+	direction,
+	enabled = true,
+	placeholder = '',
 	symbol,
-	placeholder = ''
+	value
 }: UsePinConcealOptions) => {
 	const [display, setDisplay] = useState<string>()
 
 	// @ts-expect-error ts(7030): Not all code paths return a value.
 	useEffect(() => {
-		if (!value) {
-			setDisplay(placeholder)
-		} else if (direction === 'backwards' || delay === 0) {
-			setDisplay(symbol ?? value)
+		if (!enabled) {
+			setDisplay(value ?? placeholder)
 		} else {
-			setDisplay(value)
+			if (!value) {
+				setDisplay(placeholder)
+			} else if (direction === 'backwards') {
+				setDisplay(symbol ?? value)
+			} else if (enabled) {
+				setDisplay(value)
 
-			if (symbol) {
-				const timeout = setTimeout(() => setDisplay(symbol), delay)
+				if (symbol) {
+					const timeout = setTimeout(() => setDisplay(symbol), delay)
 
-				return () => {
-					clearTimeout(timeout)
+					return () => {
+						clearTimeout(timeout)
+					}
 				}
 			}
 		}
-	}, [delay, direction, value, symbol, placeholder])
+	}, [enabled, delay, direction, value, symbol, placeholder])
 
 	return display
 }

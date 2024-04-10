@@ -1,10 +1,4 @@
-import {
-	chain,
-	forwardRef,
-	toData,
-	usePreviousValue,
-	type CoreProps
-} from '@klnjs/core'
+import { chain, forwardRef, toData, type CoreProps } from '@klnjs/core'
 import { usePinContext } from './PinContext'
 import { usePinConceal } from './usePinConceal'
 
@@ -12,7 +6,6 @@ export type PinSlotProps = CoreProps<
 	'div',
 	{
 		slot: number
-		disabled?: boolean
 		placeholder?: string
 	}
 >
@@ -22,20 +15,20 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 		const {
 			pin,
 			length,
-			conceal: { delay, symbol },
+			conceal: { delay, symbol, enabled },
 			inputRef,
 			disabled = false,
+			direction,
 			focusWithin: isFocusWithin
 		} = usePinContext()
 
-		const prev = usePreviousValue(pin.length)
 		const value = pin[slot - 1] ?? ''
-		const forward = prev === null || prev < pin.length
 		const content = usePinConceal({
-			delay: slot < pin.length ? 0 : delay,
+			enabled,
+			delay,
 			value,
 			symbol,
-			direction: forward ? 'forwards' : 'backwards',
+			direction,
 			placeholder
 		})
 
