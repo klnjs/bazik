@@ -29,10 +29,7 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@klnjs/core": "workspace:*",
-		"@klnjs/locale": "workspace:*",
-		"@klnjs/assertion": "workspace:*",
-		"temporal-polyfill": "0.2.4"
+		"@klnjs/core": "workspace:*"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",
