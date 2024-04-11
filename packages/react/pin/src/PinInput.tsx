@@ -58,11 +58,11 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 				}
 			: styleProp
 
-		const handleBlur = chain(() => setFocusWithin(false), onBlur)
+		const handleBlur = chain(onBlur, () => setFocusWithin(false))
 
-		const handleFocus = chain(() => setFocusWithin(true), onFocus)
+		const handleFocus = chain(onFocus, () => setFocusWithin(true))
 
-		const handlePaste = chain((event: ClipboardEvent) => {
+		const handlePaste = chain(onPaste, (event: ClipboardEvent) => {
 			const input = event.clipboardData.getData('text/plain')
 			const sanitized = [...input]
 				.filter((char) => pattern.test(char))
@@ -70,15 +70,19 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 				.join('')
 
 			setPin(sanitized)
-		}, onPaste)
+		})
 
-		const handleChange = chain((event: ChangeEvent<HTMLInputElement>) => {
-			if (pattern.test(event.target.value)) {
-				setPin(event.target.value)
+		const handleChange = chain(
+			onChange,
+			(event: ChangeEvent<HTMLInputElement>) => {
+				if (pattern.test(event.target.value)) {
+					setPin(event.target.value)
+				}
 			}
-		}, onChange)
+		)
 
 		const handleKeyDown = chain(
+			onKeyDown,
 			(event: KeyboardEvent<HTMLInputElement>) => {
 				if (
 					event.code === 'End' ||
@@ -87,8 +91,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 				) {
 					event.preventDefault()
 				}
-			},
-			onKeyDown
+			}
 		)
 
 		useLayoutEffect(() => {
