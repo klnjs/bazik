@@ -20,6 +20,7 @@
 		"@docusaurus/plugin-content-docs": "3.2.1",
 		"@docusaurus/plugin-content-pages": "3.2.1",
 		"@docusaurus/theme-classic": "3.2.1",
+		"@klnjs/avatar": "workspace:*",
 		"@klnjs/pin": "workspace:*",
 		"@klnjs/popover": "workspace:*",
 		"@klnjs/spinner": "workspace:*",
