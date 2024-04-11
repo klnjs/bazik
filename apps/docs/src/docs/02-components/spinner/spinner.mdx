@@ -5,7 +5,7 @@ import { Reference } from '@site/src/lib/reference'
 
 # Spinner
 
-Spinner provides a way to illustrate ongoing work / progress.
+An element for illustrating ongoing work / progress.
 
 ## Showcase
 
@@ -24,7 +24,7 @@ Spinner provides a way to illustrate ongoing work / progress.
 
 ## Reference
 
-### Spinner (Root Component)
+### Spinner (Root)
 
 Contains all the parts of an spinner.
 
@@ -38,7 +38,7 @@ Contains all the parts of an spinner.
 
 ### SpinnerTrack
 
-Used to render a spinner track.
+Used to optionally render a track (circle). It will automatically calculate its dimensions based on the `size` and `width` property of the root.
 
 <Reference
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
@@ -46,20 +46,20 @@ Used to render a spinner track.
 
 ### SpinnerThumb
 
-Used to render the spinning thumb inside the track.
+Used to render a thumb (circle section). It will automatically calculate its dimensions based on the `size` and `width` property of the root. It is possible to render multiple thumbs, and have them perform different animations based on the properties given.
 
 <Reference
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
-		{ name: 'arc', type: 'number', defaultValue: '25' },
 		{ name: 'angle', type: 'number', defaultValue: '0' },
-		{ name: 'easing', type: 'string' },
-		{ name: 'duration', type: 'number', defaultValue: '1' },
+		{ name: 'arc', type: 'number', defaultValue: '25' },
 		{
 			name: 'cap',
 			type: 'enum',
-			typeAdvanced: 'butt | round | square',
+			typeAdvanced: "'butt' | 'round' | 'square'",
 			defaultValue: 'round'
-		}
+		},
+		{ name: 'duration', type: 'number', defaultValue: '1' },
+		{ name: 'easing', type: 'string' }
 	]}
 />
