@@ -30,7 +30,7 @@ export const Showcase = ({ name }: ShowcaseProps) => {
 				</TabItem>
 				<TabItem
 					value="styles"
-					label="index.module.css"
+					label="index.css"
 					className={classes.tab}
 				>
 					<Snippet language="css" className={classes.snippet}>
