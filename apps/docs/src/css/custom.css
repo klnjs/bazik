@@ -4,6 +4,8 @@
 	--ifm-font-family-base: 'Open Sans';
 	--ifm-font-size-base: 85%;
 	--ifm-global-spacing: 2rem;
+	--ifm-container-width: 900px;
+	--ifm-container-width-xl: 900px;
 }
 
 :root[data-theme='light'] {

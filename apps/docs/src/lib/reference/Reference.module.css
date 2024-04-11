@@ -10,6 +10,7 @@
 	color: var(--kln-code-color);
 }
 
-.prop {
+.prop,
+.type {
 	width: 32%;
 }
