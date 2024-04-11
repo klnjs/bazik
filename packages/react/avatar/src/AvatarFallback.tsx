@@ -6,9 +6,9 @@ export type AvatarFallbackProps = CoreProps<'div', { delay?: number }>
 
 export const AvatarFallback = forwardRef<'div', AvatarFallbackProps>(
 	({ delay, ...otherProps }, forwardedRef) => {
-		const [ready, setReady] = useState(delay === undefined)
-
 		const { status } = useAvatarContext()
+
+		const [ready, setReady] = useState(delay === undefined)
 
 		// @ts-expect-error ts(7030): Not all code paths return a value.
 		useEffect(() => {
@@ -21,7 +21,7 @@ export const AvatarFallback = forwardRef<'div', AvatarFallbackProps>(
 			}
 		}, [delay])
 
-		return ready && status === 'loaded' ? (
+		return ready && status !== 'loaded' ? (
 			<poly.div ref={forwardedRef} {...otherProps} />
 		) : null
 	}

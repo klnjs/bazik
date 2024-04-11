@@ -1,13 +1,13 @@
 {
-	"name": "@klnjs/calendar",
+	"name": "@klnjs/avatar",
 	"type": "module",
 	"author": "Rune Klein (@rnkln)",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/freya.git",
-		"directory": "packages/react/calendar"
+		"directory": "packages/react/avatar"
 	},
 	"files": [
 		"src",
