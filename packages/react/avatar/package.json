@@ -1,5 +1,5 @@
 {
-	"name": "@klnjs/avatar",
+	"name": "@klnjs/calendar",
 	"type": "module",
 	"author": "Rune Klein (@rnkln)",
 	"version": "0.0.1",
@@ -7,7 +7,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/freya.git",
-		"directory": "packages/react/avatar"
+		"directory": "packages/react/calendar"
 	},
 	"files": [
 		"src",
@@ -29,7 +29,10 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@klnjs/core": "workspace:*"
+		"@klnjs/core": "workspace:*",
+		"@klnjs/locale": "workspace:*",
+		"@klnjs/assertion": "workspace:*",
+		"temporal-polyfill": "0.2.4"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",
