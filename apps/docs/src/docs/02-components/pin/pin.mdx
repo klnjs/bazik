@@ -5,7 +5,7 @@ import { Reference } from '@site/src/lib/reference'
 
 # Pin
 
-Pin provides an input for handling pin codes / one time codes.
+An input for typing pin codes / one time codes.
 
 ## Showcase
 
@@ -14,9 +14,9 @@ Pin provides an input for handling pin codes / one time codes.
 ## Features
 
 <Features>
-	<Feature>Controlled or uncontrolled</Feature>
-	<Feature>Concealing the input while typing.</Feature>
-	<Feature>Auto complete one time codes from email / sms.</Feature>
+	<Feature>Controlled or uncontrolled.</Feature>
+	<Feature>Concealing the pin while typing.</Feature>
+	<Feature>Auto complete one time codes.</Feature>
 </Features>
 
 ## Installation
@@ -25,7 +25,7 @@ Pin provides an input for handling pin codes / one time codes.
 
 ## Reference
 
-### Pin (Root Component)
+### Pin (Root)
 
 Contains all the parts of an pin.
 
@@ -43,7 +43,7 @@ Contains all the parts of an pin.
 		{
 			name: 'type',
 			type: 'PinType',
-			typeAdvanced: 'alphabetic | alphanumeric | numeric',
+			typeAdvanced: "'alphabetic' | 'alphanumeric' | 'numeric'",
 			defaultValue: 'alphanumeric'
 		},
 		{ name: 'value', type: 'string' }
@@ -52,24 +52,28 @@ Contains all the parts of an pin.
 
 ### PinInput
 
-Used to render a hidden input that handles interactions with the pin.
+Used to render a hidden input which is accessible by keyboard. The input can be shown by setting `hidden` to false. It will auto complete one time codes by default, and handle sanitising of input based on root property `type`.
 
 <Reference
-	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'autoComplete', type: 'string', defaultValue: 'one-time-code' },
+		{ name: 'hidden', type: 'boolean', defaultValue: 'true' }
+	]}
 />
 
 ### PinLabel
 
-Used to render the label of the pin. It won't be focusable using arrow keys.
+Used to optionally render an input label, and attach it to the input so it is accessible. If omitted, you should add a label to the input with property `aria-label`, so the component stays accessible.
 
 <Reference
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
-	attrs={[{ name: 'data-disabled', description: 'Present when disabled.' }]}
+	attrs={[{ name: 'data-disabled', description: 'disabled' }]}
 />
 
 ### PinGroup
 
-Used to group multiple items. use in conjunction with PinLabel to ensure good accessibility.
+Used to group slot items.
 
 <Reference
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
@@ -77,7 +81,7 @@ Used to group multiple items. use in conjunction with PinLabel to ensure good ac
 
 ### PinSlots
 
-Utility component that renders slot of the pin using a render function as child.
+Given the dynamic length of the pin, this utility component provides means to render slots of the pin using a render function as child.
 
 <Reference
 	props={[
@@ -85,28 +89,29 @@ Utility component that renders slot of the pin using a render function as child.
 			name: 'children',
 			type: 'function',
 			typeAdvanced:
-				'(type: { slot: number, value: string }, index: number ) => ReactNode',
-			defaultValue: 'false'
+				'(type: { slot: number, value: string }, index: number ) => ReactNode'
 		}
 	]}
 />
 
 ### PinSlot
 
-Used to render individual slot of the pin.
+Used to render individual slots, it should be used in conjunction with the slots component. A slot will conceal its content based on the root property `conceal`, this concealing only occurs when slot has an internal value.
+
+Clicking a slot will focus the input, therefore focus events should be attached to the input. The slot is primarily visual, and it provides `data-*` attributes enabling styling of the different states.
 
 <Reference
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
-		{ name: 'placeholder', type: 'string', defaultValue: '-' }
+		{ name: 'placeholder', type: 'string' }
 	]}
 	attrs={[
-		{ name: 'data-caret', description: 'has caret.' },
-		{ name: 'data-placeholder', description: 'has placeholder.' },
-		{ name: 'data-focused', description: 'focused.' },
-		{ name: 'data-disabled', description: 'disabled.' },
-		{ name: 'data-concealed', description: 'concealed.' },
-		{ name: 'data-end', description: 'is last slot.' },
-		{ name: 'data-start', description: 'is first slot.' }
+		{ name: 'data-caret', description: 'caret is shown' },
+		{ name: 'data-concealed', description: 'slot is concealed' },
+		{ name: 'data-disabled', description: 'slot is disabled' },
+		{ name: 'data-end', description: 'slot is last slot' },
+		{ name: 'data-focused', description: 'slot is focused' },
+		{ name: 'data-placeholder', description: 'placeholder is shown' },
+		{ name: 'data-start', description: 'slot is first slot' }
 	]}
 />
