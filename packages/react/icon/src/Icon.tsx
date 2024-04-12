@@ -3,18 +3,26 @@ import { forwardRef, type CoreProps } from '@klnjs/core'
 import { IconTitle } from './IconTitle'
 import { IconDescription } from './IconDescription'
 import { IconPath } from './IconPath'
+import { IconProvider } from './IconContext'
+import { useIcon } from './useIcon'
 
 export type IconProps = CoreProps<'svg'>
 
-export const Icon = forwardRef<'svg', IconProps>((props, forwardedRef) => (
-	<svg
-		ref={forwardedRef}
-		fill="currentColor"
-		stroke="none"
-		aria-hidden={true}
-		{...props}
-	/>
-))
+export const Icon = forwardRef<'svg', IconProps>((props, forwardedRef) => {
+	const icon = useIcon()
+
+	return (
+		<IconProvider value={icon}>
+			<svg
+				ref={forwardedRef}
+				fill="currentColor"
+				aria-labelledby={icon.labelId}
+				aria-describedby={icon.descriptionId}
+				{...props}
+			/>
+		</IconProvider>
+	)
+})
 
 export const createIcon = ({
 	title,
