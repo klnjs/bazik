@@ -1,5 +1,5 @@
 import { useState, useLayoutEffect } from 'react'
-import { useCallbackSaved } from '@klnjs/core'
+import { useCallbackRef } from '@klnjs/core'
 import type { AvatarStatus } from './AvatarTypes'
 
 export type UseAvatarOptions = {
@@ -9,7 +9,7 @@ export type UseAvatarOptions = {
 export const useAvatar = ({ onStatusChange }: UseAvatarOptions) => {
 	const [status, setStatus] = useState<AvatarStatus>('idle')
 
-	const onStatusChangeRef = useCallbackSaved(onStatusChange)
+	const onStatusChangeRef = useCallbackRef(onStatusChange)
 
 	useLayoutEffect(() => {
 		if (status !== 'idle') {

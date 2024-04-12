@@ -1,4 +1,9 @@
-import { chain, forwardRef, toData, type CoreProps } from '@klnjs/core'
+import {
+	forwardRef,
+	toData,
+	useChainHandler,
+	type CoreProps
+} from '@klnjs/core'
 import { usePinContext } from './PinContext'
 import { usePinConceal } from './usePinConceal'
 
@@ -41,7 +46,7 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 		const isHighlighted = isFocusWithin && isActive
 		const isCaret = isHighlighted && pin.length < length
 
-		const handlePointerDown = chain(onPointerDown, (event) => {
+		const handlePointerDown = useChainHandler(onPointerDown, (event) => {
 			event.preventDefault()
 			inputRef.current?.focus()
 		})

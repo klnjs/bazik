@@ -8,8 +8,8 @@ import {
 import {
 	poly,
 	forwardRef,
-	useMergeRefs,
 	toData,
+	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
 import { isRTL, isSet } from '@klnjs/assertion'
@@ -52,7 +52,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		forwardedRef
 	) => {
 		const ref = useRef<HTMLDivElement>(null)
-		const refCallback = useMergeRefs(ref, forwardedRef)
+		const refComposed = useRefComposed(ref, forwardedRef)
 
 		const {
 			disabled: disabledContext,
@@ -187,7 +187,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 
 		return (
 			<poly.div
-				ref={refCallback}
+				ref={refComposed}
 				role="button"
 				tabIndex={isTabbable ? 0 : -1}
 				data-day

@@ -1,7 +1,11 @@
 import { useId as useIdFromReact } from 'react'
 
-export const useId = (override?: string) => {
-	const id = useIdFromReact()
+/**
+ * A hook that generates a unique id or uses a predetermined one.
+ * Avoid id not being accessible when passed as a prop.
+ */
+export const useId = (id?: string) => {
+	const fallback = useIdFromReact()
 
-	return override ?? id
+	return id ?? fallback
 }

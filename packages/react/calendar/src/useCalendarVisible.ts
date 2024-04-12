@@ -1,5 +1,5 @@
 import { useState, useCallback, useLayoutEffect } from 'react'
-import { useFirstRender } from '@klnjs/core'
+import { useMounted } from '@klnjs/core'
 import { toEndOfMonth, toStartOfMonth } from './calendar-functions'
 import type { Date, DateRange, DurationLike } from './calendar-types'
 
@@ -23,7 +23,7 @@ export const useCalendarVisible = ({
 	calendar,
 	highlighted
 }: UseCalendarVisibleOptions) => {
-	const isFirstRender = useFirstRender()
+	const isMounted = useMounted()
 
 	const [visibleRange, setVisibleRange] = useState(() =>
 		createVisibleRange({ months, calendar, highlighted })
@@ -37,7 +37,7 @@ export const useCalendarVisible = ({
 	}, [])
 
 	useLayoutEffect(() => {
-		if (!isFirstRender) {
+		if (isMounted) {
 			setVisibleRange(
 				createVisibleRange({ months, calendar, highlighted })
 			)

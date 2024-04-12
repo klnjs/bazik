@@ -1,5 +1,5 @@
 import { FloatingPortal, FloatingFocusManager } from '@floating-ui/react'
-import { poly, forwardRef, useMergeRefs, type CoreProps } from '@klnjs/core'
+import { poly, forwardRef, useRefComposed, type CoreProps } from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverContentProps = CoreProps<'div'>
@@ -20,7 +20,7 @@ export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 			getFloatingProps
 		} = usePopoverContext()
 
-		const ref = useMergeRefs(refs.setFloating, forwardedRef)
+		const ref = useRefComposed(refs.setFloating, forwardedRef)
 		const closeOnFocusOut = dismiss?.onFocusOut
 
 		if (!mounted) {
