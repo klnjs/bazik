@@ -29,8 +29,7 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@klnjs/assertion": "workspace:*",
-		"clsx": "2.1.0"
+		"@klnjs/assertion": "workspace:*"
 	},
 	"devDependencies": {
 		"@klnjs/builder": "workspace:*",

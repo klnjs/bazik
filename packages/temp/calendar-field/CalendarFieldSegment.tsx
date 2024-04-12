@@ -77,7 +77,7 @@ export const CalendarFieldSegment = forwardRef<
 			Boolean(max && selection && isAfter(selection, max))
 
 		const ref = useRef<HTMLDivElement>(null)
-		const refCallback = useMergeRefs(
+		const refComposed = useMergeRefs(
 			ref,
 			isHighlighted ? highlightedSegmentRef : undefined,
 			forwardedRef
@@ -217,7 +217,7 @@ export const CalendarFieldSegment = forwardRef<
 
 		return (
 			<poly.div
-				ref={refCallback}
+				ref={refComposed}
 				role="spinbutton"
 				inputMode="numeric"
 				autoCorrect="off"

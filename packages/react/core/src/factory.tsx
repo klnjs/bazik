@@ -9,55 +9,35 @@ import {
 	cloneElement,
 	isValidElement,
 	Children,
-	type ElementType,
-	type ComponentProps,
-	type PropsWithChildren,
-	type ForwardRefExoticComponent
+	type ElementType
 } from 'react'
-import { mergeRefs } from './useMergeRefs'
-import { mergeProps } from './mergeProps'
-import type { Assign, Pretty } from './types'
-
-export type AsChildProps = {
-	asChild?: boolean
-}
-
-export type AsChildComponentProps<E extends ElementType> = ComponentProps<E> &
-	AsChildProps
-
-export type AsChildForwardRefComponent<E extends ElementType> =
-	ForwardRefExoticComponent<AsChildComponentProps<E>>
-
-export type CoreProps<
-	E extends ElementType,
-	P extends object = object
-> = Pretty<Assign<AsChildComponentProps<E>, P>>
+import { composeRefs } from './useRefComposed'
+import { composeProps } from './usePropsComposed'
+import type { AsChildProps, AsChildForwardRefComponent } from './types'
 
 const withAsChild = (Component: ElementType) => {
-	const Comp = forwardRef<unknown, PropsWithChildren<AsChildProps>>(
-		(props, ref) => {
-			const { asChild, children, ...otherProps } = props
+	const Comp = forwardRef<unknown, AsChildProps>((props, ref) => {
+		const { asChild, children, ...otherProps } = props
 
-			if (!asChild) {
-				return (
-					<Component ref={ref} {...otherProps}>
-						{children}
-					</Component>
-				)
-			}
-
-			const child = Children.only(children)
-
-			return isValidElement(child)
-				? cloneElement(child, {
-						ref: ref
-							? mergeRefs(ref, (child as any).ref)
-							: (child as any).ref,
-						...mergeProps(otherProps, child.props)
-					})
-				: null
+		if (!asChild) {
+			return (
+				<Component ref={ref} {...otherProps}>
+					{children}
+				</Component>
+			)
 		}
-	)
+
+		const child = Children.only(children)
+
+		return isValidElement(child)
+			? cloneElement(child, {
+					ref: ref
+						? composeRefs(ref, (child as any).ref)
+						: (child as any).ref,
+					...composeProps(otherProps, child.props)
+				})
+			: null
+	})
 
 	// @ts-expect-error - it exists
 	Comp.displayName = Component.displayName || Component.name
@@ -73,13 +53,11 @@ const jsx = () => {
 			return withAsChild(argArray[0])
 		},
 		get(_, element) {
-			const asElement = element as ElementType
-
-			if (!cache.has(asElement)) {
-				cache.set(asElement, withAsChild(asElement))
+			if (!cache.has(element)) {
+				cache.set(element, withAsChild(element as ElementType))
 			}
 
-			return cache.get(asElement)
+			return cache.get(element)
 		}
 	}) as unknown as {
 		[E in keyof JSX.IntrinsicElements]: AsChildForwardRefComponent<E>

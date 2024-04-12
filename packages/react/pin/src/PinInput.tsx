@@ -7,10 +7,10 @@ import {
 } from 'react'
 import {
 	poly,
-	chain,
 	forwardRef,
 	useId,
-	useMergeRefs,
+	useRefComposed,
+	useChainHandler,
 	type CoreProps
 } from '@klnjs/core'
 import { usePinContext } from './PinContext'
@@ -46,7 +46,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 		} = usePinContext()
 
 		const id = useId(idProp)
-		const refCallback = useMergeRefs(inputRef, forwardedRef)
+		const refComposed = useRefComposed(inputRef, forwardedRef)
 
 		const pattern = usePinPattern(type)
 		const style: CSSProperties | undefined = hidden
@@ -58,21 +58,24 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 				}
 			: styleProp
 
-		const handleBlur = chain(onBlur, () => setFocusWithin(false))
+		const handleBlur = useChainHandler(onBlur, () => setFocusWithin(false))
 
-		const handleFocus = chain(onFocus, () => setFocusWithin(true))
+		const handleFocus = useChainHandler(onFocus, () => setFocusWithin(true))
 
-		const handlePaste = chain(onPaste, (event: ClipboardEvent) => {
-			const input = event.clipboardData.getData('text/plain')
-			const sanitized = [...input]
-				.filter((char) => pattern.test(char))
-				.slice(0, length)
-				.join('')
+		const handlePaste = useChainHandler(
+			onPaste,
+			(event: ClipboardEvent) => {
+				const input = event.clipboardData.getData('text/plain')
+				const sanitized = [...input]
+					.filter((char) => pattern.test(char))
+					.slice(0, length)
+					.join('')
 
-			setPin(sanitized)
-		})
+				setPin(sanitized)
+			}
+		)
 
-		const handleChange = chain(
+		const handleChange = useChainHandler(
 			onChange,
 			(event: ChangeEvent<HTMLInputElement>) => {
 				if (pattern.test(event.target.value)) {
@@ -81,7 +84,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 			}
 		)
 
-		const handleKeyDown = chain(
+		const handleKeyDown = useChainHandler(
 			onKeyDown,
 			(event: KeyboardEvent<HTMLInputElement>) => {
 				if (
@@ -105,7 +108,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 		return (
 			<poly.input
 				id={id}
-				ref={refCallback}
+				ref={refComposed}
 				type="text"
 				value={pin}
 				style={style}

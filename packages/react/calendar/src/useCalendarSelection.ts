@@ -5,7 +5,7 @@ import {
 	useLayoutEffect,
 	type SetStateAction
 } from 'react'
-import { useStateControllable, useFirstRender } from '@klnjs/core'
+import { useStateControllable, useMounted } from '@klnjs/core'
 import { isSet, isArray } from '@klnjs/assertion'
 import { compare } from './calendar-functions'
 import type { Date, DateRange } from './calendar-types'
@@ -39,7 +39,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	value,
 	onChange
 }: UseCalendarSelectionOptions<S>) => {
-	const isFirstRender = useFirstRender()
+	const isMounted = useMounted()
 
 	const [transient, setTransient] = useState<Date>()
 
@@ -106,7 +106,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	)
 
 	useLayoutEffect(() => {
-		if (!isFirstRender) {
+		if (isMounted) {
 			setSelectionMode(behaviour ?? 'one')
 			setSelection(null)
 		}

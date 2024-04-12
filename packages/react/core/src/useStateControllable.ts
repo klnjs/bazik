@@ -6,7 +6,7 @@ import {
 	type Dispatch,
 	type SetStateAction
 } from 'react'
-import { useCallbackSaved } from './useCallbackSaved'
+import { useCallbackRef } from './useCallbackRef'
 
 export type UseStateControllableOptions<T> = {
 	value?: T
@@ -14,6 +14,10 @@ export type UseStateControllableOptions<T> = {
 	onChange?: (value: SetStateAction<T>) => void
 }
 
+/**
+ * A hook that simulates react controlled and uncontrolled state.
+ * Create components that support controlled and uncontrolled state.
+ */
 export const useStateControllable = <T>({
 	value: valueProp,
 	defaultValue,
@@ -21,7 +25,7 @@ export const useStateControllable = <T>({
 }: UseStateControllableOptions<T>) => {
 	const isControlled = valueProp !== undefined
 	const isControlledRef = useRef(isControlled)
-	const onChangeRef = useCallbackSaved(onChange)
+	const onChangeRef = useCallbackRef(onChange)
 
 	const [valueState, setValueState] = useState(defaultValue as T)
 	const value = isControlled ? (valueProp as T) : valueState
@@ -48,8 +52,6 @@ export const useStateControllable = <T>({
 		}
 	}, [isControlled])
 
-	// Would be nice to be able to tell eslint that these values
-	// are reference safe, when using this hook.
-	// Issue: https://github.com/facebook/react/issues/16873
+	// https://github.com/facebook/react/issues/16873
 	return [value, setValue] as [T, Dispatch<SetStateAction<T>>]
 }

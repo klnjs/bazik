@@ -1,5 +1,5 @@
 import { useRef, useMemo, useState, type SetStateAction } from 'react'
-import { useStateControllable, usePreviousValue } from '@klnjs/core'
+import { useStateControllable, usePrevious } from '@klnjs/core'
 import { isRecord } from '@klnjs/assertion'
 import type { PinType, PinConceal, PinDirection } from './PinTypes'
 
@@ -34,7 +34,7 @@ export const usePin = ({
 		onChange: onChange as (value: SetStateAction<string>) => void
 	})
 
-	const pinBefore = usePreviousValue(pin)
+	const pinBefore = usePrevious(pin)
 
 	const conceal = useMemo(
 		() => ({
