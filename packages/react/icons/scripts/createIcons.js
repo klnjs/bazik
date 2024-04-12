@@ -1,11 +1,7 @@
 import p from 'path'
 import fs from 'fs/promises'
-import url from 'url'
-import mdi from '@mdi/js'
+import crypto from 'crypto'
 import prettier from 'prettier'
-
-const pathToThisFile = url.fileURLToPath(import.meta.url)
-const pathToThisFileDir = p.dirname(pathToThisFile)
 
 const template = ({ title, viewBox, path }) => `
 	import { createIcon } from '@klnjs/icon'
@@ -17,62 +13,98 @@ const template = ({ title, viewBox, path }) => `
 	})
 `
 
-const writeIconsToDisk = async (icons, { root, exports, prettierConfig }) => {
-	await fs.rm(root, { recursive: true, force: true })
-	await fs.mkdir(root, { recursive: true })
+const readCache = async (root) => {
+	const path = p.resolve(root, '.iconscache')
 
-	for await (const icon of icons) {
-		const [name, path] = icon
+	try {
+		const file = await fs.readFile(path, { encoding: 'utf-8' })
 
-		if (name !== '__esModule') {
-			const nameWithoutPrefix = name.slice(3)
-			const target = p.resolve(root, `${nameWithoutPrefix}.ts`)
-			const source = await prettier.format(
-				template({
-					title: nameWithoutPrefix,
-					viewBox: '0 0 24 24',
-					path
-				}),
-				prettierConfig
-			)
-
-			exports.push(nameWithoutPrefix)
-			await fs.writeFile(target, source, 'utf8')
-		}
+		return JSON.parse(file)
+	} catch {
+		return []
 	}
 }
 
-const writeIndexToDisk = async (icons, { root }) => {
-	const target = p.resolve(root, 'index.ts')
-	const source = icons
-		.map((name) => `export { default as ${name} } from './src/${name}'`)
-		.join('\n')
+const writeCache = async (root, { icons }) => {
+	const path = p.resolve(root, '.iconscache')
+	const content = JSON.stringify(icons, (key, value) =>
+		key === 'cached' || key === 'source' ? undefined : value
+	)
 
-	await fs.writeFile(target, source, 'utf8')
+	await fs.writeFile(path, content, 'utf8')
 }
 
-const generate = async () => {
-	try {
-		const root = p.resolve(pathToThisFileDir, '..')
-		const components = p.resolve(root, 'src')
-		const icons = Object.entries(mdi)
-		const exports = []
-		const prettierConfig = {
-			parser: 'typescript',
-			...(await prettier.resolveConfig(pathToThisFile))
-		}
+const createIcon = async ({ name, path, cache }) => {
+	const hash = crypto.createHash('sha256').update(path).digest('base64')
+	const cached = hash === cache.find((c) => c.name === name)?.hash
+	const source = template({
+		title: name,
+		viewBox: '0 0 24 24',
+		path
+	})
 
-		await writeIconsToDisk(icons, {
-			root: components,
-			exports,
-			prettierConfig
+	return { name, source, hash, cached }
+}
+
+const createIcons = async ({ cache }) => {
+	const mdijs = await import('@mdi/js')
+	const entries = Object.entries(mdijs.default)
+	const icons = []
+
+	for await (const entry of entries) {
+		const name = entry[0].slice(3)
+		const path = entry[1]
+		const icon = await createIcon({
+			name,
+			path,
+			cache
 		})
 
-		await writeIndexToDisk(exports, { root })
-	} catch (err) {
-		console.log(err)
-		process.exit(1)
+		icons.push(icon)
+	}
+
+	return icons
+}
+
+const writeIcons = async (root, { icons }) => {
+	await fs.mkdir(root, { recursive: true })
+
+	const prettierConfig = await prettier.resolveConfig(import.meta.dirname)
+
+	for await (const icon of icons) {
+		if (!icon.cached) {
+			const path = p.resolve(root, 'src', `${icon.name}.ts`)
+			const content = await prettier.format(icon.source, {
+				parser: 'typescript',
+				...prettierConfig
+			})
+
+			await fs.writeFile(path, content, 'utf8')
+		}
 	}
 }
 
-generate()
+const writeIndex = async (root, { icons }) => {
+	const path = p.resolve(root, 'index.ts')
+	const content = icons
+		.map(
+			(icon) =>
+				`export { default as ${icon.name} } from './src/${icon.name}'`
+		)
+		.join('\n')
+
+	await fs.writeFile(path, content, 'utf8')
+}
+
+try {
+	const root = p.resolve(import.meta.dirname, '..')
+	const cache = await readCache(root)
+	const icons = await createIcons({ cache })
+
+	await writeIcons(root, { icons })
+	await writeIndex(root, { icons })
+	await writeCache(root, { icons })
+} catch (err) {
+	console.log(err)
+	process.exit(1)
+}
