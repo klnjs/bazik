@@ -1,6 +1,6 @@
 import { Avatar, AvatarImage, AvatarFallback } from '@klnjs/avatar'
 import classes from './avatar.module.css'
-import src from './avatar.jpg'
+import src from './avatar.png'
 
 export default () => {
 	return (

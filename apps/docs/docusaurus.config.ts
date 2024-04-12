@@ -1,5 +1,7 @@
 import { themes as prismThemes } from 'prism-react-renderer'
 import type { Config } from '@docusaurus/types'
+import prismDark from './src/css/prism-dark'
+import prismLight from './src/css/prism-light'
 
 export default {
 	title: 'My Site',
@@ -69,8 +71,8 @@ export default {
 			copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`
 		},
 		prism: {
-			theme: prismThemes.github,
-			darkTheme: prismThemes.dracula,
+			theme: prismLight,
+			darkTheme: prismDark,
 			additionalLanguages: ['bash']
 		},
 		colorMode: {

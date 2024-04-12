@@ -6,7 +6,7 @@
 	height: 48px;
 	border-radius: 9999px;
 	overflow: hidden;
-	background: #00a652;
+	background: var(--ifm-color-primary);
 }
 
 .image {
