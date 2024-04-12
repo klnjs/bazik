@@ -40,11 +40,11 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 		const isEnd = slot === length
 		const isStart = slot === 1
 		const isActive = slot === Math.min(length, pin.length + 1)
+		const isFocused = isFocusWithin && isActive
 		const isDisabled = disabled
 		const isConcealed = content === symbol
 		const isPlaceholder = content === placeholder && placeholder !== ''
-		const isHighlighted = isFocusWithin && isActive
-		const isCaret = isHighlighted && pin.length < length
+		const isCaret = isFocused && pin.length < length
 
 		const handlePointerDown = useChainHandler(onPointerDown, (event) => {
 			event.preventDefault()
@@ -57,10 +57,10 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 				data-end={toData(isEnd)}
 				data-start={toData(isStart)}
 				data-caret={toData(isCaret)}
+				data-focused={toData(isFocused)}
 				data-disabled={toData(isDisabled)}
 				data-concealed={toData(isConcealed)}
 				data-placeholder={toData(isPlaceholder)}
-				data-highlighted={toData(isHighlighted)}
 				onPointerDown={handlePointerDown}
 				{...otherProps}
 			>

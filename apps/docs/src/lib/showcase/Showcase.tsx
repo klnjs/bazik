@@ -23,14 +23,14 @@ export const Showcase = ({ name }: ShowcaseProps) => {
 				<Element />
 			</div>
 			<Tabs>
-				<TabItem value="code" label="index.tsx" className="hello">
+				<TabItem value="code" label="index.tsx">
 					<Snippet language="jsx" className={classes.snippet}>
 						{code}
 					</Snippet>
 				</TabItem>
 				<TabItem
 					value="styles"
-					label="index.css"
+					label="index.module.css"
 					className={classes.tab}
 				>
 					<Snippet language="css" className={classes.snippet}>

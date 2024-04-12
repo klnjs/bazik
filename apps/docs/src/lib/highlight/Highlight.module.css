@@ -1,6 +1,5 @@
 .highlight {
 	border-radius: var(--ifm-global-radius);
 	padding: 0 0.4rem;
-	font-weight: bold;
 	color: var(--ifm-color-primary);
 }
