@@ -1,8 +1,7 @@
 import { useRef } from 'react'
 
 /**
- * A hook that returns if a component is mounted.
- * Avoid re-renders and executing effects on first render.
+ * A hook to find out if a component is mounted.
  */
 export const useMounted = () => {
 	const mounted = useRef(false)

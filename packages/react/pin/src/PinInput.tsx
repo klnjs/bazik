@@ -1,5 +1,4 @@
 import {
-	useLayoutEffect,
 	type ChangeEvent,
 	type KeyboardEvent,
 	type ClipboardEvent,
@@ -8,7 +7,7 @@ import {
 import {
 	poly,
 	forwardRef,
-	useId,
+	useIdAndCallback,
 	useRefComposed,
 	useChainHandler,
 	type CoreProps
@@ -45,7 +44,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 			setFocusWithin
 		} = usePinContext()
 
-		const id = useId(idProp)
+		const id = useIdAndCallback(idProp, setInputId)
 		const refComposed = useRefComposed(inputRef, forwardedRef)
 
 		const pattern = usePinPattern(type)
@@ -96,14 +95,6 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 				}
 			}
 		)
-
-		useLayoutEffect(() => {
-			setInputId(id)
-
-			return () => {
-				setInputId(undefined)
-			}
-		}, [id, setInputId])
 
 		return (
 			<poly.input

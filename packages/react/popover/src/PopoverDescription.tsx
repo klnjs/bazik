@@ -1,22 +1,13 @@
-import { useLayoutEffect } from 'react'
-import { useId, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, forwardRef, useIdAndCallback, type CoreProps } from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverDescriptionProps = CoreProps<'p'>
 
 export const PopoverDescription = forwardRef<'p', PopoverDescriptionProps>(
 	({ id: idProp, ...otherProps }, ref) => {
-		const id = useId(idProp)
 		const { setDescriptionId } = usePopoverContext()
+		const id = useIdAndCallback(idProp, setDescriptionId)
 
-		useLayoutEffect(() => {
-			setDescriptionId(id)
-
-			return () => {
-				setDescriptionId(undefined)
-			}
-		}, [id, setDescriptionId])
-
-		return <p id={id} ref={ref} {...otherProps} />
+		return <poly.p id={id} ref={ref} {...otherProps} />
 	}
 )

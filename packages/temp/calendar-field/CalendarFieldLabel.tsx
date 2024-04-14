@@ -1,4 +1,3 @@
-import { useLayoutEffect } from 'react'
 import { poly, forwardRef, useId, type CoreProps } from '../core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 
@@ -8,15 +7,7 @@ export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
 	({ id: idProp, ...otherProps }, forwardedRef) => {
 		const { highlightedSegmentRef, labelId, setLabelId } =
 			useCalendarFieldContext()
-		const id = useId(idProp)
-
-		useLayoutEffect(() => {
-			setLabelId(id)
-
-			return () => {
-				setLabelId(undefined)
-			}
-		}, [id, setLabelId])
+			const id = useIdAndCallback(idProp, setLabelId)
 
 		return (
 			<poly.label

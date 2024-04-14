@@ -1,8 +1,7 @@
 import { useRef } from 'react'
 
 /**
- * A hook that returns the previous value.
- * Avoid re-renders and effect execution when relying on a previous value.
+ * A hook that returns the value from the previous render.
  */
 export const usePrevious = <T>(value: T) => {
 	const ref = useRef<T>(value)

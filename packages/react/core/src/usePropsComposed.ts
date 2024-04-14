@@ -50,8 +50,7 @@ export function composeProps<T extends Props[]>(...props: T) {
 }
 
 /**
- * A hook that composes multiple props objects.
- * Compose multiple props objects into a single props object.
+ * A hook that composes multiple props into a single props object.
  */
 export const usePropsComposed = (...props: Props[]) =>
 	// eslint-disable-next-line react-hooks/exhaustive-deps

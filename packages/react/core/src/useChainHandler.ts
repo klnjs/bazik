@@ -20,8 +20,7 @@ export const createChainHandler =
 	}
 
 /**
- * A hook that chains event handlers.
- * Avoid having event handlers conflict when passed as props.
+ * A hook that composes multiple event handlers into a single handler.
  */
 export const useChainHandler = <E extends SyntheticEvent>(
 	...chainables: ChainableEventHandler<E>[]

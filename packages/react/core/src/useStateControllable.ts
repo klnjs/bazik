@@ -15,8 +15,7 @@ export type UseStateControllableOptions<T> = {
 }
 
 /**
- * A hook that simulates react controlled and uncontrolled state.
- * Create components that support controlled and uncontrolled state.
+ * A hook that implements controlled and uncontrolled state.
  */
 export const useStateControllable = <T>({
 	value: valueProp,

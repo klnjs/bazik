@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, type DependencyList } from 'react'
 
 /**
  * A hook that converts a callback to a ref.
- * Avoid triggering re-renders and effects when passed as a prop or dependency.
  */
 export function useCallbackRef<T extends (...args: any[]) => any>(
 	callback: T | undefined,
