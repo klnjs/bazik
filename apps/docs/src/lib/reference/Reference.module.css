@@ -10,6 +10,10 @@
 	color: var(--kln-code-color);
 }
 
+.prop {
+	color: var(--ifm-color-primary);
+}
+
 .prop,
 .type {
 	width: 32%;

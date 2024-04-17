@@ -42,7 +42,7 @@ export const Reference = ({
 						({ name, type, typeAdvanced, defaultValue = '-' }) => (
 							<TableRow>
 								<TableCell className={classes.prop}>
-									<Highlight>{name}</Highlight>
+									{name}
 								</TableCell>
 								<TableCell className={classes.type}>
 									{type}
@@ -72,7 +72,7 @@ export const Reference = ({
 					{attrs.map(({ name, description }) => (
 						<TableRow>
 							<TableCell className={classes.prop}>
-								<Highlight>{name}</Highlight>
+								{name}
 							</TableCell>
 							<TableCell>{description}</TableCell>
 						</TableRow>
