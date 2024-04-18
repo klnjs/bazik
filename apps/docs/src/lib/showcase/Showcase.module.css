@@ -32,5 +32,5 @@
 	padding-block: 100px;
 	align-items: center;
 	justify-content: center;
-	background: #85cff9;
+	background: var(--kln-brand-gradient);
 }

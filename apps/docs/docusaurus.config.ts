@@ -36,20 +36,18 @@ export default {
 			'@docusaurus/plugin-content-docs',
 			{
 				path: 'src/docs',
-				sidebarPath: './sidebars.ts',
-				sidebarCollapsible: false
+				sidebarPath: './sidebars.ts'
 			}
 		],
 		['@docusaurus/plugin-content-pages', { path: 'src/pages' }]
 	],
 
 	themeConfig: {
-		image: 'img/docusaurus-social-card.jpg',
 		navbar: {
-			title: 'My Site',
+			title: 'Basik',
 			logo: {
-				alt: 'My Site Logo',
-				src: 'img/logo.svg'
+				alt: 'Basik logo',
+				src: 'img/logo-glyph.svg'
 			},
 			items: [
 				{
@@ -68,7 +66,7 @@ export default {
 		},
 		footer: {
 			style: 'dark',
-			copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`
+			copyright: `Copyright © ${new Date().getFullYear()} Basik, Inc. Built with Docusaurus.`
 		},
 		prism: {
 			theme: prismLight,

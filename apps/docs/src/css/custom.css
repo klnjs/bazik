@@ -3,52 +3,39 @@
 :root {
 	--ifm-font-family-base: 'Open Sans';
 	--ifm-font-size-base: 85%;
-	--ifm-global-spacing: 2rem;
 	--ifm-container-width: 900px;
 	--ifm-container-width-xl: 900px;
+	--kln-brand-gradient: linear-gradient(
+		180deg,
+		#57ec99 0%,
+		#1371ef 33%,
+		#fc1cd5 66%,
+		#fccc05 100%
+	);
 }
 
 :root[data-theme='light'] {
-	--ifm-color-primary: #d73a49;
-	--ifm-color-primary-dark: #cc2939;
-	--ifm-color-primary-darker: #c12736;
-	--ifm-color-primary-darkest: #9f202c;
-	--ifm-color-primary-light: #dc515e;
-	--ifm-color-primary-lighter: #de5c68;
-	--ifm-color-primary-lightest: #e57e88;
+	--ifm-color-primary: #1371ef;
+	--ifm-color-primary-dark: #0f65d9;
+	--ifm-color-primary-darker: #0e60cd;
+	--ifm-color-primary-darkest: #0b4fa9;
+	--ifm-color-primary-light: #2b80f1;
+	--ifm-color-primary-lighter: #3787f1;
+	--ifm-color-primary-lightest: #5b9df4;
 	--kln-code-color: #393a34;
 	--kln-code-background-color: #f6f8fa;
 }
 
 :root[data-theme='dark'] {
-	--ifm-color-primary: #00a652;
-	--ifm-color-primary-dark: #00954a;
-	--ifm-color-primary-darker: #008d46;
-	--ifm-color-primary-darkest: #007439;
-	--ifm-color-primary-light: #00b75a;
-	--ifm-color-primary-lighter: #00bf5e;
-	--ifm-color-primary-lightest: #00d86b;
+	--ifm-color-primary: #57ec99;
+	--ifm-color-primary-dark: #3ae987;
+	--ifm-color-primary-darker: #2be77f;
+	--ifm-color-primary-darkest: #17cb67;
+	--ifm-color-primary-light: #74efab;
+	--ifm-color-primary-lighter: #83f1b3;
+	--ifm-color-primary-lightest: #aef6ce;
 	--kln-code-color: #f8f8f2;
 	--kln-code-background-color: #282a36;
-}
-
-.menu__list .menu__list .menu__link {
-	color: var(--ifm-font-color-base);
-	font-weight: normal;
-	padding: 8px 12px;
-	border-inline-start: 4px solid transparent;
-}
-
-.menu__list .menu__link.menu__link--active {
-	border-inline-start-color: var(--ifm-menu-color-active);
-}
-
-.menu__list .menu__list-item-collapsible {
-	pointer-events: none;
-}
-
-.menu__list .menu__list-item-collapsible .menu__link {
-	text-transform: capitalize;
 }
 
 .navbar__github-link::before {
@@ -62,6 +49,6 @@
 		var(--ifm-transition-timing-default);
 }
 
-.navbar__github-link:hover::before {
-	background-color: var(--ifm-navbar-link-hover-color);
+.menu__list .menu__list-item-collapsible .menu__link {
+	text-transform: capitalize;
 }
