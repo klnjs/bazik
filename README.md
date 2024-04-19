@@ -1,2 +1,2 @@
-# Freya
+# Bazik
 React component library

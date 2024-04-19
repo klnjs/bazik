@@ -1,12 +1,12 @@
 {
-  "name": "@klnjs/freya",
+  "name": "@klnjs/bazik",
   "type": "module",
   "author": "Rune Klein (@rnkln)",
   "version": "0.0.1",
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/klnjs/freya.git"
+		"url": "git+ssh://git@github.com/klnjs/bazik.git"
 	},
 	"packageManager": "bun@1.1.2",
   "workspaces": [

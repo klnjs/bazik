@@ -12,7 +12,7 @@ export default {
 	baseUrl: '/',
 
 	organizationName: 'klnjs', // Usually your GitHub org/user name.
-	projectName: 'freya', // Usually your repo name.
+	projectName: 'bazik', // Usually your repo name.
 
 	onBrokenLinks: 'throw',
 	onBrokenMarkdownLinks: 'warn',
@@ -44,9 +44,9 @@ export default {
 
 	themeConfig: {
 		navbar: {
-			title: 'Basik',
+			title: 'Bazik',
 			logo: {
-				alt: 'Basik logo',
+				alt: 'Bazik logo',
 				src: 'img/logo-glyph.svg'
 			},
 			items: [
@@ -57,7 +57,7 @@ export default {
 					position: 'right'
 				},
 				{
-					href: 'https://github.com/klnjs/freya',
+					href: 'https://github.com/klnjs/bazik',
 					position: 'right',
 					className: 'navbar__github-link',
 					'aria-label': 'GitHub repository'
@@ -66,7 +66,7 @@ export default {
 		},
 		footer: {
 			style: 'dark',
-			copyright: `Copyright © ${new Date().getFullYear()} Basik, Inc. Built with Docusaurus.`
+			copyright: `Copyright © ${new Date().getFullYear()} Bazik, Inc. Built with Docusaurus.`
 		},
 		prism: {
 			theme: prismLight,
