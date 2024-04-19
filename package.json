@@ -18,6 +18,7 @@
   "scripts": {
 		"dev": "turbo dev",
     "build": "turbo build",
+		"deploy": "turbo deploy",
     "eslint": "turbo eslint",
     "prettier": "turbo prettier",
     "typescript": "turbo typescript"
