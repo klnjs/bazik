@@ -1,4 +1,3 @@
-import { themes as prismThemes } from 'prism-react-renderer'
 import type { Config } from '@docusaurus/types'
 import prismDark from './src/css/prism-dark'
 import prismLight from './src/css/prism-light'
@@ -10,9 +9,10 @@ export default {
 
 	url: 'https://your-docusaurus-site.example.com',
 	baseUrl: '/',
+	trailingSlash: false,
 
-	organizationName: 'klnjs', // Usually your GitHub org/user name.
-	projectName: 'bazik', // Usually your repo name.
+	organizationName: 'klnjs',
+	projectName: 'bazik',
 
 	onBrokenLinks: 'throw',
 	onBrokenMarkdownLinks: 'warn',
