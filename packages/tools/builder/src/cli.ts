@@ -16,5 +16,6 @@ await mkdir(dist, { recursive: true })
 await Bun.build({
 	entrypoints: [Bun.resolveSync('./index.ts', cwd)],
 	outdir: dist,
+	target: 'browser',
 	external: externals
 })
