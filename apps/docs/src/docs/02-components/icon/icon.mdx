@@ -1,7 +1,10 @@
-import { Showcase } from '@site/src/lib/showcase'
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
 import { Reference } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Icon from './icon'
+import source from '!!raw-loader!./icon.tsx'
+import styles from '!!raw-loader!./icon.module.css'
 
 # Icon
 
@@ -9,7 +12,15 @@ An element for creating icon components.
 
 ## Showcase
 
-<Showcase name="icon" />
+<Showcase
+	name="icon"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Icon />
+</Showcase>
 
 ## Features
 

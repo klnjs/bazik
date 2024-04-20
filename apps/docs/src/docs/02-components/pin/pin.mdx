@@ -1,7 +1,10 @@
-import { Showcase } from '@site/src/lib/showcase'
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
 import { Reference } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Pin from './pin'
+import source from '!!raw-loader!./pin.tsx'
+import styles from '!!raw-loader!./pin.module.css'
 
 # Pin
 
@@ -9,7 +12,15 @@ An input for typing pin codes / one time codes.
 
 ## Showcase
 
-<Showcase name="pin" />
+<Showcase
+	name="pin"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Pin />
+</Showcase>
 
 ## Features
 

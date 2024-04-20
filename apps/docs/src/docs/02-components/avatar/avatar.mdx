@@ -1,7 +1,10 @@
-import { Showcase } from '@site/src/lib/showcase'
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
 import { Reference } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Avatar from './avatar'
+import source from '!!raw-loader!./avatar.tsx'
+import styles from '!!raw-loader!./avatar.module.css'
 
 # Avatar
 
@@ -9,7 +12,15 @@ An element for representing a user.
 
 ## Showcase
 
-<Showcase name="avatar" />
+<Showcase
+	name="avatar"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Avatar />
+</Showcase>
 
 ## Features
 

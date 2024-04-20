@@ -1,11 +1,11 @@
-import CodeBlock, { Props as CodeBlockProps } from '@theme/CodeBlock'
+import CodeBlock from '@theme/CodeBlock'
 import clsx from 'clsx'
 import classes from './Snippet.module.css'
 
 export type SnippetProps = {
 	children: string
 	className?: string
-	language?: CodeBlockProps['language']
+	language?: string
 	identation?: number
 	showLineNumbers?: boolean
 }

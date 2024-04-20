@@ -1,7 +1,10 @@
-import { Showcase } from '@site/src/lib/showcase'
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
 import { Reference } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Spinner from './spinner'
+import source from '!!raw-loader!./spinner.tsx'
+import styles from '!!raw-loader!./spinner.module.css'
 
 # Spinner
 
@@ -9,7 +12,15 @@ An element for illustrating ongoing work / progress.
 
 ## Showcase
 
-<Showcase name="spinner" />
+<Showcase
+	name="spinner"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Spinner />
+</Showcase>
 
 ## Features
 
@@ -63,3 +74,4 @@ Used to render a thumb (circle section). It will automatically calculate its dim
 		{ name: 'easing', type: 'string' }
 	]}
 />
+./Spinner
