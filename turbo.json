@@ -6,6 +6,7 @@
       "persistent": true
     },
 		"build": {
+			"env": ["BUN_ENV"],
 			"outputs": ["dist/**/*"],
 			"dependsOn": ["^build"]
 		},

@@ -10,11 +10,15 @@
 	color: var(--kln-code-color);
 }
 
-.prop {
+.table {
+	width: 100%;
+}
+
+.table .prop {
+	width: 32%;
 	color: var(--ifm-color-primary);
 }
 
-.prop,
-.type {
+.table .type {
 	width: 32%;
 }

@@ -9,17 +9,17 @@
 	overflow: hidden;
 }
 
-.cell {
+.table .cell {
 	border: 0;
 	background: var(--kln-code-background-color);
 	color: var(--kln-code-color);
 }
 
-.th {
+.table .th {
 	text-align: start;
 	background: var(--ifm-background-surface-color);
 }
 
-.td {
+.table .td {
 	border-block-start: 1px solid var(--ifm-color-emphasis-300);
 }

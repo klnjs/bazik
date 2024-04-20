@@ -29,7 +29,7 @@ export const Reference = ({
 }: ReferenceProps) => (
 	<div {...otherProps}>
 		{props && (
-			<Table>
+			<Table className={classes.table}>
 				<thead>
 					<TableRow>
 						<TableCell as="th">Prop</TableCell>

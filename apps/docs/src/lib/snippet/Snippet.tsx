@@ -20,7 +20,7 @@ export const Snippet = ({
 	const indent = new Array(identation).fill(' ').join('')
 
 	return (
-		<div className={clsx(className, classes.snippet)}>
+		<div className={clsx(classes.snippet, className)}>
 			<CodeBlock language={language} showLineNumbers={showLineNumbers}>
 				{children.replace(/\t/g, indent)}
 			</CodeBlock>

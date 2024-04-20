@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
-// import { Popover, PopoverContent, PopoverTrigger } from '@klnjs/popover'
-// import classes from './Reference.module.css'
+import { Popover, PopoverContent, PopoverTrigger } from '@klnjs/popover'
+import classes from './Reference.module.css'
 
 export type ReferenceInfoProps = {
 	children: ReactNode
@@ -8,14 +8,11 @@ export type ReferenceInfoProps = {
 
 export const ReferenceInfo = ({ children }: ReferenceInfoProps) => {
 	return (
-		<div style={{ display: 'none' }}>
-			{children}
-			{/* 		<Popover offset={5}>
+		<Popover offset={5}>
 			<PopoverTrigger className={classes.trigger}>{'>'}</PopoverTrigger>
 			<PopoverContent className={classes.content}>
 				{children}
 			</PopoverContent>
-		</Popover> */}
-		</div>
+		</Popover>
 	)
 }
