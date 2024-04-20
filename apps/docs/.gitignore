@@ -11,6 +11,7 @@
 
 # Except these files
 !.gitignore
+!assets.d.ts
 !babel.config.js
 !docusaurus.config.ts
 !eslint.config.mjs
