@@ -1,6 +1,6 @@
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
-import { Reference } from '@site/src/lib/reference'
+import { ReferenceProps } from '@site/src/lib/reference'
 import { Showcase } from '@site/src/lib/showcase'
 import Avatar from './avatar'
 import source from '!!raw-loader!./avatar.tsx'
@@ -40,7 +40,7 @@ An element for representing a user.
 
 Contains all the parts of an avatar.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{
@@ -56,7 +56,7 @@ Contains all the parts of an avatar.
 
 Used to render the image. The image is hidden until it has loaded. Use the root property onStatusChange, to listen to the image status.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'src', type: 'string' }
@@ -67,7 +67,7 @@ Used to render the image. The image is hidden until it has loaded. Use the root 
 
 Used to render the fallback while the image is loading, or when an error occurs. To prevent flickering between image and fallback use the `delay` property, to delay rendering of the fallback whilst image is loading.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'delay', type: 'number' }

@@ -1,6 +1,6 @@
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
-import { Reference } from '@site/src/lib/reference'
+import { ReferenceProps, ReferenceAttrs } from '@site/src/lib/reference'
 import { Showcase } from '@site/src/lib/showcase'
 import Pin from './pin'
 import source from '!!raw-loader!./pin.tsx'
@@ -40,7 +40,7 @@ An input for typing pin codes / one time codes.
 
 Contains all the parts of an pin.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{
@@ -65,7 +65,7 @@ Contains all the parts of an pin.
 
 Used to render a hidden input which is accessible by keyboard. The input can be shown by setting `hidden` to false. It will auto complete one time codes by default, and handle sanitising of input based on root property `type`.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'autoComplete', type: 'string', defaultValue: 'one-time-code' },
@@ -77,16 +77,19 @@ Used to render a hidden input which is accessible by keyboard. The input can be 
 
 Used to optionally render an input label, and attach it to the input so it is accessible. If omitted, you should add a label to the input with property `aria-label`, so the component stays accessible.
 
-<Reference
+<ReferenceProps
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
-	attrs={[{ name: 'data-disabled', description: 'disabled' }]}
+/>
+
+<ReferenceAttrs
+	attrs={[{ name: 'data-disabled', description: 'pin is disabled' }]}
 />
 
 ### PinGroup
 
 Used to group slot items.
 
-<Reference
+<ReferenceProps
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
 />
 
@@ -94,7 +97,7 @@ Used to group slot items.
 
 Given the dynamic length of the pin, this utility component provides means to render slots of the pin using a render function as child.
 
-<Reference
+<ReferenceProps
 	props={[
 		{
 			name: 'children',
@@ -111,11 +114,15 @@ Used to render individual slots, it should be used in conjunction with the slots
 
 Clicking a slot will focus the input, therefore focus events should be attached to the input. The slot is primarily visual, and it provides `data-*` attributes enabling styling of the different states.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'placeholder', type: 'string' }
 	]}
+
+/>
+
+<ReferenceAttrs
 	attrs={[
 		{ name: 'data-caret', description: 'caret is shown' },
 		{ name: 'data-concealed', description: 'slot is concealed' },

@@ -1,8 +1,7 @@
-import { core, react, typescript } from '@klnjs/eslint-config'
+import { core, typescript } from '@klnjs/eslint-config'
 
 export default [
 	core,
-	react,
 	typescript,
 	{
 		ignores: ['dist']

@@ -15,7 +15,7 @@ export const useAvatar = ({ onStatusChange }: UseAvatarOptions) => {
 		if (status !== 'idle') {
 			onStatusChangeRef(status)
 		}
-	}, [status])
+	}, [status, onStatusChangeRef])
 
 	return {
 		status,

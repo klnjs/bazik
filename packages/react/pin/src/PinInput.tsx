@@ -1,8 +1,8 @@
-import {
-	type ChangeEvent,
-	type KeyboardEvent,
-	type ClipboardEvent,
-	type CSSProperties
+import type {
+	ChangeEvent,
+	KeyboardEvent,
+	ClipboardEvent,
+	CSSProperties
 } from 'react'
 import {
 	poly,

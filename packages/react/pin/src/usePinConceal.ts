@@ -24,21 +24,17 @@ export const usePinConceal = ({
 	useEffect(() => {
 		if (!enabled) {
 			setDisplay(value ?? placeholder)
+		} else if (!value) {
+			setDisplay(placeholder)
+		} else if (direction === 'backwards') {
+			setDisplay(symbol)
 		} else {
-			if (!value) {
-				setDisplay(placeholder)
-			} else if (direction === 'backwards') {
-				setDisplay(symbol ?? value)
-			} else if (enabled) {
-				setDisplay(value)
+			const timeout = setTimeout(() => setDisplay(symbol), delay)
 
-				if (symbol) {
-					const timeout = setTimeout(() => setDisplay(symbol), delay)
+			setDisplay(value)
 
-					return () => {
-						clearTimeout(timeout)
-					}
-				}
+			return () => {
+				clearTimeout(timeout)
 			}
 		}
 	}, [enabled, delay, direction, value, symbol, placeholder])

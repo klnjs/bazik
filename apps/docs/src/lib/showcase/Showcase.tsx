@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 import { Snippet } from '../snippet'
@@ -16,25 +16,23 @@ export type ShowcaseProps = {
 	children: ReactNode
 }
 
-export const Showcase = ({ name, sources, children }: ShowcaseProps) => {
-	return (
-		<div className={classes.showcase}>
-			<div className={classes.viewport}>{children}</div>
+export const Showcase = ({ name, sources, children }: ShowcaseProps) => (
+	<div className={classes.showcase} aria-label={name}>
+		<div className={classes.viewport}>{children}</div>
 
-			{sources && (
-				<Tabs>
-					{sources.map(({ file, content, language }) => (
-						<TabItem value={file} label={file}>
-							<Snippet
-								language={language}
-								className={classes.snippet}
-							>
-								{content}
-							</Snippet>
-						</TabItem>
-					))}
-				</Tabs>
-			)}
-		</div>
-	)
-}
+		{sources ? (
+			<Tabs>
+				{sources.map(({ file, content, language }) => (
+					<TabItem value={file} label={file}>
+						<Snippet
+							language={language}
+							className={classes.snippet}
+						>
+							{content}
+						</Snippet>
+					</TabItem>
+				))}
+			</Tabs>
+		) : null}
+	</div>
+)

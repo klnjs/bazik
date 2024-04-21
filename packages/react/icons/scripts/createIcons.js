@@ -52,11 +52,9 @@ const createIcons = async ({ cache }) => {
 	const icons = []
 
 	for await (const entry of entries) {
-		const name = entry[0].slice(3)
-		const path = entry[1]
 		const icon = await createIcon({
-			name,
-			path,
+			name: entry[0].slice(3),
+			path: entry[1],
 			cache
 		})
 
@@ -105,6 +103,7 @@ try {
 	await writeIndex(root, { icons })
 	await writeCache(root, { icons })
 } catch (err) {
+	// eslint-disable-next-line no-console
 	console.log(err)
 	process.exit(1)
 }

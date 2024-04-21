@@ -1,4 +1,8 @@
 #!/usr/bin/env bun
+
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { join } from 'path'
 import { mkdir, rm } from 'node:fs/promises'
 
