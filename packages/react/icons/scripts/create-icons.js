@@ -91,7 +91,7 @@ const writeIndex = async (root, { icons }) => {
 		)
 		.join('\n')
 
-	await fs.writeFile(path, content, 'utf8')
+	await fs.writeFile(path, content + '\n', 'utf8')
 }
 
 try {

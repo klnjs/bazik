@@ -10,6 +10,7 @@
 # Except these files
 !.gitignore
 !.iconscache
+!.prettierignore
 !eslint.config.js
 !index.ts
 !package.json
