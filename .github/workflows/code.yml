@@ -17,6 +17,9 @@ jobs:
     strategy:
       matrix:
         command: [eslint, prettier, typescript]
+    env:
+      BUN_ENV: production
+      TURBO_TELEMETRY_DISABLED: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,6 +31,9 @@ jobs:
 
       - name: Install
         run: bun install
+
+      - name: Build
+        run: bun build
 
       - name: Command
         run: bun run ${{ matrix.command }}

@@ -103,7 +103,6 @@ try {
 	await writeIndex(root, { icons })
 	await writeCache(root, { icons })
 } catch (err) {
-	// eslint-disable-next-line no-console
 	console.log(err)
 	process.exit(1)
 }
