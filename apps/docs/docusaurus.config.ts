@@ -8,7 +8,7 @@ export default {
 	favicon: 'img/favicon.ico',
 
 	url: 'https://klnjs.github.io',
-	baseUrl: '/',
+	baseUrl: '/bazik/',
 	trailingSlash: false,
 	projectName: 'bazik',
 	organizationName: 'klnjs',
