@@ -1,4 +1,4 @@
-name: Docs
+name: Deploy
 
 on:
   push:
@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy
+    name: Docs
     runs-on: ubuntu-latest
     permissions:
       contents: write
