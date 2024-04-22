@@ -28,8 +28,7 @@
 		}
 	},
 	"scripts": {
-		"build": "builder && bun run build:types",
-		"build:types": "tsc --showConfig --emitDeclarationOnly --noEmit false",
+		"build": "builder",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
