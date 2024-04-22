@@ -31,7 +31,7 @@
 		"build": "builder",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
-		"typescript": "tsc --project ./tsconfig.json"
+		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@klnjs/core": "workspace:*",
