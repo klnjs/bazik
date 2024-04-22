@@ -11,7 +11,6 @@
 	"scripts": {
 		"dev": "docusaurus start -p 3006 --no-open",
 		"build": "docusaurus build --out-dir ./dist",
-		"deploy": "docusaurus deploy",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
@@ -41,6 +40,6 @@
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",
-		"typescript": "5.4.4"
+		"typescript": "5.4.5"
 	}
 }
