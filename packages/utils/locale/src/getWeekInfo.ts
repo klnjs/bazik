@@ -1,18 +1,8 @@
-import { isProperty } from '@klnjs/assertion'
-
-export type WeekInfo = {
-	firstDay: number
-	minimalDays: number
-	weekend: number[]
-}
-
-export const getWeekInfo = (tag: string): WeekInfo => {
+export const getWeekInfo = (tag: string) => {
 	const locale = new Intl.Locale(tag)
 
-	if (isProperty(locale, 'getWeekInfo')) {
-		// @ts-expect-error getWeekInfo not in typescript yet
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-		return locale.getWeekInfo() as WeekInfo
+	if (locale.getWeekInfo !== undefined) {
+		return locale.getWeekInfo()
 	}
 
 	// 001 is the "UN M.49" code for "the world"
@@ -23,7 +13,7 @@ export const getWeekInfo = (tag: string): WeekInfo => {
 		firstDay: getFirstDay(region),
 		minimalDays: getMinimalDays(region),
 		weekend: getWeekend(region)
-	}
+	} as Intl.LocaleWeekInfo
 }
 
 export function getFirstDay(region: string): number {

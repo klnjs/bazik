@@ -1,2 +1,2 @@
-export * from './src/getCalendar'
+export * from './src/getCalendars'
 export * from './src/getWeekInfo'
