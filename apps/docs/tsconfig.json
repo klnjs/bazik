@@ -31,7 +31,7 @@
 	"include": [
 		"assets.d.ts",
 		"sidebars.ts",
-		"docusarus.config.ts",
+		"docusaurus.config.ts",
 		"./src/**/*.ts",
 		"./src/**/*.tsx"
 	]
