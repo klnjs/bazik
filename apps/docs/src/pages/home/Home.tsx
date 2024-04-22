@@ -5,9 +5,10 @@ import Heading from '@theme/Heading'
 
 export default () => {
 	const { siteConfig } = useDocusaurusContext()
+
 	return (
 		<Layout
-			title={`Hello from ${siteConfig.title}`}
+			title="Home"
 			description="Description will go into a meta tag in <head />"
 		>
 			<header>

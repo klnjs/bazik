@@ -3,8 +3,8 @@ import prismDark from './src/css/prism-dark'
 import prismLight from './src/css/prism-light'
 
 export default {
-	title: 'My Site',
-	tagline: 'Dinosaurs are cool',
+	title: 'Bazik',
+	tagline: 'Bazik is cool',
 	favicon: 'img/favicon.ico',
 
 	url: 'https://klnjs.github.io',
