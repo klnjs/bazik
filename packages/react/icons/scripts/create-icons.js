@@ -103,9 +103,9 @@ try {
 	const icons = await createIcons({ cache })
 	const prettierConfig = await prettier.resolveConfig(import.meta.dirname)
 
+	await writeCache(root, { icons })
 	await writeIcons(root, { icons, prettierConfig })
 	await writeIndex(root, { icons, prettierConfig })
-	await writeCache(root, { icons })
 } catch (err) {
 	console.log(err)
 	process.exit(1)
