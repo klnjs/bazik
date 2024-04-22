@@ -1,2 +1,0 @@
-# Bazik
-React component library
