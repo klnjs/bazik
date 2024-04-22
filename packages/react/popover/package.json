@@ -38,12 +38,12 @@
 		"@klnjs/assertion": "workspace:*"
 	},
 	"devDependencies": {
-		"@floating-ui/react": "0.26.9",
+		"@floating-ui/react": "0.26.12",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",
-		"@types/react": "18.2.74",
-		"@types/react-dom": "18.2.23",
+		"@types/react": "18.2.79",
+		"@types/react-dom": "18.2.25",
 		"eslint": "8.57.0",
 		"prettier": "3.2.5",
 		"typescript": "5.4.5"
