@@ -94,7 +94,7 @@ const writeIndex = async (root, { icons, prettierConfig }) => {
 		...prettierConfig
 	})
 
-	await fs.writeFile(path, content + '\n', 'utf8')
+	await fs.writeFile(path, content, 'utf8')
 }
 
 try {
