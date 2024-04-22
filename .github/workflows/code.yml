@@ -21,6 +21,7 @@ jobs:
         command: [eslint, prettier, typescript]
     env:
       BUN_ENV: production
+      FORCE_COLOR: 1
       TURBO_TELEMETRY_DISABLED: 1
     steps:
       - name: Checkout
