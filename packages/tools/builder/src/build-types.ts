@@ -19,7 +19,6 @@ export const buildTypes = async ({ root, dist }: BuildTypeOptions) => {
 		options: {
 			...configParsed.options,
 			outDir: dist,
-			noEmit: false,
 			declaration: true,
 			emitDeclarationOnly: true
 		}

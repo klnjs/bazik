@@ -2,6 +2,7 @@
 	"extends": "@klnjs/typescript-config/esnext",
 	"compilerOptions": {
 		"outDir": "dist",
+		"noEmit": false,
 		"noPropertyAccessFromIndexSignature": false
 	},
 	"exclude": ["dist", "node_modules"],
