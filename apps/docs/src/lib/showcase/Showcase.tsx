@@ -1,43 +1,38 @@
+import type { ReactNode } from 'react'
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem'
 import { Snippet } from '../snippet'
-import { useShowcase } from './useShowcase'
 import classes from './Showcase.module.css'
+
+export type ShowcaseSource = {
+	file: string
+	content: string
+	language: string
+}
 
 export type ShowcaseProps = {
 	name: string
+	sources?: ShowcaseSource[]
+	children: ReactNode
 }
 
-export const Showcase = ({ name }: ShowcaseProps) => {
-	const { loading, data } = useShowcase(name)
+export const Showcase = ({ name, sources, children }: ShowcaseProps) => (
+	<div className={classes.showcase} aria-label={name}>
+		<div className={classes.viewport}>{children}</div>
 
-	if (loading) {
-		return null
-	}
-
-	const { code, styles, element: Element } = data
-
-	return (
-		<div className={classes.showcase}>
-			<div className={classes.viewport}>
-				<Element />
-			</div>
+		{sources ? (
 			<Tabs>
-				<TabItem value="code" label="index.tsx">
-					<Snippet language="jsx" className={classes.snippet}>
-						{code}
-					</Snippet>
-				</TabItem>
-				<TabItem
-					value="styles"
-					label="index.module.css"
-					className={classes.tab}
-				>
-					<Snippet language="css" className={classes.snippet}>
-						{styles}
-					</Snippet>
-				</TabItem>
+				{sources.map(({ file, content, language }) => (
+					<TabItem value={file} label={file}>
+						<Snippet
+							language={language}
+							className={classes.snippet}
+						>
+							{content}
+						</Snippet>
+					</TabItem>
+				))}
 			</Tabs>
-		</div>
-	)
-}
+		) : null}
+	</div>
+)

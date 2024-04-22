@@ -22,8 +22,7 @@
 		}
 	},
 	"scripts": {
-		"build": "builder && bun run build:types",
-		"build:types": "tsc --emitDeclarationOnly --noEmit false",
+		"build": "builder",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
@@ -42,7 +41,7 @@
 		"@types/react-dom": "18.2.23",
 		"eslint": "8.57.0",
 		"prettier": "3.2.5",
-		"typescript": "5.4.3"
+		"typescript": "5.4.5"
 	},
 	"peerDependencies": {
 		"react": "18.2.0",

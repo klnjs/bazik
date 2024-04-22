@@ -1,7 +1,7 @@
-name: Deploy
+name: Code
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
@@ -11,10 +11,12 @@ concurrency:
 
 jobs:
   deploy:
-    name: Docs
+    name: Check
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        command: [build, eslint, prettier, typescript]
     env:
       BUN_ENV: production
       FORCE_COLOR: 1
@@ -31,12 +33,6 @@ jobs:
       - name: Install
         run: bun install
 
-      - name: Build
-        run: bun run build --filter='./apps/docs'
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          publish_dir: ./apps/docs/dist
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Command
+        run: bun run ${{ matrix.command }}
 

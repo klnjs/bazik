@@ -1,3 +1,16 @@
+.table {
+	width: 100%;
+}
+
+.table .prop {
+	width: 32%;
+	color: var(--ifm-color-primary);
+}
+
+.table .type {
+	width: 32%;
+}
+
 .trigger {
 	margin-inline-start: 8px;
 }
@@ -8,13 +21,4 @@
 	border-radius: var(--ifm-global-radius);
 	background: var(--kln-code-background-color);
 	color: var(--kln-code-color);
-}
-
-.prop {
-	color: var(--ifm-color-primary);
-}
-
-.prop,
-.type {
-	width: 32%;
 }

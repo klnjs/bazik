@@ -10,7 +10,7 @@
 		"directory": "packages/tools/builder"
 	},
 	"bin": {
-		"builder": "./src/cli.ts"
+		"builder": "./src/build.ts"
 	},
 	"scripts": {
 		"eslint": "eslint . --max-warnings 0",
@@ -23,6 +23,6 @@
 		"@klnjs/typescript-config": "2.0.0",
 		"eslint": "8.57.0",
 		"prettier": "3.2.5",
-		"typescript": "5.4.3"
+		"typescript": "5.4.5"
 	}
 }

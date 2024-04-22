@@ -52,11 +52,9 @@ const createIcons = async ({ cache }) => {
 	const icons = []
 
 	for await (const entry of entries) {
-		const name = entry[0].slice(3)
-		const path = entry[1]
 		const icon = await createIcon({
-			name,
-			path,
+			name: entry[0].slice(3),
+			path: entry[1],
 			cache
 		})
 
@@ -66,10 +64,8 @@ const createIcons = async ({ cache }) => {
 	return icons
 }
 
-const writeIcons = async (root, { icons }) => {
+const writeIcons = async (root, { icons, prettierConfig }) => {
 	await fs.mkdir(root, { recursive: true })
-
-	const prettierConfig = await prettier.resolveConfig(import.meta.dirname)
 
 	for await (const icon of icons) {
 		if (!icon.cached) {
@@ -84,14 +80,19 @@ const writeIcons = async (root, { icons }) => {
 	}
 }
 
-const writeIndex = async (root, { icons }) => {
+const writeIndex = async (root, { icons, prettierConfig }) => {
 	const path = p.resolve(root, 'index.ts')
-	const content = icons
+	const source = icons
 		.map(
 			(icon) =>
 				`export { default as ${icon.name} } from './src/${icon.name}'`
 		)
 		.join('\n')
+
+	const content = await prettier.format(source, {
+		parser: 'typescript',
+		...prettierConfig
+	})
 
 	await fs.writeFile(path, content, 'utf8')
 }
@@ -100,10 +101,11 @@ try {
 	const root = p.resolve(import.meta.dirname, '..')
 	const cache = await readCache(root)
 	const icons = await createIcons({ cache })
+	const prettierConfig = await prettier.resolveConfig(import.meta.dirname)
 
-	await writeIcons(root, { icons })
-	await writeIndex(root, { icons })
 	await writeCache(root, { icons })
+	await writeIcons(root, { icons, prettierConfig })
+	await writeIndex(root, { icons, prettierConfig })
 } catch (err) {
 	console.log(err)
 	process.exit(1)

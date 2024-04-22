@@ -5,6 +5,6 @@ export default [
 	react,
 	typescript,
 	{
-		ignores: ['dist']
+		ignores: ['src', 'dist', 'scripts']
 	}
 ]

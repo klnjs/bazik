@@ -1,7 +1,10 @@
-import { Showcase } from '@site/src/lib/showcase'
 import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
-import { Reference } from '@site/src/lib/reference'
+import { ReferenceProps } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Spinner from './spinner'
+import source from '!!raw-loader!./spinner.tsx'
+import styles from '!!raw-loader!./spinner.module.css'
 
 # Spinner
 
@@ -9,7 +12,15 @@ An element for illustrating ongoing work / progress.
 
 ## Showcase
 
-<Showcase name="spinner" />
+<Showcase
+	name="spinner"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Spinner />
+</Showcase>
 
 ## Features
 
@@ -28,7 +39,7 @@ An element for illustrating ongoing work / progress.
 
 Contains all the parts of an spinner.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'size', type: 'number', defaultValue: '24' },
@@ -40,7 +51,7 @@ Contains all the parts of an spinner.
 
 Used to optionally render a track (circle). It will automatically calculate its dimensions based on the `size` and `width` property of the root.
 
-<Reference
+<ReferenceProps
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
 />
 
@@ -48,7 +59,7 @@ Used to optionally render a track (circle). It will automatically calculate its 
 
 Used to render a thumb (circle section). It will automatically calculate its dimensions based on the `size` and `width` property of the root. It is possible to render multiple thumbs, and have them perform different animations based on the properties given.
 
-<Reference
+<ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'angle', type: 'number', defaultValue: '0' },
