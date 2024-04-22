@@ -1,24 +1,22 @@
 name: Code
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     name: Check
     runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     strategy:
       fail-fast: false
-      max-parallel: 3
       matrix:
-        command: [eslint, prettier, typescript]
+        command: [build, eslint, prettier, typescript]
     env:
       BUN_ENV: production
       FORCE_COLOR: 1

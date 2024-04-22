@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -14,8 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
     env:
       BUN_ENV: production
       FORCE_COLOR: 1
@@ -37,7 +36,6 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/master'
         with:
           publish_dir: ./apps/docs/dist
           github_token: ${{ secrets.GITHUB_TOKEN }}
