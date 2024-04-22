@@ -1,32 +1,18 @@
 {
-	"extends": "@docusaurus/tsconfig",
+	"extends": "@klnjs/typescript-config/esnext",
 	"compilerOptions": {
 		"baseUrl": ".",
-		"strictNullChecks": true
-	},
-	"references": [
-		{
-			"path": "../../packages/react/avatar"
-		},
-		{
-			"path": "../../packages/react/core"
-		},
-		{
-			"path": "../../packages/react/icon"
-		},
-		{
-			"path": "../../packages/react/icons"
-		},
-		{
-			"path": "../../packages/react/pin"
-		},
-		{
-			"path": "../../packages/react/popover"
-		},
-		{
-			"path": "../../packages/react/spinner"
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": false,
+		"types": [
+			"node",
+			"@docusaurus/module-type-aliases",
+			"@docusaurus/theme-classic"
+		],
+		"paths": {
+			"@site/*": ["./*"]
 		}
-	],
+	},
 	"exclude": ["dist", "node_modules"],
 	"include": [
 		"assets.d.ts",

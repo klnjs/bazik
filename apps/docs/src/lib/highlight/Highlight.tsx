@@ -1,4 +1,3 @@
-import React from 'react'
 import classes from './Highlight.module.css'
 
 export type HighlightProps = {
