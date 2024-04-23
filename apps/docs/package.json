@@ -5,7 +5,7 @@
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/klnjs/bazik.git",
+		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "apps/docs"
 	},
 	"scripts": {

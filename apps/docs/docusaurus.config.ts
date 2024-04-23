@@ -3,14 +3,14 @@ import prismDark from './src/css/prism-dark'
 import prismLight from './src/css/prism-light'
 
 export default {
-	title: 'Bazik',
-	tagline: 'Bazik is cool',
+	title: 'Basique',
+	tagline: 'Basique is cool',
 	favicon: 'img/favicon.ico',
 
 	url: 'https://klnjs.github.io',
-	baseUrl: '/bazik/',
+	baseUrl: '/basique/',
 	trailingSlash: false,
-	projectName: 'bazik',
+	projectName: 'basique',
 	organizationName: 'klnjs',
 	deploymentBranch: 'gh-pages',
 
@@ -44,9 +44,9 @@ export default {
 
 	themeConfig: {
 		navbar: {
-			title: 'Bazik',
+			title: 'Basique',
 			logo: {
-				alt: 'Bazik logo',
+				alt: 'Basique logo',
 				src: 'img/logo-glyph.svg'
 			},
 			items: [
@@ -57,7 +57,7 @@ export default {
 					position: 'right'
 				},
 				{
-					href: 'https://github.com/klnjs/bazik',
+					href: 'https://github.com/klnjs/basique',
 					position: 'right',
 					className: 'navbar__github-link',
 					'aria-label': 'GitHub repository'
@@ -66,7 +66,7 @@ export default {
 		},
 		footer: {
 			style: 'dark',
-			copyright: `Copyright © ${new Date().getFullYear()} Bazik, Inc. Built with Docusaurus.`
+			copyright: `Copyright © ${new Date().getFullYear()} Basique, Inc. Built with Docusaurus.`
 		},
 		prism: {
 			theme: prismLight,

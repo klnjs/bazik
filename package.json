@@ -1,12 +1,12 @@
 {
-  "name": "@klnjs/bazik",
+  "name": "@klnjs/basique",
   "type": "module",
   "author": "Rune Klein (@rnkln)",
   "version": "0.0.1",
 	"private": true,
 	"repository": {
 		"type": "git",
-		"url": "git+ssh://git@github.com/klnjs/bazik.git"
+		"url": "git+ssh://git@github.com/klnjs/basique.git"
 	},
 	"packageManager": "bun@1.1.2",
   "workspaces": [

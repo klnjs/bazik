@@ -1,2 +1,2 @@
-# Bazik
+# Basique
 React component library
