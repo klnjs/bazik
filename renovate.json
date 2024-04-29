@@ -1,4 +1,4 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["local>klnjs/frigg:renovate"]
+	"extends": ["local>klnjs/outils:renovate"]
 }
