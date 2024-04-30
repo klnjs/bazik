@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
-import { useMemo, type DependencyList } from 'react'
+import { useMemo, type Ref, type DependencyList } from 'react'
 import { isFunction, isRecord, isString } from '@klnjs/assertion'
+import { composeRefs } from './useRefComposed'
 
 type TupleTypes<T> =
 	{ [P in keyof T]: T[P] } extends Record<number, infer V>
@@ -12,13 +9,13 @@ type TupleTypes<T> =
 
 type NullToObject<T> = T extends null | undefined ? NonNullable<unknown> : T
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-	k: infer I
-) => void
+type UnionToIntersection<U> = (
+	U extends unknown ? (k: U) => void : never
+) extends (k: infer I) => void
 	? I
 	: never
 
-export type Props = Record<string, any>
+export type Props = Record<string, unknown>
 
 export function composeProps<T extends Props[]>(...props: T) {
 	const merged: Props = { ...props[0] }
@@ -31,12 +28,14 @@ export function composeProps<T extends Props[]>(...props: T) {
 			const a = merged[key]
 			const b = cursor[key]
 
-			if (key === 'style' && isRecord(a) && isRecord(b)) {
+			if (key === 'ref') {
+				merged[key] = composeRefs(a as Ref<unknown>, b as Ref<unknown>)
+			} else if (key === 'style' && isRecord(a) && isRecord(b)) {
 				merged[key] = { ...a, ...b }
 			} else if (key === 'className' && isString(a) && isString(b)) {
 				merged[key] = `${a} ${b}`
 			} else if (/^on[A-Z]/.test(key) && isFunction(a) && isFunction(b)) {
-				merged[key] = (...args: any[]) => {
+				merged[key] = (...args: unknown[]) => {
 					a(...args)
 					b(...args)
 				}

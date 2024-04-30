@@ -1,29 +1,29 @@
 {
-  "name": "@klnjs/basique",
-  "type": "module",
-  "author": "Rune Klein (@rnkln)",
-  "version": "0.0.1",
+	"name": "@klnjs/basique",
+	"type": "module",
+	"author": "Rune Klein (@rnkln)",
+	"version": "0.0.1",
 	"private": true,
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/basique.git"
 	},
 	"packageManager": "bun@1.1.2",
-  "workspaces": [
+	"workspaces": [
 		"apps/*",
-    "packages/react/*",
+		"packages/react/*",
 		"packages/tools/*",
 		"packages/utils/*"
-  ],
-  "scripts": {
+	],
+	"scripts": {
 		"dev": "turbo dev",
-    "build": "turbo build",
-    "eslint": "turbo eslint",
-    "prettier": "turbo prettier",
-    "typescript": "turbo typescript"
-  },
-  "devDependencies": {
+		"build": "turbo build",
+		"eslint": "turbo eslint",
+		"prettier": "turbo prettier",
+		"typescript": "turbo typescript"
+	},
+	"devDependencies": {
 		"@types/bun": "1.1.0",
-    "turbo": "1.13.2"
-  }
+		"turbo": "1.13.2"
+	}
 }

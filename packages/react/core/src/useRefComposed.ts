@@ -1,9 +1,8 @@
 import {
 	useCallback,
 	type Ref,
-	type MutableRefObject,
-	type DependencyList,
-	type RefCallback
+	type RefCallback,
+	type DependencyList
 } from 'react'
 import { isSet, isFunction } from '@klnjs/assertion'
 
@@ -13,11 +12,10 @@ export const composeRefs =
 	<T>(...refs: ComposableRef<T>[]): RefCallback<T> =>
 	(value: T) => {
 		refs.forEach((ref) => {
-			// prettier-ignore
 			if (isFunction(ref)) {
 				ref(value)
 			} else if (isSet(ref)) {
-				(ref as MutableRefObject<T>).current = value
+				ref.current = value
 			}
 		})
 	}

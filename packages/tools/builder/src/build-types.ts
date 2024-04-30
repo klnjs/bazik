@@ -14,13 +14,17 @@ export const buildTypes = async ({ root, dist }: BuildTypeOptions) => {
 		root
 	)
 
-	ts.createProgram({
-		rootNames: configParsed.fileNames,
-		options: {
-			...configParsed.options,
-			outDir: dist,
-			declaration: true,
-			emitDeclarationOnly: true
-		}
-	}).emit()
+	const result = ts
+		.createProgram({
+			rootNames: configParsed.fileNames,
+			options: {
+				...configParsed.options,
+				outDir: dist,
+				declaration: true,
+				emitDeclarationOnly: true
+			}
+		})
+		.emit()
+
+	console.log(result)
 }

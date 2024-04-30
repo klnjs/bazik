@@ -1,67 +1,56 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import {
-	forwardRef,
 	cloneElement,
 	isValidElement,
 	Children,
-	type ElementType
+	type ComponentType,
+	type FunctionComponent
 } from 'react'
-import { composeRefs } from './useRefComposed'
-import { composeProps } from './usePropsComposed'
-import type { AsChildProps, AsChildForwardRefComponent } from './types'
+import { composeProps, type Props } from './usePropsComposed'
+import type { AsChildComponent, AsChildProps } from './types'
 
-const withAsChild = (Component: ElementType) => {
-	const Comp = forwardRef<unknown, AsChildProps>((props, ref) => {
-		const { asChild, children, ...otherProps } = props
-
+const withAsChild = (Component: ElementT) => {
+	const Comp = ({ asChild, children, ...otherProps }: AsChildProps) => {
 		if (!asChild) {
-			return (
-				<Component ref={ref} {...otherProps}>
-					{children}
-				</Component>
-			)
+			return <Component {...otherProps}>{children}</Component>
 		}
 
 		const child = Children.only(children)
 
 		return isValidElement(child)
-			? cloneElement(child, {
-					ref: ref
-						? composeRefs(ref, (child as any).ref)
-						: (child as any).ref,
-					...composeProps(otherProps, child.props)
-				})
+			? cloneElement(
+					child,
+					composeProps(otherProps, child.props as Props)
+				)
 			: null
-	})
+	}
 
-	// @ts-expect-error - it exists
-	Comp.displayName = Component.displayName || Component.name
+	Comp.displayName = Component.displayName ?? Component.name
 
 	return Comp
 }
 
 const jsx = () => {
-	const cache = new Map()
+	const cache = new Map<string | symbol, FunctionComponent<AsChildProps>>()
 
 	return new Proxy(withAsChild, {
 		apply(_, __, argArray) {
-			return withAsChild(argArray[0])
+			return withAsChild(argArray[0] as FunctionComponent<AsChildProps>)
 		},
 		get(_, element) {
 			if (!cache.has(element)) {
-				cache.set(element, withAsChild(element as ElementType))
+				cache.set(
+					element,
+					withAsChild(element as FunctionComponent<AsChildProps>)
+				)
 			}
 
 			return cache.get(element)
 		}
 	}) as unknown as {
-		[E in keyof JSX.IntrinsicElements]: AsChildForwardRefComponent<E>
+		[E in keyof JSX.IntrinsicElements]: AsChildComponent<E>
 	}
 }
 
 export const poly = jsx()
+
+const test = () => <poly.div asChild />

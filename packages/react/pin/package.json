@@ -41,14 +41,14 @@
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",
-		"@types/react": "18.2.79",
-		"@types/react-dom": "18.2.25",
+		"@types/react": "npm:types-react@beta",
+		"@types/react-dom": "npm:types-react-dom@beta",
 		"eslint": "8.57.0",
 		"prettier": "3.2.5",
 		"typescript": "5.4.5"
 	},
 	"peerDependencies": {
-		"react": "18.2.0",
-		"react-dom": "18.2.0"
+		"react": "19.0.0-beta-94eed63c49-20240425",
+		"react-dom": "19.0.0-beta-94eed63c49-20240425"
 	}
 }

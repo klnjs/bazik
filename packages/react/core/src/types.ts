@@ -2,8 +2,7 @@ import type {
 	ReactNode,
 	ElementType,
 	ComponentProps,
-	ComponentPropsWithoutRef,
-	ForwardRefExoticComponent
+	FunctionComponent
 } from 'react'
 
 export type Assign<T, P> = Omit<T, keyof P> & P
@@ -18,11 +17,9 @@ export type AsChildProps = {
 export type AsChildComponentProps<E extends ElementType> = AsChildProps &
 	ComponentProps<E>
 
-export type AsChildComponentPropsWithoutRef<E extends ElementType> =
-	AsChildProps & ComponentPropsWithoutRef<E>
-
-export type AsChildForwardRefComponent<E extends ElementType> =
-	ForwardRefExoticComponent<AsChildComponentProps<E>>
+export type AsChildComponent<E extends ElementType> = FunctionComponent<
+	AsChildComponentProps<E>
+>
 
 export type CoreProps<
 	E extends ElementType,
