@@ -1,11 +1,11 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { SpinnerProvider } from './SpinnerContext'
 import { useSpinner, type UseSpinnerOptions } from './useSpinner'
 
-export type SpinnerProps = CoreProps<'svg', UseSpinnerOptions>
+export type SpinnerProps = PolyProps<'svg', UseSpinnerOptions>
 
-export const Spinner = forwardRef<'svg', SpinnerProps>(
-	({ width, size, ...otherProps }, forwardedRef) => {
+export const Spinner = 
+	({ width, size, ...otherProps }: SpinnerProps) => {
 		const spinner = useSpinner({
 			size,
 			width
@@ -14,7 +14,6 @@ export const Spinner = forwardRef<'svg', SpinnerProps>(
 		return (
 			<SpinnerProvider value={spinner}>
 				<poly.svg
-					ref={forwardedRef}
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox={`0 0 ${spinner.diameter} ${spinner.diameter}`}
 					width={spinner.diameter}
@@ -24,4 +23,3 @@ export const Spinner = forwardRef<'svg', SpinnerProps>(
 			</SpinnerProvider>
 		)
 	}
-)

@@ -1,13 +1,12 @@
 import {
-	forwardRef,
 	toData,
 	useChainHandler,
-	type CoreProps
+	type PolyProps
 } from '@klnjs/core'
 import { usePinContext } from './PinContext'
 import { usePinConceal } from './usePinConceal'
 
-export type PinSlotProps = CoreProps<
+export type PinSlotProps = PolyProps<
 	'div',
 	{
 		slot: number
@@ -15,8 +14,8 @@ export type PinSlotProps = CoreProps<
 	}
 >
 
-export const PinSlot = forwardRef<'div', PinSlotProps>(
-	({ slot, placeholder, onPointerDown, ...otherProps }, forwardedRef) => {
+export const PinSlot = 
+	({ slot, placeholder, onPointerDown, ...otherProps }: PinSlotProps) => {
 		const {
 			pin,
 			length,
@@ -53,7 +52,6 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 
 		return (
 			<div
-				ref={forwardedRef}
 				data-end={toData(isEnd)}
 				data-start={toData(isStart)}
 				data-caret={toData(isCaret)}
@@ -68,4 +66,3 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 			</div>
 		)
 	}
-)

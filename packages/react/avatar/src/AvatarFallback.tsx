@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { useAvatarContext } from './AvatarContext'
 
-export type AvatarFallbackProps = CoreProps<'div', { delay?: number }>
+export type AvatarFallbackProps = PolyProps<'div', { delay?: number }>
 
-export const AvatarFallback = forwardRef<'div', AvatarFallbackProps>(
-	({ delay, ...otherProps }, forwardedRef) => {
+export const AvatarFallback = 
+	({ delay, ...otherProps }: AvatarFallbackProps ) => {
 		const { status } = useAvatarContext()
 
 		const [ready, setReady] = useState(delay === undefined)
@@ -22,7 +22,6 @@ export const AvatarFallback = forwardRef<'div', AvatarFallbackProps>(
 		}, [delay])
 
 		return ready && status !== 'loaded' ? (
-			<poly.div ref={forwardedRef} {...otherProps} />
+			<poly.div {...otherProps} />
 		) : null
 	}
-)

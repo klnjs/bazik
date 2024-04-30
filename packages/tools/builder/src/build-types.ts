@@ -14,17 +14,26 @@ export const buildTypes = async ({ root, dist }: BuildTypeOptions) => {
 		root
 	)
 
-	const result = ts
-		.createProgram({
-			rootNames: configParsed.fileNames,
-			options: {
-				...configParsed.options,
-				outDir: dist,
-				declaration: true,
-				emitDeclarationOnly: true
-			}
-		})
-		.emit()
+	const program = ts.createProgram({
+		rootNames: configParsed.fileNames,
+		options: {
+			...configParsed.options,
+			outDir: dist,
+			noEmit: false,
+			declaration: true,
+			emitDeclarationOnly: true
+		}
+	})
 
-	console.log(result)
+	const diagnostics = ts.getPreEmitDiagnostics(program)
+
+	if(diagnostics) {
+		console.log(ts.formatDiagnosticsWithColorAndContext(diagnostics, {
+				getCurrentDirectory: ts.sys.getCurrentDirectory,
+				getCanonicalFileName: (fileName) => fileName,
+				getNewLine: () => ts.sys.newLine,
+		}))
+	} else {
+		program.emit()
+	}
 }

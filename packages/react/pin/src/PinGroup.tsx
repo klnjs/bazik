@@ -1,7 +1,7 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 
-export type PinGroupProps = CoreProps<'div'>
+export type PinGroupProps = PolyProps<'div'>
 
-export const PinGroup = forwardRef<'div', PinGroupProps>(
-	(props, forwardedRef) => <poly.div ref={forwardedRef} {...props} />
+export const PinGroup = (
+	(props: PinGroupProps) => <poly.div  {...props} />
 )

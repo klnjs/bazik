@@ -1,12 +1,11 @@
-import { poly, forwardRef, useChainHandler, type CoreProps } from '@klnjs/core'
+import { poly, useChainHandler, type PolyProps } from '@klnjs/core'
 import { useAvatarContext } from './AvatarContext'
 
-export type AvatarImageProps = CoreProps<'img'>
+export type AvatarImageProps = PolyProps<'img'>
 
-export const AvatarImage = forwardRef<'img', AvatarImageProps>(
+export const AvatarImage = (
 	(
-		{ src, style: styleProp, onLoad, onLoadStart, onError, ...otherProps },
-		forwardedRef
+		{ src, style: styleProp, onLoad, onLoadStart, onError, ...otherProps }: AvatarImageProps
 	) => {
 		const { status, setStatus } = useAvatarContext()
 
@@ -25,7 +24,6 @@ export const AvatarImage = forwardRef<'img', AvatarImageProps>(
 
 		return (
 			<poly.img
-				ref={forwardedRef}
 				src={src}
 				style={style}
 				onLoad={handleLoad}

@@ -1,6 +1,5 @@
+export * from './src/asChild'
 export * from './src/createContext'
-export * from './src/factory'
-export * from './src/forwardRef'
 export * from './src/toData'
 export * from './src/types'
 export * from './src/useCallbackRef'

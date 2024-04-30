@@ -1,15 +1,14 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { useSpinnerContext } from './SpinnerContext'
 
-export type SpinnerTrackProps = CoreProps<'circle'>
+export type SpinnerTrackProps = PolyProps<'circle'>
 
-export const SpinnerTrack = forwardRef<'circle', SpinnerTrackProps>(
-	(props, forwardedRef) => {
+export const SpinnerTrack =
+	(props: SpinnerTrackProps) => {
 		const { radius, center, width } = useSpinnerContext()
 
 		return (
 			<poly.circle
-				ref={forwardedRef}
 				r={radius}
 				cx={center}
 				cy={center}
@@ -20,4 +19,3 @@ export const SpinnerTrack = forwardRef<'circle', SpinnerTrackProps>(
 			/>
 		)
 	}
-)

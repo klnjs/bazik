@@ -1,8 +1,7 @@
-import type { CoreProps } from '@klnjs/core'
-import type { ComponentProps } from 'react'
+import { poly, type PolyProps } from '@klnjs/core'
 
-export type IconPathProps = CoreProps<'path'>
+export type IconPathProps = PolyProps<'path'>
 
-export const IconPath = ({ ref, ...otherProps }: ComponentProps<'path'>) => (
-	<path ref={ref} {...otherProps} />
+export const IconPath = (props: IconPathProps) => (
+	<poly.path  {...props} />
 )

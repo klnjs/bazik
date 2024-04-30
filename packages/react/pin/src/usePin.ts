@@ -22,7 +22,7 @@ export const usePin = ({
 	value,
 	onChange
 }: UsePinOptions = {}) => {
-	const inputRef = useRef<HTMLInputElement>()
+	const inputRef = useRef<HTMLInputElement>(null)
 
 	const [inputId, setInputId] = useState<string>()
 

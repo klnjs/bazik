@@ -1,13 +1,12 @@
-import { forwardRef, useIdAndCallback, type CoreProps } from '@klnjs/core'
+import { poly, useIdAndCallback, type PolyProps } from '@klnjs/core'
 import { useIconContext } from './IconContext'
 
-export type IconDescriptionProps = CoreProps<'desc'>
+export type IconDescriptionProps = PolyProps<'desc'>
 
-export const IconDescription = forwardRef<'desc', IconDescriptionProps>(
-	({ id: idProp, ...otherProps }, forwardedRef) => {
+export const IconDescription = (({ id: idProp, ...otherProps }: IconDescriptionProps) => {
 		const { setDescriptionId } = useIconContext()
 		const id = useIdAndCallback(idProp, setDescriptionId)
 
-		return <desc id={id} ref={forwardedRef} {...otherProps} />
+		return <poly.desc id={id} {...otherProps} />
 	}
 )

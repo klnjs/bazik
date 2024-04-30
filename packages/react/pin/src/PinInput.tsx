@@ -6,21 +6,21 @@ import type {
 } from 'react'
 import {
 	poly,
-	forwardRef,
 	useIdAndCallback,
 	useRefComposed,
 	useChainHandler,
-	type CoreProps
+	type PolyProps
 } from '@klnjs/core'
 import { usePinContext } from './PinContext'
 import { usePinPattern } from './usePinPattern'
 
-export type PinInputProps = CoreProps<'input'>
+export type PinInputProps = PolyProps<'input'>
 
-export const PinInput = forwardRef<'input', PinInputProps>(
+export const PinInput = 
 	(
 		{
 			id: idProp,
+			ref: refProp,
 			hidden = true,
 			autoComplete = 'one-time-code',
 			style: styleProp,
@@ -30,8 +30,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 			onChange,
 			onKeyDown,
 			...otherProps
-		},
-		forwardedRef
+		}: PinInputProps
 	) => {
 		const {
 			pin,
@@ -45,7 +44,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 		} = usePinContext()
 
 		const id = useIdAndCallback(idProp, setInputId)
-		const refComposed = useRefComposed(inputRef, forwardedRef)
+		const refComposed = useRefComposed(inputRef, refProp)
 
 		const pattern = usePinPattern(type)
 		const style: CSSProperties | undefined = hidden
@@ -117,4 +116,3 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 			/>
 		)
 	}
-)

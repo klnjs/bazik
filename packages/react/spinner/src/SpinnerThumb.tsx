@@ -1,7 +1,7 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { useSpinnerContext } from './SpinnerContext'
 
-export type SpinnerThumbProps = CoreProps<
+export type SpinnerThumbProps = PolyProps<
 	'circle',
 	{
 		arc?: number
@@ -12,7 +12,7 @@ export type SpinnerThumbProps = CoreProps<
 	}
 >
 
-export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
+export const SpinnerThumb = 
 	(
 		{
 			arc: arcProp = 25,
@@ -21,8 +21,7 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 			duration = 1,
 			cap = 'round',
 			...otherProps
-		},
-		forwardedRef
+		}: SpinnerThumbProps
 	) => {
 		const { width, radius, center, circumference } = useSpinnerContext()
 
@@ -31,7 +30,6 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 
 		return (
 			<poly.circle
-				ref={forwardedRef}
 				r={radius}
 				cx={center}
 				cy={center}
@@ -55,4 +53,3 @@ export const SpinnerThumb = forwardRef<'circle', SpinnerThumbProps>(
 			</poly.circle>
 		)
 	}
-)

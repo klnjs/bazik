@@ -1,10 +1,10 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { PinProvider } from './PinContext'
 import { usePin, type UsePinOptions } from './usePin'
 
-export type PinProps = CoreProps<'div', UsePinOptions>
+export type PinProps = PolyProps<'div', UsePinOptions>
 
-export const Pin = forwardRef<'div', PinProps>(
+export const Pin = 
 	(
 		{
 			defaultValue,
@@ -15,8 +15,7 @@ export const Pin = forwardRef<'div', PinProps>(
 			value,
 			onChange,
 			...otherProps
-		},
-		forwardedRef
+		}: PinProps
 	) => {
 		const pin = usePin({
 			defaultValue,
@@ -30,8 +29,7 @@ export const Pin = forwardRef<'div', PinProps>(
 
 		return (
 			<PinProvider value={pin}>
-				<poly.div ref={forwardedRef} {...otherProps} />
+				<poly.div  {...otherProps} />
 			</PinProvider>
 		)
 	}
-)
