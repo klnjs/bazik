@@ -8,10 +8,10 @@ import {
 	toStartOfMonth
 } from './calendar-functions'
 import type { CalendarCellProps, CalendarCellRole } from './CalendarCell'
-import type { YearMonth } from './calendar-types'
+import type { PlainYearMonth } from './CalendarTypes'
 
 export type UseCalendarGridOptions = {
-	month: YearMonth
+	month: PlainYearMonth
 	locale: string
 	weeks?: boolean
 	weekdays?: boolean

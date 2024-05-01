@@ -1,8 +1,8 @@
 import { poly, forwardRef, type CoreProps } from '@klnjs/core'
 import { useCalendarContext } from './CalendarContext'
-import type { Date } from './calendar-types'
+import type { PlainDate } from './CalendarTypes'
 
-export type CalendarWeekdayProps = CoreProps<'div', { date: Date }>
+export type CalendarWeekdayProps = CoreProps<'div', { date: PlainDate }>
 
 export const CalendarWeekday = forwardRef<'div', CalendarWeekdayProps>(
 	({ date, children, ...otherProps }, forwardedRef) => {

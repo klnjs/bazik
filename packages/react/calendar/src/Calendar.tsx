@@ -1,11 +1,8 @@
 import type { ReactElement, Ref } from 'react'
 import { poly, forwardRef, useFocusWithin, type CoreProps } from '@klnjs/core'
 import { CalendarProvider } from './CalendarContext'
-import {
-	useCalendar,
-	type CalendarSelect,
-	type UseCalendarOptions
-} from './useCalendar'
+import { useCalendar, type UseCalendarOptions } from './useCalendar'
+import type { CalendarSelect } from './useCalendarSelection'
 
 export type CalendarProps<S extends CalendarSelect = 'one'> = CoreProps<
 	'div',

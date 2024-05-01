@@ -27,12 +27,12 @@ import {
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn
 } from './calendar-functions'
-import type { Date } from './calendar-types'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarDayProps = CoreProps<
 	'div',
 	{
-		date: Date
+		date: PlainDate
 		disabled?: boolean
 		disabledIfWeekend?: boolean
 		disabledIfOverflow?: boolean

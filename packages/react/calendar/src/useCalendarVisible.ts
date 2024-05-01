@@ -1,19 +1,19 @@
 import { useState, useCallback, useLayoutEffect } from 'react'
 import { useMounted } from '@klnjs/core'
 import { toEndOfMonth, toStartOfMonth } from './calendar-functions'
-import type { Date, DateRange, DurationLike } from './calendar-types'
+import type { PlainDate, PlainDateRange, DurationLike } from './CalendarTypes'
 
 export type UseCalendarVisibleOptions = {
 	months: number
 	calendar: string
-	highlighted: Date
+	highlighted: PlainDate
 }
 
 export const createVisibleRange = ({
 	months,
 	calendar,
 	highlighted
-}: UseCalendarVisibleOptions): DateRange => [
+}: UseCalendarVisibleOptions): PlainDateRange => [
 	toStartOfMonth(highlighted.withCalendar(calendar)),
 	toEndOfMonth(highlighted.withCalendar(calendar).add({ months: months - 1 }))
 ]

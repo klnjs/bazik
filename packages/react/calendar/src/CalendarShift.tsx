@@ -8,11 +8,11 @@ import {
 	useCalendarLocalisation
 } from './useCalendarLocalisation'
 import { isAfter, isBefore } from './calendar-functions'
-import type { Date } from './calendar-types'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarShiftProps = CoreProps<
 	'button',
-	| { action: 'set'; years?: never; months?: never; date: Date }
+	| { action: 'set'; years?: never; months?: never; date: PlainDate }
 	| { action: 'add' | 'sub'; years: number; months?: never; date?: never }
 	| { action: 'add' | 'sub'; years?: never; months?: number; date?: never }
 >

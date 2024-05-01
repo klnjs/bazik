@@ -1,4 +1,4 @@
-export * from './src/calendar-types'
+export * from './src/CalendarTypes'
 export * from './src/Calendar'
 export * from './src/CalendarBlank'
 export * from './src/CalendarCell'

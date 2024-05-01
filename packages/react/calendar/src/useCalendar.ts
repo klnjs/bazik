@@ -1,18 +1,14 @@
 import { useState, useCallback } from 'react'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
-import { useCalendarSelection } from './useCalendarSelection'
+import {
+	useCalendarSelection,
+	type CalendarSelect,
+	type CalendarSelectValue
+} from './useCalendarSelection'
 import { useCalendarSystem } from './useCalendarSystem'
 import { useCalendarVisible } from './useCalendarVisible'
 import { clamp, isBetween, isSameDay } from './calendar-functions'
-import type { Date, DateRange, DurationLike } from './calendar-types'
-
-export type CalendarSelect = 'one' | 'many' | 'range'
-
-export type CalendarSelectValue<S extends CalendarSelect> =
-	| null
-	| (S extends 'range' ? DateRange : S extends 'many' ? Date[] : Date)
-
-export type CalendarValue = CalendarSelectValue<CalendarSelect>
+import type { PlainDate, DurationLike } from './CalendarTypes'
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
@@ -20,8 +16,8 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 	defaultValue?: CalendarSelectValue<S>
 	disabled?: boolean
 	locale?: string
-	max?: Date
-	min?: Date
+	max?: PlainDate
+	min?: PlainDate
 	months?: number
 	readOnly?: boolean
 	select?: S
@@ -77,7 +73,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	)
 
 	const highlight = useCallback(
-		(date: Date) => {
+		(date: PlainDate) => {
 			const result = clamp(date, { min, max })
 			const visible =
 				isSameDay(result, visibleRange[0]) ||

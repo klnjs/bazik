@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { isArray } from '@klnjs/assertion'
 import { getToday } from './calendar-functions'
-import type { Date, DateRange } from './calendar-types'
+import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type UseCalendarHighlightedOptions = {
-	value?: Date | Date[] | DateRange | null
+	value?: PlainDate | PlainDate[] | PlainDateRange | null
 	calendar: string
 }
 

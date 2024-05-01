@@ -21,6 +21,7 @@
 		"@docusaurus/plugin-content-pages": "3.2.1",
 		"@docusaurus/theme-classic": "3.2.1",
 		"@klnjs/avatar": "workspace:*",
+		"@klnjs/calendar": "workspace:*",
 		"@klnjs/icon": "workspace:*",
 		"@klnjs/pin": "workspace:*",
 		"@klnjs/popover": "workspace:*",

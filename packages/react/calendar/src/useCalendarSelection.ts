@@ -8,24 +8,28 @@ import {
 import { useStateControllable, useMounted } from '@klnjs/core'
 import { isSet, isArray } from '@klnjs/assertion'
 import { compare } from './calendar-functions'
-import type { Date, DateRange } from './calendar-types'
+import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
 
 export type CalendarSelectValue<S extends CalendarSelect> =
 	| null
-	| (S extends 'range' ? DateRange : S extends 'many' ? Date[] : Date)
+	| (S extends 'range'
+			? PlainDateRange
+			: S extends 'many'
+				? PlainDate[]
+				: PlainDate)
 
 export type UseCalendarSelectionOptions<S extends CalendarSelect> = {
 	defaultValue?: CalendarSelectValue<S>
-	highlighted: Date
+	highlighted: PlainDate
 	behaviour?: S
 	value?: CalendarSelectValue<S>
 	onChange?: (value: CalendarSelectValue<S>) => void
 }
 
 export type UseCalendarSelectionReturn<S extends CalendarSelect> = {
-	select: (date: Date) => void
+	select: (date: PlainDate) => void
 	selection: CalendarSelectValue<S>
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
@@ -41,7 +45,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 }: UseCalendarSelectionOptions<S>) => {
 	const isMounted = useMounted()
 
-	const [transient, setTransient] = useState<Date>()
+	const [transient, setTransient] = useState<PlainDate>()
 
 	const [selection, setSelection] = useStateControllable<
 		CalendarSelectValue<CalendarSelect>
@@ -70,7 +74,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	}, [selectionMode, selection, transient, highlighted])
 
 	const select = useCallback(
-		(date: Date) => {
+		(date: PlainDate) => {
 			if (selectionMode === 'one') {
 				setSelection(date)
 			}
