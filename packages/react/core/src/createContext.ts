@@ -1,13 +1,11 @@
 import {
-	useContext as useContextFromReact,
+	use,
 	createContext as createContextFromReact,
-	type Provider
+	type Context
 } from 'react'
 
 export type CreateContextOptions<T> = {
 	name: string
-	nameOfHook: string
-	nameOfProvider: string
 	defaultValue?: T
 }
 
@@ -19,13 +17,9 @@ export type UseContextReturn<T, S extends boolean> = S extends true
 	? T
 	: T | undefined
 
-export const createContextError = (
-	name: string,
-	nameOfHook: string,
-	nameOfProvider: string
-) => {
+export const createContextError = (name: string) => {
 	const error = new Error(
-		`${nameOfHook} returned \`undefined\`. Did you forget to wrap component within ${nameOfProvider}`
+		`use${name} returned \`undefined\`. Did you forget to wrap component within ${name}`
 	)
 	error.name = `${name}Error`
 	return error
@@ -33,8 +27,6 @@ export const createContextError = (
 
 export const createContext = <T extends object>({
 	name = 'Context',
-	nameOfHook = 'useContext',
-	nameOfProvider = 'Provider',
 	defaultValue
 }: CreateContextOptions<T>) => {
 	const Context = createContextFromReact(defaultValue)
@@ -45,10 +37,10 @@ export const createContext = <T extends object>({
 		strict: strictOption
 	}: UseContextOptions<S> = {}) => {
 		const strict = strictOption ?? true
-		const context = useContextFromReact(Context)
+		const context = use(Context)
 
 		if (!context && strict) {
-			const error = createContextError(name, nameOfHook, nameOfProvider)
+			const error = createContextError(name)
 
 			// This is a V8 engine specific API
 			// See: https://v8.dev/docs/stack-trace-api#stack-trace-collection-for-custom-exceptions
@@ -63,5 +55,5 @@ export const createContext = <T extends object>({
 		return context as UseContextReturn<T, S>
 	}
 
-	return [Context.Provider, useContext] as [Provider<T>, typeof useContext]
+	return [Context, useContext] as [Context<T>, typeof useContext]
 }

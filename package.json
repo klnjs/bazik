@@ -16,11 +16,11 @@
 		"packages/utils/*"
 	],
 	"scripts": {
-		"dev": "turbo dev",
-		"build": "turbo build",
-		"eslint": "turbo eslint",
-		"prettier": "turbo prettier",
-		"typescript": "turbo typescript"
+		"dev": "turbo run dev",
+		"build": "turbo run build",
+		"eslint": "turbo run eslint",
+		"prettier": "turbo run prettier",
+		"typescript": "turbo run typescript"
 	},
 	"devDependencies": {
 		"@types/bun": "1.1.0",

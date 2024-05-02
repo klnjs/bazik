@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { PopoverProvider } from './PopoverContext'
+import { PopoverContext } from './PopoverContext'
 import { usePopover, type UsePopoverOptions } from './usePopover'
 
 export type PopoverProps = UsePopoverOptions & { children: ReactNode }
@@ -28,5 +28,5 @@ export const Popover = ({
 		onOpenChange
 	})
 
-	return <PopoverProvider value={popover}>{children}</PopoverProvider>
+	return <PopoverContext value={popover}>{children}</PopoverContext>
 }

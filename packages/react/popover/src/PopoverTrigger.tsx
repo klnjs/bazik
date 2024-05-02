@@ -1,17 +1,14 @@
-import {
-	poly,
-	forwardRef,
-	toData,
-	useRefComposed,
-	type CoreProps
-} from '@klnjs/core'
+import { poly, toData, useRefComposed, type PolyProps } from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
-export type PopoverTriggerProps = CoreProps<'button'>
+export type PopoverTriggerProps = PolyProps<'button'>
 
-export const PopoverTrigger = forwardRef<'button'>((props, forwardedRef) => {
+export const PopoverTrigger = ({
+	ref: refProp,
+	...otherProps
+}: PopoverTriggerProps) => {
 	const { open, refs, status, getReferenceProps } = usePopoverContext()
-	const ref = useRefComposed(refs.setReference, forwardedRef)
+	const ref = useRefComposed(refs.setReference, refProp)
 
 	return (
 		<poly.button
@@ -19,7 +16,8 @@ export const PopoverTrigger = forwardRef<'button'>((props, forwardedRef) => {
 			type="button"
 			data-open={toData(open)}
 			data-status={status}
-			{...getReferenceProps(props)}
+			// @ts-expect-error until floating ui updates to react 19
+			{...getReferenceProps(otherProps)}
 		/>
 	)
-})
+}

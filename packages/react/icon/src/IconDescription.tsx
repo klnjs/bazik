@@ -3,10 +3,12 @@ import { useIconContext } from './IconContext'
 
 export type IconDescriptionProps = PolyProps<'desc'>
 
-export const IconDescription = (({ id: idProp, ...otherProps }: IconDescriptionProps) => {
-		const { setDescriptionId } = useIconContext()
-		const id = useIdAndCallback(idProp, setDescriptionId)
+export const IconDescription = ({
+	id: idProp,
+	...otherProps
+}: IconDescriptionProps) => {
+	const { setDescriptionId } = useIconContext()
+	const id = useIdAndCallback(idProp, setDescriptionId)
 
-		return <poly.desc id={id} {...otherProps} />
-	}
-)
+	return <poly.desc id={id} {...otherProps} />
+}

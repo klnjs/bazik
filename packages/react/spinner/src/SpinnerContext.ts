@@ -3,9 +3,7 @@ import type { useSpinner } from './useSpinner'
 
 export type UseSpinnerContext = ReturnType<typeof useSpinner>
 
-export const [SpinnerProvider, useSpinnerContext] =
+export const [SpinnerContext, useSpinnerContext] =
 	createContext<UseSpinnerContext>({
-		name: 'SpinnerContext',
-		nameOfHook: 'useSpinnerContext',
-		nameOfProvider: '<SpinnerProvider />'
+		name: 'SpinnerContext'
 	})

@@ -3,9 +3,7 @@ import type { useAvatar } from './useAvatar'
 
 export type UseAvatarContext = ReturnType<typeof useAvatar>
 
-export const [AvatarProvider, useAvatarContext] =
+export const [AvatarContext, useAvatarContext] =
 	createContext<UseAvatarContext>({
-		name: 'AvatarContext',
-		nameOfHook: 'useAvatarContext',
-		nameOfProvider: '<AvatarProvider />'
+		name: 'AvatarContext'
 	})

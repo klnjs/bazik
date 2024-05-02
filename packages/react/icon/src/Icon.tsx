@@ -3,7 +3,7 @@ import { poly, type PolyProps } from '@klnjs/core'
 import { IconTitle } from './IconTitle'
 import { IconDescription } from './IconDescription'
 import { IconPath } from './IconPath'
-import { IconProvider } from './IconContext'
+import { IconContext } from './IconContext'
 import { useIcon } from './useIcon'
 
 export type IconProps = PolyProps<'svg'>
@@ -12,14 +12,14 @@ export const Icon = (props: IconProps) => {
 	const icon = useIcon()
 
 	return (
-		<IconProvider value={icon}>
+		<IconContext value={icon}>
 			<poly.svg
 				fill="currentColor"
 				aria-labelledby={icon.labelId}
 				aria-describedby={icon.descriptionId}
 				{...props}
 			/>
-		</IconProvider>
+		</IconContext>
 	)
 }
 

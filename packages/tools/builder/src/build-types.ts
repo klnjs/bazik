@@ -27,12 +27,14 @@ export const buildTypes = async ({ root, dist }: BuildTypeOptions) => {
 
 	const diagnostics = ts.getPreEmitDiagnostics(program)
 
-	if(diagnostics) {
-		console.log(ts.formatDiagnosticsWithColorAndContext(diagnostics, {
+	if (diagnostics.length > 0) {
+		console.log(
+			ts.formatDiagnosticsWithColorAndContext(diagnostics, {
 				getCurrentDirectory: ts.sys.getCurrentDirectory,
 				getCanonicalFileName: (fileName) => fileName,
-				getNewLine: () => ts.sys.newLine,
-		}))
+				getNewLine: () => ts.sys.newLine
+			})
+		)
 	} else {
 		program.emit()
 	}

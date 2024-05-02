@@ -1,13 +1,14 @@
-import { poly, forwardRef, useIdAndCallback, type CoreProps } from '@klnjs/core'
+import { poly, useIdAndCallback, type PolyProps } from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
-export type PopoverHeadingProps = CoreProps<'h2'>
+export type PopoverHeadingProps = PolyProps<'h2'>
 
-export const PopoverHeading = forwardRef<'h2', PopoverHeadingProps>(
-	({ id: idProp, ...otherProps }, forwardedRef) => {
-		const { setLabelId } = usePopoverContext()
-		const id = useIdAndCallback(idProp, setLabelId)
+export const PopoverHeading = ({
+	id: idProp,
+	...otherProps
+}: PopoverHeadingProps) => {
+	const { setLabelId } = usePopoverContext()
+	const id = useIdAndCallback(idProp, setLabelId)
 
-		return <poly.h2 id={id} ref={forwardedRef} {...otherProps} />
-	}
-)
+	return <poly.h2 id={id} {...otherProps} />
+}
