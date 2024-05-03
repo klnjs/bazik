@@ -28,6 +28,7 @@ export const buildTypes = async ({ root, dist }: BuildTypeOptions) => {
 	const diagnostics = ts.getPreEmitDiagnostics(program)
 
 	if (diagnostics.length > 0) {
+		// eslint-disable-next-line no-console
 		console.log(
 			ts.formatDiagnosticsWithColorAndContext(diagnostics, {
 				getCanonicalFileName: (fileName) => fileName,
