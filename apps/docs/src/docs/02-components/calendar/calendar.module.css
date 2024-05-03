@@ -4,12 +4,11 @@
 	gap: 8px;
 	font-family: Arial;
 	position: relative;
-}
-
-.wide {
-	display: grid;
-	grid-auto-flow: row;
-	gap: 8px;
+	background: var(--ifm-background-surface-color);
+	background-clip: padding-box;
+	border-radius: var(--ifm-global-radius);
+	border: 1px solid var(--ifm-color-emphasis-300);
+	padding: 8px;
 }
 
 .title {
@@ -46,7 +45,7 @@
 }
 
 .button:hover {
-	background: #e7e7e7;
+	background: var(--ifm-menu-color-background-hover);
 }
 
 .button:disabled {
@@ -81,7 +80,7 @@
 }
 
 .day:hover {
-	background: #e7e7e7;
+	background: var(--ifm-menu-color-background-hover);
 }
 
 .day[data-today] {
@@ -97,12 +96,11 @@
 }
 
 .day[data-selected] {
-	color: white;
-	background: #0080ff;
+	background: var(--ifm-color-primary);
 }
 
 .day[data-focused] {
-	outline: 1px solid #0080ff;
+	outline: 1px solid var(--ifm-color-primary);
 	outline-offset: -2px;
 }
 

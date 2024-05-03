@@ -76,11 +76,12 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isRange = selectionMode === 'range' && isSet(selectionVisible)
 
 		const isToday = isTodayFn(date)
+		const isActive = isSameDay(date, highlighted)
 		const isWeekend = isWeekendFn(date, locale)
 		const isWeekEnd = isEndOfWeek(date, locale)
 		const isWeekStart = isStartOfWeek(date, locale)
 		const isOverflow = !isSameMonth(date, month.toPlainDate({ day: 1 }))
-		const isHighlighted = isFocusWithin && isSameDay(date, highlighted)
+		const isFocused = isFocusWithin && isActive
 		const isDisabled =
 			disabledProp ||
 			disabledContext ||
@@ -94,21 +95,15 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isRangeBetween =
 			isRange && isBetween(date, selectionVisible[0], selectionVisible[1])
 
-		const isFocusable = !isDisabled
-		const isSelectable = isFocusable && !isReadOnly
-		const isTabbable = isFocusable && isHighlighted
+		const isTabbable = !isDisabled && isActive
+		const isSelectable = !isDisabled && !isReadOnly
 		const isSelected =
 			(isOne && isSameDay(date, selectionVisible)) ||
 			(isMany && selectionVisible.some((d) => isSameDay(date, d))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
-		const shouldHighlight = isSelectable && selectionIsTransient
-		const shouldFocus =
-			isFocusWithin &&
-			isHighlighted &&
-			document.activeElement !== ref.current &&
-			document.activeElement instanceof HTMLElement &&
-			document.activeElement.dataset.day === 'true'
+		const shouldFocus = isFocused
+		const shouldFocusOnPointerOver = isSelectable && selectionIsTransient
 
 		const label = useMemo(() => {
 			const formatted = date.toLocaleString(locale, {
@@ -125,12 +120,6 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			return formatted
 		}, [date, locale, dayNames, isToday])
 
-		const handleOver = useCallback(() => {
-			if (shouldHighlight) {
-				highlight(date)
-			}
-		}, [date, shouldHighlight, highlight])
-
 		const handleClick = useCallback(() => {
 			if (isSelectable) {
 				select(date)
@@ -138,7 +127,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			}
 		}, [date, isSelectable, select, highlight])
 
-		const handleKeyboard = useCallback(
+		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
 				if (event.code !== 'Tab') {
 					event.preventDefault()
@@ -169,7 +158,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				} else if (event.code === 'PageUp') {
 					highlight(date.add({ months: 1 }))
 				} else if (event.code === 'PageDown') {
-					highlight(date.add({ months: 1 }))
+					highlight(date.add({ months: -1 }))
 				} else if (event.code === 'Home') {
 					highlight(date.with({ day: 1 }))
 				} else if (event.code === 'End') {
@@ -178,6 +167,12 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			},
 			[date, isSelectable, select, highlight]
 		)
+
+		const handlePointerOver = useCallback(() => {
+			if (shouldFocusOnPointerOver) {
+				highlight(date)
+			}
+		}, [date, shouldFocusOnPointerOver, highlight])
 
 		useLayoutEffect(() => {
 			if (shouldFocus) {
@@ -193,22 +188,21 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				data-day
 				data-today={toData(isToday)}
 				data-weekend={toData(isWeekend)}
-				data-week-start={toData(isWeekStart)}
-				data-week-end={toData(isWeekEnd)}
+				data-focused={toData(isFocused)}
 				data-overflow={toData(isOverflow)}
 				data-disabled={toData(isDisabled)}
 				data-selected={toData(isSelected)}
-				data-highlighted={toData(isHighlighted)}
-				data-range-end={toData(isRangeEnd)}
+				data-week-start={toData(isWeekStart)}
+				data-week-end={toData(isWeekEnd)}
 				data-range-start={toData(isRangeStart)}
 				data-range-between={toData(isRangeBetween)}
+				data-range-end={toData(isRangeEnd)}
 				aria-label={label}
-				aria-readonly={isReadOnly}
-				aria-selected={isSelected}
-				aria-disabled={isDisabled}
+				aria-pressed={isSelected}
+				aria-disabled={isDisabled || isReadOnly}
 				onClick={handleClick}
-				onKeyDown={handleKeyboard}
-				onPointerOver={handleOver}
+				onKeyDown={handleKeyDown}
+				onPointerOver={handlePointerOver}
 				{...otherProps}
 			>
 				{children ?? date.day}

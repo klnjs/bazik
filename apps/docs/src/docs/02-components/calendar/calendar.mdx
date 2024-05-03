@@ -2,39 +2,40 @@ import { Features, Feature } from '@site/src/lib/features'
 import { Installation } from '@site/src/lib/installation'
 import { ReferenceProps } from '@site/src/lib/reference'
 import { Showcase } from '@site/src/lib/showcase'
-import Icon from './icon'
-import source from '!!raw-loader!./icon.tsx'
-import styles from '!!raw-loader!./icon.module.css'
+import Calendar from './calendar'
+import source from '!!raw-loader!./calendar.tsx'
+import styles from '!!raw-loader!./calendar.module.css'
 
-# Icon
+# Calendar
 
-An element for creating icon components.
+An element for creating calendar components.
 
 ## Showcase
 
 <Showcase
-	name="icon"
+	name="calendar"
 	sources={[
 		{ file: 'index.tsx', content: source, language: 'jsx' },
 		{ file: 'index.module.css', content: styles, language: 'css' }
 	]}
 >
-	<Icon />
+	<Calendar />
 </Showcase>
 
 ## Features
 
 <Features>
-	<Feature>Quickly make an icon by providing paths.</Feature>
-	<Feature>Provide accessibility if icon is interactive.</Feature>
+	<Feature>Write.</Feature>
+	<Feature>Stuff.</Feature>
+	<Feature>Here.</Feature>
 </Features>
 
 ## Installation
 
-<Installation name="avatar" />
+<Installation name="calendar" />
 
 ## Reference
 
 ### Calendar (Root)
 
-Contains all the parts of an icon.
+Contains all the parts of an calendar.

@@ -59,13 +59,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 
 		return (
 			<CalendarProvider value={calendar}>
-				<poly.div
-					ref={forwardedRef}
-					role="application"
-					aria-readonly={readOnly}
-					{...focusProps}
-					{...otherProps}
-				/>
+				<poly.div ref={forwardedRef} {...focusProps} {...otherProps} />
 			</CalendarProvider>
 		)
 	}
