@@ -1,3 +1,9 @@
+export type LocaleWeekInfo = {
+	firstDay: number
+	minimalDays: number
+	weekend: number[]
+}
+
 export const getWeekInfo = (tag: string) => {
 	const locale = new Intl.Locale(tag)
 
@@ -13,7 +19,7 @@ export const getWeekInfo = (tag: string) => {
 		firstDay: getFirstDay(region),
 		minimalDays: getMinimalDays(region),
 		weekend: getWeekend(region)
-	} as Intl.LocaleWeekInfo
+	}
 }
 
 export function getFirstDay(region: string): number {
