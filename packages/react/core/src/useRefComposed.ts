@@ -5,7 +5,7 @@ import {
 	type DependencyList,
 	type RefCallback
 } from 'react'
-import { isSet, isFunction } from '@klnjs/assertion'
+import { isDefined, isFunction } from '@klnjs/assertion'
 
 export type ComposableRef<T> = Ref<T> | undefined | null
 
@@ -16,7 +16,7 @@ export const composeRefs =
 			// prettier-ignore
 			if (isFunction(ref)) {
 				ref(value)
-			} else if (isSet(ref)) {
+			} else if (isDefined(ref)) {
 				(ref as MutableRefObject<T>).current = value
 			}
 		})
