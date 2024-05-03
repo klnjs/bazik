@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { Temporal } from 'temporal-polyfill'
 import { poly, forwardRef, toData, type CoreProps } from '@klnjs/core'
-import { isSet } from '@klnjs/assertion'
+import { isDefined } from '@klnjs/assertion'
 import { useCalendarContext } from './CalendarContext'
 import {
 	useCalendarDateFieldNames,
@@ -66,16 +66,16 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 
 			return t(action, {
 				segment:
-					dateFieldNames.of(isSet(years) ? 'year' : 'month') ?? ''
+					dateFieldNames.of(isDefined(years) ? 'year' : 'month') ?? ''
 			})
 		}, [action, date, years, t, locale, dateFieldNames])
 
 		const content = useMemo(() => {
 			switch (action) {
 				case 'add':
-					return isSet(years) ? '»' : '›'
+					return isDefined(years) ? '»' : '›'
 				case 'sub':
-					return isSet(years) ? '«' : '‹'
+					return isDefined(years) ? '«' : '‹'
 				default:
 					return '•'
 			}

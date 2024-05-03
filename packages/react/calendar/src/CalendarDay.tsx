@@ -12,7 +12,7 @@ import {
 	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
-import { isRTL, isSet } from '@klnjs/assertion'
+import { isRTL, isDefined } from '@klnjs/assertion'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarDayNames } from './useCalendarLocalisation'
 import { useCalendarGridContext } from './CalendarGridContext'
@@ -71,9 +71,9 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const { month } = useCalendarGridContext()
 		const { names: dayNames } = useCalendarDayNames(locale)
 
-		const isOne = selectionMode === 'one' && isSet(selectionVisible)
-		const isMany = selectionMode === 'many' && isSet(selectionVisible)
-		const isRange = selectionMode === 'range' && isSet(selectionVisible)
+		const isOne = selectionMode === 'one' && isDefined(selectionVisible)
+		const isMany = selectionMode === 'many' && isDefined(selectionVisible)
+		const isRange = selectionMode === 'range' && isDefined(selectionVisible)
 
 		const isToday = isTodayFn(date)
 		const isActive = isSameDay(date, highlighted)

@@ -6,7 +6,7 @@ import {
 	type SetStateAction
 } from 'react'
 import { useStateControllable, useMounted } from '@klnjs/core'
-import { isSet, isArray } from '@klnjs/assertion'
+import { isDefined, isArray } from '@klnjs/assertion'
 import { compare } from './calendar-functions'
 import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
@@ -63,7 +63,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 
 	const [selectionVisible, selectionIsTransient] = useMemo(() => {
 		const isRange = selectionMode === 'range'
-		const isTransient = isSet(transient)
+		const isTransient = isDefined(transient)
 
 		return [
 			isRange && isTransient
@@ -97,7 +97,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 
 			if (selectionMode === 'range') {
 				setTransient((prev) => {
-					if (isSet(prev)) {
+					if (isDefined(prev)) {
 						setSelection([prev, date].toSorted(compare))
 						return undefined
 					}
