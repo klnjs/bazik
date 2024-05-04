@@ -19,12 +19,16 @@ export type LocaleCalendar =
 	| 'roc'
 	| 'islamicc'
 
-export const getCalendars = (tag: string) => {
+export const getCalendars = (tag: string): LocaleCalendar[] => {
 	const locale = new Intl.Locale(tag)
 
+	/* eslint-disable */
+	// @ts-expect-error getCalendars not in spec yet
 	if (locale.getCalendars !== undefined) {
-		return locale.getCalendars()
+		// @ts-expect-error getCalendars not in spec yet
+		return locale.getCalendars() as LocaleCalendar[]
 	}
+	/* eslint-enable */
 
 	const calendar = new Intl.DateTimeFormat(tag).resolvedOptions()
 		.calendar as LocaleCalendar
