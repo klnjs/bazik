@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        command: [build, eslint, prettier, typescript]
+        script: [build, eslint, prettier, typescript]
     env:
       BUN_ENV: production
       FORCE_COLOR: 1
