@@ -1,9 +1,19 @@
-export const getWeekInfo = (tag: string) => {
+export type LocaleWeekInfo = {
+	firstDay: number
+	minimalDays: number
+	weekend: number[]
+}
+
+export const getWeekInfo = (tag: string): LocaleWeekInfo => {
 	const locale = new Intl.Locale(tag)
 
+	/* eslint-disable */
+	// @ts-expect-error getWeekInfo not in spec yet
 	if (locale.getWeekInfo !== undefined) {
-		return locale.getWeekInfo()
+		// @ts-expect-error getWeekInfo not in spec yet
+		return locale.getWeekInfo() as LocaleWeekInfo
 	}
+	/* eslint-enable */
 
 	// 001 is the "UN M.49" code for "the world"
 	// See: https://unstats.un.org/unsd/methodology/m49/
@@ -13,7 +23,7 @@ export const getWeekInfo = (tag: string) => {
 		firstDay: getFirstDay(region),
 		minimalDays: getMinimalDays(region),
 		weekend: getWeekend(region)
-	} as Intl.LocaleWeekInfo
+	}
 }
 
 export function getFirstDay(region: string): number {

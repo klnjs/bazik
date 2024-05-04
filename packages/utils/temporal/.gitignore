@@ -8,6 +8,7 @@
 # Except these files
 !.gitignore
 !eslint.config.js
+!index.ts
 !package.json
 !prettier.config.js
 !tsconfig.json
