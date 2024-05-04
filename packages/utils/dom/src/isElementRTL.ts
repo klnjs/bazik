@@ -1,5 +1,5 @@
-export const isElementRTL = (element: Element | null) => {
-	if (!element || !window.getComputedStyle) {
+export const isElementRTL = (element: HTMLElement | null) => {
+	if (!element || typeof window === 'undefined') {
 		return false
 	}
 
