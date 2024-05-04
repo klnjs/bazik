@@ -19,10 +19,12 @@ export type LocaleCalendar =
 	| 'roc'
 	| 'islamicc'
 
-export const getCalendars = (tag: string) => {
+export const getCalendars = (tag: string): LocaleCalendar[] => {
 	const locale = new Intl.Locale(tag)
 
+	// @ts-expect-error getWeekInfo not in spec yet
 	if (locale.getCalendars !== undefined) {
+		// @ts-expect-error getWeekInfo not in spec yet
 		return locale.getCalendars()
 	}
 
