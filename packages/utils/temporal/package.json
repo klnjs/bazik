@@ -1,0 +1,49 @@
+{
+	"name": "@klnjs/temporal",
+	"type": "module",
+	"author": "Rune Klein (@rnkln)",
+	"version": "0.0.1",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/klnjs/basique.git",
+		"directory": "packages/utils/temporal"
+	},
+	"files": [
+		"src",
+		"dist"
+	],
+	"exports": {
+		".": {
+			"types": "./index.ts",
+			"import": "./index.ts"
+		}
+	},
+	"publishConfig": {
+		"exports": {
+			".": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js"
+			}
+		}
+	},
+	"scripts": {
+		"build": "builder",
+		"eslint": "eslint . --max-warnings 0",
+		"prettier": "prettier . --check",
+		"typescript": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@klnjs/locale": "workspace:*",
+		"temporal-polyfill": "0.2.4"
+	},
+	"devDependencies": {
+		"@klnjs/builder": "workspace:*",
+		"@klnjs/eslint-config": "2.0.0",
+		"@klnjs/prettier-config": "2.0.0",
+		"@klnjs/typescript-config": "2.0.0",
+		"eslint": "8.57.0",
+		"prettier": "3.2.5",
+		"typescript": "5.4.5"
+	}
+}
