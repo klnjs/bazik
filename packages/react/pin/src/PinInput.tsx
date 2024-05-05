@@ -7,7 +7,7 @@ import type {
 import {
 	poly,
 	forwardRef,
-	useIdAndCallback,
+	useId,
 	useRefComposed,
 	useChainHandler,
 	type CoreProps
@@ -44,7 +44,7 @@ export const PinInput = forwardRef<'input', PinInputProps>(
 			setFocusWithin
 		} = usePinContext()
 
-		const id = useIdAndCallback(idProp, setInputId)
+		const id = useId(idProp, setInputId)
 		const refComposed = useRefComposed(inputRef, forwardedRef)
 
 		const pattern = usePinPattern(type)
