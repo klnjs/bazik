@@ -23,8 +23,6 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			readOnly,
 			select = 'one',
 			value,
-			onBlur: onFocusLeave,
-			onFocus: onFocusEnter,
 			onChange,
 			...otherProps
 		},

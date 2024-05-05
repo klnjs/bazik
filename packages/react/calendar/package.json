@@ -38,8 +38,7 @@
 		"@klnjs/core": "workspace:*",
 		"@klnjs/dom": "workspace:*",
 		"@klnjs/locale": "workspace:*",
-		"@klnjs/temporal": "workspace:*",
-		"temporal-polyfill": "0.2.4"
+		"@klnjs/temporal": "workspace:*"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",
@@ -53,6 +52,7 @@
 	},
 	"peerDependencies": {
 		"react": "18.3.1",
-		"react-dom": "18.3.1"
+		"react-dom": "18.3.1",
+		"temporal-polyfill": "0.2.4"
 	}
 }

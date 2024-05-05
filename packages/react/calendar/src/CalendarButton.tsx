@@ -8,12 +8,12 @@ import {
 	useCalendarLocalisation
 } from './useCalendarLocalisation'
 
-export type CalendarNavigateProps = CoreProps<
+export type CalendarButtonProps = CoreProps<
 	'button',
 	{ action: 'inc' | 'dec'; unit?: 'years' | 'months' }
 >
 
-export const CalendarNavigate = forwardRef<'button', CalendarNavigateProps>(
+export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 	(
 		{
 			action,

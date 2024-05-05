@@ -25,17 +25,66 @@ An element for creating calendar components.
 ## Features
 
 <Features>
-	<Feature>Write.</Feature>
-	<Feature>Stuff.</Feature>
-	<Feature>Here.</Feature>
+	<Feature>Controlled or uncontrolled.</Feature>
+	<Feature>Multiple selection modes - one, many and range.</Feature>
+	<Feature>Keyboard navigation and screen reader support.</Feature>
+	<Feature>Supports many calendar systems used around the world.</Feature>
+	<Feature>Localised i18n, formatting and right-to-left support.</Feature>
 </Features>
 
 ## Installation
 
-<Installation name="calendar" />
+:::warning
+
+The calendar component relies on a [temporal polyfill](https://www.npmjs.com/package/temporal-polyfill) for handling date operations. Ensure the polyfill is included in your project dependencies.
+
+:::
+
+<Installation name="calendar" dependencies={['temporal-polyfill']} />
 
 ## Reference
 
 ### Calendar (Root)
 
 Contains all the parts of an calendar.
+
+<ReferenceProps
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'autoFocus', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'calendar',
+			type: 'LocaleCalendar',
+			typeAdvanced:
+				"'buddhist' | 'chinese' | 'coptic' | 'dangi' | 'ethioaa' | 'ethiopic' | 'gregory' | 'hebrew' | 'indian' | 'islamic' | 'islamic-umalqura' | 'islamic-tbla' | 'islamic-civil' | 'islamic-rgsa' | 'iso8601' | 'japanese' | 'persian' | 'roc' | 'islamicc'"
+		},
+		{
+			name: 'defaultValue',
+			type: 'CalendarSelectValue',
+			typeAdvanced: 'null | PlainDate | PlainDate[] | PlainDateRange'
+		},
+		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
+		{ name: 'locale', type: 'string', defaultValue: 'navigator.language' },
+		{ name: 'max', type: 'PlainDate' },
+		{ name: 'min', type: 'PlainDate' },
+		{ name: 'months', type: 'number', defaultValue: '1' },
+		{ name: 'readOnly', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'select',
+			type: 'CalendarSelect',
+			typeAdvanced: "'one' | 'many' | 'range'",
+			defaultValue: 'one'
+		},
+		{
+			name: 'value',
+			type: 'CalendarSelectValue',
+			typeAdvanced: 'null | PlainDate | PlainDate[] | PlainDateRange'
+		},
+		{
+			name: 'onChange',
+			type: 'function',
+			typeAdvanced:
+				'(value: null | PlainDate | PlainDate[] | PlainDateRange) => void'
+		}
+	]}
+/>

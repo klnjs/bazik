@@ -72,8 +72,8 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 			Boolean(max && isAfter(date, max)) ||
 			Boolean(min && isBefore(date, min))
 
-		const isRangeStart = isRange && isSameDay(date, selectionVisible[0])
 		const isRangeEnd = isRange && isSameDay(date, selectionVisible[1])
+		const isRangeStart = isRange && isSameDay(date, selectionVisible[0])
 		const isRangeBetween =
 			isRange && isBetween(date, selectionVisible[0], selectionVisible[1])
 
@@ -196,11 +196,11 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				data-overflow={toData(isOverflow)}
 				data-disabled={toData(isDisabled)}
 				data-selected={toData(isSelected)}
-				data-week-start={toData(isWeekStart)}
 				data-week-end={toData(isWeekEnd)}
+				data-week-start={toData(isWeekStart)}
+				data-range-end={toData(isRangeEnd)}
 				data-range-start={toData(isRangeStart)}
 				data-range-between={toData(isRangeBetween)}
-				data-range-end={toData(isRangeEnd)}
 				aria-label={label}
 				aria-pressed={isSelected}
 				aria-disabled={isDisabled || isReadOnly}
