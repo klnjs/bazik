@@ -20,7 +20,7 @@ export const ReferenceAttrs = ({ attrs: attributes }: ReferenceAttrsProps) => (
 		</thead>
 		<tbody>
 			{attributes.map(({ name, description }) => (
-				<TableRow>
+				<TableRow key={name}>
 					<TableCell className={classes.prop}>{name}</TableCell>
 					<TableCell>{description}</TableCell>
 				</TableRow>
