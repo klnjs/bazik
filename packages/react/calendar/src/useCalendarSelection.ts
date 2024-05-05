@@ -1,13 +1,7 @@
-import {
-	useMemo,
-	useState,
-	useCallback,
-	useLayoutEffect,
-	type SetStateAction
-} from 'react'
-import { useStateControllable, useMounted } from '@klnjs/core'
+import { useMemo, useState, useCallback, type SetStateAction } from 'react'
+import { useEffectOnUpdate, useStateControllable } from '@klnjs/core'
 import { isDefined, isArray } from '@klnjs/assertion'
-import { compare } from './calendar-functions'
+import { compare } from '@klnjs/temporal'
 import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
@@ -43,8 +37,6 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	value,
 	onChange
 }: UseCalendarSelectionOptions<S>) => {
-	const isMounted = useMounted()
-
 	const [transient, setTransient] = useState<PlainDate>()
 
 	const [selection, setSelection] = useStateControllable<
@@ -109,13 +101,10 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		[selectionMode, setSelection]
 	)
 
-	useLayoutEffect(() => {
-		if (isMounted) {
-			setSelectionMode(behaviour ?? 'one')
-			setSelection(null)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [behaviour, setSelection])
+	useEffectOnUpdate(() => {
+		setSelection(null)
+		setSelectionMode(behaviour ?? 'one')
+	}, [behaviour])
 
 	return {
 		select,

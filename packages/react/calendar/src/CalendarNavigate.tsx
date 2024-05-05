@@ -1,29 +1,26 @@
 import { useCallback, useMemo } from 'react'
 import { Temporal } from 'temporal-polyfill'
 import { poly, forwardRef, toData, type CoreProps } from '@klnjs/core'
-import { isDefined } from '@klnjs/assertion'
+import { isAfter, isBefore } from '@klnjs/temporal'
 import { useCalendarContext } from './CalendarContext'
 import {
 	useCalendarDateFieldNames,
 	useCalendarLocalisation
 } from './useCalendarLocalisation'
-import { isAfter, isBefore } from './calendar-functions'
+
 import type { PlainDate } from './CalendarTypes'
 
-export type CalendarShiftProps = CoreProps<
+export type CalendarNavigateProps = CoreProps<
 	'button',
-	| { action: 'set'; years?: never; months?: never; date: PlainDate }
-	| { action: 'add' | 'sub'; years: number; months?: never; date?: never }
-	| { action: 'add' | 'sub'; years?: never; months?: number; date?: never }
+	| { action: 'set'; unit: PlainDate }
+	| { action: 'inc' | 'dec'; unit?: 'years' | 'months' }
 >
 
-export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
+export const CalendarNavigate = forwardRef<'button', CalendarNavigateProps>(
 	(
 		{
 			action,
-			date,
-			years,
-			months,
+			unit,
 			disabled: disabledProp = false,
 			children,
 			...otherProps
@@ -35,27 +32,30 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 			max,
 			locale,
 			disabled: disabledContext,
-			highlight,
 			highlighted,
 			visibleMonths,
-			visibleRangeShift
+			updateHighlighted,
+			updateVisibleRange
 		} = useCalendarContext()
 		const { t } = useCalendarLocalisation(locale)
 		const { names: dateFieldNames } = useCalendarDateFieldNames(locale)
 
-		const duration = useMemo(() => {
-			const initial = Temporal.Duration.from({
-				years,
-				months: months ?? visibleMonths
-			})
-
-			return action === 'sub' ? initial.negated() : initial
-		}, [action, years, months, visibleMonths])
+		const duration = useMemo(
+			() =>
+				Temporal.Duration.from({
+					years: unit === 'years' ? 1 : 0,
+					months:
+						unit === 'months' || unit === undefined
+							? visibleMonths
+							: 0
+				}),
+			[action, unit, visibleMonths]
+		)
 
 		const label = useMemo(() => {
 			if (action === 'set') {
 				return t(action, {
-					date: date.toLocaleString(locale, {
+					date: unit.toLocaleString(locale, {
 						year: 'numeric',
 						month: 'long',
 						weekday: 'long',
@@ -66,24 +66,24 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 
 			return t(action, {
 				segment:
-					dateFieldNames.of(isDefined(years) ? 'year' : 'month') ?? ''
+					dateFieldNames.of(unit === 'years' ? 'year' : 'month') ?? ''
 			})
-		}, [action, date, years, t, locale, dateFieldNames])
+		}, [action, unit, t, locale, dateFieldNames])
 
 		const content = useMemo(() => {
 			switch (action) {
-				case 'add':
-					return isDefined(years) ? '»' : '›'
-				case 'sub':
-					return isDefined(years) ? '«' : '‹'
+				case 'inc':
+					return unit === 'years' ? '»' : '›'
+				case 'dec':
+					return unit === 'years' ? '«' : '‹'
 				default:
 					return '•'
 			}
-		}, [action, years])
+		}, [action, unit])
 
 		const result = useMemo(
-			() => (action === 'set' ? date : highlighted.add(duration)),
-			[action, date, duration, highlighted]
+			() => (action === 'set' ? unit : highlighted.add(duration)),
+			[action, unit, duration, highlighted]
 		)
 
 		const isDisabled = useMemo(
@@ -97,11 +97,13 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 
 		const handleClick = useCallback(() => {
 			if (action === 'set') {
-				highlight(result)
+				updateHighlighted(result)
+			} else if (action === 'inc') {
+				updateVisibleRange(duration)
 			} else {
-				visibleRangeShift(duration)
+				updateVisibleRange(duration.negated())
 			}
-		}, [action, result, duration, highlight, visibleRangeShift])
+		}, [action, result, duration, updateHighlighted, updateVisibleRange])
 
 		return (
 			<poly.button

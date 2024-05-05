@@ -1,9 +1,9 @@
 import {
 	Calendar,
-	CalendarDay,
 	CalendarGrid,
+	CalendarCell,
 	CalendarHeader,
-	CalendarShift,
+	CalendarNavigate,
 	CalendarTitle
 } from '@klnjs/calendar'
 import classes from './calendar.module.css'
@@ -11,13 +11,17 @@ import classes from './calendar.module.css'
 export default () => (
 	<Calendar aria-label="Calendar" className={classes.calendar}>
 		<CalendarHeader className={classes.header}>
-			<CalendarShift action="sub" className={classes.button} />
+			<CalendarNavigate action="inc" className={classes.button} />
 			<CalendarTitle className={classes.title} />
-			<CalendarShift action="add" className={classes.button} />
+			<CalendarNavigate action="add" className={classes.button} />
 		</CalendarHeader>
 		<CalendarGrid className={classes.grid}>
-			{({ key, date }) => (
-				<CalendarDay key={key} date={date} className={classes.day} />
+			{({ type, date }) => (
+				<CalendarCell
+					type={type}
+					date={date}
+					className={classes.cell}
+				/>
 			)}
 		</CalendarGrid>
 	</Calendar>

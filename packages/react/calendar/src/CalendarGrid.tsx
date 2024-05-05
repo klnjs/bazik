@@ -34,7 +34,7 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 
 		return (
 			<CalendarGridProvider value={{ month, weeks, weekdays }}>
-				<poly.div ref={forwardedRef} role="application" {...otherProps}>
+				<poly.div ref={forwardedRef} {...otherProps}>
 					{cells.map(children)}
 				</poly.div>
 			</CalendarGridProvider>

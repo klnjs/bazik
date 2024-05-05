@@ -3,7 +3,8 @@ import {
 	useMemo,
 	useCallback,
 	useLayoutEffect,
-	type KeyboardEvent
+	type KeyboardEvent,
+	type FocusEvent
 } from 'react'
 import {
 	poly,
@@ -12,10 +13,8 @@ import {
 	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
-import { isRTL, isDefined } from '@klnjs/assertion'
-import { useCalendarContext } from './CalendarContext'
-import { useCalendarDayNames } from './useCalendarLocalisation'
-import { useCalendarGridContext } from './CalendarGridContext'
+import { isDefined } from '@klnjs/assertion'
+import { isElementRTL } from '@klnjs/dom'
 import {
 	isAfter,
 	isBefore,
@@ -26,38 +25,23 @@ import {
 	isStartOfWeek,
 	isToday as isTodayFn,
 	isWeekend as isWeekendFn
-} from './calendar-functions'
-import type { PlainDate } from './CalendarTypes'
+} from '@klnjs/temporal'
+import { useCalendarContext } from './CalendarContext'
+import { useCalendarDayNames } from './useCalendarLocalisation'
+import { useCalendarGridContext } from './CalendarGridContext'
+import { isCalendarCell, type CalendarCellProps } from './CalendarCell'
 
-export type CalendarDayProps = CoreProps<
-	'div',
-	{
-		date: PlainDate
-		disabled?: boolean
-		disabledIfWeekend?: boolean
-		disabledIfOverflow?: boolean
-	}
->
+export type CalendarCellDayProps = CoreProps<'div', CalendarCellProps>
 
-export const CalendarDay = forwardRef<'div', CalendarDayProps>(
-	(
-		{
-			date,
-			disabled: disabledProp = false,
-			disabledIfWeekend = false,
-			disabledIfOverflow = false,
-			children,
-			...otherProps
-		},
-		forwardedRef
-	) => {
+export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
+	({ type, date, children, ...otherProps }, forwardedRef) => {
 		const ref = useRef<HTMLDivElement>(null)
 		const refComposed = useRefComposed(ref, forwardedRef)
 
 		const {
 			disabled: disabledContext,
 			focusWithin: isFocusWithin,
-			highlight,
+			updateHighlighted,
 			highlighted,
 			locale,
 			max,
@@ -66,7 +50,8 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 			select,
 			selectionIsTransient,
 			selectionMode,
-			selectionVisible
+			selectionVisible,
+			setFocusWithin
 		} = useCalendarContext()
 		const { month } = useCalendarGridContext()
 		const { names: dayNames } = useCalendarDayNames(locale)
@@ -83,10 +68,7 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const isOverflow = !isSameMonth(date, month.toPlainDate({ day: 1 }))
 		const isFocused = isFocusWithin && isActive
 		const isDisabled =
-			disabledProp ||
 			disabledContext ||
-			(disabledIfWeekend && isWeekend) ||
-			(disabledIfOverflow && isOverflow) ||
 			Boolean(max && isAfter(date, max)) ||
 			Boolean(min && isBefore(date, min))
 
@@ -123,9 +105,9 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 		const handleClick = useCallback(() => {
 			if (isSelectable) {
 				select(date)
-				highlight(date)
+				updateHighlighted(date)
 			}
-		}, [date, isSelectable, select, highlight])
+		}, [date, isSelectable, select, updateHighlighted])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -148,31 +130,53 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				) {
 					select(date)
 				} else if (event.code === 'ArrowUp') {
-					highlight(date.add({ weeks: -1 }))
+					updateHighlighted(date.add({ weeks: -1 }))
 				} else if (event.code === 'ArrowRight') {
-					highlight(date.add({ days: isRTL(event.target) ? -1 : 1 }))
+					updateHighlighted(
+						date.add({
+							days: isElementRTL(event.target as HTMLElement)
+								? -1
+								: 1
+						})
+					)
 				} else if (event.code === 'ArrowDown') {
-					highlight(date.add({ weeks: 1 }))
+					updateHighlighted(date.add({ weeks: 1 }))
 				} else if (event.key === 'ArrowLeft') {
-					highlight(date.add({ days: isRTL(event.target) ? 1 : -1 }))
+					updateHighlighted(
+						date.add({
+							days: isElementRTL(event.target as HTMLElement)
+								? 1
+								: -1
+						})
+					)
 				} else if (event.code === 'PageUp') {
-					highlight(date.add({ months: 1 }))
+					updateHighlighted(date.add({ months: 1 }))
 				} else if (event.code === 'PageDown') {
-					highlight(date.add({ months: -1 }))
+					updateHighlighted(date.add({ months: -1 }))
 				} else if (event.code === 'Home') {
-					highlight(date.with({ day: 1 }))
+					updateHighlighted(date.with({ day: 1 }))
 				} else if (event.code === 'End') {
-					highlight(date.with({ day: date.daysInMonth }))
+					updateHighlighted(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[date, isSelectable, select, highlight]
+			[date, isSelectable, select, updateHighlighted]
 		)
 
 		const handlePointerOver = useCallback(() => {
 			if (shouldFocusOnPointerOver) {
-				highlight(date)
+				updateHighlighted(date)
 			}
-		}, [date, shouldFocusOnPointerOver, highlight])
+		}, [date, shouldFocusOnPointerOver, updateHighlighted])
+
+		const handleFocus = useCallback(() => {
+			setFocusWithin(true)
+		}, [])
+
+		const handleBlur = useCallback((event: FocusEvent) => {
+			if (!isCalendarCell(event.relatedTarget as HTMLElement, 'day')) {
+				setFocusWithin(false)
+			}
+		}, [])
 
 		useLayoutEffect(() => {
 			if (shouldFocus) {
@@ -203,6 +207,8 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				onPointerOver={handlePointerOver}
+				onFocus={handleFocus}
+				onBlur={handleBlur}
 				{...otherProps}
 			>
 				{children ?? date.day}

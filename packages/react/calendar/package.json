@@ -34,9 +34,11 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@klnjs/core": "workspace:*",
-		"@klnjs/locale": "workspace:*",
 		"@klnjs/assertion": "workspace:*",
+		"@klnjs/core": "workspace:*",
+		"@klnjs/dom": "workspace:*",
+		"@klnjs/locale": "workspace:*",
+		"@klnjs/temporal": "workspace:*",
 		"temporal-polyfill": "0.2.4"
 	},
 	"devDependencies": {

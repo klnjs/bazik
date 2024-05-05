@@ -1,4 +1,6 @@
 import { useState, useCallback } from 'react'
+import { clamp, isBetweenInclusive } from '@klnjs/temporal'
+import type { LocaleCalendar } from '@klnjs/locale'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
 import {
 	useCalendarSelection,
@@ -6,13 +8,15 @@ import {
 	type CalendarSelectValue
 } from './useCalendarSelection'
 import { useCalendarSystem } from './useCalendarSystem'
-import { useCalendarVisible } from './useCalendarVisible'
-import { clamp, isBetween, isSameDay } from './calendar-functions'
-import type { PlainDate, DurationLike } from './CalendarTypes'
+import {
+	expandVisibleRange,
+	useCalendarVisibleRange
+} from './useCalendarVisibleRange'
+import type { PlainDate, DurationLike, PlainDateRange } from './CalendarTypes'
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
-	calendar?: string
+	calendar?: LocaleCalendar
 	defaultValue?: CalendarSelectValue<S>
 	disabled?: boolean
 	locale?: string
@@ -44,17 +48,14 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	const { calendar } = useCalendarSystem({ locale, calendar: calendarProp })
 
 	const { highlighted, setHighlighted } = useCalendarHighlighted({
-		value,
+		date: value,
 		calendar
 	})
 
-	const { visibleRange, visibleMonths, addVisibleRange } = useCalendarVisible(
-		{
-			highlighted,
-			months,
-			calendar
-		}
-	)
+	const { visibleRange, setVisibleRange } = useCalendarVisibleRange({
+		date: highlighted,
+		months
+	})
 
 	const selection = useCalendarSelection({
 		behaviour: selectProp,
@@ -64,50 +65,60 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		onChange
 	})
 
-	const visibleRangeShift = useCallback(
-		(duration: DurationLike) => {
-			setHighlighted((prev) => prev.add(duration))
-			addVisibleRange(duration)
-		},
-		[setHighlighted, addVisibleRange]
+	const updateVisibleRange = useCallback(
+		(duration: DurationLike) =>
+			setVisibleRange((vr) => {
+				const result: PlainDateRange = expandVisibleRange([
+					vr[0].add(duration),
+					vr[1].add(duration)
+				])
+
+				setHighlighted((h) =>
+					isBetweenInclusive(h, result[0], result[1])
+						? h
+						: clamp(h.add(duration), { min, max })
+				)
+
+				return result
+			}),
+		[min, max, setHighlighted, setVisibleRange]
 	)
 
-	const highlight = useCallback(
-		(date: PlainDate) => {
-			const result = clamp(date, { min, max })
-			const visible =
-				isSameDay(result, visibleRange[0]) ||
-				isSameDay(result, visibleRange[1]) ||
-				isBetween(result, ...visibleRange)
+	const updateHighlighted = useCallback(
+		(date: PlainDate) =>
+			setHighlighted((h) => {
+				const result = clamp(date, { min, max })
+				const resultMonthsDelta =
+					result.year * 12 + result.month - (h.year * 12 + h.month)
 
-			setHighlighted(result)
+				setVisibleRange((vr) =>
+					isBetweenInclusive(result, vr[0], vr[1])
+						? vr
+						: expandVisibleRange([
+								vr[0].add({ months: resultMonthsDelta }),
+								vr[1].add({ months: resultMonthsDelta })
+							])
+				)
 
-			if (!visible) {
-				addVisibleRange({
-					months:
-						result.year * 12 +
-						result.month -
-						(highlighted.year * 12 + highlighted.month)
-				})
-			}
-		},
-		[min, max, highlighted, visibleRange, addVisibleRange, setHighlighted]
+				return result
+			}),
+		[min, max, setHighlighted, setVisibleRange]
 	)
 
 	return {
 		calendar,
 		disabled,
 		focusWithin,
-		focusWithinUpdate: setFocusWithin,
-		highlight,
 		highlighted,
 		locale,
 		max,
 		min,
 		readOnly,
-		visibleMonths,
+		visibleMonths: months,
 		visibleRange,
-		visibleRangeShift,
+		setFocusWithin,
+		updateHighlighted,
+		updateVisibleRange,
 		...selection
 	}
 }

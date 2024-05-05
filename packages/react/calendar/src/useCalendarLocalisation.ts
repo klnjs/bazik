@@ -4,13 +4,8 @@ import { isProperty } from '@klnjs/assertion'
 export const calendarLocalisation = {
 	en: {
 		set: 'Jump to {{date}}',
-		add: 'Next {{segment}}',
-		sub: 'Previous {{segment}}'
-	},
-	da: {
-		set: 'Jump to {{date}}',
-		add: 'Næste {{segment}}',
-		sub: 'Forrige {{segment}}'
+		inc: 'Next {{segment}}',
+		dec: 'Previous {{segment}}'
 	}
 } as const
 
