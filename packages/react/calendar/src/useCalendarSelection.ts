@@ -23,11 +23,11 @@ export type UseCalendarSelectionOptions<S extends CalendarSelect> = {
 }
 
 export type UseCalendarSelectionReturn<S extends CalendarSelect> = {
-	select: (date: PlainDate) => void
 	selection: CalendarSelectValue<S>
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
 	selectionVisible: CalendarSelectValue<S>
+	updateSelection: (date: PlainDate) => void
 }
 
 export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
@@ -65,7 +65,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		]
 	}, [selectionMode, selection, transient, highlighted])
 
-	const select = useCallback(
+	const updateSelection = useCallback(
 		(date: PlainDate) => {
 			if (selectionMode === 'one') {
 				setSelection(date)
@@ -107,11 +107,11 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	}, [behaviour])
 
 	return {
-		select,
 		selection,
 		selectionIsTransient,
 		selectionMode,
-		selectionVisible
+		selectionVisible,
+		updateSelection
 	} as
 		| UseCalendarSelectionReturn<'one'>
 		| UseCalendarSelectionReturn<'many'>

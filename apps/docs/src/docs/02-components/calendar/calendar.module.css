@@ -80,7 +80,7 @@
 	cursor: pointer;
 }
 
-.cell[data-day]:not([data-selected]):hover {
+.cell[data-day]:not([data-selected]):not([data-range-between]):hover {
 	background: var(--ifm-menu-color-background-hover);
 }
 
@@ -109,18 +109,18 @@
 	pointer-events: none;
 }
 
-.cell[data-range-start] {
+.cell[data-range-start]:not([data-range-end]) {
 	border-start-end-radius: 0;
 	border-end-end-radius: 0;
 }
 
-.cell[data-range-end] {
+.cell[data-range-end]:not([data-range-start]) {
 	border-start-start-radius: 0;
 	border-end-start-radius: 0;
 }
 
 .cell[data-range-between] {
-	background: #89ccff;
+	background-color: rgba(var(--ifm-color-primary-rgb), 0.2);
 	border-radius: 0;
 }
 

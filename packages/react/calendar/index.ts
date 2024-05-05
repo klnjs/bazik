@@ -1,6 +1,7 @@
 export * from './src/Calendar'
 export * from './src/CalendarCell'
 export * from './src/CalendarGrid'
+export * from './src/CalendarGroup'
 export * from './src/CalendarHeader'
 export * from './src/CalendarNavigate'
 export * from './src/CalendarTitle'

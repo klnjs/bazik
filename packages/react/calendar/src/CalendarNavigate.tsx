@@ -4,23 +4,20 @@ import { poly, forwardRef, toData, type CoreProps } from '@klnjs/core'
 import { isAfter, isBefore } from '@klnjs/temporal'
 import { useCalendarContext } from './CalendarContext'
 import {
-	useCalendarDateFieldNames,
+	useCalendarFieldNames,
 	useCalendarLocalisation
 } from './useCalendarLocalisation'
 
-import type { PlainDate } from './CalendarTypes'
-
 export type CalendarNavigateProps = CoreProps<
 	'button',
-	| { action: 'set'; unit: PlainDate }
-	| { action: 'inc' | 'dec'; unit?: 'years' | 'months' }
+	{ action: 'inc' | 'dec'; unit?: 'years' | 'months' }
 >
 
 export const CalendarNavigate = forwardRef<'button', CalendarNavigateProps>(
 	(
 		{
 			action,
-			unit,
+			unit = 'months',
 			disabled: disabledProp = false,
 			children,
 			...otherProps
@@ -34,41 +31,24 @@ export const CalendarNavigate = forwardRef<'button', CalendarNavigateProps>(
 			disabled: disabledContext,
 			highlighted,
 			visibleMonths,
-			updateHighlighted,
 			updateVisibleRange
 		} = useCalendarContext()
 		const { t } = useCalendarLocalisation(locale)
-		const { names: dateFieldNames } = useCalendarDateFieldNames(locale)
+		const { names: fieldNames } = useCalendarFieldNames(locale)
 
-		const duration = useMemo(
-			() =>
-				Temporal.Duration.from({
-					years: unit === 'years' ? 1 : 0,
-					months:
-						unit === 'months' || unit === undefined
-							? visibleMonths
-							: 0
-				}),
-			[action, unit, visibleMonths]
-		)
-
-		const label = useMemo(() => {
-			if (action === 'set') {
-				return t(action, {
-					date: unit.toLocaleString(locale, {
-						year: 'numeric',
-						month: 'long',
-						weekday: 'long',
-						day: 'numeric'
-					})
-				})
-			}
-
-			return t(action, {
-				segment:
-					dateFieldNames.of(unit === 'years' ? 'year' : 'month') ?? ''
+		const duration = useMemo(() => {
+			const increment = Temporal.Duration.from({
+				years: unit === 'years' ? 1 : 0,
+				months: unit === 'months' ? visibleMonths : 0
 			})
-		}, [action, unit, t, locale, dateFieldNames])
+
+			return action === 'inc' ? increment : increment.negated()
+		}, [action, unit, visibleMonths])
+
+		const label = useMemo(
+			() => t(action, { unit: fieldNames.of(unit.slice(0, -1)) ?? '' }),
+			[action, unit, t, fieldNames]
+		)
 
 		const content = useMemo(() => {
 			switch (action) {
@@ -82,8 +62,8 @@ export const CalendarNavigate = forwardRef<'button', CalendarNavigateProps>(
 		}, [action, unit])
 
 		const result = useMemo(
-			() => (action === 'set' ? unit : highlighted.add(duration)),
-			[action, unit, duration, highlighted]
+			() => highlighted.add(duration),
+			[duration, highlighted]
 		)
 
 		const isDisabled = useMemo(
@@ -96,14 +76,8 @@ export const CalendarNavigate = forwardRef<'button', CalendarNavigateProps>(
 		)
 
 		const handleClick = useCallback(() => {
-			if (action === 'set') {
-				updateHighlighted(result)
-			} else if (action === 'inc') {
-				updateVisibleRange(duration)
-			} else {
-				updateVisibleRange(duration.negated())
-			}
-		}, [action, result, duration, updateHighlighted, updateVisibleRange])
+			updateVisibleRange(duration)
+		}, [duration, updateVisibleRange])
 
 		return (
 			<poly.button

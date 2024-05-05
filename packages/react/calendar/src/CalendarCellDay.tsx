@@ -41,17 +41,17 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 		const {
 			disabled: disabledContext,
 			focusWithin: isFocusWithin,
-			updateHighlighted,
 			highlighted,
 			locale,
 			max,
 			min,
 			readOnly: isReadOnly,
-			select,
 			selectionIsTransient,
 			selectionMode,
 			selectionVisible,
-			setFocusWithin
+			setFocusWithin,
+			updateSelection,
+			updateHighlighted
 		} = useCalendarContext()
 		const { month } = useCalendarGridContext()
 		const { names: dayNames } = useCalendarDayNames(locale)
@@ -104,10 +104,10 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 
 		const handleClick = useCallback(() => {
 			if (isSelectable) {
-				select(date)
+				updateSelection(date)
 				updateHighlighted(date)
 			}
-		}, [date, isSelectable, select, updateHighlighted])
+		}, [date, isSelectable, updateSelection, updateHighlighted])
 
 		const handleKeyDown = useCallback(
 			(event: KeyboardEvent<HTMLDivElement>) => {
@@ -128,7 +128,7 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 					(event.code === 'Enter' || event.code === 'Space') &&
 					isSelectable
 				) {
-					select(date)
+					updateSelection(date)
 				} else if (event.code === 'ArrowUp') {
 					updateHighlighted(date.add({ weeks: -1 }))
 				} else if (event.code === 'ArrowRight') {
@@ -159,7 +159,7 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 					updateHighlighted(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[date, isSelectable, select, updateHighlighted]
+			[date, isSelectable, updateSelection, updateHighlighted]
 		)
 
 		const handlePointerOver = useCallback(() => {
@@ -204,11 +204,11 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				aria-label={label}
 				aria-pressed={isSelected}
 				aria-disabled={isDisabled || isReadOnly}
+				onBlur={handleBlur}
+				onFocus={handleFocus}
 				onClick={handleClick}
 				onKeyDown={handleKeyDown}
 				onPointerOver={handlePointerOver}
-				onFocus={handleFocus}
-				onBlur={handleBlur}
 				{...otherProps}
 			>
 				{children ?? date.day}
