@@ -49,6 +49,7 @@ Contains all the parts of an pin.
 			typeAdvanced: 'string | { symbol: string; delay: number }',
 			defaultValue: 'false'
 		},
+		{ name: 'defaultValue', type: 'string' },
 		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
 		{ name: 'length', type: 'number', defaultValue: '4' },
 		{
@@ -57,7 +58,12 @@ Contains all the parts of an pin.
 			typeAdvanced: "'alphabetic' | 'alphanumeric' | 'numeric'",
 			defaultValue: 'alphanumeric'
 		},
-		{ name: 'value', type: 'string' }
+		{ name: 'value', type: 'string' },
+		{
+			name: 'onChange',
+			type: 'function',
+			typeAdvanced: '(value: string) => void'
+		}
 	]}
 />
 
@@ -119,7 +125,6 @@ Clicking a slot will focus the input, therefore focus events should be attached 
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'placeholder', type: 'string' }
 	]}
-
 />
 
 <ReferenceAttrs
