@@ -8,7 +8,7 @@ import {
 import {
 	poly,
 	forwardRef,
-	toData,
+	asDataProp,
 	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
@@ -191,17 +191,17 @@ export const CalendarDay = forwardRef<'div', CalendarDayProps>(
 				role="button"
 				tabIndex={isTabbable ? 0 : -1}
 				data-day
-				data-today={toData(isToday)}
-				data-weekend={toData(isWeekend)}
-				data-week-start={toData(isWeekStart)}
-				data-week-end={toData(isWeekEnd)}
-				data-overflow={toData(isOverflow)}
-				data-disabled={toData(isDisabled)}
-				data-selected={toData(isSelected)}
-				data-highlighted={toData(isHighlighted)}
-				data-range-end={toData(isRangeEnd)}
-				data-range-start={toData(isRangeStart)}
-				data-range-between={toData(isRangeBetween)}
+				data-today={asDataProp(isToday)}
+				data-weekend={asDataProp(isWeekend)}
+				data-week-start={asDataProp(isWeekStart)}
+				data-week-end={asDataProp(isWeekEnd)}
+				data-overflow={asDataProp(isOverflow)}
+				data-disabled={asDataProp(isDisabled)}
+				data-selected={asDataProp(isSelected)}
+				data-highlighted={asDataProp(isHighlighted)}
+				data-range-end={asDataProp(isRangeEnd)}
+				data-range-start={asDataProp(isRangeStart)}
+				data-range-between={asDataProp(isRangeBetween)}
 				aria-label={label}
 				aria-readonly={isReadOnly}
 				aria-selected={isSelected}

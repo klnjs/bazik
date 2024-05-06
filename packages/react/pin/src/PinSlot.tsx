@@ -1,7 +1,8 @@
 import {
+	asDataProp,
 	forwardRef,
-	toData,
 	useChainHandler,
+	useDataProps,
 	type CoreProps
 } from '@klnjs/core'
 import { usePinContext } from './PinContext'
@@ -54,15 +55,16 @@ export const PinSlot = forwardRef<'div', PinSlotProps>(
 		return (
 			<div
 				ref={forwardedRef}
-				data-end={toData(isEnd)}
-				data-start={toData(isStart)}
-				data-caret={toData(isCaret)}
-				data-focused={toData(isFocused)}
-				data-disabled={toData(isDisabled)}
-				data-concealed={toData(isConcealed)}
-				data-placeholder={toData(isPlaceholder)}
+				data-end={asDataProp(isEnd)}
+				data-start={asDataProp(isStart)}
+				data-caret={asDataProp(isCaret)}
+				data-focused={asDataProp(isFocused)}
+				data-disabled={asDataProp(isDisabled)}
+				data-concealed={asDataProp(isConcealed)}
+				data-placeholder={asDataProp(isPlaceholder)}
 				onPointerDown={handlePointerDown}
 				{...otherProps}
+				{...useDataProps({})}
 			>
 				{content}
 			</div>

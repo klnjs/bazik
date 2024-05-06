@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { forwardRef } from '@klnjs/core'
+import { forwardRef, asDataProp } from '@klnjs/core'
 import { CalendarDay } from './CalendarDay'
 import { CalendarBlank } from './CalendarBlank'
 import { CalendarWeek } from './CalendarWeek'
@@ -33,7 +33,7 @@ export const CalendarCell = forwardRef<'div', CalendarCellProps>(
 			<Component
 				ref={forwardedRef}
 				date={date}
-				data-role={role}
+				data-role={asDataProp(role)}
 				{...otherProps}
 			/>
 		)

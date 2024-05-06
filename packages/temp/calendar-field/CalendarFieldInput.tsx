@@ -1,5 +1,5 @@
 import { useCallback, type PointerEvent } from 'react'
-import { poly, forwardRef, toData, type CoreProps } from '../core'
+import { poly, forwardRef, asDataProp, type CoreProps } from '../core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 
 export type CalendarFieldInputProps = CoreProps<'div'>
@@ -22,7 +22,7 @@ export const CalendarFieldInput = forwardRef<'div', CalendarFieldInputProps>(
 			<poly.div
 				ref={forwardedRef}
 				onPointerDown={handlePointerDown}
-				data-disabled={toData(disabled)}
+				data-disabled={asDataProp(disabled)}
 				{...props}
 			/>
 		)

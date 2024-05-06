@@ -1,5 +1,11 @@
 import { FloatingPortal, FloatingFocusManager } from '@floating-ui/react'
-import { poly, forwardRef, useRefComposed, type CoreProps } from '@klnjs/core'
+import {
+	poly,
+	forwardRef,
+	asDataProp,
+	useRefComposed,
+	type CoreProps
+} from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverContentProps = CoreProps<'div'>
@@ -41,8 +47,8 @@ export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 						style={{ ...context.floatingStyles, ...style }}
 						aria-labelledby={labelId}
 						aria-describedby={descriptionId}
-						data-status={status}
-						data-placement={placement}
+						data-status={asDataProp(status)}
+						data-placement={asDataProp(placement)}
 						{...getFloatingProps(otherProps)}
 					/>
 				</FloatingFocusManager>
