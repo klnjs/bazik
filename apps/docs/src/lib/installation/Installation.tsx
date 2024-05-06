@@ -11,10 +11,12 @@ export type InstallationProps = {
 export const Installation = ({
 	name,
 	manager = 'bun',
-	dependencies
+	dependencies: dependenciesProp
 }: InstallationProps) => {
 	const script = `${manager} install @klnjs/${name}`
-	const scriptWithDependencies = [script, ...(dependencies || [])].join(' ')
+	const dependencies = dependenciesProp ?? []
 
-	return <Snippet language="bash">{scriptWithDependencies}</Snippet>
+	return (
+		<Snippet language="bash">{[script, ...dependencies].join(' ')}</Snippet>
+	)
 }

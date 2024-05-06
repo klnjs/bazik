@@ -170,13 +170,18 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 
 		const handleFocus = useCallback(() => {
 			setFocusWithin(true)
-		}, [])
+		}, [setFocusWithin])
 
-		const handleBlur = useCallback((event: FocusEvent) => {
-			if (!isCalendarCell(event.relatedTarget as HTMLElement, 'day')) {
-				setFocusWithin(false)
-			}
-		}, [])
+		const handleBlur = useCallback(
+			(event: FocusEvent) => {
+				if (
+					!isCalendarCell(event.relatedTarget as HTMLElement, 'day')
+				) {
+					setFocusWithin(false)
+				}
+			},
+			[setFocusWithin]
+		)
 
 		useLayoutEffect(() => {
 			if (shouldFocus) {

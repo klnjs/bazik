@@ -11,7 +11,7 @@ export const useCalendarSystem = ({
 	calendar
 }: UseCalendarSystemOptions) => {
 	const system = useMemo(
-		() => calendar ?? (getCalendars(locale)[0] as LocaleCalendar),
+		() => calendar ?? getCalendars(locale)[0] ?? 'iso8601',
 		[calendar, locale]
 	)
 

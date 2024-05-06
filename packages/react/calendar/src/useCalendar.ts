@@ -102,7 +102,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 				return result
 			}),
-		[min, max, months, setHighlighted, setVisibleRange]
+		[min, max, setHighlighted, setVisibleRange]
 	)
 
 	return {
