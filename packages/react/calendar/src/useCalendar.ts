@@ -34,7 +34,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	calendar: calendarProp,
 	defaultValue = null,
 	disabled = false,
-	locale = navigator.language,
+	locale = 'en',
 	max,
 	min,
 	months = 1,
