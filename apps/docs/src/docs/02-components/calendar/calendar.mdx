@@ -1,0 +1,192 @@
+import { Features, Feature } from '@site/src/lib/features'
+import { Installation } from '@site/src/lib/installation'
+import { ReferenceProps, ReferenceAttrs } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Calendar from './calendar'
+import source from '!!raw-loader!./calendar.tsx'
+import styles from '!!raw-loader!./calendar.module.css'
+
+# Calendar
+
+An element for creating calendar components.
+
+## Showcase
+
+<Showcase
+	name="calendar"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Calendar />
+</Showcase>
+
+## Features
+
+<Features>
+	<Feature>Controlled or uncontrolled.</Feature>
+	<Feature>Multiple selection modes - one, many and range.</Feature>
+	<Feature>Keyboard navigation and screen reader support.</Feature>
+	<Feature>Supports calendar systems used around the world.</Feature>
+	<Feature>Localisation, formatting and right-to-left support.</Feature>
+</Features>
+
+## Installation
+
+:::warning
+
+The calendar component relies on a [temporal polyfill](https://www.npmjs.com/package/temporal-polyfill) for handling date operations. Ensure the polyfill is included in your project dependencies.
+
+:::
+
+<Installation name="calendar" dependencies={['temporal-polyfill']} />
+
+## Reference
+
+### Calendar (Root)
+
+Contains all the parts of an calendar. As the calendar does not have html semantics for providing a label, it is recommended to provide an `aria-label` to ensure good accessibility.
+
+<ReferenceProps
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'autoFocus', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'calendar',
+			type: 'LocaleCalendar',
+			typeAdvanced:
+				"'buddhist' | 'chinese' | 'coptic' | 'dangi' | 'ethioaa' | 'ethiopic' | 'gregory' | 'hebrew' | 'indian' | 'islamic' | 'islamic-umalqura' | 'islamic-tbla' | 'islamic-civil' | 'islamic-rgsa' | 'iso8601' | 'japanese' | 'persian' | 'roc' | 'islamicc'"
+		},
+		{
+			name: 'defaultValue',
+			type: 'CalendarSelectValue',
+			typeAdvanced: 'null | PlainDate | PlainDate[] | PlainDateRange'
+		},
+		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
+		{ name: 'locale', type: 'string', defaultValue: 'en' },
+		{ name: 'max', type: 'PlainDate' },
+		{ name: 'min', type: 'PlainDate' },
+		{ name: 'months', type: 'number', defaultValue: '1' },
+		{ name: 'readOnly', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'select',
+			type: 'CalendarSelect',
+			typeAdvanced: "'one' | 'many' | 'range'",
+			defaultValue: 'one'
+		},
+		{
+			name: 'value',
+			type: 'CalendarSelectValue',
+			typeAdvanced: 'null | PlainDate | PlainDate[] | PlainDateRange'
+		},
+		{
+			name: 'onChange',
+			type: 'function',
+			typeAdvanced:
+				'(value: null | PlainDate | PlainDate[] | PlainDateRange) => void'
+		}
+	]}
+/>
+
+### CalendarHeader
+
+Used to group calendar components in a `<header />` element.
+
+<ReferenceProps
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+/>
+
+### CalendarTitle
+
+Display a localised title representing the current visible range of the calendar.
+
+<ReferenceProps
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+/>
+
+### CalendarButton
+
+Facilitates navigation in the calendar, to ensure keyboard accessibility the active day will be moved to the best matching day within the visible range.
+
+Use the `action` to either increment or decrement the visible range. The `unit` prop is used to decide how far the visible range is shifted, when set to months, it will shift by the root property `months`. The button will be disabled when the action would cause the visible range to land outside of the root properties `min` and `max`.
+
+<ReferenceProps
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'action', type: "'inc' | 'dec'" },
+		{ name: 'unit', type: "'months' | 'years'", defaultValue: 'months' }
+	]}
+/>
+
+### CalendarGroup
+
+Used to group grid components when working with multiple months via the root property `months`.
+
+<ReferenceProps
+	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
+/>
+
+### CalendarGrid
+
+Given the dynamic length of the visible range in the calendar, this utility component provides means to render the cells relevant to the visible range using a render function as child.
+
+The properties `week` and `weekdays` can be used to enable week day and week number headers, when both properties are enabled blank cells can occur in the grid. To differentiate between the different cell types, the render function provides a `type` property.
+
+<ReferenceProps
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{ name: 'week', type: 'boolean', defaultValue: 'false' },
+		{ name: 'weekdays', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'children',
+			type: 'function',
+			typeAdvanced:
+				'(cell: { type: CalendarCellType, date: PlainDate }, index: number ) => ReactNode'
+		}
+	]}
+/>
+
+### CalendarCell
+
+Used to render individual cells in the grid, it should be used in conjunction with the grid utility component. Cell will render a different native element based on the `type` prop.
+
+Cell provides accessibility like localised labeling and keyboard navigation. For sighted users, it provides `data-*` attributes enabling styling of the different cell types and states.
+
+<ReferenceProps
+	props={[
+		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
+		{
+			name: 'type',
+			type: 'CalendarCellType',
+			typeAdvanced: "'week' | 'weekday' | 'day' | 'blank'"
+		},
+		{ name: 'date', type: 'PlainDate' }
+	]}
+/>
+
+<ReferenceAttrs
+	attrs={[
+		{
+			name: 'data-cell',
+			description: "'week' | 'weekday' | 'day' | 'blank'"
+		},
+		{ name: 'data-today', description: 'cell is today' },
+		{ name: 'data-weekend', description: 'cell is weekend' },
+		{ name: 'data-focused', description: 'cell is focused' },
+		{ name: 'data-overflow', description: 'cell is outside month' },
+		{ name: 'data-disabled', description: 'cell is disabled' },
+		{ name: 'data-selected', description: 'cell is selected' },
+		{ name: 'data-week-end', description: 'cell is last day of week' },
+		{ name: 'data-week-start', description: 'cell is first day of week' },
+		{ name: 'data-range-end', description: 'cell is last day of range' },
+		{
+			name: 'data-range-start',
+			description: 'cell is first day of range'
+		},
+		{
+			name: 'data-range-between',
+			description: 'cell is inside range'
+		}
+	]}
+/>

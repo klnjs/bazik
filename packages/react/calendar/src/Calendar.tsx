@@ -1,11 +1,8 @@
 import type { ReactElement, Ref } from 'react'
-import { poly, forwardRef, useFocusWithin, type CoreProps } from '@klnjs/core'
+import { poly, forwardRef, type CoreProps } from '@klnjs/core'
 import { CalendarProvider } from './CalendarContext'
-import {
-	useCalendar,
-	type CalendarSelect,
-	type UseCalendarOptions
-} from './useCalendar'
+import { useCalendar, type UseCalendarOptions } from './useCalendar'
+import type { CalendarSelect } from './useCalendarSelection'
 
 export type CalendarProps<S extends CalendarSelect = 'one'> = CoreProps<
 	'div',
@@ -26,8 +23,6 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			readOnly,
 			select = 'one',
 			value,
-			onBlur: onFocusLeave,
-			onFocus: onFocusEnter,
 			onChange,
 			...otherProps
 		},
@@ -48,25 +43,11 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			onChange
 		})
 
-		const focusProps = useFocusWithin({
-			onFocusEnter,
-			onFocusLeave,
-			onFocusChange: (_, isFocusWithin) => {
-				calendar.focusWithinUpdate(isFocusWithin)
-
-				if (!isFocusWithin && calendar.selectionIsTransient) {
-					calendar.select(calendar.highlighted)
-				}
-			}
-		})
-
 		return (
 			<CalendarProvider value={calendar}>
 				<poly.div
 					ref={forwardedRef}
 					role="application"
-					aria-readonly={readOnly}
-					{...focusProps}
 					{...otherProps}
 				/>
 			</CalendarProvider>

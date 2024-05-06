@@ -13,12 +13,18 @@
 		"src",
 		"dist"
 	],
-	"types": "./dist/index.d.ts",
-	"module": "./dist/index.js",
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
+			"types": "./index.ts",
+			"import": "./index.ts"
+		}
+	},
+	"publishConfig": {
+		"exports": {
+			".": {
+				"types": "./dist/index.d.ts",
+				"import": "./dist/index.js"
+			}
 		}
 	},
 	"scripts": {
@@ -28,10 +34,11 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@klnjs/core": "workspace:*",
-		"@klnjs/locale": "workspace:*",
 		"@klnjs/assertion": "workspace:*",
-		"temporal-polyfill": "0.2.4"
+		"@klnjs/core": "workspace:*",
+		"@klnjs/dom": "workspace:*",
+		"@klnjs/locale": "workspace:*",
+		"@klnjs/temporal": "workspace:*"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",
@@ -45,6 +52,7 @@
 	},
 	"peerDependencies": {
 		"react": "18.3.1",
-		"react-dom": "18.3.1"
+		"react-dom": "18.3.1",
+		"temporal-polyfill": "0.2.4"
 	}
 }

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { getCalendars } from '@klnjs/locale'
+import { getCalendars, type LocaleCalendar } from '@klnjs/locale'
 
 export type UseCalendarSystemOptions = {
 	locale: string
-	calendar?: string
+	calendar?: LocaleCalendar
 }
 
 export const useCalendarSystem = ({
@@ -11,7 +11,7 @@ export const useCalendarSystem = ({
 	calendar
 }: UseCalendarSystemOptions) => {
 	const system = useMemo(
-		() => calendar ?? getCalendars(locale)[0],
+		() => calendar ?? getCalendars(locale)[0] ?? 'iso8601',
 		[calendar, locale]
 	)
 

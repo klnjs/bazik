@@ -4,9 +4,19 @@ export type InstallationManager = 'bun' | 'npm' | 'pnpm' | 'yarn'
 
 export type InstallationProps = {
 	name: string
-	manager: InstallationManager
+	manager?: InstallationManager
+	dependencies?: string[]
 }
 
-export const Installation = ({ name, manager = 'pnpm' }: InstallationProps) => (
-	<Snippet language="bash">{`${manager} install @klnjs/${name}`}</Snippet>
-)
+export const Installation = ({
+	name,
+	manager = 'bun',
+	dependencies: dependenciesProp
+}: InstallationProps) => {
+	const script = `${manager} install @klnjs/${name}`
+	const dependencies = dependenciesProp ?? []
+
+	return (
+		<Snippet language="bash">{[script, ...dependencies].join(' ')}</Snippet>
+	)
+}

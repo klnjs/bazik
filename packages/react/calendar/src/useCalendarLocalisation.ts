@@ -4,13 +4,8 @@ import { isProperty } from '@klnjs/assertion'
 export const calendarLocalisation = {
 	en: {
 		set: 'Jump to {{date}}',
-		add: 'Next {{segment}}',
-		sub: 'Previous {{segment}}'
-	},
-	da: {
-		set: 'Jump to {{date}}',
-		add: 'Næste {{segment}}',
-		sub: 'Forrige {{segment}}'
+		inc: 'Next {{unit}}',
+		dec: 'Previous {{unit}}'
 	}
 } as const
 
@@ -39,7 +34,7 @@ export const useCalendarLocalisation = (locale: string) => {
 	return { t }
 }
 
-export const useCalendarDateFieldNames = (locale: string) =>
+export const useCalendarFieldNames = (locale: string) =>
 	useMemo(
 		() => ({
 			names: new Intl.DisplayNames(locale, { type: 'dateTimeField' })
