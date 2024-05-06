@@ -1,4 +1,10 @@
-import { poly, forwardRef, useId, toData, type CoreProps } from '@klnjs/core'
+import {
+	poly,
+	forwardRef,
+	useId,
+	asDataProp,
+	type CoreProps
+} from '@klnjs/core'
 import { usePinContext } from './PinContext'
 
 export type PinLabelProps = CoreProps<'label'>
@@ -13,7 +19,7 @@ export const PinLabel = forwardRef<'label', PinLabelProps>(
 				id={id}
 				ref={forwardedRef}
 				htmlFor={inputId}
-				data-disabled={toData(disabled)}
+				data-disabled={asDataProp(disabled)}
 				{...otherProps}
 			/>
 		)

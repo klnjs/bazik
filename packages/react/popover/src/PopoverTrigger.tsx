@@ -1,7 +1,7 @@
 import {
 	poly,
 	forwardRef,
-	toData,
+	asDataProp,
 	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
@@ -17,8 +17,8 @@ export const PopoverTrigger = forwardRef<'button'>((props, forwardedRef) => {
 		<poly.button
 			ref={ref}
 			type="button"
-			data-open={toData(open)}
-			data-status={status}
+			data-open={asDataProp(open)}
+			data-status={asDataProp(status)}
 			{...getReferenceProps(props)}
 		/>
 	)

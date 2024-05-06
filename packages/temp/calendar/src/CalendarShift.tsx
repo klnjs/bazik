@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { Temporal } from 'temporal-polyfill'
-import { poly, forwardRef, toData, type CoreProps } from '@klnjs/core'
+import { poly, forwardRef, asDataProp, type CoreProps } from '@klnjs/core'
 import { isDefined } from '@klnjs/assertion'
 import { useCalendarContext } from './CalendarContext'
 import {
@@ -108,7 +108,7 @@ export const CalendarShift = forwardRef<'button', CalendarShiftProps>(
 				ref={forwardedRef}
 				type="button"
 				disabled={isDisabled}
-				data-disabled={toData(isDisabled)}
+				data-disabled={asDataProp(isDisabled)}
 				aria-label={label}
 				aria-disabled={isDisabled}
 				onClick={handleClick}
