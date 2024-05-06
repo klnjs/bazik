@@ -1,35 +1,33 @@
-import {
-	useMemo,
-	useState,
-	useCallback,
-	useLayoutEffect,
-	type SetStateAction
-} from 'react'
-import { useStateControllable, useMounted } from '@klnjs/core'
+import { useMemo, useState, useCallback, type SetStateAction } from 'react'
+import { useEffectOnUpdate, useStateControllable } from '@klnjs/core'
 import { isDefined, isArray } from '@klnjs/assertion'
-import { compare } from './calendar-functions'
-import type { Date, DateRange } from './calendar-types'
+import { compare } from '@klnjs/temporal'
+import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
 
 export type CalendarSelectValue<S extends CalendarSelect> =
 	| null
-	| (S extends 'range' ? DateRange : S extends 'many' ? Date[] : Date)
+	| (S extends 'range'
+			? PlainDateRange
+			: S extends 'many'
+				? PlainDate[]
+				: PlainDate)
 
 export type UseCalendarSelectionOptions<S extends CalendarSelect> = {
 	defaultValue?: CalendarSelectValue<S>
-	highlighted: Date
+	highlighted: PlainDate
 	behaviour?: S
 	value?: CalendarSelectValue<S>
 	onChange?: (value: CalendarSelectValue<S>) => void
 }
 
 export type UseCalendarSelectionReturn<S extends CalendarSelect> = {
-	select: (date: Date) => void
 	selection: CalendarSelectValue<S>
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
 	selectionVisible: CalendarSelectValue<S>
+	updateSelection: (date: PlainDate) => void
 }
 
 export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
@@ -39,9 +37,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 	value,
 	onChange
 }: UseCalendarSelectionOptions<S>) => {
-	const isMounted = useMounted()
-
-	const [transient, setTransient] = useState<Date>()
+	const [transient, setTransient] = useState<PlainDate>()
 
 	const [selection, setSelection] = useStateControllable<
 		CalendarSelectValue<CalendarSelect>
@@ -69,8 +65,8 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		]
 	}, [selectionMode, selection, transient, highlighted])
 
-	const select = useCallback(
-		(date: Date) => {
+	const updateSelection = useCallback(
+		(date: PlainDate) => {
 			if (selectionMode === 'one') {
 				setSelection(date)
 			}
@@ -105,20 +101,17 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		[selectionMode, setSelection]
 	)
 
-	useLayoutEffect(() => {
-		if (isMounted) {
-			setSelectionMode(behaviour ?? 'one')
-			setSelection(null)
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [behaviour, setSelection])
+	useEffectOnUpdate(() => {
+		setSelection(null)
+		setSelectionMode(behaviour ?? 'one')
+	}, [behaviour])
 
 	return {
-		select,
 		selection,
 		selectionIsTransient,
 		selectionMode,
-		selectionVisible
+		selectionVisible,
+		updateSelection
 	} as
 		| UseCalendarSelectionReturn<'one'>
 		| UseCalendarSelectionReturn<'many'>

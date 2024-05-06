@@ -6,12 +6,12 @@ import {
 	toStartOfWeek,
 	isStartOfWeek,
 	toStartOfMonth
-} from './calendar-functions'
-import type { CalendarCellProps, CalendarCellRole } from './CalendarCell'
-import type { YearMonth } from './calendar-types'
+} from '@klnjs/temporal'
+import type { CalendarCellProps } from './CalendarCell'
+import type { PlainYearMonth } from './CalendarTypes'
 
 export type UseCalendarGridOptions = {
-	month: YearMonth
+	month: PlainYearMonth
 	locale: string
 	weeks?: boolean
 	weekdays?: boolean
@@ -28,7 +28,6 @@ export const useCalendarGrid = ({
 		const ref = month.toPlainDate({ day: 1 })
 		const end = toEndOfWeek(toEndOfMonth(ref), locale)
 
-		let role: CalendarCellRole
 		let itrs = 0
 		let date = toStartOfWeek(toStartOfMonth(ref), locale).subtract({
 			days: weekdays ? 7 : 0
@@ -36,18 +35,14 @@ export const useCalendarGrid = ({
 
 		while (!isAfter(date, end)) {
 			if (weeks && isStartOfWeek(date, locale)) {
-				role = weekdays && itrs === 0 ? 'blank' : 'week'
 				items.push({
-					key: `${role}-${date.toString()}`,
-					role,
+					type: weekdays && itrs === 0 ? 'blank' : 'week',
 					date: date
 				})
 			}
 
-			role = weekdays && itrs < 7 ? 'weekday' : 'day'
 			items.push({
-				key: `${role}-${date.toString()}`,
-				role,
+				type: weekdays && itrs < 7 ? 'weekday' : 'day',
 				date: date
 			})
 
