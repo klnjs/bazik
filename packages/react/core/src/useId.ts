@@ -1,9 +1,7 @@
 import { useId as useIdFromReact, useLayoutEffect } from 'react'
 
 /**
- * A hook that creates a unique id, and optionally calls setId function with the id.
- * @param id - An optional id.
- * @param setId - A function to call with the id, will be called with undefined on unmount.
+ * A hook that generates a unique id.
  */
 export function useId(id?: string, setId?: (id?: string) => void): string {
 	const rid = useIdFromReact()
