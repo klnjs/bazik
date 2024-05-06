@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { Temporal } from 'temporal-polyfill'
-import { poly, forwardRef, asDataProp, type CoreProps } from '@klnjs/core'
+import { poly, forwardRef, type CoreProps } from '@klnjs/core'
 import { isAfter, isBefore } from '@klnjs/temporal'
 import { useCalendarContext } from './CalendarContext'
 import {
