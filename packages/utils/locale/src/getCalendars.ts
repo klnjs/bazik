@@ -20,7 +20,7 @@ export type LocaleCalendar =
 	| 'islamicc'
 
 export const getCalendars = (tag: string): LocaleCalendar[] => {
-	const locale = new Intl.Locale(tag)
+	const locale = new Intl.Locale(tag).maximize()
 
 	/* eslint-disable */
 	// @ts-expect-error getCalendars not in spec yet
