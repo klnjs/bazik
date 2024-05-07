@@ -9,7 +9,7 @@ import {
 import classes from './calendar.module.css'
 
 export default () => (
-	<Calendar aria-label="Calendar" className={classes.calendar}>
+	<Calendar aria-label="Event date" className={classes.calendar}>
 		<CalendarHeader className={classes.header}>
 			<CalendarButton action="dec" className={classes.button} />
 			<CalendarTitle className={classes.title} />

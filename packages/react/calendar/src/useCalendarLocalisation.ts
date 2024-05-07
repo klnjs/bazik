@@ -44,7 +44,7 @@ export const useCalendarFieldNames = (locale: string) =>
 
 export const useCalendarDayNames = (locale: string) =>
 	useMemo(() => {
-		const rtf = new Intl.RelativeTimeFormat(locale)
+		const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
 
 		return {
 			names: {
