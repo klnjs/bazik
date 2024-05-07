@@ -5,7 +5,7 @@ export type LocaleWeekInfo = {
 }
 
 export const getWeekInfo = (tag: string): LocaleWeekInfo => {
-	const locale = new Intl.Locale(tag)
+	const locale = new Intl.Locale(tag).maximize()
 
 	/* eslint-disable */
 	// @ts-expect-error getWeekInfo not in spec yet
@@ -17,7 +17,7 @@ export const getWeekInfo = (tag: string): LocaleWeekInfo => {
 
 	// 001 is the "UN M.49" code for "the world"
 	// See: https://unstats.un.org/unsd/methodology/m49/
-	const { region = '001' } = locale.maximize()
+	const { region = '001' } = locale
 
 	return {
 		firstDay: getFirstDay(region),
