@@ -95,6 +95,12 @@ export const isSameDay = (
 
 export const isToday = (date: Temporal.PlainDate) => isSameDay(date, getToday())
 
+export const isTommorow = (date: Temporal.PlainDate) =>
+	isSameDay(date, getToday().add({ days: 1 }))
+
+export const isYesterday = (date: Temporal.PlainDate) =>
+	isSameDay(date, getToday().subtract({ days: 1 }))
+
 export const isWeekend = (date: Temporal.PlainDate, locale: string) =>
 	getWeekInfo(locale).weekend.includes(date.dayOfWeek)
 

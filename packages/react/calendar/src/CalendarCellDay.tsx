@@ -24,7 +24,9 @@ import {
 	isSameMonth,
 	isStartOfWeek,
 	isToday as isTodayFn,
-	isWeekend as isWeekendFn
+	isWeekend as isWeekendFn,
+	isTommorow as isTommorowFn,
+	isYesterday as isYesterdayFn
 } from '@klnjs/temporal'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarDayNames } from './useCalendarLocalisation'
@@ -60,8 +62,10 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 		const isMany = selectionMode === 'many' && isDefined(selectionVisible)
 		const isRange = selectionMode === 'range' && isDefined(selectionVisible)
 
-		const isToday = isTodayFn(date)
 		const isActive = isSameDay(date, highlighted)
+		const isToday = isTodayFn(date)
+		const isTommorow = isTommorowFn(date)
+		const isYesterday = isYesterdayFn(date)
 		const isWeekend = isWeekendFn(date, locale)
 		const isWeekEnd = isEndOfWeek(date, locale)
 		const isWeekStart = isStartOfWeek(date, locale)
@@ -99,8 +103,16 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				return `${dayNames.of('today')}, ${formatted}`
 			}
 
+			if (isTommorow) {
+				return `${dayNames.of('tommorow')}, ${formatted}`
+			}
+
+			if (isYesterday) {
+				return `${dayNames.of('yesterday')}, ${formatted}`
+			}
+
 			return formatted
-		}, [date, locale, dayNames, isToday])
+		}, [date, locale, dayNames, isToday, isYesterday, isTommorow])
 
 		const handleClick = useCallback(() => {
 			if (isSelectable) {
@@ -196,6 +208,8 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				tabIndex={isTabbable ? 0 : -1}
 				data-cell="day"
 				data-today={asDataProp(isToday)}
+				data-tommorow={asDataProp(isTommorow)}
+				data-yesterday={asDataProp(isYesterday)}
 				data-weekend={asDataProp(isWeekend)}
 				data-focused={asDataProp(isFocused)}
 				data-overflow={asDataProp(isOverflow)}
