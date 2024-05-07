@@ -9,15 +9,15 @@ import type { CalendarVisibleDuration } from './CalendarTypes'
 export type CalendarGridProps = CoreProps<
 	'div',
 	{
-		weeks?: boolean
-		weekdays?: boolean
 		offset?: CalendarVisibleDuration
+		weekdays?: boolean
+		weeks?: boolean
 		children: (props: CalendarCellProps, index: number) => ReactNode
 	}
 >
 
 export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
-	({ weeks, weekdays, offset, children, ...otherProps }, forwardedRef) => {
+	({ offset, weekdays, weeks, children, ...otherProps }, forwardedRef) => {
 		const { locale, visibleRange } = useCalendarContext()
 
 		const months = offset?.months ?? 0

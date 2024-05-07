@@ -51,7 +51,6 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 			selectionIsTransient,
 			selectionMode,
 			selectionVisible,
-			visibleDuration,
 			setFocusWithin,
 			updateSelection,
 			updateHighlighted
@@ -145,23 +144,19 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				} else if (event.code === 'ArrowUp') {
 					updateHighlighted(date.subtract({ weeks: 1 }))
 				} else if (event.code === 'ArrowRight') {
-					updateHighlighted(
-						date.add({
-							days: isElementRTL(event.target as HTMLElement)
-								? -1
-								: 1
-						})
-					)
+					if (isElementRTL(event.target as HTMLElement)) {
+						updateHighlighted(date.subtract({ days: 1 }))
+					} else {
+						updateHighlighted(date.add({ days: 1 }))
+					}
 				} else if (event.code === 'ArrowDown') {
 					updateHighlighted(date.add({ weeks: 1 }))
 				} else if (event.key === 'ArrowLeft') {
-					updateHighlighted(
-						date.add({
-							days: isElementRTL(event.target as HTMLElement)
-								? 1
-								: -1
-						})
-					)
+					if (isElementRTL(event.target as HTMLElement)) {
+						updateHighlighted(date.add({ days: 1 }))
+					} else {
+						updateHighlighted(date.subtract({ days: 1 }))
+					}
 				} else if (event.code === 'PageUp') {
 					updateHighlighted(date.add({ months: 1 }))
 				} else if (event.code === 'PageDown') {
@@ -172,13 +167,7 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 					updateHighlighted(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[
-				date,
-				visibleDuration,
-				isSelectable,
-				updateSelection,
-				updateHighlighted
-			]
+			[date, isSelectable, updateSelection, updateHighlighted]
 		)
 
 		const handlePointerOver = useCallback(() => {

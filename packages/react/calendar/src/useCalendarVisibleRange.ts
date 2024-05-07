@@ -26,8 +26,6 @@ export const createVisibleRange = ({
 
 	const range = [date, date.add(offset)].sort(compare) as PlainDateRange
 
-	console.log(range[0].toLocaleString(), range[1].toLocaleString())
-
 	return expandVisibleRange(range)
 }
 
