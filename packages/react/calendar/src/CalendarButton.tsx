@@ -30,20 +30,22 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			locale,
 			disabled: disabledContext,
 			highlighted,
-			visibleMonths,
+			visibleDuration,
 			updateVisibleRange
 		} = useCalendarContext()
 		const { t } = useCalendarLocalisation(locale)
 		const { names: fieldNames } = useCalendarFieldNames(locale)
 
 		const duration = useMemo(() => {
-			const increment = Temporal.Duration.from({
-				years: unit === 'years' ? 1 : 0,
-				months: unit === 'months' ? visibleMonths : 0
-			})
+			const increment =
+				unit === 'months'
+					? visibleDuration.abs()
+					: Temporal.Duration.from({
+							years: 1
+						})
 
 			return action === 'inc' ? increment : increment.negated()
-		}, [action, unit, visibleMonths])
+		}, [action, unit, visibleDuration])
 
 		const label = useMemo(
 			() => t(action, { unit: fieldNames.of(unit.slice(0, -1)) ?? '' }),

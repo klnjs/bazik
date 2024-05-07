@@ -19,10 +19,10 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			locale,
 			max,
 			min,
-			months,
 			readOnly,
 			select = 'one',
 			value,
+			visibleDuration,
 			onChange,
 			...otherProps
 		},
@@ -36,10 +36,10 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			locale,
 			max,
 			min,
-			months,
-			select,
 			readOnly,
+			select,
 			value,
+			visibleDuration,
 			onChange
 		})
 

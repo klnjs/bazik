@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react'
-import { clamp, isBetweenInclusive } from '@klnjs/temporal'
+import { useMemo, useState, useCallback } from 'react'
+import { clamp, isAfter, isBefore, isBetweenInclusive } from '@klnjs/temporal'
 import type { LocaleCalendar } from '@klnjs/locale'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
 import {
@@ -9,10 +9,19 @@ import {
 } from './useCalendarSelection'
 import { useCalendarSystem } from './useCalendarSystem'
 import {
+	createVisibleRange,
 	expandVisibleRange,
 	useCalendarVisibleRange
 } from './useCalendarVisibleRange'
-import type { PlainDate, DurationLike, PlainDateRange } from './CalendarTypes'
+import type {
+	Duration,
+	PlainDate,
+	PlainDateRange,
+	CalendarVisibleDuration
+} from './CalendarTypes'
+import { Temporal } from 'temporal-polyfill'
+
+export const defaultVisibleDuration = { months: 1 }
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
@@ -22,7 +31,7 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 	locale?: string
 	max?: PlainDate
 	min?: PlainDate
-	months?: number
+	visibleDuration?: CalendarVisibleDuration
 	readOnly?: boolean
 	select?: S
 	value?: CalendarSelectValue<S>
@@ -37,12 +46,17 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	locale = 'en',
 	max,
 	min,
-	months = 1,
+	visibleDuration: visibleDurationProp = defaultVisibleDuration,
 	readOnly = false,
 	select: selectProp,
 	value,
 	onChange
 }: UseCalendarOptions<S> = {}) => {
+	const visibleDuration = useMemo(
+		() => Temporal.Duration.from(visibleDurationProp),
+		[visibleDurationProp]
+	)
+
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
 	const { calendar } = useCalendarSystem({ locale, calendar: calendarProp })
@@ -54,7 +68,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 	const { visibleRange, setVisibleRange } = useCalendarVisibleRange({
 		date: highlighted,
-		months
+		duration: visibleDuration
 	})
 
 	const selection = useCalendarSelection({
@@ -66,7 +80,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	})
 
 	const updateVisibleRange = useCallback(
-		(duration: DurationLike) =>
+		(duration: Duration) =>
 			setVisibleRange((vr) => {
 				const result: PlainDateRange = expandVisibleRange([
 					vr[0].add(duration),
@@ -85,24 +99,33 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	)
 
 	const updateHighlighted = useCallback(
-		(date: PlainDate) =>
-			setHighlighted((h) => {
-				const result = clamp(date, { min, max })
-				const resultMonthsDelta =
-					result.year * 12 + result.month - (h.year * 12 + h.month)
+		(date: PlainDate) => {
+			const result = clamp(date, { min, max })
+			const duration = isBefore(date, visibleRange[0])
+				? visibleDuration.abs().negated()
+				: isAfter(date, visibleRange[1])
+					? visibleDuration.abs()
+					: undefined
 
-				setVisibleRange((vr) =>
-					isBetweenInclusive(result, vr[0], vr[1])
-						? vr
-						: expandVisibleRange([
-								vr[0].add({ months: resultMonthsDelta }),
-								vr[1].add({ months: resultMonthsDelta })
-							])
+			setHighlighted(result)
+
+			if (duration) {
+				setVisibleRange(
+					createVisibleRange({
+						date,
+						duration
+					})
 				)
-
-				return result
-			}),
-		[min, max, setHighlighted, setVisibleRange]
+			}
+		},
+		[
+			min,
+			max,
+			visibleRange,
+			visibleDuration,
+			setHighlighted,
+			setVisibleRange
+		]
 	)
 
 	return {
@@ -114,8 +137,8 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		max,
 		min,
 		readOnly,
-		visibleMonths: months,
 		visibleRange,
+		visibleDuration,
 		setFocusWithin,
 		updateHighlighted,
 		updateVisibleRange,

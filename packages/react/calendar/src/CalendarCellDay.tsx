@@ -51,6 +51,7 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 			selectionIsTransient,
 			selectionMode,
 			selectionVisible,
+			visibleDuration,
 			setFocusWithin,
 			updateSelection,
 			updateHighlighted
@@ -142,7 +143,7 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				) {
 					updateSelection(date)
 				} else if (event.code === 'ArrowUp') {
-					updateHighlighted(date.add({ weeks: -1 }))
+					updateHighlighted(date.subtract({ weeks: 1 }))
 				} else if (event.code === 'ArrowRight') {
 					updateHighlighted(
 						date.add({
@@ -164,14 +165,20 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				} else if (event.code === 'PageUp') {
 					updateHighlighted(date.add({ months: 1 }))
 				} else if (event.code === 'PageDown') {
-					updateHighlighted(date.add({ months: -1 }))
+					updateHighlighted(date.subtract({ months: 1 }))
 				} else if (event.code === 'Home') {
 					updateHighlighted(date.with({ day: 1 }))
 				} else if (event.code === 'End') {
 					updateHighlighted(date.with({ day: date.daysInMonth }))
 				}
 			},
-			[date, isSelectable, updateSelection, updateHighlighted]
+			[
+				date,
+				visibleDuration,
+				isSelectable,
+				updateSelection,
+				updateHighlighted
+			]
 		)
 
 		const handlePointerOver = useCallback(() => {
