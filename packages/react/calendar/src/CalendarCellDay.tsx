@@ -142,29 +142,25 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				) {
 					updateSelection(date)
 				} else if (event.code === 'ArrowUp') {
-					updateHighlighted(date.add({ weeks: -1 }))
+					updateHighlighted(date.subtract({ weeks: 1 }))
 				} else if (event.code === 'ArrowRight') {
-					updateHighlighted(
-						date.add({
-							days: isElementRTL(event.target as HTMLElement)
-								? -1
-								: 1
-						})
-					)
+					if (isElementRTL(event.target as HTMLElement)) {
+						updateHighlighted(date.subtract({ days: 1 }))
+					} else {
+						updateHighlighted(date.add({ days: 1 }))
+					}
 				} else if (event.code === 'ArrowDown') {
 					updateHighlighted(date.add({ weeks: 1 }))
 				} else if (event.key === 'ArrowLeft') {
-					updateHighlighted(
-						date.add({
-							days: isElementRTL(event.target as HTMLElement)
-								? 1
-								: -1
-						})
-					)
+					if (isElementRTL(event.target as HTMLElement)) {
+						updateHighlighted(date.add({ days: 1 }))
+					} else {
+						updateHighlighted(date.subtract({ days: 1 }))
+					}
 				} else if (event.code === 'PageUp') {
 					updateHighlighted(date.add({ months: 1 }))
 				} else if (event.code === 'PageDown') {
-					updateHighlighted(date.add({ months: -1 }))
+					updateHighlighted(date.subtract({ months: 1 }))
 				} else if (event.code === 'Home') {
 					updateHighlighted(date.with({ day: 1 }))
 				} else if (event.code === 'End') {

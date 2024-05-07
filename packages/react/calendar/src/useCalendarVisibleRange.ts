@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useEffectOnUpdate } from '@klnjs/core'
-import { toEndOfMonth, toStartOfMonth } from '@klnjs/temporal'
-import type { PlainDate, PlainDateRange } from './CalendarTypes'
+import { compare, toEndOfMonth, toStartOfMonth } from '@klnjs/temporal'
+import type { Duration, PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type UseCalendarVisibleOptions = {
 	date: PlainDate
-	months: number
+	duration: Duration
 }
 
 export const expandVisibleRange = (range: PlainDateRange): PlainDateRange => [
@@ -15,21 +15,33 @@ export const expandVisibleRange = (range: PlainDateRange): PlainDateRange => [
 
 export const createVisibleRange = ({
 	date,
-	months
-}: UseCalendarVisibleOptions): PlainDateRange =>
-	expandVisibleRange([date, date.add({ months: months - 1 })])
+	duration
+}: UseCalendarVisibleOptions): PlainDateRange => {
+	const offset =
+		duration.sign === 0
+			? duration
+			: duration.sign === 1
+				? duration.subtract({ months: 1 }, { relativeTo: date })
+				: duration.add({ months: 1 }, { relativeTo: date })
+
+	const range = [date, date.add(offset)].sort(compare) as PlainDateRange
+
+	return expandVisibleRange(range)
+}
 
 export const useCalendarVisibleRange = ({
 	date,
-	months
+	duration
 }: UseCalendarVisibleOptions) => {
 	const [visibleRange, setVisibleRange] = useState(() =>
-		createVisibleRange({ date, months })
+		createVisibleRange({ date, duration })
 	)
 
 	useEffectOnUpdate(() => {
-		setVisibleRange((prev) => createVisibleRange({ date: prev[0], months }))
-	}, [months])
+		setVisibleRange((prev) =>
+			createVisibleRange({ date: prev[0], duration })
+		)
+	}, [duration])
 
 	return {
 		visibleRange,
