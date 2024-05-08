@@ -90,7 +90,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 				setHighlighted((h) =>
 					isBetweenInclusive(h, result[0], result[1])
 						? h
-						: clamp(h.add(duration), { min, max })
+						: clamp(h.add(duration), min, max)
 				)
 
 				return result
@@ -100,7 +100,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 	const updateHighlighted = useCallback(
 		(date: PlainDate) => {
-			const result = clamp(date, { min, max })
+			const result = clamp(date, min, max)
 			const duration = isBefore(date, visibleRange[0])
 				? visibleDuration.abs().negated()
 				: isAfter(date, visibleRange[1])
