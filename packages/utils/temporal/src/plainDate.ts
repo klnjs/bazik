@@ -39,13 +39,15 @@ export const toEndOfYear = (date: Temporal.PlainDate) =>
 
 export const clamp = (
 	date: Temporal.PlainDate,
-	options: { min?: Temporal.PlainDate; max?: Temporal.PlainDate }
+	min?: Temporal.PlainDate,
+	max?: Temporal.PlainDate
 ) => {
-	if (options.min && isBefore(date, options.min)) {
-		return options.min
+	if (min && isBefore(date, min)) {
+		return min
 	}
-	if (options.max && isAfter(date, options.max)) {
-		return options.max
+
+	if (max && isAfter(date, max)) {
+		return max
 	}
 
 	return date
