@@ -1,12 +1,10 @@
-import { useCallback, useMemo } from 'react'
-import { Temporal } from 'temporal-polyfill'
 import { poly, forwardRef, type CoreProps } from '@klnjs/core'
-import { isAfter, isBefore } from '@klnjs/temporal'
+import { isDefined } from '@klnjs/assertion'
+import { clamp, isAfter, isBefore } from '@klnjs/temporal'
+import { Temporal } from 'temporal-polyfill'
 import { useCalendarContext } from './CalendarContext'
-import {
-	useCalendarFieldNames,
-	useCalendarLocalisation
-} from './useCalendarLocalisation'
+import { useCalendarLocalisation } from './useCalendarLocalisation'
+import { createVisibleRange } from './useCalendarVisibleRange'
 
 export type CalendarButtonProps = CoreProps<
 	'button',
@@ -17,69 +15,74 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 	(
 		{
 			action,
-			unit = 'months',
 			disabled: disabledProp = false,
+			unit = 'months',
 			children,
 			...otherProps
 		},
 		forwardedRef
 	) => {
 		const {
-			min,
-			max,
-			locale,
 			disabled: disabledContext,
-			highlighted,
+			locale,
+			max,
+			min,
+			paginationDuration,
 			visibleDuration,
-			updateVisibleRange
+			visibleRange,
+			setHighlighted,
+			setVisibleRange
 		} = useCalendarContext()
-		const { t } = useCalendarLocalisation(locale)
-		const { names: fieldNames } = useCalendarFieldNames(locale)
+		const { t, fieldNames } = useCalendarLocalisation(locale)
 
-		const duration = useMemo(() => {
-			const increment =
+		const label = t(action, {
+			unit: fieldNames.of(unit.slice(0, -1)) ?? ''
+		})
+
+		const content =
+			action === 'inc'
+				? unit === 'years'
+					? '»'
+					: '›'
+				: unit === 'years'
+					? '«'
+					: '‹'
+
+		const disabledMin =
+			action === 'dec' && isDefined(min) && isBefore(visibleRange[0], min)
+
+		const disabledMax =
+			action === 'inc' && isDefined(max) && isAfter(visibleRange[1], max)
+
+		const isDisabled =
+			disabledProp || disabledContext || disabledMin || disabledMax
+
+		const handleClick = () => {
+			const page =
 				unit === 'months'
-					? visibleDuration.abs()
+					? paginationDuration
 					: Temporal.Duration.from({
 							years: 1
 						})
 
-			return action === 'inc' ? increment : increment.negated()
-		}, [action, unit, visibleDuration])
+			const date =
+				action === 'inc'
+					? visibleRange[0].add(page)
+					: visibleRange[1].subtract(page)
 
-		const label = useMemo(
-			() => t(action, { unit: fieldNames.of(unit.slice(0, -1)) ?? '' }),
-			[action, unit, t, fieldNames]
-		)
+			const result = createVisibleRange({
+				date,
+				span: visibleDuration,
+				align: action === 'inc' ? 'start' : 'end',
+				min,
+				max
+			})
 
-		const content = useMemo(() => {
-			switch (action) {
-				case 'inc':
-					return unit === 'years' ? '»' : '›'
-				case 'dec':
-					return unit === 'years' ? '«' : '‹'
-				default:
-					return '•'
-			}
-		}, [action, unit])
-
-		const result = useMemo(
-			() => highlighted.add(duration),
-			[duration, highlighted]
-		)
-
-		const isDisabled = useMemo(
-			() =>
-				disabledProp ||
-				disabledContext ||
-				Boolean(max && isAfter(result, max)) ||
-				Boolean(min && isBefore(result, min)),
-			[min, max, result, disabledProp, disabledContext]
-		)
-
-		const handleClick = useCallback(() => {
-			updateVisibleRange(duration)
-		}, [duration, updateVisibleRange])
+			setVisibleRange(result)
+			setHighlighted((prev) =>
+				clamp(date.with({ day: prev.day }), min, max)
+			)
+		}
 
 		return (
 			<poly.button

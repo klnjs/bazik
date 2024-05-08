@@ -1,5 +1,5 @@
-import { useMemo, useState, useCallback } from 'react'
-import { clamp, isAfter, isBefore, isBetweenInclusive } from '@klnjs/temporal'
+import { useMemo, useState } from 'react'
+import { clamp, compare, isBetweenInclusive } from '@klnjs/temporal'
 import type { LocaleCalendar } from '@klnjs/locale'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
 import {
@@ -10,18 +10,14 @@ import {
 import { useCalendarSystem } from './useCalendarSystem'
 import {
 	createVisibleRange,
-	expandVisibleRange,
 	useCalendarVisibleRange
 } from './useCalendarVisibleRange'
 import type {
-	Duration,
 	PlainDate,
-	PlainDateRange,
+	CalendarPagination,
 	CalendarVisibleDuration
 } from './CalendarTypes'
 import { Temporal } from 'temporal-polyfill'
-
-export const defaultVisibleDuration = { months: 1 }
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
@@ -31,10 +27,11 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 	locale?: string
 	max?: PlainDate
 	min?: PlainDate
-	visibleDuration?: CalendarVisibleDuration
+	pagination?: CalendarPagination
 	readOnly?: boolean
 	select?: S
 	value?: CalendarSelectValue<S>
+	visibleDuration?: CalendarVisibleDuration
 	onChange?: (value: CalendarSelectValue<S>) => void
 }
 
@@ -46,16 +43,23 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	locale = 'en',
 	max,
 	min,
-	visibleDuration: visibleDurationProp = defaultVisibleDuration,
+	pagination = 'visible',
 	readOnly = false,
 	select: selectProp,
 	value,
+	visibleDuration: visibleDurationProp,
 	onChange
 }: UseCalendarOptions<S> = {}) => {
 	const visibleDuration = useMemo(
-		() => Temporal.Duration.from(visibleDurationProp),
+		() =>
+			Temporal.Duration.from(visibleDurationProp ?? { months: 1 }).abs(),
 		[visibleDurationProp]
 	)
+
+	const paginationDuration =
+		pagination === 'visible'
+			? visibleDuration
+			: Temporal.Duration.from({ months: 1 })
 
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
@@ -68,7 +72,9 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 
 	const { visibleRange, setVisibleRange } = useCalendarVisibleRange({
 		date: highlighted,
-		duration: visibleDuration
+		span: visibleDuration,
+		min,
+		max
 	})
 
 	const selection = useCalendarSelection({
@@ -79,54 +85,21 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		onChange
 	})
 
-	const updateVisibleRange = useCallback(
-		(duration: Duration) =>
-			setVisibleRange((vr) => {
-				const result: PlainDateRange = expandVisibleRange([
-					vr[0].add(duration),
-					vr[1].add(duration)
-				])
+	const updateHighlighted = (date: PlainDate) => {
+		const result = clamp(date, min, max)
+		const visible = isBetweenInclusive(result, ...visibleRange)
+		const range = visible
+			? visibleRange
+			: createVisibleRange({
+					date: result,
+					span: visibleDuration,
+					align: (compare(result, highlighted) *
+						(pagination === 'single' ? -1 : 1)) as -1 | 0 | 1
+				})
 
-				setHighlighted((h) =>
-					isBetweenInclusive(h, result[0], result[1])
-						? h
-						: clamp(h.add(duration), { min, max })
-				)
-
-				return result
-			}),
-		[min, max, setHighlighted, setVisibleRange]
-	)
-
-	const updateHighlighted = useCallback(
-		(date: PlainDate) => {
-			const result = clamp(date, { min, max })
-			const duration = isBefore(date, visibleRange[0])
-				? visibleDuration.abs().negated()
-				: isAfter(date, visibleRange[1])
-					? visibleDuration.abs()
-					: undefined
-
-			setHighlighted(result)
-
-			if (duration) {
-				setVisibleRange(
-					createVisibleRange({
-						date,
-						duration
-					})
-				)
-			}
-		},
-		[
-			min,
-			max,
-			visibleRange,
-			visibleDuration,
-			setHighlighted,
-			setVisibleRange
-		]
-	)
+		setHighlighted(result)
+		setVisibleRange(range)
+	}
 
 	return {
 		calendar,
@@ -136,12 +109,14 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		locale,
 		max,
 		min,
+		paginationDuration,
 		readOnly,
-		visibleRange,
 		visibleDuration,
+		visibleRange,
 		setFocusWithin,
+		setHighlighted,
+		setVisibleRange,
 		updateHighlighted,
-		updateVisibleRange,
 		...selection
 	}
 }

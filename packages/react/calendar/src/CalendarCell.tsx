@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { forwardRef } from '@klnjs/core'
 import { CalendarCellBlank } from './CalendarCellBlank'
 import { CalendarCellDay } from './CalendarCellDay'
@@ -27,18 +26,14 @@ export const isCalendarCell = (
 
 export const CalendarCell = forwardRef<'div', CalendarCellProps>(
 	({ type, date, ...otherProps }, forwardedRef) => {
-		const Component = useMemo(() => {
-			switch (type) {
-				case 'day':
-					return CalendarCellDay
-				case 'week':
-					return CalendarCellWeek
-				case 'weekday':
-					return CalendarCellWeekday
-				default:
-					return CalendarCellBlank
-			}
-		}, [type])
+		const Component =
+			type === 'day'
+				? CalendarCellDay
+				: type === 'week'
+					? CalendarCellWeek
+					: type === 'weekday'
+						? CalendarCellWeekday
+						: CalendarCellBlank
 
 		return (
 			<Component
