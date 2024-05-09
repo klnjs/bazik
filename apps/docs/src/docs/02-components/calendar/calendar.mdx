@@ -67,7 +67,12 @@ Contains all the parts of an calendar. As the calendar does not have html semant
 		{ name: 'locale', type: 'string', defaultValue: 'en' },
 		{ name: 'max', type: 'PlainDate' },
 		{ name: 'min', type: 'PlainDate' },
-		{ name: 'months', type: 'number', defaultValue: '1' },
+		{
+			name: 'pagination',
+			type: 'CalendarPagination',
+			typeAdvanced: "'visible' | 'single'",
+			defaultValue: 'visible'
+		},
 		{ name: 'readOnly', type: 'boolean', defaultValue: 'false' },
 		{
 			name: 'select',
@@ -81,6 +86,12 @@ Contains all the parts of an calendar. As the calendar does not have html semant
 			typeAdvanced: 'null | PlainDate | PlainDate[] | PlainDateRange'
 		},
 		{
+			name: 'visibleDuration',
+			type: 'CalendarVisibleDuration',
+			typeAdvanced: '{ months: number }',
+			defaultValue: '{ months: 1 }'
+		},
+		{
 			name: 'onChange',
 			type: 'function',
 			typeAdvanced:
@@ -91,7 +102,7 @@ Contains all the parts of an calendar. As the calendar does not have html semant
 
 ### CalendarHeader
 
-Used to group calendar components in a `<header />` element.
+Used to group calendar header components.
 
 <ReferenceProps
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
@@ -109,7 +120,9 @@ Display a localised title representing the current visible range of the calendar
 
 Facilitates navigation in the calendar, to ensure keyboard accessibility the active day will be moved to the best matching day within the visible range.
 
-Use the `action` to either increment or decrement the visible range. The `unit` prop is used to decide how far the visible range is shifted, when set to months, it will shift by the root property `months`. The button will be disabled when the action would cause the visible range to land outside of the root properties `min` and `max`.
+Use the `action` to either increment or decrement the visible range. When `unit` is set to months, it will use root properties `pagination` and `visibleDuration` to determine the distance.
+
+The button will be disabled when the action would cause the visible range to land outside of the root properties `min` and `max`.
 
 <ReferenceProps
 	props={[
@@ -121,7 +134,7 @@ Use the `action` to either increment or decrement the visible range. The `unit` 
 
 ### CalendarGroup
 
-Used to group grid components when working with multiple months via the root property `months`.
+Used to group grid components when working with multiple months.
 
 <ReferenceProps
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
@@ -133,11 +146,14 @@ Given the dynamic length of the visible range in the calendar, this utility comp
 
 The properties `week` and `weekdays` can be used to enable week day and week number headers, when both properties are enabled blank cells can occur in the grid. To differentiate between the different cell types, the render function provides a `type` property.
 
+Set `overflow: 'align'` to expand overflow at the end of a month, to match the longest possible month. This can prevent misalignment when working with multiple months.
+
 <ReferenceProps
 	props={[
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'week', type: 'boolean', defaultValue: 'false' },
 		{ name: 'weekdays', type: 'boolean', defaultValue: 'false' },
+		{ name: 'overflow', type: "'auto' | 'align'", defaultValue: 'auto' },
 		{
 			name: 'children',
 			type: 'function',

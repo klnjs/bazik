@@ -25,8 +25,8 @@ export const useCalendarHighlighted = ({
 		return value.withCalendar(calendar)
 	})
 
-	return {
-		highlighted,
-		setHighlighted
-	}
+	return [highlighted, setHighlighted] as [
+		typeof highlighted,
+		typeof setHighlighted
+	]
 }

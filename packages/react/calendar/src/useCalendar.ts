@@ -1,19 +1,18 @@
 import { useMemo, useState } from 'react'
-import type { LocaleCalendar } from '@klnjs/locale'
+import { Temporal } from 'temporal-polyfill'
+import { getCalendars, type LocaleCalendar } from '@klnjs/locale'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
 import {
 	useCalendarSelection,
 	type CalendarSelect,
 	type CalendarSelectValue
 } from './useCalendarSelection'
-import { useCalendarSystem } from './useCalendarSystem'
 import { useCalendarVisibleRange } from './useCalendarVisibleRange'
 import type {
 	PlainDate,
 	CalendarPagination,
 	CalendarVisibleDuration
 } from './CalendarTypes'
-import { Temporal } from 'temporal-polyfill'
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
@@ -46,27 +45,33 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	visibleDuration: visibleDurationProp,
 	onChange
 }: UseCalendarOptions<S> = {}) => {
+	const calendar = useMemo(
+		() => calendarProp ?? getCalendars(locale)[0] ?? 'iso8601',
+		[calendarProp, locale]
+	)
+
 	const visibleDuration = useMemo(
 		() =>
 			Temporal.Duration.from(visibleDurationProp ?? { months: 1 }).abs(),
 		[visibleDurationProp]
 	)
 
-	const paginationDuration =
-		pagination === 'visible'
-			? visibleDuration
-			: Temporal.Duration.from({ months: 1 })
+	const paginationDuration = useMemo(
+		() =>
+			pagination === 'visible'
+				? visibleDuration
+				: Temporal.Duration.from({ months: 1 }),
+		[visibleDuration]
+	)
 
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
-	const { calendar } = useCalendarSystem({ locale, calendar: calendarProp })
-
-	const { highlighted, setHighlighted } = useCalendarHighlighted({
+	const [highlighted, setHighlighted] = useCalendarHighlighted({
 		value,
 		calendar
 	})
 
-	const { visibleRange, setVisibleRange } = useCalendarVisibleRange({
+	const [visibleRange, setVisibleRange] = useCalendarVisibleRange({
 		date: highlighted,
 		span: visibleDuration,
 		min,

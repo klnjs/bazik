@@ -63,8 +63,8 @@ export const useCalendarVisibleRange = ({
 		)
 	}, [span, align, min, max])
 
-	return {
-		visibleRange,
-		setVisibleRange
-	}
+	return [visibleRange, setVisibleRange] as [
+		typeof visibleRange,
+		typeof setVisibleRange
+	]
 }
