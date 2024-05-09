@@ -1,11 +1,10 @@
-import { useMemo } from 'react'
 import { forwardRef } from '@klnjs/core'
+import { isDefined } from '@klnjs/assertion'
 import { CalendarCellBlank } from './CalendarCellBlank'
 import { CalendarCellDay } from './CalendarCellDay'
 import { CalendarCellWeek } from './CalendarCellWeek'
 import { CalendarCellWeekday } from './CalendarCellWeekday'
 import type { PlainDate } from './CalendarTypes'
-import { isDefined } from '@klnjs/assertion'
 
 export type CalendarCellType = 'day' | 'week' | 'weekday' | 'blank'
 
@@ -16,29 +15,29 @@ export type CalendarCellProps = {
 
 export const isCalendarCell = (
 	element: HTMLElement | null,
-	type: CalendarCellType
+	type?: CalendarCellType
 ) => {
 	if (!element || typeof window === 'undefined') {
 		return false
 	}
 
-	return isDefined(element.dataset[type])
+	if (!type) {
+		return isDefined(element.dataset.cell)
+	}
+
+	return element.dataset.cell === type
 }
 
 export const CalendarCell = forwardRef<'div', CalendarCellProps>(
 	({ type, date, ...otherProps }, forwardedRef) => {
-		const Component = useMemo(() => {
-			switch (type) {
-				case 'day':
-					return CalendarCellDay
-				case 'week':
-					return CalendarCellWeek
-				case 'weekday':
-					return CalendarCellWeekday
-				default:
-					return CalendarCellBlank
-			}
-		}, [type])
+		const Component =
+			type === 'day'
+				? CalendarCellDay
+				: type === 'week'
+					? CalendarCellWeek
+					: type === 'weekday'
+						? CalendarCellWeekday
+						: CalendarCellBlank
 
 		return (
 			<Component

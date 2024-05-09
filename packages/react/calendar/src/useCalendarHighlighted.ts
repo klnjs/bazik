@@ -5,24 +5,28 @@ import type { LocaleCalendar } from '@klnjs/locale'
 import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type UseCalendarHighlightedOptions = {
-	date?: PlainDate | PlainDate[] | PlainDateRange | null
+	value?: PlainDate | PlainDate[] | PlainDateRange | null
 	calendar: LocaleCalendar
 }
 
 export const useCalendarHighlighted = ({
-	date,
+	value,
 	calendar
 }: UseCalendarHighlightedOptions) => {
 	const [highlighted, setHighlighted] = useState(() => {
-		if (!date) {
+		if (!value) {
 			return getToday(calendar)
 		}
 
-		return (isArray(date) ? date[0] : date).withCalendar(calendar)
+		if (isArray(value)) {
+			return value[0].withCalendar(calendar)
+		}
+
+		return value.withCalendar(calendar)
 	})
 
-	return {
-		highlighted,
-		setHighlighted
-	}
+	return [highlighted, setHighlighted] as [
+		typeof highlighted,
+		typeof setHighlighted
+	]
 }

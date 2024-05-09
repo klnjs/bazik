@@ -5,12 +5,7 @@ export type CalendarCellBlankProps = CoreProps<'div', CalendarCellProps>
 
 export const CalendarCellBlank = forwardRef<'div', CalendarCellBlankProps>(
 	({ type, date, children, ...otherProps }, forwardedRef) => (
-		<poly.div
-			ref={forwardedRef}
-			data-cell="blank"
-			aria-hidden={true}
-			{...otherProps}
-		>
+		<poly.div ref={forwardedRef} data-cell="blank" {...otherProps}>
 			{children}
 		</poly.div>
 	)

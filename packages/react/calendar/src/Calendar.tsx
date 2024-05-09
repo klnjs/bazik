@@ -1,8 +1,8 @@
 import type { ReactElement, Ref } from 'react'
 import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import type { CalendarSelect } from './useCalendarSelection'
 import { CalendarProvider } from './CalendarContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
-import type { CalendarSelect } from './useCalendarSelection'
 
 export type CalendarProps<S extends CalendarSelect = 'one'> = CoreProps<
 	'div',
@@ -19,6 +19,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			locale,
 			max,
 			min,
+			pagination,
 			readOnly,
 			select = 'one',
 			value,
@@ -36,6 +37,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			locale,
 			max,
 			min,
+			pagination,
 			readOnly,
 			select,
 			value,

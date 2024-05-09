@@ -12,21 +12,27 @@ export type CalendarGridProps = CoreProps<
 		offset?: CalendarVisibleDuration
 		weekdays?: boolean
 		weeks?: boolean
+		overflow?: 'auto' | 'align'
 		children: (props: CalendarCellProps, index: number) => ReactNode
 	}
 >
 
 export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
-	({ offset, weekdays, weeks, children, ...otherProps }, forwardedRef) => {
-		const { locale, visibleRange } = useCalendarContext()
+	(
+		{ offset, weekdays, weeks, overflow, children, ...otherProps },
+		forwardedRef
+	) => {
+		const { calendar, locale, visibleRange } = useCalendarContext()
 
 		const months = offset?.months ?? 0
 		const month = visibleRange[0].add({ months }).toPlainYearMonth()
 		const cells = useCalendarGrid({
-			month,
+			calendar,
 			locale,
-			weeks,
-			weekdays
+			month,
+			overflow,
+			weekdays,
+			weeks
 		})
 
 		return (

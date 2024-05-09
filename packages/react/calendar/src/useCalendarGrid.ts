@@ -1,54 +1,56 @@
 import { useMemo } from 'react'
 import {
-	isAfter,
 	toEndOfWeek,
 	toEndOfMonth,
 	toStartOfWeek,
-	isStartOfWeek,
-	toStartOfMonth
+	isStartOfWeek
 } from '@klnjs/temporal'
-import type { CalendarCellProps } from './CalendarCell'
+import type { LocaleCalendar } from '@klnjs/locale'
 import type { PlainYearMonth } from './CalendarTypes'
+import type { CalendarCellProps } from './CalendarCell'
 
 export type UseCalendarGridOptions = {
-	month: PlainYearMonth
+	calendar: LocaleCalendar
 	locale: string
-	weeks?: boolean
+	month: PlainYearMonth
+	overflow?: 'auto' | 'align'
 	weekdays?: boolean
+	weeks?: boolean
 }
 
 export const useCalendarGrid = ({
-	month,
+	calendar,
 	locale,
-	weeks,
-	weekdays
+	month,
+	overflow = 'auto',
+	weekdays,
+	weeks
 }: UseCalendarGridOptions) =>
 	useMemo(() => {
-		const items: CalendarCellProps[] = []
-		const ref = month.toPlainDate({ day: 1 })
-		const end = toEndOfWeek(toEndOfMonth(ref), locale)
+		const start = month.toPlainDate({ day: 1 }).withCalendar(calendar)
+		const startOf = toStartOfWeek(start, locale)
+		const startOfVisible = startOf.subtract({ weeks: weekdays ? 1 : 0 })
+		const endOfVisible = toEndOfWeek(toEndOfMonth(start), locale)
 
-		let itrs = 0
-		let date = toStartOfWeek(toStartOfMonth(ref), locale).subtract({
-			days: weekdays ? 7 : 0
-		})
+		const days = endOfVisible.since(startOfVisible).days + 1
+		const daysVisible = overflow === 'auto' ? days : weekdays ? 49 : 42
 
-		while (!isAfter(date, end)) {
-			if (weeks && isStartOfWeek(date, locale)) {
-				items.push({
-					type: weekdays && itrs === 0 ? 'blank' : 'week',
-					date: date
-				})
-			}
+		return Array.from({ length: daysVisible }).reduce<CalendarCellProps[]>(
+			(acc, _, index) => {
+				const date = startOfVisible.add({ days: index })
+				const type = weekdays && index < 7 ? 'weekday' : 'day'
 
-			items.push({
-				type: weekdays && itrs < 7 ? 'weekday' : 'day',
-				date: date
-			})
+				if (weeks && isStartOfWeek(date, locale)) {
+					acc.push({
+						date,
+						type: weekdays && index === 0 ? 'blank' : 'week'
+					})
+				}
 
-			itrs = itrs + 1
-			date = date.add({ days: 1 })
-		}
+				acc.push({ date, type })
 
-		return items
-	}, [month, locale, weeks, weekdays])
+				return acc
+			},
+			[]
+		)
+	}, [calendar, locale, month, weeks, weekdays, overflow])

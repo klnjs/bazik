@@ -1,27 +1,18 @@
-import { useMemo, useState, useCallback } from 'react'
-import { clamp, isAfter, isBefore, isBetweenInclusive } from '@klnjs/temporal'
-import type { LocaleCalendar } from '@klnjs/locale'
+import { useMemo, useState } from 'react'
+import { Temporal } from 'temporal-polyfill'
+import { getCalendars, type LocaleCalendar } from '@klnjs/locale'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
 import {
 	useCalendarSelection,
 	type CalendarSelect,
 	type CalendarSelectValue
 } from './useCalendarSelection'
-import { useCalendarSystem } from './useCalendarSystem'
-import {
-	createVisibleRange,
-	expandVisibleRange,
-	useCalendarVisibleRange
-} from './useCalendarVisibleRange'
+import { useCalendarVisibleRange } from './useCalendarVisibleRange'
 import type {
-	Duration,
 	PlainDate,
-	PlainDateRange,
+	CalendarPagination,
 	CalendarVisibleDuration
 } from './CalendarTypes'
-import { Temporal } from 'temporal-polyfill'
-
-export const defaultVisibleDuration = { months: 1 }
 
 export type UseCalendarOptions<S extends CalendarSelect> = {
 	autoFocus?: boolean
@@ -31,10 +22,11 @@ export type UseCalendarOptions<S extends CalendarSelect> = {
 	locale?: string
 	max?: PlainDate
 	min?: PlainDate
-	visibleDuration?: CalendarVisibleDuration
+	pagination?: CalendarPagination
 	readOnly?: boolean
 	select?: S
 	value?: CalendarSelectValue<S>
+	visibleDuration?: CalendarVisibleDuration
 	onChange?: (value: CalendarSelectValue<S>) => void
 }
 
@@ -46,29 +38,44 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	locale = 'en',
 	max,
 	min,
-	visibleDuration: visibleDurationProp = defaultVisibleDuration,
+	pagination = 'visible',
 	readOnly = false,
 	select: selectProp,
 	value,
+	visibleDuration: visibleDurationProp,
 	onChange
 }: UseCalendarOptions<S> = {}) => {
+	const calendar = useMemo(
+		() => calendarProp ?? getCalendars(locale)[0] ?? 'iso8601',
+		[calendarProp, locale]
+	)
+
 	const visibleDuration = useMemo(
-		() => Temporal.Duration.from(visibleDurationProp),
+		() =>
+			Temporal.Duration.from(visibleDurationProp ?? { months: 1 }).abs(),
 		[visibleDurationProp]
+	)
+
+	const paginationDuration = useMemo(
+		() =>
+			pagination === 'visible'
+				? visibleDuration
+				: Temporal.Duration.from({ months: 1 }),
+		[pagination, visibleDuration]
 	)
 
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
 
-	const { calendar } = useCalendarSystem({ locale, calendar: calendarProp })
-
-	const { highlighted, setHighlighted } = useCalendarHighlighted({
-		date: value,
+	const [highlighted, setHighlighted] = useCalendarHighlighted({
+		value,
 		calendar
 	})
 
-	const { visibleRange, setVisibleRange } = useCalendarVisibleRange({
+	const [visibleRange, setVisibleRange] = useCalendarVisibleRange({
 		date: highlighted,
-		duration: visibleDuration
+		span: visibleDuration,
+		min,
+		max
 	})
 
 	const selection = useCalendarSelection({
@@ -79,55 +86,6 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		onChange
 	})
 
-	const updateVisibleRange = useCallback(
-		(duration: Duration) =>
-			setVisibleRange((vr) => {
-				const result: PlainDateRange = expandVisibleRange([
-					vr[0].add(duration),
-					vr[1].add(duration)
-				])
-
-				setHighlighted((h) =>
-					isBetweenInclusive(h, result[0], result[1])
-						? h
-						: clamp(h.add(duration), min, max)
-				)
-
-				return result
-			}),
-		[min, max, setHighlighted, setVisibleRange]
-	)
-
-	const updateHighlighted = useCallback(
-		(date: PlainDate) => {
-			const result = clamp(date, min, max)
-			const duration = isBefore(date, visibleRange[0])
-				? visibleDuration.abs().negated()
-				: isAfter(date, visibleRange[1])
-					? visibleDuration.abs()
-					: undefined
-
-			setHighlighted(result)
-
-			if (duration) {
-				setVisibleRange(
-					createVisibleRange({
-						date,
-						duration
-					})
-				)
-			}
-		},
-		[
-			min,
-			max,
-			visibleRange,
-			visibleDuration,
-			setHighlighted,
-			setVisibleRange
-		]
-	)
-
 	return {
 		calendar,
 		disabled,
@@ -136,12 +94,14 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		locale,
 		max,
 		min,
+		pagination,
+		paginationDuration,
 		readOnly,
-		visibleRange,
 		visibleDuration,
+		visibleRange,
 		setFocusWithin,
-		updateHighlighted,
-		updateVisibleRange,
+		setHighlighted,
+		setVisibleRange,
 		...selection
 	}
 }

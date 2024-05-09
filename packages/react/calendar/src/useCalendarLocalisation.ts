@@ -1,4 +1,3 @@
-import { useMemo, useCallback } from 'react'
 import { isProperty } from '@klnjs/assertion'
 
 export const calendarLocalisation = {
@@ -14,58 +13,46 @@ export type CalendarLocalisationLocale = keyof typeof calendarLocalisation
 export type CalendarLocalisationKey = keyof (typeof calendarLocalisation)['en']
 
 export const useCalendarLocalisation = (locale: string) => {
-	const t = useCallback(
-		(
-			key: CalendarLocalisationKey,
-			interpolation: Record<string, string> = {}
-		) => {
-			const lang = isProperty(calendarLocalisation, locale)
-				? (locale as CalendarLocalisationLocale)
-				: 'en'
+	const t = (
+		key: CalendarLocalisationKey,
+		interpolation: Record<string, string> = {}
+	) => {
+		const lang = isProperty(calendarLocalisation, locale)
+			? (locale as CalendarLocalisationLocale)
+			: 'en'
 
-			return Object.entries(interpolation).reduce<string>(
-				(acc, [name, value]) => acc.replaceAll(`{{${name}}}`, value),
-				calendarLocalisation[lang][key]
-			)
-		},
-		[locale]
-	)
+		return Object.entries(interpolation).reduce<string>(
+			(acc, [name, value]) => acc.replaceAll(`{{${name}}}`, value),
+			calendarLocalisation[lang][key]
+		)
+	}
 
-	return { t }
-}
+	const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
 
-export const useCalendarFieldNames = (locale: string) =>
-	useMemo(
-		() => ({
-			names: new Intl.DisplayNames(locale, { type: 'dateTimeField' })
-		}),
-		[locale]
-	)
+	const fieldNames = new Intl.DisplayNames(locale, { type: 'dateTimeField' })
 
-export const useCalendarDayNames = (locale: string) =>
-	useMemo(() => {
-		const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' })
-
-		return {
-			names: {
-				of: (code: string) => {
-					switch (code) {
-						case 'today':
-							return rtf.format(0, 'day')
-						case 'yesterday':
-							return rtf.format(-1, 'day')
-						case 'tommorow':
-							return rtf.format(1, 'day')
-						default:
-							return code
-					}
-				},
-				resolvedOptions: () => ({
-					type: 'days',
-					locale,
-					style: 'long',
-					fallback: 'code'
-				})
+	// @ts-expect-error days not valid on interface
+	const dayNames: Intl.DisplayNames = {
+		of: (code: string) => {
+			switch (code) {
+				case 'today':
+					return rtf.format(0, 'day')
+				case 'yesterday':
+					return rtf.format(-1, 'day')
+				case 'tommorow':
+					return rtf.format(1, 'day')
+				default:
+					return code
 			}
-		}
-	}, [locale])
+		},
+		resolvedOptions: () => ({
+			// @ts-expect-error days not valid on interface
+			type: 'days',
+			locale,
+			style: 'long',
+			fallback: 'code'
+		})
+	} satisfies Intl.DisplayNames
+
+	return { t, fieldNames, dayNames }
+}

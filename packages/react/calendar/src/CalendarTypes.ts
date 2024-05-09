@@ -1,5 +1,7 @@
 import type { Temporal } from 'temporal-polyfill'
 
+export type CalendarPagination = 'single' | 'visible'
+
 export type CalendarVisibleDuration = {
 	months?: number
 }
