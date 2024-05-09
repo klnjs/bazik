@@ -33,9 +33,6 @@ export const createVisibleRange = ({
 			? date.subtract(offset)
 			: date.add(offset)
 
-	console.log(date.calendarId)
-	console.log(end.calendarId)
-
 	const range = [date, end].sort(compare) as PlainDateRange
 
 	if (isDefined(min) && compare(range[0], min) === -1) {

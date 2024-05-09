@@ -118,17 +118,17 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 			})
 
 			return name ? `${dayNames.of(name)}, ${formatted}` : formatted
-		}, [date, calendar, dayNames, isToday, isYesterday, isTommorow])
+		}, [date, calendar, locale, dayNames, isToday, isYesterday, isTommorow])
 
 		const content = children ?? date.day
 
-		const select = (date: PlainDate) => {
-			setSelection(date)
-			setHighlighted(date)
+		const select = (target: PlainDate) => {
+			setSelection(target)
+			setHighlighted(target)
 		}
 
-		const highlight = (date: PlainDate) => {
-			const result = clamp(date, min, max)
+		const highlight = (target: PlainDate) => {
+			const result = clamp(target, min, max)
 			const visible = isBetweenInclusive(result, ...visibleRange)
 			const range = visible
 				? visibleRange
