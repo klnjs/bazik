@@ -61,7 +61,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 			pagination === 'visible'
 				? visibleDuration
 				: Temporal.Duration.from({ months: 1 }),
-		[visibleDuration]
+		[pagination, visibleDuration]
 	)
 
 	const [focusWithin, setFocusWithin] = useState(autoFocus)
