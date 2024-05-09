@@ -27,6 +27,8 @@ jobs:
       
       - name: Bun
         uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
 
       - name: Cache      
         uses: dtinth/setup-github-actions-caching-for-turbo@v1.2.0
