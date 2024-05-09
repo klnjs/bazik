@@ -8,18 +8,23 @@ export const CalendarCellWeekday = forwardRef<'div', CalendarCellWeekdayProps>(
 	({ type, date, children, ...otherProps }, forwardedRef) => {
 		const { calendar, locale } = useCalendarContext()
 
+		const title = date.toLocaleString(locale, {
+			calendar,
+			weekday: 'long'
+		})
+
+		const content =
+			children ??
+			date.toLocaleString(locale, { calendar, weekday: 'short' })
+
 		return (
 			<poly.abbr
 				ref={forwardedRef}
 				data-cell="weekday"
-				title={date.toLocaleString(locale, {
-					calendar,
-					weekday: 'long'
-				})}
+				title={title}
 				{...otherProps}
 			>
-				{children ??
-					date.toLocaleString(locale, { calendar, weekday: 'short' })}
+				{content}
 			</poly.abbr>
 		)
 	}

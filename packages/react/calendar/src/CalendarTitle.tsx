@@ -8,14 +8,17 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 	({ children, ...otherProps }, forwardedRef) => {
 		const { locale, calendar, visibleRange } = useCalendarContext()
 
+		const content =
+			children ??
+			new Intl.DateTimeFormat(locale, {
+				calendar,
+				year: 'numeric',
+				month: 'long'
+			}).formatRange(...visibleRange)
+
 		return (
 			<poly.h2 ref={forwardedRef} aria-live="polite" {...otherProps}>
-				{children ??
-					new Intl.DateTimeFormat(locale, {
-						calendar,
-						year: 'numeric',
-						month: 'long'
-					}).formatRange(...visibleRange)}
+				{content}
 			</poly.h2>
 		)
 	}

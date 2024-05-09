@@ -9,9 +9,11 @@ export const CalendarCellWeek = forwardRef<'div', CalendarCellWeekProps>(
 	({ type, date, children, ...otherProps }, forwardedRef) => {
 		const { locale } = useCalendarContext()
 
+		const content = children ?? getWeekOfYear(date, locale)
+
 		return (
 			<poly.div ref={forwardedRef} data-cell="week" {...otherProps}>
-				{children ?? getWeekOfYear(date, locale)}
+				{content}
 			</poly.div>
 		)
 	}
