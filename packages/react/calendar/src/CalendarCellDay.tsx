@@ -1,5 +1,6 @@
 import {
 	useRef,
+	useMemo,
 	useLayoutEffect,
 	type KeyboardEvent,
 	type FocusEvent
@@ -11,12 +12,13 @@ import {
 	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
-import { isDefined } from '@klnjs/assertion'
-import { isElementRTL } from '@klnjs/dom'
 import {
+	clamp,
+	compare,
 	isAfter,
 	isBefore,
 	isBetween,
+	isBetweenInclusive,
 	isEndOfWeek,
 	isSameDay,
 	isSameMonth,
@@ -26,10 +28,14 @@ import {
 	isTommorow as isTommorowFn,
 	isYesterday as isYesterdayFn
 } from '@klnjs/temporal'
+import { isDefined } from '@klnjs/assertion'
+import { isElementRTL } from '@klnjs/dom'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarGridContext } from './CalendarGridContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import { isCalendarCell, type CalendarCellProps } from './CalendarCell'
+import { createVisibleRange } from './useCalendarVisibleRange'
+import type { PlainDate } from './CalendarTypes'
 
 export type CalendarCellDayProps = CoreProps<'div', CalendarCellProps>
 
@@ -39,19 +45,24 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 		const refComposed = useRefComposed(ref, forwardedRef)
 
 		const {
+			calendar,
 			disabled: disabledContext,
 			focusWithin: isFocusWithin,
 			highlighted,
 			locale,
 			max,
 			min,
+			pagination,
 			readOnly: isReadOnly,
 			selectionIsTransient,
 			selectionMode,
 			selectionVisible,
+			visibleDuration,
+			visibleRange,
+			setSelection,
+			setHighlighted,
 			setFocusWithin,
-			updateSelection,
-			updateHighlighted
+			setVisibleRange
 		} = useCalendarContext()
 		const { month } = useCalendarGridContext()
 		const { dayNames } = useCalendarLocalisation(locale)
@@ -89,27 +100,60 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 		const shouldFocus = isFocused
 		const shouldFocusOnPointerOver = isSelectable && selectionIsTransient
 
-		const name = isToday
-			? 'today'
-			: isYesterday
-				? 'yesterday'
-				: isTommorow
-					? 'tommorow'
-					: undefined
+		const label = useMemo(() => {
+			const name = isToday
+				? 'today'
+				: isYesterday
+					? 'yesterday'
+					: isTommorow
+						? 'tommorow'
+						: undefined
 
-		const formatted = date.toLocaleString(locale, {
-			year: 'numeric',
-			month: 'long',
-			weekday: 'long',
-			day: 'numeric'
-		})
+			const formatted = date.toLocaleString(locale, {
+				calendar,
+				year: 'numeric',
+				month: 'long',
+				weekday: 'long',
+				day: 'numeric'
+			})
 
-		const label = name ? `${dayNames.of(name)}, ${formatted}` : formatted
+			return name ? `${dayNames.of(name)}, ${formatted}` : formatted
+		}, [date, calendar, dayNames, isToday, isYesterday, isTommorow])
+
+		const select = (date: PlainDate) => {
+			setSelection(date)
+			setHighlighted(date)
+		}
+
+		const highlight = (date: PlainDate) => {
+			const result = clamp(date, min, max)
+			const visible = isBetweenInclusive(result, ...visibleRange)
+			const range = visible
+				? visibleRange
+				: createVisibleRange({
+						date: result,
+						span: visibleDuration,
+						align: (compare(result, highlighted) *
+							(pagination === 'single' ? -1 : 1)) as -1 | 0 | 1
+					})
+
+			setHighlighted(result)
+			setVisibleRange(range)
+		}
+
+		const handleBlur = (event: FocusEvent) => {
+			if (!isCalendarCell(event.relatedTarget as HTMLElement, 'day')) {
+				setFocusWithin(false)
+			}
+		}
+
+		const handleFocus = () => {
+			setFocusWithin(true)
+		}
 
 		const handleClick = () => {
 			if (isSelectable) {
-				updateSelection(date)
-				updateHighlighted(date)
+				select(date)
 			}
 		}
 
@@ -127,51 +171,40 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 				return
 			}
 
-			if (
-				(event.code === 'Enter' || event.code === 'Space') &&
-				isSelectable
-			) {
-				updateSelection(date)
+			if (event.code === 'Enter' || event.code === 'Space') {
+				if (isSelectable) {
+					select(date)
+				}
 			} else if (event.code === 'ArrowUp') {
-				updateHighlighted(date.subtract({ weeks: 1 }))
+				highlight(date.subtract({ weeks: 1 }))
 			} else if (event.code === 'ArrowRight') {
 				if (isElementRTL(event.target as HTMLElement)) {
-					updateHighlighted(date.subtract({ days: 1 }))
+					highlight(date.subtract({ days: 1 }))
 				} else {
-					updateHighlighted(date.add({ days: 1 }))
+					highlight(date.add({ days: 1 }))
 				}
 			} else if (event.code === 'ArrowDown') {
-				updateHighlighted(date.add({ weeks: 1 }))
+				highlight(date.add({ weeks: 1 }))
 			} else if (event.key === 'ArrowLeft') {
 				if (isElementRTL(event.target as HTMLElement)) {
-					updateHighlighted(date.add({ days: 1 }))
+					highlight(date.add({ days: 1 }))
 				} else {
-					updateHighlighted(date.subtract({ days: 1 }))
+					highlight(date.subtract({ days: 1 }))
 				}
 			} else if (event.code === 'PageUp') {
-				updateHighlighted(date.subtract({ months: 1 }))
+				highlight(date.subtract({ months: 1 }))
 			} else if (event.code === 'PageDown') {
-				updateHighlighted(date.add({ months: 1 }))
+				highlight(date.add({ months: 1 }))
 			} else if (event.code === 'Home') {
-				updateHighlighted(date.with({ day: 1 }))
+				highlight(date.with({ day: 1 }))
 			} else if (event.code === 'End') {
-				updateHighlighted(date.with({ day: date.daysInMonth }))
+				highlight(date.with({ day: date.daysInMonth }))
 			}
 		}
 
 		const handlePointerOver = () => {
 			if (shouldFocusOnPointerOver) {
-				updateHighlighted(date)
-			}
-		}
-
-		const handleFocus = () => {
-			setFocusWithin(true)
-		}
-
-		const handleBlur = (event: FocusEvent) => {
-			if (!isCalendarCell(event.relatedTarget as HTMLElement, 'day')) {
-				setFocusWithin(false)
+				setHighlighted(date)
 			}
 		}
 

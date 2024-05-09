@@ -1,6 +1,6 @@
 import { poly, forwardRef, type CoreProps } from '@klnjs/core'
-import { isDefined } from '@klnjs/assertion'
 import { clamp, isAfter, isBefore } from '@klnjs/temporal'
+import { isDefined } from '@klnjs/assertion'
 import { Temporal } from 'temporal-polyfill'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
@@ -48,14 +48,15 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 					? '«'
 					: '‹'
 
-		const disabledMin =
-			action === 'dec' && isDefined(min) && isBefore(visibleRange[0], min)
-
-		const disabledMax =
-			action === 'inc' && isDefined(max) && isAfter(visibleRange[1], max)
-
 		const isDisabled =
-			disabledProp || disabledContext || disabledMin || disabledMax
+			disabledProp ||
+			disabledContext ||
+			(action === 'dec' &&
+				isDefined(min) &&
+				isBefore(visibleRange[0], min)) ||
+			(action === 'inc' &&
+				isDefined(max) &&
+				isAfter(visibleRange[1], max))
 
 		const handleClick = () => {
 			const page =

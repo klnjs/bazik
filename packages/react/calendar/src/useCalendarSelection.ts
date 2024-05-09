@@ -27,7 +27,7 @@ export type UseCalendarSelectionReturn<S extends CalendarSelect> = {
 	selectionIsTransient: S extends 'range' ? boolean : never
 	selectionMode: S
 	selectionVisible: CalendarSelectValue<S>
-	updateSelection: (date: PlainDate) => void
+	setSelection: (date: PlainDate) => void
 }
 
 export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
@@ -39,7 +39,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 }: UseCalendarSelectionOptions<S>) => {
 	const [transient, setTransient] = useState<PlainDate>()
 
-	const [selection, setSelection] = useStateControllable<
+	const [selection, setSelectionRaw] = useStateControllable<
 		CalendarSelectValue<CalendarSelect>
 	>({
 		value,
@@ -65,14 +65,14 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		]
 	}, [selectionMode, selection, transient, highlighted])
 
-	const updateSelection = useCallback(
+	const setSelection = useCallback(
 		(date: PlainDate) => {
 			if (selectionMode === 'one') {
-				setSelection(date)
+				setSelectionRaw(date)
 			}
 
 			if (selectionMode === 'many') {
-				setSelection((prev) => {
+				setSelectionRaw((prev) => {
 					if (isArray(prev)) {
 						const filtered = prev.filter((p) => !p.equals(date))
 
@@ -90,7 +90,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 			if (selectionMode === 'range') {
 				setTransient((prev) => {
 					if (isDefined(prev)) {
-						setSelection([prev, date].toSorted(compare))
+						setSelectionRaw([prev, date].toSorted(compare))
 						return undefined
 					}
 
@@ -98,11 +98,11 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 				})
 			}
 		},
-		[selectionMode, setSelection]
+		[selectionMode, setSelectionRaw]
 	)
 
 	useEffectOnUpdate(() => {
-		setSelection(null)
+		setSelectionRaw(null)
 		setSelectionMode(behaviour ?? 'one')
 	}, [behaviour])
 
@@ -111,7 +111,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 		selectionIsTransient,
 		selectionMode,
 		selectionVisible,
-		updateSelection
+		setSelection
 	} as
 		| UseCalendarSelectionReturn<'one'>
 		| UseCalendarSelectionReturn<'many'>

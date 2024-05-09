@@ -1,10 +1,10 @@
 import { forwardRef } from '@klnjs/core'
+import { isDefined } from '@klnjs/assertion'
 import { CalendarCellBlank } from './CalendarCellBlank'
 import { CalendarCellDay } from './CalendarCellDay'
 import { CalendarCellWeek } from './CalendarCellWeek'
 import { CalendarCellWeekday } from './CalendarCellWeekday'
 import type { PlainDate } from './CalendarTypes'
-import { isDefined } from '@klnjs/assertion'
 
 export type CalendarCellType = 'day' | 'week' | 'weekday' | 'blank'
 
@@ -15,13 +15,17 @@ export type CalendarCellProps = {
 
 export const isCalendarCell = (
 	element: HTMLElement | null,
-	type: CalendarCellType
+	type?: CalendarCellType
 ) => {
 	if (!element || typeof window === 'undefined') {
 		return false
 	}
 
-	return isDefined(element.dataset[type])
+	if (!type) {
+		return isDefined(element.dataset.cell)
+	}
+
+	return element.dataset.cell === type
 }
 
 export const CalendarCell = forwardRef<'div', CalendarCellProps>(

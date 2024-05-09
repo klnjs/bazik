@@ -19,16 +19,15 @@ export default () => (
 			<CalendarTitle className={classes.title} />
 			<CalendarButton action="inc" className={classes.button} />
 		</CalendarHeader>
-		<div style={{ display: 'flex', flexDirection: 'row' }}>
-			<CalendarGrid className={classes.grid}>
-				{({ type, date }) => (
-					<CalendarCell
-						type={type}
-						date={date}
-						className={classes.cell}
-					/>
-				)}
-			</CalendarGrid>
-		</div>
+		<CalendarGrid className={classes.grid}>
+			{({ type, date }) => (
+				<CalendarCell
+					key={`${type}-${date.toString()}`}
+					type={type}
+					date={date}
+					className={classes.cell}
+				/>
+			)}
+		</CalendarGrid>
 	</Calendar>
 )

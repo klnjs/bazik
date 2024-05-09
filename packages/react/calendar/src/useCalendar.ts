@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react'
-import { clamp, compare, isBetweenInclusive } from '@klnjs/temporal'
 import type { LocaleCalendar } from '@klnjs/locale'
 import { useCalendarHighlighted } from './useCalendarHighlighted'
 import {
@@ -8,10 +7,7 @@ import {
 	type CalendarSelectValue
 } from './useCalendarSelection'
 import { useCalendarSystem } from './useCalendarSystem'
-import {
-	createVisibleRange,
-	useCalendarVisibleRange
-} from './useCalendarVisibleRange'
+import { useCalendarVisibleRange } from './useCalendarVisibleRange'
 import type {
 	PlainDate,
 	CalendarPagination,
@@ -66,7 +62,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 	const { calendar } = useCalendarSystem({ locale, calendar: calendarProp })
 
 	const { highlighted, setHighlighted } = useCalendarHighlighted({
-		date: value,
+		value,
 		calendar
 	})
 
@@ -85,22 +81,6 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		onChange
 	})
 
-	const updateHighlighted = (date: PlainDate) => {
-		const result = clamp(date, min, max)
-		const visible = isBetweenInclusive(result, ...visibleRange)
-		const range = visible
-			? visibleRange
-			: createVisibleRange({
-					date: result,
-					span: visibleDuration,
-					align: (compare(result, highlighted) *
-						(pagination === 'single' ? -1 : 1)) as -1 | 0 | 1
-				})
-
-		setHighlighted(result)
-		setVisibleRange(range)
-	}
-
 	return {
 		calendar,
 		disabled,
@@ -109,6 +89,7 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		locale,
 		max,
 		min,
+		pagination,
 		paginationDuration,
 		readOnly,
 		visibleDuration,
@@ -116,7 +97,6 @@ export const useCalendar = <S extends CalendarSelect = 'one'>({
 		setFocusWithin,
 		setHighlighted,
 		setVisibleRange,
-		updateHighlighted,
 		...selection
 	}
 }
