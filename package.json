@@ -11,9 +11,7 @@
 	"packageManager": "bun@1.1.2",
   "workspaces": [
 		"apps/*",
-    "packages/react/*",
-		"packages/tools/*",
-		"packages/utils/*"
+    "packages/**/*"
   ],
   "scripts": {
 		"dev": "turbo dev",
