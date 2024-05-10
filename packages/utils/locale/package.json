@@ -10,8 +10,9 @@
 		"directory": "packages/utils/locale"
 	},
 	"files": [
-		"src",
-		"dist"
+		"dist",
+		"LICENSE",
+		"README.md"
 	],
 	"exports": {
 		".": {

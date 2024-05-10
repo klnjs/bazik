@@ -10,8 +10,9 @@
 		"directory": "packages/react/avatar"
 	},
 	"files": [
-		"src",
-		"dist"
+		"dist",
+		"LICENSE",
+		"README.md"
 	],
 	"exports": {
 		".": {

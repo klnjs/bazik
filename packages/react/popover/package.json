@@ -10,8 +10,9 @@
 		"directory": "packages/react/popover"
 	},
 	"files": [
-		"src",
-		"dist"
+		"dist",
+		"LICENSE",
+		"README.md"
 	],
 	"exports": {
 		".": {
