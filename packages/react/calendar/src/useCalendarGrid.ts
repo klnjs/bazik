@@ -1,16 +1,9 @@
 import { useMemo } from 'react'
-import {
-	toEndOfWeek,
-	toEndOfMonth,
-	toStartOfWeek,
-	isStartOfWeek
-} from '@klnjs/temporal'
-import type { LocaleCalendar } from '@klnjs/locale'
+import { plainDate } from '@klnjs/temporal'
 import type { PlainYearMonth } from './CalendarTypes'
 import type { CalendarCellProps } from './CalendarCell'
 
 export type UseCalendarGridOptions = {
-	calendar: LocaleCalendar
 	locale: string
 	month: PlainYearMonth
 	overflow?: 'auto' | 'align'
@@ -19,7 +12,6 @@ export type UseCalendarGridOptions = {
 }
 
 export const useCalendarGrid = ({
-	calendar,
 	locale,
 	month,
 	overflow = 'auto',
@@ -27,10 +19,13 @@ export const useCalendarGrid = ({
 	weeks
 }: UseCalendarGridOptions) =>
 	useMemo(() => {
-		const start = month.toPlainDate({ day: 1 }).withCalendar(calendar)
-		const startOf = toStartOfWeek(start, locale)
+		const start = month.toPlainDate({ day: 1 })
+		const startOf = plainDate.toStartOfWeek(start, locale)
 		const startOfVisible = startOf.subtract({ weeks: weekdays ? 1 : 0 })
-		const endOfVisible = toEndOfWeek(toEndOfMonth(start), locale)
+		const endOfVisible = plainDate.toEndOfWeek(
+			plainDate.toEndOfMonth(start),
+			locale
+		)
 
 		const days = endOfVisible.since(startOfVisible).days + 1
 		const daysVisible = overflow === 'auto' ? days : weekdays ? 49 : 42
@@ -40,7 +35,7 @@ export const useCalendarGrid = ({
 				const date = startOfVisible.add({ days: index })
 				const type = weekdays && index < 7 ? 'weekday' : 'day'
 
-				if (weeks && isStartOfWeek(date, locale)) {
+				if (weeks && plainDate.isStartOfWeek(date, locale)) {
 					acc.push({
 						date,
 						type: weekdays && index === 0 ? 'blank' : 'week'
@@ -53,4 +48,4 @@ export const useCalendarGrid = ({
 			},
 			[]
 		)
-	}, [calendar, locale, month, weeks, weekdays, overflow])
+	}, [locale, month, weeks, weekdays, overflow])

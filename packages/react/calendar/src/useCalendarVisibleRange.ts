@@ -1,15 +1,12 @@
 import { useState } from 'react'
 import { useEffectOnUpdate } from '@klnjs/core'
-import { toEndOfMonth, toStartOfMonth } from '@klnjs/temporal'
-import type { Duration, PlainDate, PlainDateRange } from './CalendarTypes'
 import { isDefined } from '@klnjs/assertion'
-import { Temporal } from 'temporal-polyfill'
-
-const { compare } = Temporal.PlainYearMonth
+import { plainDate } from '@klnjs/temporal'
+import type { Duration, PlainDate, PlainDateRange } from './CalendarTypes'
 
 const expand = (range: PlainDateRange): PlainDateRange => [
-	toStartOfMonth(range[0]),
-	toEndOfMonth(range[1])
+	plainDate.toStartOfMonth(range[0]),
+	plainDate.toEndOfMonth(range[1])
 ]
 
 export type UseCalendarVisibleOptions = {
@@ -33,13 +30,13 @@ export const createVisibleRange = ({
 			? date.subtract(offset)
 			: date.add(offset)
 
-	const range = [date, end].sort(compare) as PlainDateRange
+	const range = [date, end].sort(plainDate.compare) as PlainDateRange
 
-	if (isDefined(min) && compare(range[0], min) === -1) {
+	if (isDefined(min) && plainDate.compare(range[0], min) === -1) {
 		return expand([min, min.add(offset)])
 	}
 
-	if (isDefined(max) && compare(range[1], max) === 1) {
+	if (isDefined(max) && plainDate.compare(range[1], max) === 1) {
 		return expand([max.subtract(offset), max])
 	}
 

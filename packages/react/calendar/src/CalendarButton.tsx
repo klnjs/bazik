@@ -1,7 +1,7 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
-import { clamp, isAfter, isBefore } from '@klnjs/temporal'
-import { isDefined } from '@klnjs/assertion'
 import { Temporal } from 'temporal-polyfill'
+import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { isDefined } from '@klnjs/assertion'
+import { plainDate } from '@klnjs/temporal'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import { createVisibleRange } from './useCalendarVisibleRange'
@@ -53,10 +53,10 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			disabledContext ||
 			(action === 'dec' &&
 				isDefined(min) &&
-				isBefore(visibleRange[0], min)) ||
+				plainDate.isBefore(visibleRange[0], min)) ||
 			(action === 'inc' &&
 				isDefined(max) &&
-				isAfter(visibleRange[1], max))
+				plainDate.isAfter(visibleRange[1], max))
 
 		const handleClick = () => {
 			const page =
@@ -81,7 +81,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 
 			setVisibleRange(result)
 			setHighlighted((prev) =>
-				clamp(date.with({ day: prev.day }), min, max)
+				plainDate.clamp(date.with({ day: prev.day }), min, max)
 			)
 		}
 
