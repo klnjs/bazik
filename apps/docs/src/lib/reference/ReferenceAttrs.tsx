@@ -3,7 +3,8 @@ import classes from './Reference.module.css'
 
 export type ReferenceAttr = {
 	name: string
-	description: string
+	text?: string
+	values?: string
 }
 
 export type ReferenceAttrsProps = {
@@ -19,10 +20,12 @@ export const ReferenceAttrs = ({ attrs: attributes }: ReferenceAttrsProps) => (
 			</TableRow>
 		</thead>
 		<tbody>
-			{attributes.map(({ name, description }) => (
+			{attributes.map(({ name, text, values }) => (
 				<TableRow key={name}>
 					<TableCell className={classes.prop}>{name}</TableCell>
-					<TableCell>{description}</TableCell>
+					<TableCell>
+						{values !== undefined ? <code>{values}</code> : text}
+					</TableCell>
 				</TableRow>
 			))}
 		</tbody>
