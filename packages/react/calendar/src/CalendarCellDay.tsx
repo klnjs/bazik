@@ -12,23 +12,8 @@ import {
 	useRefComposed,
 	type CoreProps
 } from '@klnjs/core'
-import {
-	clamp,
-	compare,
-	isAfter,
-	isBefore,
-	isBetween,
-	isBetweenInclusive,
-	isEndOfWeek,
-	isSameDay,
-	isSameMonth,
-	isStartOfWeek,
-	isToday as isTodayFn,
-	isWeekend as isWeekendFn,
-	isTommorow as isTommorowFn,
-	isYesterday as isYesterdayFn
-} from '@klnjs/temporal'
 import { isDefined } from '@klnjs/assertion'
+import { plainDate } from '@klnjs/temporal'
 import { isElementRTL } from '@klnjs/dom'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarGridContext } from './CalendarGridContext'
@@ -71,30 +56,37 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 		const isMany = selectionMode === 'many' && isDefined(selectionVisible)
 		const isRange = selectionMode === 'range' && isDefined(selectionVisible)
 
-		const isActive = isSameDay(date, highlighted)
-		const isToday = isTodayFn(date)
-		const isTommorow = isTommorowFn(date)
-		const isYesterday = isYesterdayFn(date)
-		const isWeekend = isWeekendFn(date, locale)
-		const isWeekEnd = isEndOfWeek(date, locale)
-		const isWeekStart = isStartOfWeek(date, locale)
-		const isOverflow = !isSameMonth(date, month.toPlainDate({ day: 1 }))
+		const isActive = plainDate.isEquals(date, highlighted)
+		const isToday = plainDate.isToday(date)
+		const isTommorow = plainDate.isTommorow(date)
+		const isYesterday = plainDate.isYesterday(date)
+		const isWeekend = plainDate.isWeekend(date, locale)
+		const isWeekEnd = plainDate.isEndOfWeek(date, locale)
+		const isWeekStart = plainDate.isStartOfWeek(date, locale)
+		const isOverflow = !plainDate.isSameMonth(
+			date,
+			month.toPlainDate({ day: 1 })
+		)
 		const isFocused = isFocusWithin && isActive
 		const isDisabled =
 			disabledContext ||
-			(isDefined(min) && isBefore(date, min)) ||
-			(isDefined(max) && isAfter(date, max))
+			(isDefined(min) && plainDate.isBefore(date, min)) ||
+			(isDefined(max) && plainDate.isAfter(date, max))
 
-		const isRangeEnd = isRange && isSameDay(date, selectionVisible[1])
-		const isRangeStart = isRange && isSameDay(date, selectionVisible[0])
+		const isRangeEnd =
+			isRange && plainDate.isEquals(date, selectionVisible[1])
+		const isRangeStart =
+			isRange && plainDate.isEquals(date, selectionVisible[0])
 		const isRangeBetween =
-			isRange && isBetween(date, selectionVisible[0], selectionVisible[1])
+			isRange &&
+			plainDate.isBetween(date, selectionVisible[0], selectionVisible[1])
 
 		const isTabbable = !isDisabled && isActive
 		const isSelectable = !isDisabled && !isReadOnly
 		const isSelected =
-			(isOne && isSameDay(date, selectionVisible)) ||
-			(isMany && selectionVisible.some((d) => isSameDay(date, d))) ||
+			(isOne && plainDate.isEquals(date, selectionVisible)) ||
+			(isMany &&
+				selectionVisible.some((d) => plainDate.isEquals(date, d))) ||
 			(isRange && (isRangeEnd || isRangeStart))
 
 		const shouldFocus = isFocused
@@ -128,14 +120,17 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 		}
 
 		const highlight = (target: PlainDate) => {
-			const result = clamp(target, min, max)
-			const visible = isBetweenInclusive(result, ...visibleRange)
+			const result = plainDate.clamp(target, min, max)
+			const visible = plainDate.isBetweenInclusive(
+				result,
+				...visibleRange
+			)
 			const range = visible
 				? visibleRange
 				: createVisibleRange({
 						date: result,
 						span: visibleDuration,
-						align: (compare(result, highlighted) *
+						align: (plainDate.compare(result, highlighted) *
 							(pagination === 'single' ? -1 : 1)) as -1 | 0 | 1
 					})
 

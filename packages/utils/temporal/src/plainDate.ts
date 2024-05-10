@@ -1,8 +1,7 @@
 import { Temporal } from 'temporal-polyfill'
 import { getWeekInfo } from '@klnjs/locale'
 
-export const getToday = (calendar = 'iso8601') =>
-	Temporal.Now.plainDate(calendar)
+export const getToday = (calendar: string) => Temporal.Now.plainDate(calendar)
 
 export const getDayOfWeek = (date: Temporal.PlainDate, locale: string) =>
 	((date.dayOfWeek - getWeekInfo(locale).firstDay + 7) % 7) + 1
@@ -78,7 +77,7 @@ export const isBetweenInclusive = (
 	date: Temporal.PlainDate,
 	min: Temporal.PlainDate,
 	max: Temporal.PlainDate
-) => isSameDay(date, min) || isSameDay(date, max) || isBetween(date, min, max)
+) => isEquals(date, min) || isEquals(date, max) || isBetween(date, min, max)
 
 export const isSameYear = (
 	date: Temporal.PlainDate,
@@ -88,20 +87,21 @@ export const isSameYear = (
 export const isSameMonth = (
 	date: Temporal.PlainDate,
 	subject: Temporal.PlainDate
-) => Temporal.PlainYearMonth.compare(date, subject) === 0
+) => date.month === subject.month && isSameYear(date, subject)
 
-export const isSameDay = (
+export const isEquals = (
 	date: Temporal.PlainDate,
 	subject: Temporal.PlainDate
 ) => compare(date, subject) === 0
 
-export const isToday = (date: Temporal.PlainDate) => isSameDay(date, getToday())
+export const isToday = (date: Temporal.PlainDate) =>
+	isEquals(date, getToday(date.calendarId))
 
 export const isTommorow = (date: Temporal.PlainDate) =>
-	isSameDay(date, getToday().add({ days: 1 }))
+	isEquals(date, getToday(date.calendarId).add({ days: 1 }))
 
 export const isYesterday = (date: Temporal.PlainDate) =>
-	isSameDay(date, getToday().subtract({ days: 1 }))
+	isEquals(date, getToday(date.calendarId).subtract({ days: 1 }))
 
 export const isWeekend = (date: Temporal.PlainDate, locale: string) =>
 	getWeekInfo(locale).weekend.includes(date.dayOfWeek)

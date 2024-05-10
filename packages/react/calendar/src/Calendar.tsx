@@ -21,7 +21,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			min,
 			pagination,
 			readOnly,
-			select = 'one',
+			select,
 			value,
 			visibleDuration,
 			onChange,
