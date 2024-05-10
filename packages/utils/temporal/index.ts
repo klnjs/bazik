@@ -1,1 +1,1 @@
-export * from './src/plainDate'
+export * as plainDate from './src/plainDate'

@@ -22,12 +22,11 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 		{ offset, weekdays, weeks, overflow, children, ...otherProps },
 		forwardedRef
 	) => {
-		const { calendar, locale, visibleRange } = useCalendarContext()
+		const { locale, visibleRange } = useCalendarContext()
 
 		const months = offset?.months ?? 0
 		const month = visibleRange[0].add({ months }).toPlainYearMonth()
 		const cells = useCalendarGrid({
-			calendar,
 			locale,
 			month,
 			overflow,

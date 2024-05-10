@@ -1,7 +1,7 @@
 import { useMemo, useState, useCallback, type SetStateAction } from 'react'
 import { useEffectOnUpdate, useStateControllable } from '@klnjs/core'
 import { isDefined, isArray } from '@klnjs/assertion'
-import { compare } from '@klnjs/temporal'
+import { plainDate } from '@klnjs/temporal'
 import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
 export type CalendarSelect = 'one' | 'many' | 'range'
@@ -59,7 +59,7 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 
 		return [
 			isRange && isTransient
-				? [transient, highlighted].toSorted(compare)
+				? [transient, highlighted].toSorted(plainDate.compare)
 				: selection,
 			isTransient
 		]
@@ -90,7 +90,9 @@ export const useCalendarSelection = <S extends CalendarSelect = 'one'>({
 			if (selectionMode === 'range') {
 				setTransient((prev) => {
 					if (isDefined(prev)) {
-						setSelectionRaw([prev, date].toSorted(compare))
+						setSelectionRaw(
+							[prev, date].toSorted(plainDate.compare)
+						)
 						return undefined
 					}
 
