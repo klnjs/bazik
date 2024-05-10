@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { isArray } from '@klnjs/assertion'
-import { getToday } from '@klnjs/temporal'
+import { plainDate } from '@klnjs/temporal'
 import type { LocaleCalendar } from '@klnjs/locale'
 import type { PlainDate, PlainDateRange } from './CalendarTypes'
 
@@ -15,7 +15,7 @@ export const useCalendarHighlighted = ({
 }: UseCalendarHighlightedOptions) => {
 	const [highlighted, setHighlighted] = useState(() => {
 		if (!value) {
-			return getToday(calendar)
+			return plainDate.getToday(calendar)
 		}
 
 		if (isArray(value)) {
