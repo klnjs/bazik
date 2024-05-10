@@ -14,12 +14,7 @@
 		"LICENSE",
 		"README.md"
 	],
-	"exports": {
-		".": {
-			"types": "./index.ts",
-			"import": "./index.ts"
-		}
-	},
+	"exports": "./index.ts",
 	"publishConfig": {
 		"exports": {
 			".": {
