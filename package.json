@@ -2,7 +2,7 @@
   "name": "@klnjs/basique",
   "type": "module",
   "author": "Rune Klein (@rnkln)",
-  "version": "0.0.1",
+  "version": "1.0.0-beta.1",
 	"private": true,
 	"repository": {
 		"type": "git",
