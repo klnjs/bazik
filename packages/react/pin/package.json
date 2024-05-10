@@ -10,8 +10,9 @@
 		"directory": "packages/react/pin"
 	},
 	"files": [
-		"src",
-		"dist"
+		"dist",
+		"LICENSE",
+		"README.md"
 	],
 	"exports": {
 		".": {

@@ -10,8 +10,9 @@
 		"directory": "packages/react/icon"
 	},
 	"files": [
-		"src",
-		"dist"
+		"dist",
+		"LICENSE",
+		"README.md"
 	],
 	"exports": {
 		".": {

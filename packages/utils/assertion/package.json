@@ -10,8 +10,9 @@
 		"directory": "packages/utils/assertion"
 	},
 	"files": [
-		"src",
-		"dist"
+		"dist",
+		"LICENSE",
+		"README.md"
 	],
 	"exports": {
 		".": {
