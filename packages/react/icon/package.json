@@ -24,11 +24,11 @@
 		}
 	},
 	"scripts": {
-		"build": "klnjs-build",
+		"build": "basique build",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit",
-		"prepublishOnly": "klnjs-prepublish"
+		"prepublishOnly": "basique prepare"
 	},
 	"dependencies": {
 		"@klnjs/core": "workspace:*"
