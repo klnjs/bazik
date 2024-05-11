@@ -37,7 +37,7 @@
 	},
 	"devDependencies": {
 		"@mdi/js": "7.4.47",
-		"@klnjs/builder": "workspace:*",
+		"@klnjs/basique": "workspace:*",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",

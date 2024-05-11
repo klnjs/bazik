@@ -1,5 +1,5 @@
 {
-	"name": "@klnjs/builder",
+	"name": "@klnjs/basique",
 	"type": "module",
 	"author": "Rune Klein (@rnkln)",
 	"version": "1.0.0-beta.1",
@@ -8,10 +8,10 @@
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
-		"directory": "packages/tools/builder"
+		"directory": "packages/tools/basique"
 	},
 	"bin": {
-		"basique": "./src/index.ts"
+		"basique": "./index.ts"
 	},
 	"scripts": {
 		"eslint": "eslint . --max-warnings 0",
