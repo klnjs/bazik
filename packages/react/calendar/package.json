@@ -51,6 +51,6 @@
 	"peerDependencies": {
 		"react": "^18.0",
 		"react-dom": "^18.0",
-		"temporal-polyfill": "^0.0"
+		"temporal-polyfill": "^0.2.4"
 	}
 }

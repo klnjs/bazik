@@ -24,9 +24,6 @@ jobs:
       - name: Create .npmrc
         run: echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> .npmrc
 
-      - name: License
-        run: find packages/*/* -maxdepth 0 -type d -exec cp LICENSE {} \;
-
       - name: Publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

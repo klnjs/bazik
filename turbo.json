@@ -12,6 +12,7 @@
 		},
 		"eslint": {},
 		"prettier": {},
-		"typescript": {}
+		"typescript": {},
+		"prepublishOnly": {}
 	}
 }

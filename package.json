@@ -18,7 +18,8 @@
     "build": "turbo build",
     "eslint": "turbo eslint",
     "prettier": "turbo prettier",
-    "typescript": "turbo typescript"
+    "typescript": "turbo typescript",
+		"prepublishOnly": "turbo prepublishOnly"
   },
   "devDependencies": {
     "@types/bun": "1.1.1",
