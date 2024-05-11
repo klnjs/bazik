@@ -11,12 +11,16 @@
 		"directory": "packages/tools/builder"
 	},
 	"bin": {
-		"builder": "./src/build.ts"
+		"klnjs-build": "./src/build.ts",
+		"klnjs-prepublish": "./src/prepublish.ts"
 	},
 	"scripts": {
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
+	},
+	"dependencies": {
+		"find-up": "^7.0.0"
 	},
 	"devDependencies": {
 		"@klnjs/eslint-config": "2.0.0",
