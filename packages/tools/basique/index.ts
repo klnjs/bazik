@@ -2,7 +2,6 @@
 
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-
 import { build } from './src/build'
 import { prepare } from './src/prepare'
 
