@@ -27,8 +27,7 @@
 		"build": "basique build",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
-		"typescript": "tsc --noEmit",
-		"prepublishOnly": "basique prepare"
+		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@klnjs/core": "workspace:*"

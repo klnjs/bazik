@@ -8,7 +8,6 @@
     "type": "git",
     "url": "git+ssh://git@github.com/klnjs/basique.git"
   },
-  "packageManager": "bun@1.1.2",
   "workspaces": [
     "apps/*",
     "packages/**/*"
@@ -18,8 +17,7 @@
     "build": "turbo build",
     "eslint": "turbo eslint",
     "prettier": "turbo prettier",
-    "typescript": "turbo typescript",
-		"prepublishOnly": "turbo prepublishOnly"
+    "typescript": "turbo typescript"
   },
   "devDependencies": {
     "@types/bun": "1.1.1",
