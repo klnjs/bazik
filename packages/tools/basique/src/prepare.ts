@@ -14,7 +14,7 @@ export const prepare = async () => {
 		delete json.publishConfig.exports
 	}
 
-	if (Object.keys(json.publishConfig).length > 0) {
+	if (Object.keys(json.publishConfig).length === 0) {
 		delete json.publishConfig
 	}
 
