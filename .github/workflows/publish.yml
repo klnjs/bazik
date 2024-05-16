@@ -1,0 +1,30 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish: 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      FORCE_COLOR: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> .npmrc
+
+      - name: Publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --recursive  --provenance --access=public

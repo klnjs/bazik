@@ -2,7 +2,7 @@
 	"name": "@klnjs/avatar",
 	"type": "module",
 	"author": "Rune Klein (@rnkln)",
-	"version": "1.0.0",
+	"version": "1.0.0-beta.1",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -14,12 +14,7 @@
 		"LICENSE",
 		"README.md"
 	],
-	"exports": {
-		".": {
-			"types": "./index.ts",
-			"import": "./index.ts"
-		}
-	},
+	"exports": "./index.ts",
 	"publishConfig": {
 		"exports": {
 			".": {
@@ -29,7 +24,7 @@
 		}
 	},
 	"scripts": {
-		"build": "builder",
+		"build": "basique build",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
@@ -38,7 +33,7 @@
 		"@klnjs/core": "workspace:*"
 	},
 	"devDependencies": {
-		"@klnjs/builder": "workspace:*",
+		"@klnjs/basique": "workspace:*",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",

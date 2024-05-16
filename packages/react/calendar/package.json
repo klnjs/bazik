@@ -14,12 +14,7 @@
 		"LICENSE",
 		"README.md"
 	],
-	"exports": {
-		".": {
-			"types": "./index.ts",
-			"import": "./index.ts"
-		}
-	},
+	"exports": "./index.ts",
 	"publishConfig": {
 		"exports": {
 			".": {
@@ -29,7 +24,7 @@
 		}
 	},
 	"scripts": {
-		"build": "builder",
+		"build": "basique build",
 		"eslint": "eslint . --max-warnings 0",
 		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
@@ -42,7 +37,7 @@
 		"@klnjs/temporal": "workspace:*"
 	},
 	"devDependencies": {
-		"@klnjs/builder": "workspace:*",
+		"@klnjs/basique": "workspace:*",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",
@@ -55,6 +50,6 @@
 	"peerDependencies": {
 		"react": "^18.0",
 		"react-dom": "^18.0",
-		"temporal-polyfill": "^0.0"
+		"temporal-polyfill": "^0.2.4"
 	}
 }
