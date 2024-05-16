@@ -1,0 +1,37 @@
+import { Features, Feature } from '@site/src/lib/features'
+import { Installation } from '@site/src/lib/installation'
+import { ReferenceProps, ReferenceAttrs } from '@site/src/lib/reference'
+import { Showcase } from '@site/src/lib/showcase'
+import Popover from './popover'
+import source from '!!raw-loader!./popover.tsx'
+import styles from '!!raw-loader!./popover.module.css'
+
+# Popover
+
+An element for creating popovers.
+
+## Showcase
+
+<Showcase
+	name="popover"
+	sources={[
+		{ file: 'index.tsx', content: source, language: 'jsx' },
+		{ file: 'index.module.css', content: styles, language: 'css' }
+	]}
+>
+	<Popover />
+</Showcase>
+
+## Features
+
+<Features>
+	<Feature>Write here</Feature>
+</Features>
+
+## Installation
+
+<Installation name="popover" />
+
+## Reference
+
+### Popover (Root)
