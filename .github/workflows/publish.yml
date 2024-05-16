@@ -27,4 +27,4 @@ jobs:
       - name: Publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --recursive  --provenance --access=public
+        run: npm publish --workspaces --provenance --access=public
