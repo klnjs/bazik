@@ -1,0 +1,23 @@
+.trigger {
+	padding-block: 'medium';
+	padding-inline: 'large';
+	border-radius: 'medium';
+	color: 'teal11';
+	background: 'teal3';
+	border: none;
+	font-size: 14px;
+	margin-inline: 64px;
+}
+
+.trigger:hover {
+	background: red;
+}
+
+.content {
+	padding: 'large';
+	background: 'teal12';
+	border-radius: 'medium';
+	background: white;
+	border: 1px solid black;
+	font-size: 12px;
+}

@@ -1,4 +1,4 @@
-import { FloatingPortal, FloatingFocusManager } from '@floating-ui/react'
+import { FloatingFocusManager } from '@floating-ui/react'
 import {
 	poly,
 	forwardRef,
@@ -13,7 +13,6 @@ export type PopoverContentProps = CoreProps<'div'>
 export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 	({ style, ...otherProps }, forwardedRef) => {
 		const {
-			root,
 			refs,
 			modal = false,
 			status,
@@ -34,25 +33,23 @@ export const PopoverContent = forwardRef<'div', PopoverContentProps>(
 		}
 
 		return (
-			<FloatingPortal id={root}>
-				<FloatingFocusManager
-					modal={modal}
-					guards={!modal}
-					context={context}
-					closeOnFocusOut={closeOnFocusOut}
-					visuallyHiddenDismiss={modal}
-				>
-					<poly.div
-						ref={ref}
-						style={{ ...context.floatingStyles, ...style }}
-						aria-labelledby={labelId}
-						aria-describedby={descriptionId}
-						data-status={asDataProp(status)}
-						data-placement={asDataProp(placement)}
-						{...getFloatingProps(otherProps)}
-					/>
-				</FloatingFocusManager>
-			</FloatingPortal>
+			<FloatingFocusManager
+				modal={modal}
+				guards={!modal}
+				context={context}
+				closeOnFocusOut={closeOnFocusOut}
+				visuallyHiddenDismiss={modal}
+			>
+				<poly.div
+					ref={ref}
+					style={{ ...context.floatingStyles, ...style }}
+					aria-labelledby={labelId}
+					aria-describedby={descriptionId}
+					data-status={asDataProp(status)}
+					data-placement={asDataProp(placement)}
+					{...getFloatingProps(otherProps)}
+				/>
+			</FloatingFocusManager>
 		)
 	}
 )
