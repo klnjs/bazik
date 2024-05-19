@@ -1,17 +1,18 @@
 import type { ReactElement, Ref } from 'react'
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
-import type { CalendarSelect } from './useCalendarSelection'
+import { poly, type PolyProps } from '@klnjs/core'
 import { CalendarProvider } from './CalendarContext'
 import { useCalendar, type UseCalendarOptions } from './useCalendar'
+import type { CalendarSelect } from './useCalendarSelection'
 
-export type CalendarProps<S extends CalendarSelect = 'one'> = CoreProps<
+export type CalendarProps<S extends CalendarSelect = 'one'> = PolyProps<
 	'div',
 	UseCalendarOptions<S>
 >
 
-export const Calendar = forwardRef<'div', CalendarProps>(
+export const Calendar = (
 	(
 		{
+			ref: refProp,
 			autoFocus,
 			calendar: calendarProp,
 			defaultValue,
@@ -26,8 +27,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 			visibleDuration,
 			onChange,
 			...otherProps
-		},
-		forwardedRef
+		}: CalendarProps
 	) => {
 		const calendar = useCalendar({
 			autoFocus,
@@ -48,7 +48,7 @@ export const Calendar = forwardRef<'div', CalendarProps>(
 		return (
 			<CalendarProvider value={calendar}>
 				<poly.div
-					ref={forwardedRef}
+					ref={refProp}
 					role="application"
 					{...otherProps}
 				/>

@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback } from 'react'
 import type { Temporal } from 'temporal-polyfill'
-import { useControllableState } from '../../packages/core/dist'
+import { useStateControllable } from '@klnjs/core'
 
 export type UseCalendarFieldOptions = {
 	autoFocus?: boolean
@@ -33,7 +33,7 @@ export const useCalendarField = ({
 
 	const [labelId, setLabelId] = useState<string>()
 
-	const [selection, setSelection] = useControllableState({
+	const [selection, setSelection] = useStateControllable({
 		value,
 		defaultValue,
 		onChange

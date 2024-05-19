@@ -8,7 +8,5 @@ export type UseCalendarGridContext = Omit<
 
 export const [CalendarGridProvider, useCalendarGridContext] =
 	createContext<UseCalendarGridContext>({
-		name: 'CalendarGridContext',
-		nameOfHook: 'useCalendarGridContext',
-		nameOfProvider: '<CalendarGridProvider />'
+		name: 'CalendarGridContext'
 	})

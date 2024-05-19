@@ -1,4 +1,4 @@
-import { PopoverAnchor, type PopoverAnchorProps } from '../popover'
+import { PopoverAnchor, type PopoverAnchorProps } from '@klnjs/popover'
 
 export type CalendarFieldAnchorProps = PopoverAnchorProps
 

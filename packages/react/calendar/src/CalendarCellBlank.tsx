@@ -1,12 +1,12 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import type { CalendarCellProps } from './CalendarCell'
 
-export type CalendarCellBlankProps = CoreProps<'div', CalendarCellProps>
+export type CalendarCellBlankProps = PolyProps<'div', CalendarCellProps>
 
-export const CalendarCellBlank = forwardRef<'div', CalendarCellBlankProps>(
-	({ type, date, children, ...otherProps }, forwardedRef) => (
-		<poly.div ref={forwardedRef} data-cell="blank" {...otherProps}>
+export const CalendarCellBlank = 
+	({ type, date, children, ...otherProps }: CalendarCellBlankProps) => (
+		<poly.div data-cell="blank" {...otherProps}>
 			{children}
 		</poly.div>
 	)
-)
+

@@ -7,10 +7,9 @@ import {
 } from 'react'
 import {
 	poly,
-	forwardRef,
 	asDataProp,
 	useRefComposed,
-	type CoreProps
+	type PolyProps
 } from '@klnjs/core'
 import { isDefined } from '@klnjs/assertion'
 import { plainDate } from '@klnjs/temporal'
@@ -22,12 +21,12 @@ import { isCalendarCell, type CalendarCellProps } from './CalendarCell'
 import { createVisibleRange } from './useCalendarVisibleRange'
 import type { PlainDate } from './CalendarTypes'
 
-export type CalendarCellDayProps = CoreProps<'div', CalendarCellProps>
+export type CalendarCellDayProps = PolyProps<'div', CalendarCellProps>
 
-export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
-	({ type, date, children, ...otherProps }, forwardedRef) => {
+export const CalendarCellDay = 
+	({ ref: refProp, type, date, children, ...otherProps }: CalendarCellDayProps) => {
 		const ref = useRef<HTMLDivElement>(null)
-		const refComposed = useRefComposed(ref, forwardedRef)
+		const refComposed = useRefComposed(ref, refProp)
 
 		const {
 			calendar,
@@ -244,4 +243,4 @@ export const CalendarCellDay = forwardRef<'div', CalendarCellDayProps>(
 			</poly.div>
 		)
 	}
-)
+

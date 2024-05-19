@@ -1,7 +1,7 @@
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 
-export type CalendarHeaderProps = CoreProps<'header'>
+export type CalendarHeaderProps = PolyProps<'header'>
 
-export const CalendarHeader = forwardRef<'header', CalendarHeaderProps>(
-	(props, forwardedRef) => <poly.header ref={forwardedRef} {...props} />
-)
+export const CalendarHeader =
+	(props: CalendarHeaderProps) => <poly.header {...props} />
+

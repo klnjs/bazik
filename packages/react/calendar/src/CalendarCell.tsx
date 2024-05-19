@@ -1,4 +1,3 @@
-import { forwardRef } from '@klnjs/core'
 import { isDefined } from '@klnjs/assertion'
 import { CalendarCellBlank } from './CalendarCellBlank'
 import { CalendarCellDay } from './CalendarCellDay'
@@ -28,8 +27,7 @@ export const isCalendarCell = (
 	return element.dataset.cell === type
 }
 
-export const CalendarCell = forwardRef<'div', CalendarCellProps>(
-	({ type, date, ...otherProps }, forwardedRef) => {
+export const CalendarCell = ({ type, date, ...otherProps }: CalendarCellProps) => {
 		const Component =
 			type === 'day'
 				? CalendarCellDay
@@ -41,11 +39,10 @@ export const CalendarCell = forwardRef<'div', CalendarCellProps>(
 
 		return (
 			<Component
-				ref={forwardedRef}
 				type={type}
 				date={date}
 				{...otherProps}
 			/>
 		)
 	}
-)
+

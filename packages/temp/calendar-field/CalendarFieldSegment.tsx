@@ -9,14 +9,11 @@ import type { Temporal } from 'temporal-polyfill'
 import { useCalendarLocalisation } from '../calendar/useCalendarLocalisation'
 import {
 	poly,
-	forwardRef,
-	useMergeRefs,
 	asDataProp,
-	type CoreProps
+	useRefComposed,
+	type PolyProps
 } from '@klnjs/core'
-import {
-	isRTL
-} from '@klnjs/assertion'
+import { isElementRTL } from '@klnjs/dom'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 import { getNow, isAfter, isBefore } from './CalendarFieldDateTime'
 
@@ -31,7 +28,7 @@ export const calendarFieldSegmentTypes = [
 export type CalendarFieldSegmentType =
 	(typeof calendarFieldSegmentTypes)[number]
 
-export type CalendarFieldSegmentProps = CoreProps<
+export type CalendarFieldSegmentProps = PolyProps<
 	'div',
 	{
 		type: CalendarFieldSegmentType
@@ -40,19 +37,16 @@ export type CalendarFieldSegmentProps = CoreProps<
 	}
 >
 
-export const CalendarFieldSegment = forwardRef<
-	'div',
-	CalendarFieldSegmentProps
->(
+export const CalendarFieldSegment =
 	(
 		{
+			ref: refProp,
 			type,
 			style,
 			disabled: disabledProp = false,
 			placeholder = '-',
 			...otherProps
-		},
-		forwardedRef
+		}: CalendarFieldSegmentProps
 	) => {
 		const {
 			min,
@@ -77,10 +71,10 @@ export const CalendarFieldSegment = forwardRef<
 			Boolean(max && selection && isAfter(selection, max))
 
 		const ref = useRef<HTMLDivElement>(null)
-		const refComposed = useMergeRefs(
+		const refComposed = useRefComposed(
 			ref,
+			refProp,
 			isHighlighted ? highlightedSegmentRef : undefined,
-			forwardedRef
 		)
 
 		const now = selection?.[type]
@@ -252,10 +246,9 @@ export const CalendarFieldSegment = forwardRef<
 			</poly.div>
 		)
 	}
-)
 
 const findSegment = (element: HTMLElement, action: 'next' | 'previous') => {
-	const direction = isRTL(element)
+	const direction = isElementRTL(element)
 		? action === 'next'
 			? 'previous'
 			: 'next'

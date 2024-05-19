@@ -1,4 +1,4 @@
-import { asDataProp, useChainHandler, type PolyProps } from '@klnjs/core'
+import { poly, asDataProp, useChainHandler, type PolyProps } from '@klnjs/core'
 import { usePinContext } from './PinContext'
 import { usePinConceal } from './usePinConceal'
 
@@ -52,7 +52,7 @@ export const PinSlot = ({
 	})
 
 		return (
-			<div
+			<poly.div
 				ref={refProp}
 				data-end={asDataProp(isEnd)}
 				data-start={asDataProp(isStart)}
@@ -65,7 +65,7 @@ export const PinSlot = ({
 				{...otherProps}
 			>
 				{content}
-			</div>
+			</poly.div>
 		)
 	}
-)
+

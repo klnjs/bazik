@@ -1,17 +1,17 @@
-import { poly, forwardRef, chain, type CoreProps } from '../../packages/core/dist'
-import { usePopover, PopoverProvider, type UsePopoverOptions } from '../../packages/popover/dist'
+import { poly, useChainHandler, type PolyProps } from '@klnjs/core'
+import { usePopover, PopoverProvider, type UsePopoverOptions } from '@klnjs/popover'
 import { CalendarFieldProvider } from './CalendarFieldContext'
 import {
 	useCalendarField,
 	type UseCalendarFieldOptions
 } from './useCalendarField'
 
-export type CalendarFieldProps = CoreProps<
+export type CalendarFieldProps = PolyProps<
 	'div',
 	UseCalendarFieldOptions & Pick<UsePopoverOptions, 'onOpenChange'>
 >
 
-export const CalendarField = forwardRef<'div', CalendarFieldProps>(
+export const CalendarField = 
 	(
 		{
 			autoFocus,
@@ -24,8 +24,7 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			onChange,
 			onOpenChange,
 			...otherProps
-		},
-		forwardedRef
+		}: CalendarFieldProps
 	) => {
 		const field = useCalendarField({
 			autoFocus,
@@ -35,19 +34,18 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			locale,
 			disabled,
 			defaultValue,
-			onChange: chain(() => field.setOpen(false), onChange)
+			onChange: useChainHandler(() => field.setOpen(false), onChange)
 		})
 
 		const popover = usePopover({
 			open: field.open,
-			onOpenChange: chain(field.setOpen, onOpenChange)
+			onOpenChange: useChainHandler(field.setOpen, onOpenChange)
 		})
 
 		return (
 			<CalendarFieldProvider value={field}>
 				<PopoverProvider value={popover}>
 					<poly.div
-						ref={forwardedRef}
 						role="group"
 						{...otherProps}
 					/>
@@ -55,4 +53,4 @@ export const CalendarField = forwardRef<'div', CalendarFieldProps>(
 			</CalendarFieldProvider>
 		)
 	}
-)
+

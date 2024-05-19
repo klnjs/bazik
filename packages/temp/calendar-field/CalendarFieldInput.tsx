@@ -1,11 +1,11 @@
 import { useCallback, type PointerEvent } from 'react'
-import { poly, forwardRef, asDataProp, type CoreProps } from '../core'
+import { poly, asDataProp, type PolyProps } from '@klnjs/core'
 import { useCalendarFieldContext } from './CalendarFieldContext'
 
-export type CalendarFieldInputProps = CoreProps<'div'>
+export type CalendarFieldInputProps = PolyProps<'div'>
 
-export const CalendarFieldInput = forwardRef<'div', CalendarFieldInputProps>(
-	(props, forwardedRef) => {
+export const CalendarFieldInput =
+	(props: CalendarFieldInputProps) => {
 		const { disabled, highlightedSegmentRef } = useCalendarFieldContext()
 
 		const handlePointerDown = useCallback(
@@ -20,11 +20,9 @@ export const CalendarFieldInput = forwardRef<'div', CalendarFieldInputProps>(
 
 		return (
 			<poly.div
-				ref={forwardedRef}
 				onPointerDown={handlePointerDown}
 				data-disabled={asDataProp(disabled)}
 				{...props}
 			/>
 		)
 	}
-)

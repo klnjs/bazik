@@ -1,10 +1,7 @@
-import { poly, forwardRef, type CoreProps } from '../core'
+import { poly,  type PolyProps } from '@klnjs/core'
 
-export type CalendarFieldLiteralProps = CoreProps<'span'>
+export type CalendarFieldLiteralProps = PolyProps<'span'>
 
-export const CalendarFieldLiteral = forwardRef<
-	'span',
-	CalendarFieldLiteralProps
->((props, forwardedRef) => (
-	<poly.span ref={forwardedRef} role="presentation" aria-hidden {...props} />
+export const CalendarFieldLiteral = ((props: CalendarFieldLiteralProps) => (
+	<poly.span role="presentation" aria-hidden {...props} />
 ))

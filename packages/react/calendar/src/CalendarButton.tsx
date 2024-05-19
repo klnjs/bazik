@@ -1,17 +1,17 @@
 import { Temporal } from 'temporal-polyfill'
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { isDefined } from '@klnjs/assertion'
 import { plainDate } from '@klnjs/temporal'
 import { useCalendarContext } from './CalendarContext'
 import { useCalendarLocalisation } from './useCalendarLocalisation'
 import { createVisibleRange } from './useCalendarVisibleRange'
 
-export type CalendarButtonProps = CoreProps<
+export type CalendarButtonProps = PolyProps<
 	'button',
 	{ action: 'inc' | 'dec'; unit?: 'years' | 'months' }
 >
 
-export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
+export const CalendarButton = (
 	(
 		{
 			action,
@@ -19,8 +19,7 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 			unit = 'months',
 			children,
 			...otherProps
-		},
-		forwardedRef
+		}: CalendarButtonProps
 	) => {
 		const {
 			disabled: disabledContext,
@@ -87,7 +86,6 @@ export const CalendarButton = forwardRef<'button', CalendarButtonProps>(
 
 		return (
 			<poly.button
-				ref={forwardedRef}
 				type="button"
 				disabled={isDisabled}
 				aria-label={label}

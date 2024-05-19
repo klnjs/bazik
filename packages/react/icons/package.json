@@ -47,7 +47,7 @@
 		"typescript": "5.4.5"
 	},
 	"peerDependencies": {
-		"react": "19.0.0-beta-94eed63c49-20240425",
-		"react-dom": "19.0.0-beta-94eed63c49-20240425"
+		"react": "19.0.0-beta-26f2496093-20240514",
+		"react-dom": "19.0.0-beta-26f2496093-20240514"
 	}
 }

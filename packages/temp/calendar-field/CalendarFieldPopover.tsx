@@ -1,11 +1,7 @@
-import { forwardRef } from '../core'
-import { PopoverContent, type PopoverContentProps } from '../popover'
+import { PopoverContent, type PopoverContentProps } from '@klnjs/popover'
 
 export type CalendarFieldPopoverProps = PopoverContentProps
 
-export const CalendarFieldPopover = forwardRef<
-	'div',
-	CalendarFieldPopoverProps
->(({ placement = 'bottom-start', ...otherProps }, forwardedRef) => (
-	<PopoverContent ref={forwardedRef} placement={placement} {...otherProps} />
-))
+export const CalendarFieldPopover = ({ placement = 'bottom-start', ...otherProps }: CalendarFieldPopoverProps) => (
+	<PopoverContent placement={placement} {...otherProps} />
+)

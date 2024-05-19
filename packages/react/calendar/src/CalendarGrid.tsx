@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import type { CalendarCellProps } from './CalendarCell'
 import { useCalendarContext } from './CalendarContext'
 import { CalendarGridProvider } from './CalendarGridContext'
 import { useCalendarGrid } from './useCalendarGrid'
 import type { CalendarVisibleDuration } from './CalendarTypes'
 
-export type CalendarGridProps = CoreProps<
+export type CalendarGridProps = PolyProps<
 	'div',
 	{
 		offset?: CalendarVisibleDuration
@@ -17,10 +17,9 @@ export type CalendarGridProps = CoreProps<
 	}
 >
 
-export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
+export const CalendarGrid = 
 	(
-		{ offset, weekdays, weeks, overflow, children, ...otherProps },
-		forwardedRef
+		{ offset, weekdays, weeks, overflow, children, ...otherProps }: CalendarGridProps
 	) => {
 		const { locale, visibleRange } = useCalendarContext()
 
@@ -36,10 +35,10 @@ export const CalendarGrid = forwardRef<'div', CalendarGridProps>(
 
 		return (
 			<CalendarGridProvider value={{ month, weeks, weekdays }}>
-				<poly.div ref={forwardedRef} {...otherProps}>
+				<poly.div {...otherProps}>
 					{cells.map(children)}
 				</poly.div>
 			</CalendarGridProvider>
 		)
 	}
-)
+

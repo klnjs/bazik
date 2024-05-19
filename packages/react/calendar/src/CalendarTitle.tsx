@@ -1,11 +1,11 @@
 import { Intl } from 'temporal-polyfill'
-import { poly, forwardRef, type CoreProps } from '@klnjs/core'
+import { poly, type PolyProps } from '@klnjs/core'
 import { useCalendarContext } from './CalendarContext'
 
-export type CalendarTitleProps = CoreProps<'h2'>
+export type CalendarTitleProps = PolyProps<'h2'>
 
-export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
-	({ children, ...otherProps }, forwardedRef) => {
+export const CalendarTitle = 
+	({ children, ...otherProps }: CalendarTitleProps) => {
 		const { locale, calendar, visibleRange } = useCalendarContext()
 
 		const content =
@@ -17,9 +17,9 @@ export const CalendarTitle = forwardRef<'h2', CalendarTitleProps>(
 			}).formatRange(...visibleRange)
 
 		return (
-			<poly.h2 ref={forwardedRef} aria-live="polite" {...otherProps}>
+			<poly.h2 aria-live="polite" {...otherProps}>
 				{content}
 			</poly.h2>
 		)
 	}
-)
+
