@@ -26,7 +26,7 @@
 	"scripts": {
 		"build": "basique build",
 		"eslint": "eslint . --max-warnings 0",
-		"prettier": "prettier . --write",
+		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit",
 		"postinstall": "bun ./scripts/create-icons.js"
 	},

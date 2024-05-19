@@ -12,7 +12,7 @@
 		"dev": "docusaurus start -p 3006 --no-open",
 		"build": "docusaurus build --out-dir ./dist",
 		"eslint": "eslint . --max-warnings 0",
-		"prettier": "prettier . --write",
+		"prettier": "prettier . --check",
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
