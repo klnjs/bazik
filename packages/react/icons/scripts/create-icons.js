@@ -1,16 +1,14 @@
 import p from 'path'
 import fs from 'fs/promises'
 import crypto from 'crypto'
-import prettier from 'prettier'
 
-const template = ({ title, viewBox, path }) => `
-	import { createIcon } from '@klnjs/icon'
+const template = ({ title, viewBox, path }) => `import { createIcon } from '@klnjs/icon'
 
-	export default createIcon({
-		title: '${title}',
-		path: '${path}',
-		viewBox: '${viewBox}',
-	})
+export default createIcon({
+	title: '${title}',
+	path: '${path}',
+	viewBox: '${viewBox}'
+})
 `
 
 const readCache = async (root) => {
@@ -64,35 +62,28 @@ const createIcons = async ({ cache }) => {
 	return icons
 }
 
-const writeIcons = async (root, { icons, prettierConfig }) => {
+const writeIcons = async (root, { icons }) => {
 	await fs.mkdir(root, { recursive: true })
 
 	for await (const icon of icons) {
 		if (!icon.cached) {
 			const path = p.resolve(root, 'src', `${icon.name}.ts`)
-			const content = await prettier.format(icon.source, {
-				parser: 'typescript',
-				...prettierConfig
-			})
+			const content = icon.source
 
 			await fs.writeFile(path, content, 'utf8')
 		}
 	}
 }
 
-const writeIndex = async (root, { icons, prettierConfig }) => {
+const writeIndex = async (root, { icons }) => {
 	const path = p.resolve(root, 'index.ts')
-	const source = icons
+	const content = icons
 		.map(
 			(icon) =>
 				`export { default as ${icon.name} } from './src/${icon.name}'`
 		)
-		.join('\n')
+		.join('\n') + '\n'
 
-	const content = await prettier.format(source, {
-		parser: 'typescript',
-		...prettierConfig
-	})
 
 	await fs.writeFile(path, content, 'utf8')
 }
@@ -101,11 +92,10 @@ try {
 	const root = p.resolve(import.meta.dirname, '..')
 	const cache = await readCache(root)
 	const icons = await createIcons({ cache })
-	const prettierConfig = await prettier.resolveConfig(import.meta.dirname)
 
 	await writeCache(root, { icons })
-	await writeIcons(root, { icons, prettierConfig })
-	await writeIndex(root, { icons, prettierConfig })
+	await writeIcons(root, { icons })
+	await writeIndex(root, { icons })
 } catch (err) {
 	console.log(err)
 	process.exit(1)

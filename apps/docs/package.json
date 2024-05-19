@@ -38,9 +38,9 @@
 		"@docusaurus/module-type-aliases": "3.3.2",
 		"@docusaurus/tsconfig": "3.3.2",
 		"@docusaurus/types": "3.3.2",
-		"@klnjs/eslint-config": "2.0.0",
-		"@klnjs/prettier-config": "2.0.0",
-		"@klnjs/typescript-config": "2.0.0",
+		"@klnjs/eslint-config": "3.0.0-rc.10",
+		"@klnjs/prettier-config": "3.0.0-rc.10",
+		"@klnjs/typescript-config": "3.0.0-rc.10",
 		"typescript": "5.4.5"
 	}
 }
