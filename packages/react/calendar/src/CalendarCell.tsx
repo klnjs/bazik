@@ -27,22 +27,19 @@ export const isCalendarCell = (
 	return element.dataset.cell === type
 }
 
-export const CalendarCell = ({ type, date, ...otherProps }: CalendarCellProps) => {
-		const Component =
-			type === 'day'
-				? CalendarCellDay
-				: type === 'week'
-					? CalendarCellWeek
-					: type === 'weekday'
-						? CalendarCellWeekday
-						: CalendarCellBlank
+export const CalendarCell = ({
+	type,
+	date,
+	...otherProps
+}: CalendarCellProps) => {
+	const Component =
+		type === 'day'
+			? CalendarCellDay
+			: type === 'week'
+				? CalendarCellWeek
+				: type === 'weekday'
+					? CalendarCellWeekday
+					: CalendarCellBlank
 
-		return (
-			<Component
-				type={type}
-				date={date}
-				{...otherProps}
-			/>
-		)
-	}
-
+	return <Component type={type} date={date} {...otherProps} />
+}

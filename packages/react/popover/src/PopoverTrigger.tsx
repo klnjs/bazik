@@ -1,9 +1,4 @@
-import {
-	poly,
-	asDataProp,
-	useRefComposed,
-	type PolyProps
-} from '@klnjs/core'
+import { poly, asDataProp, useRefComposed, type PolyProps } from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverTriggerProps = PolyProps<'button'>

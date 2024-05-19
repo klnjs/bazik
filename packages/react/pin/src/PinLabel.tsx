@@ -7,11 +7,5 @@ export const PinLabel = ({ id: idProp, ...otherProps }: PinLabelProps) => {
 	const id = useId(idProp)
 	const { inputId } = usePinContext()
 
-	return (
-		<poly.label
-			id={id}
-			htmlFor={inputId}
-			{...otherProps}
-		/>
-	)
+	return <poly.label id={id} htmlFor={inputId} {...otherProps} />
 }

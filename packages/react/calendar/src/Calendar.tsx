@@ -9,53 +9,45 @@ export type CalendarProps<S extends CalendarSelect = 'one'> = PolyProps<
 	UseCalendarOptions<S>
 >
 
-export const Calendar = (
-	(
-		{
-			ref: refProp,
-			autoFocus,
-			calendar: calendarProp,
-			defaultValue,
-			disabled,
-			locale,
-			max,
-			min,
-			pagination,
-			readOnly,
-			select,
-			value,
-			visibleDuration,
-			onChange,
-			...otherProps
-		}: CalendarProps
-	) => {
-		const calendar = useCalendar({
-			autoFocus,
-			calendar: calendarProp,
-			defaultValue,
-			disabled,
-			locale,
-			max,
-			min,
-			pagination,
-			readOnly,
-			select,
-			value,
-			visibleDuration,
-			onChange
-		})
+export const Calendar = (({
+	ref: refProp,
+	autoFocus,
+	calendar: calendarProp,
+	defaultValue,
+	disabled,
+	locale,
+	max,
+	min,
+	pagination,
+	readOnly,
+	select,
+	value,
+	visibleDuration,
+	onChange,
+	...otherProps
+}: CalendarProps) => {
+	const calendar = useCalendar({
+		autoFocus,
+		calendar: calendarProp,
+		defaultValue,
+		disabled,
+		locale,
+		max,
+		min,
+		pagination,
+		readOnly,
+		select,
+		value,
+		visibleDuration,
+		onChange
+	})
 
-		return (
-			<CalendarProvider value={calendar}>
-				<poly.div
-					ref={refProp}
-					role="application"
-					{...otherProps}
-				/>
-			</CalendarProvider>
-		)
-	}
-) as <S extends CalendarSelect = 'one'>(
+	return (
+		<CalendarProvider value={calendar}>
+			<poly.div ref={refProp} role="application" {...otherProps} />
+		</CalendarProvider>
+	)
+}) as <S extends CalendarSelect = 'one'>(
 	props: CalendarProps<S> & {
 		ref?: Ref<HTMLDivElement>
 	}

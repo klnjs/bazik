@@ -26,30 +26,29 @@ export const PopoverContent = ({
 	const ref = useRefComposed(refs.setFloating, refProp)
 	const closeOnFocusOut = dismiss?.onFocusOut
 
-		if (!mounted) {
-			return null
-		}
-
-		return (
-			<FloatingPortal id={root}>
-				<FloatingFocusManager
-					modal={modal}
-					guards={!modal}
-					context={context}
-					closeOnFocusOut={closeOnFocusOut}
-					visuallyHiddenDismiss={modal}
-				>
-					<poly.div
-						ref={ref}
-						style={{ ...context.floatingStyles, ...style }}
-						aria-labelledby={labelId}
-						aria-describedby={descriptionId}
-						data-status={asDataProp(status)}
-						data-placement={asDataProp(placement)}
-						{...getFloatingProps(otherProps)}
-					/>
-				</FloatingFocusManager>
-			</FloatingPortal>
-		)
+	if (!mounted) {
+		return null
 	}
 
+	return (
+		<FloatingPortal id={root}>
+			<FloatingFocusManager
+				modal={modal}
+				guards={!modal}
+				context={context}
+				closeOnFocusOut={closeOnFocusOut}
+				visuallyHiddenDismiss={modal}
+			>
+				<poly.div
+					ref={ref}
+					style={{ ...context.floatingStyles, ...style }}
+					aria-labelledby={labelId}
+					aria-describedby={descriptionId}
+					data-status={asDataProp(status)}
+					data-placement={asDataProp(placement)}
+					{...getFloatingProps(otherProps)}
+				/>
+			</FloatingFocusManager>
+		</FloatingPortal>
+	)
+}

@@ -17,28 +17,29 @@ export type CalendarGridProps = PolyProps<
 	}
 >
 
-export const CalendarGrid = 
-	(
-		{ offset, weekdays, weeks, overflow, children, ...otherProps }: CalendarGridProps
-	) => {
-		const { locale, visibleRange } = useCalendarContext()
+export const CalendarGrid = ({
+	offset,
+	weekdays,
+	weeks,
+	overflow,
+	children,
+	...otherProps
+}: CalendarGridProps) => {
+	const { locale, visibleRange } = useCalendarContext()
 
-		const months = offset?.months ?? 0
-		const month = visibleRange[0].add({ months }).toPlainYearMonth()
-		const cells = useCalendarGrid({
-			locale,
-			month,
-			overflow,
-			weekdays,
-			weeks
-		})
+	const months = offset?.months ?? 0
+	const month = visibleRange[0].add({ months }).toPlainYearMonth()
+	const cells = useCalendarGrid({
+		locale,
+		month,
+		overflow,
+		weekdays,
+		weeks
+	})
 
-		return (
-			<CalendarGridProvider value={{ month, weeks, weekdays }}>
-				<poly.div {...otherProps}>
-					{cells.map(children)}
-				</poly.div>
-			</CalendarGridProvider>
-		)
-	}
-
+	return (
+		<CalendarGridProvider value={{ month, weeks, weekdays }}>
+			<poly.div {...otherProps}>{cells.map(children)}</poly.div>
+		</CalendarGridProvider>
+	)
+}

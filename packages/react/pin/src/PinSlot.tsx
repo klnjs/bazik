@@ -51,21 +51,20 @@ export const PinSlot = ({
 		inputRef.current?.focus()
 	})
 
-		return (
-			<poly.div
-				ref={refProp}
-				data-end={asDataProp(isEnd)}
-				data-start={asDataProp(isStart)}
-				data-caret={asDataProp(isCaret)}
-				data-focused={asDataProp(isFocused)}
-				data-disabled={asDataProp(isDisabled)}
-				data-concealed={asDataProp(isConcealed)}
-				data-placeholder={asDataProp(isPlaceholder)}
-				onPointerDown={handlePointerDown}
-				{...otherProps}
-			>
-				{content}
-			</poly.div>
-		)
-	}
-
+	return (
+		<poly.div
+			ref={refProp}
+			data-end={asDataProp(isEnd)}
+			data-start={asDataProp(isStart)}
+			data-caret={asDataProp(isCaret)}
+			data-focused={asDataProp(isFocused)}
+			data-disabled={asDataProp(isDisabled)}
+			data-concealed={asDataProp(isConcealed)}
+			data-placeholder={asDataProp(isPlaceholder)}
+			onPointerDown={handlePointerDown}
+			{...otherProps}
+		>
+			{content}
+		</poly.div>
+	)
+}
