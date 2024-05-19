@@ -46,6 +46,7 @@ export const PopoverContent = ({
 					aria-describedby={descriptionId}
 					data-status={asDataProp(status)}
 					data-placement={asDataProp(placement)}
+					// @ts-expect-error floating not on 19
 					{...getFloatingProps(otherProps)}
 				/>
 			</FloatingFocusManager>

@@ -10,7 +10,6 @@ export type CalendarProps<S extends CalendarSelect = 'one'> = PolyProps<
 >
 
 export const Calendar = (({
-	ref: refProp,
 	autoFocus,
 	calendar: calendarProp,
 	defaultValue,
@@ -44,7 +43,7 @@ export const Calendar = (({
 
 	return (
 		<CalendarProvider value={calendar}>
-			<poly.div ref={refProp} role="application" {...otherProps} />
+			<poly.div role="application" {...otherProps} />
 		</CalendarProvider>
 	)
 }) as <S extends CalendarSelect = 'one'>(

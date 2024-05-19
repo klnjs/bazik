@@ -16,6 +16,7 @@ export const PopoverTrigger = ({
 			type="button"
 			data-open={asDataProp(open)}
 			data-status={asDataProp(status)}
+			// @ts-expect-error floating not on 19
 			{...getReferenceProps(otherProps)}
 		/>
 	)

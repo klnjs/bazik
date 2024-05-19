@@ -11,7 +11,6 @@ export type PinSlotProps = PolyProps<
 >
 
 export const PinSlot = ({
-	ref: refProp,
 	slot,
 	placeholder,
 	onPointerDown,
@@ -53,7 +52,6 @@ export const PinSlot = ({
 
 	return (
 		<poly.div
-			ref={refProp}
 			data-end={asDataProp(isEnd)}
 			data-start={asDataProp(isStart)}
 			data-caret={asDataProp(isCaret)}
