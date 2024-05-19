@@ -49,6 +49,7 @@ Contains all the parts of an pin.
 			typeAdvanced: 'string | { symbol: string; delay: number }',
 			defaultValue: 'false'
 		},
+		{ name: 'defaultValue', type: 'string' },
 		{ name: 'disabled', type: 'boolean', defaultValue: 'false' },
 		{ name: 'length', type: 'number', defaultValue: '4' },
 		{
@@ -57,7 +58,12 @@ Contains all the parts of an pin.
 			typeAdvanced: "'alphabetic' | 'alphanumeric' | 'numeric'",
 			defaultValue: 'alphanumeric'
 		},
-		{ name: 'value', type: 'string' }
+		{ name: 'value', type: 'string' },
+		{
+			name: 'onChange',
+			type: 'function',
+			typeAdvanced: '(value: string) => void'
+		}
 	]}
 />
 
@@ -79,10 +85,6 @@ Used to optionally render an input label, and attach it to the input so it is ac
 
 <ReferenceProps
 	props={[{ name: 'asChild', type: 'boolean', defaultValue: 'false' }]}
-/>
-
-<ReferenceAttrs
-	attrs={[{ name: 'data-disabled', description: 'pin is disabled' }]}
 />
 
 ### PinGroup
@@ -119,17 +121,16 @@ Clicking a slot will focus the input, therefore focus events should be attached 
 		{ name: 'asChild', type: 'boolean', defaultValue: 'false' },
 		{ name: 'placeholder', type: 'string' }
 	]}
-
 />
 
 <ReferenceAttrs
 	attrs={[
-		{ name: 'data-caret', description: 'caret is shown' },
-		{ name: 'data-concealed', description: 'slot is concealed' },
-		{ name: 'data-disabled', description: 'slot is disabled' },
-		{ name: 'data-end', description: 'slot is last slot' },
-		{ name: 'data-focused', description: 'slot is focused' },
-		{ name: 'data-placeholder', description: 'placeholder is shown' },
-		{ name: 'data-start', description: 'slot is first slot' }
+		{ name: 'data-caret', text: 'caret is shown' },
+		{ name: 'data-concealed', text: 'slot is concealed' },
+		{ name: 'data-disabled', text: 'slot is disabled' },
+		{ name: 'data-end', text: 'slot is last slot' },
+		{ name: 'data-focused', text: 'slot is focused' },
+		{ name: 'data-placeholder', text: 'placeholder is shown' },
+		{ name: 'data-start', text: 'slot is first slot' }
 	]}
 />

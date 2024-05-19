@@ -1,4 +1,4 @@
-import { poly, toData, useChainHandler, type PolyProps } from '@klnjs/core'
+import { asDataProp, useChainHandler, type PolyProps } from '@klnjs/core'
 import { usePinContext } from './PinContext'
 import { usePinConceal } from './usePinConceal'
 
@@ -11,6 +11,7 @@ export type PinSlotProps = PolyProps<
 >
 
 export const PinSlot = ({
+	ref: refProp,
 	slot,
 	placeholder,
 	onPointerDown,
@@ -50,19 +51,21 @@ export const PinSlot = ({
 		inputRef.current?.focus()
 	})
 
-	return (
-		<poly.div
-			data-end={toData(isEnd)}
-			data-start={toData(isStart)}
-			data-caret={toData(isCaret)}
-			data-focused={toData(isFocused)}
-			data-disabled={toData(isDisabled)}
-			data-concealed={toData(isConcealed)}
-			data-placeholder={toData(isPlaceholder)}
-			onPointerDown={handlePointerDown}
-			{...otherProps}
-		>
-			{content}
-		</poly.div>
-	)
-}
+		return (
+			<div
+				ref={refProp}
+				data-end={asDataProp(isEnd)}
+				data-start={asDataProp(isStart)}
+				data-caret={asDataProp(isCaret)}
+				data-focused={asDataProp(isFocused)}
+				data-disabled={asDataProp(isDisabled)}
+				data-concealed={asDataProp(isConcealed)}
+				data-placeholder={asDataProp(isPlaceholder)}
+				onPointerDown={handlePointerDown}
+				{...otherProps}
+			>
+				{content}
+			</div>
+		)
+	}
+)

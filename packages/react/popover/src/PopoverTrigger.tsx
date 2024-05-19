@@ -1,4 +1,9 @@
-import { poly, toData, useRefComposed, type PolyProps } from '@klnjs/core'
+import {
+	poly,
+	asDataProp,
+	useRefComposed,
+	type PolyProps
+} from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverTriggerProps = PolyProps<'button'>
@@ -14,9 +19,8 @@ export const PopoverTrigger = ({
 		<poly.button
 			ref={ref}
 			type="button"
-			data-open={toData(open)}
-			data-status={status}
-			// @ts-expect-error until floating ui updates to react 19
+			data-open={asDataProp(open)}
+			data-status={asDataProp(status)}
 			{...getReferenceProps(otherProps)}
 		/>
 	)

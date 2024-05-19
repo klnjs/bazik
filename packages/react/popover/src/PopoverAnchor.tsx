@@ -1,4 +1,10 @@
-import { poly, useRefComposed, type PolyProps } from '@klnjs/core'
+
+import {
+	poly,
+	asDataProp,
+	useRefComposed,
+	type PolyProps,
+} from '@klnjs/core'
 import { usePopoverContext } from './PopoverContext'
 
 export type PopoverAnchorProps = PolyProps<'div'>
@@ -10,5 +16,11 @@ export const PopoverAnchor = ({
 	const { refs, status } = usePopoverContext()
 	const refComposed = useRefComposed(refs.setPositionReference, refProp)
 
-	return <poly.div ref={refComposed} data-status={status} {...otherProps} />
+	return (
+		<poly.div
+			ref={refComposed}
+			data-status={asDataProp(status)}
+			{...otherProps}
+		/>
+	)
 }

@@ -7,7 +7,7 @@ export const CalendarFieldLabel = forwardRef<'label', CalendarFieldLabelProps>(
 	({ id: idProp, ...otherProps }, forwardedRef) => {
 		const { highlightedSegmentRef, labelId, setLabelId } =
 			useCalendarFieldContext()
-			const id = useIdAndCallback(idProp, setLabelId)
+			const id = useId(idProp, setLabelId)
 
 		return (
 			<poly.label

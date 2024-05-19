@@ -1,7 +1,7 @@
 {
 	"name": "@klnjs/docs",
 	"author": "Rune Klein (@rnkln)",
-	"version": "0.0.1",
+	"version": "1.0.0-beta.2",
 	"private": true,
 	"repository": {
 		"type": "git",
@@ -16,17 +16,18 @@
 		"typescript": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@docusaurus/core": "3.2.1",
-		"@docusaurus/plugin-content-docs": "3.2.1",
-		"@docusaurus/plugin-content-pages": "3.2.1",
-		"@docusaurus/theme-classic": "3.2.1",
+		"@docusaurus/core": "3.3.2",
+		"@docusaurus/plugin-content-docs": "3.3.2",
+		"@docusaurus/plugin-content-pages": "3.3.2",
+		"@docusaurus/theme-classic": "3.3.2",
 		"@klnjs/avatar": "workspace:*",
+		"@klnjs/calendar": "workspace:*",
 		"@klnjs/icon": "workspace:*",
 		"@klnjs/pin": "workspace:*",
 		"@klnjs/popover": "workspace:*",
 		"@klnjs/spinner": "workspace:*",
 		"@mdx-js/react": "3.0.1",
-		"clsx": "2.1.0",
+		"clsx": "2.1.1",
 		"prism-react-renderer": "2.3.1",
 		"raw-loader": "4.0.2",
 		"react": "18.3.1",
@@ -34,9 +35,9 @@
 		"react-loadable": "5.5.0"
 	},
 	"devDependencies": {
-		"@docusaurus/module-type-aliases": "3.2.1",
-		"@docusaurus/tsconfig": "3.2.1",
-		"@docusaurus/types": "3.2.1",
+		"@docusaurus/module-type-aliases": "3.3.2",
+		"@docusaurus/tsconfig": "3.3.2",
+		"@docusaurus/types": "3.3.2",
 		"@klnjs/eslint-config": "2.0.0",
 		"@klnjs/prettier-config": "2.0.0",
 		"@klnjs/typescript-config": "2.0.0",

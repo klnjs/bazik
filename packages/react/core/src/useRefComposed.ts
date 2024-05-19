@@ -4,7 +4,7 @@ import {
 	type RefCallback,
 	type DependencyList
 } from 'react'
-import { isSet, isFunction } from '@klnjs/assertion'
+import { isDefined, isFunction } from '@klnjs/assertion'
 
 export type ComposableRef<T> = Ref<T> | undefined | null
 
@@ -14,7 +14,7 @@ export const composeRefs =
 		refs.forEach((ref) => {
 			if (isFunction(ref)) {
 				ref(value)
-			} else if (isSet(ref)) {
+			} else if (isDefined(ref)) {
 				ref.current = value
 			}
 		})

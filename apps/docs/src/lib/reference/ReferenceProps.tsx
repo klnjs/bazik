@@ -25,15 +25,17 @@ export const ReferenceProps = ({ props: properties }: ReferencePropsProps) => (
 		<tbody>
 			{properties.map(
 				({ name, type, typeAdvanced, defaultValue = '-' }) => (
-					<TableRow>
+					<TableRow key={name}>
 						<TableCell className={classes.prop}>{name}</TableCell>
 						<TableCell className={classes.type}>
-							{type}
+							<code>{type}</code>
 							{typeAdvanced ? (
 								<ReferenceInfo>{typeAdvanced}</ReferenceInfo>
 							) : null}
 						</TableCell>
-						<TableCell>{defaultValue}</TableCell>
+						<TableCell>
+							<code>{defaultValue}</code>
+						</TableCell>
 					</TableRow>
 				)
 			)}

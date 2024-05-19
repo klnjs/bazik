@@ -11,7 +11,7 @@ import {
 	poly,
 	forwardRef,
 	useMergeRefs,
-	toData,
+	asDataProp,
 	type CoreProps
 } from '@klnjs/core'
 import {
@@ -231,11 +231,11 @@ export const CalendarFieldSegment = forwardRef<
 				contentEditable={!isDisabled}
 				tabIndex={isDisabled ? undefined : isHighlighted ? 0 : -1}
 				suppressContentEditableWarning={true}
-				data-length={toData(length)}
-				data-segment={toData(type)}
-				data-disabled={toData(isDisabled)}
-				data-placeholder={toData(now === undefined)}
-				data-highlighted={toData(isHighlighted)}
+				data-length={asDataProp(length)}
+				data-segment={asDataProp(type)}
+				data-disabled={asDataProp(isDisabled)}
+				data-placeholder={asDataProp(now === undefined)}
+				data-highlighted={asDataProp(isHighlighted)}
 				aria-label={names.of(type)}
 				aria-labelledby={labelId}
 				aria-valuenow={now}

@@ -6,7 +6,7 @@ import type {
 } from 'react'
 import {
 	poly,
-	useIdAndCallback,
+	useId,
 	useRefComposed,
 	useChainHandler,
 	type PolyProps
@@ -40,7 +40,7 @@ export const PinInput = ({
 		setFocusWithin
 	} = usePinContext()
 
-	const id = useIdAndCallback(idProp, setInputId)
+	const id = useId(idProp, setInputId)
 	const refComposed = useRefComposed(inputRef, refProp)
 
 	const pattern = usePinPattern(type)

@@ -23,7 +23,7 @@ export const Showcase = ({ name, sources, children }: ShowcaseProps) => (
 		{sources ? (
 			<Tabs>
 				{sources.map(({ file, content, language }) => (
-					<TabItem value={file} label={file}>
+					<TabItem key={file} value={file} label={file}>
 						<Snippet
 							language={language}
 							className={classes.snippet}

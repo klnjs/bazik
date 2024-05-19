@@ -1,5 +1,6 @@
 .snippet {
 	overflow: hidden;
+	background-clip: padding-box;
 	border: 1px solid var(--ifm-color-emphasis-300);
 	border-radius: var(--ifm-global-radius);
 }

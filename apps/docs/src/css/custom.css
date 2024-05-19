@@ -15,6 +15,7 @@
 }
 
 :root[data-theme='light'] {
+	--ifm-color-primary-rgb: 19, 113, 239;
 	--ifm-color-primary: #1371ef;
 	--ifm-color-primary-dark: #0f65d9;
 	--ifm-color-primary-darker: #0e60cd;
@@ -27,6 +28,7 @@
 }
 
 :root[data-theme='dark'] {
+	--ifm-color-primary-rgb: 87, 236, 153;
 	--ifm-color-primary: #57ec99;
 	--ifm-color-primary-dark: #3ae987;
 	--ifm-color-primary-darker: #2be77f;
