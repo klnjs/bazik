@@ -2,7 +2,11 @@ import p from 'path'
 import fs from 'fs/promises'
 import crypto from 'crypto'
 
-const template = ({ title, viewBox, path }) => `import { createIcon } from '@klnjs/icon'
+const template = ({
+	title,
+	viewBox,
+	path
+}) => `import { createIcon } from '@klnjs/icon'
 
 export default createIcon({
 	title: '${title}',
@@ -77,13 +81,13 @@ const writeIcons = async (root, { icons }) => {
 
 const writeIndex = async (root, { icons }) => {
 	const path = p.resolve(root, 'index.ts')
-	const content = icons
-		.map(
-			(icon) =>
-				`export { default as ${icon.name} } from './src/${icon.name}'`
-		)
-		.join('\n') + '\n'
-
+	const content =
+		icons
+			.map(
+				(icon) =>
+					`export { default as ${icon.name} } from './src/${icon.name}'`
+			)
+			.join('\n') + '\n'
 
 	await fs.writeFile(path, content, 'utf8')
 }
