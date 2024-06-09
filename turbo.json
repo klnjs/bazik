@@ -1,10 +1,10 @@
 {
 	"$schema": "https://turbo.build/schema.json",
-	"pipeline": {
+	"tasks": {
 		"dev": {
-      "cache": false,
-      "persistent": true
-    },
+			"cache": false,
+			"persistent": true
+		},
 		"build": {
 			"env": ["BUN_ENV"],
 			"outputs": ["dist/**/*"],
