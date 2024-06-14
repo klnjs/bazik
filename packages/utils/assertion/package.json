@@ -10,6 +10,9 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/utils/assertion"
 	},
+	"keywords": [
+		"assertion"
+  ],
 	"files": [
 		"dist",
 		"LICENSE",

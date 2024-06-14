@@ -10,6 +10,15 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/react/spinner"
 	},
+	"keywords": [
+		"a11y",
+		"component",
+		"loading",
+		"pending",
+		"primitive",
+		"react",
+		"spinner"
+  ],
 	"files": [
 		"dist",
 		"LICENSE",

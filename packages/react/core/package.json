@@ -10,6 +10,10 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/react/core"
 	},
+	"keywords": [
+		"core",
+		"react"
+  ],
 	"files": [
 		"dist",
 		"LICENSE",

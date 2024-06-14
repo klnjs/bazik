@@ -10,6 +10,15 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/react/icons"
 	},
+	"keywords": [
+		"a11y",
+		"components",
+		"glyphs",
+		"icons",
+		"pictograms",
+		"react",
+		"symbols"
+  ],
 	"files": [
 		"dist",
 		"LICENSE",
