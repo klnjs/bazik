@@ -10,6 +10,9 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/utils/dom"
 	},
+	"keywords": [
+		"dom"
+	],
 	"files": [
 		"dist",
 		"LICENSE",

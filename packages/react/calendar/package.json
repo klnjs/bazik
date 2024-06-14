@@ -10,6 +10,15 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/react/calendar"
 	},
+	"keywords": [
+		"react",
+		"component",
+		"primitive",
+		"a11y",
+		"calendar",
+		"date",
+		"temporal"
+	],
 	"files": [
 		"dist",
 		"LICENSE",

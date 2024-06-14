@@ -10,6 +10,12 @@
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
 		"directory": "packages/utils/locale"
 	},
+	"keywords": [
+		"i18n",
+		"internationalisation",
+		"locale",
+		"localisation"
+	],
 	"files": [
 		"dist",
 		"LICENSE",
