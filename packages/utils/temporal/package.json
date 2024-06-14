@@ -16,7 +16,7 @@
 		"datetime",
 		"temporal",
 		"time"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

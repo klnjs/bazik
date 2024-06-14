@@ -18,7 +18,7 @@
 		"calendar",
 		"date",
 		"temporal"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

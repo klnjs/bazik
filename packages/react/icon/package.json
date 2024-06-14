@@ -19,7 +19,7 @@
 		"primitive",
 		"react",
 		"symbol"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

@@ -16,7 +16,7 @@
 		"component",
 		"primitive",
 		"react"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

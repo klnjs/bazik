@@ -19,7 +19,7 @@
 		"pin",
 		"primitive",
 		"react"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

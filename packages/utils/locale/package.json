@@ -11,9 +11,11 @@
 		"directory": "packages/utils/locale"
 	},
 	"keywords": [
+		"i18n",
+		"internationalisation",
 		"locale",
 		"localisation"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

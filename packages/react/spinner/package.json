@@ -18,7 +18,7 @@
 		"primitive",
 		"react",
 		"spinner"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",

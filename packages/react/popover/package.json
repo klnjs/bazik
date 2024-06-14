@@ -16,7 +16,7 @@
 		"popover",
 		"primitive",
 		"react"
-  ],
+	],
 	"files": [
 		"dist",
 		"LICENSE",
