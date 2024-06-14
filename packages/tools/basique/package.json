@@ -5,6 +5,7 @@
 	"version": "1.0.0-beta.2",
 	"private": "true",
 	"license": "MIT",
+	"homepage": "https://klnjs.github.io/basique",
 	"repository": {
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/basique.git",
