@@ -4,6 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
+import compiler from './compiler'
+
 export type BuildCodeOptions = {
 	root: string
 	dist: string
@@ -21,6 +23,7 @@ export const buildCode = async ({ root, dist }: BuildCodeOptions) => {
 	await Bun.build({
 		outdir: dist,
 		external,
-		entrypoints
+		entrypoints,
+		plugins: [compiler()]
 	})
 }

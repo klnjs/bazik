@@ -13,5 +13,5 @@ export const build = async () => {
 	await rm(dist, { recursive: true, force: true })
 	await mkdir(dist, { recursive: true })
 	await buildCode({ root: cwd, dist })
-	await buildTypes({ root: cwd, dist })
+	// await buildTypes({ root: cwd, dist })
 }

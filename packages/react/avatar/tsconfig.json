@@ -1,5 +1,5 @@
 {
-	"extends": "@klnjs/typescript-config/src/esnext",
+	"extends": "@klnjs/typescript-config/src/core",
 	"compilerOptions": {
 		"outDir": "dist",
 		"noPropertyAccessFromIndexSignature": false
