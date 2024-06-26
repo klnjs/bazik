@@ -8,7 +8,7 @@
 		"type": "git",
 		"url": "git+ssh://git@github.com/klnjs/basique.git"
 	},
-	"packageManager": "bun@1.1.12",
+	"packageManager": "bun@1.1.17",
 	"workspaces": [
 		"apps/*",
 		"packages/**/*"

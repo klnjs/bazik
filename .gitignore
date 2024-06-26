@@ -9,9 +9,10 @@
 !packages/
 !packages/**/*
 
-# Except these files!.gitignore
-!.node-version
-!.npmrc
+# Except these files
+!.editorconfig
+!.gitignore
+!.tool-versions
 !bun.lockb
 !LICENSE
 !CHANGELOG.md
